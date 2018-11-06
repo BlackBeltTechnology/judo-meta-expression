@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="expression" nsURI="http://blackbelt.hu/judo/meta/expression"
+    nsPrefix="expression">
+  <eClassifiers xsi:type="ecore:EClass" name="Expression" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityName">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="namespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NumericExpression" interface="true"
+      eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LogicalExpression" interface="true"
+      eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="StringExpression" interface="true" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumerationExpression" interface="true"
+      eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityExpression" interface="true" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EntitySetExpression" interface="true"
+      eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Lambda">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//LogicalExpression"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filterAndCastingType" eType="#//EntityName"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+        eType="#//EntityExpression" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/scripting/expression/constant"
+      nsPrefix="const">
+    <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//constant/Constant #//NumericExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Integer" eSuperTypes="#//constant/Number">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Decimal" eSuperTypes="#//constant/Number">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Boolean" eSuperTypes="#//constant/Constant #//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="String" eSuperTypes="#//constant/Constant #//StringExpression">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Literal" eSuperTypes="#//constant/Constant">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/scripting/expression/variable"
+      nsPrefix="var">
+    <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NumericVariable" eSuperTypes="#//variable/Variable #//NumericExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalVariable" eSuperTypes="#//variable/Variable #//LogicalExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StringVariable" eSuperTypes="#//variable/Variable #//StringExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EnumerationVariable" eSuperTypes="#//variable/Variable #//EnumerationExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EntityVariable" eSuperTypes="#//variable/Variable #//EntityExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetVariable" eSuperTypes="#//variable/Variable #//EntitySetExpression"/>
+  </eSubpackages>
+  <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/scripting/expression/operator"
+      nsPrefix="op">
+    <eClassifiers xsi:type="ecore:EEnum" name="NumericComparator">
+      <eLiterals name="lessThan" literal="&lt;"/>
+      <eLiterals name="greaterThan" value="1" literal=">"/>
+      <eLiterals name="lessOrEqual" value="2" literal="&lt;="/>
+      <eLiterals name="greaterOrEqual" value="3" literal=">="/>
+      <eLiterals name="equal" value="4" literal="=="/>
+      <eLiterals name="notEqual" value="5" literal="!="/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="StringComparator">
+      <eLiterals name="lessThan" literal="&lt;"/>
+      <eLiterals name="greaterThan" value="1" literal=">"/>
+      <eLiterals name="lessOrEqual" value="2" literal="&lt;="/>
+      <eLiterals name="greaterOrEqual" value="3" literal=">="/>
+      <eLiterals name="equal" value="4" literal="=="/>
+      <eLiterals name="notEqual" value="5" literal="!="/>
+      <eLiterals name="match" value="6" literal="match"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="GenericComparator">
+      <eLiterals name="equal" value="4" literal="=="/>
+      <eLiterals name="notEqual" value="5" literal="!="/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="NumericOperator">
+      <eLiterals name="add" literal="+"/>
+      <eLiterals name="substract" value="1" literal="-"/>
+      <eLiterals name="multiply" value="2" literal="*"/>
+      <eLiterals name="devide" value="3" literal="/"/>
+      <eLiterals name="modulo" value="4" literal="%"/>
+      <eLiterals name="devideInt" value="5" literal="//"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="LogicalOperator">
+      <eLiterals name="or" literal="or"/>
+      <eLiterals name="and" value="1" literal="and"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SingleEntitySelector">
+      <eLiterals name="head" value="8"/>
+      <eLiterals name="tail" value="9" literal="tail"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="Aggregation">
+      <eLiterals name="count"/>
+      <eLiterals name="min" value="1"/>
+      <eLiterals name="max" value="2"/>
+      <eLiterals name="avg" value="3"/>
+      <eLiterals name="sum" value="4"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="numeric">
+    <eClassifiers xsi:type="ecore:EClass" name="AritmeticExpression" eSuperTypes="#//NumericExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//NumericExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//NumericExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/NumericOperator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OppositeExpression" eSuperTypes="#//NumericExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//NumericExpression"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NumericAttribute" eSuperTypes="#//NumericExpression #//Attribute"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetCountExpression" eSuperTypes="#//NumericExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AggregatedExpression" eSuperTypes="#//NumericExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" lowerBound="1"
+          eType="#//operator/Aggregation"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="logical">
+    <eClassifiers xsi:type="ecore:EClass" name="NumericComparison" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//NumericExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//NumericExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/NumericComparator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalComparison" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//LogicalExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//LogicalExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" lowerBound="1"
+          eType="#//operator/GenericComparator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StringComparison" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//StringExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//logical/StringComparison"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/StringComparator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EnumerationComparison" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//EnumerationExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//EnumerationExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/GenericComparator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="NegationExpression" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//LogicalExpression"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="KleeneExpression" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//LogicalExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//LogicalExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" lowerBound="1"
+          eType="#//operator/LogicalOperator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InstanceOfExpression" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+          eType="#//EntityExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityName" lowerBound="1"
+          eType="#//EntityName"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalAttribute" eSuperTypes="#//LogicalExpression #//Attribute"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UndefinedAttributeComparison" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+          eType="#//EntityExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/GenericComparator"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UndefinedNavigationComparison" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExression" lowerBound="1"
+          eType="#//EntityExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/GenericComparator"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="string">
+    <eClassifiers xsi:type="ecore:EClass" name="StringAttribute" eSuperTypes="#//StringExpression #//Attribute"/>
+  </eSubpackages>
+  <eSubpackages name="enumeration">
+    <eClassifiers xsi:type="ecore:EClass" name="EnumerationAttribute" eSuperTypes="#//EnumerationExpression #//Attribute"/>
+  </eSubpackages>
+  <eSubpackages name="entity">
+    <eClassifiers xsi:type="ecore:EClass" name="EntityNavigationExpression" eSuperTypes="#//EntityExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+          eType="#//EntityExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="singleReferenceName"
+          lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SingleEntitySelectorExpression" eSuperTypes="#//EntityExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operation" lowerBound="1"
+          eType="#//operator/SingleEntitySelector"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntityFilterExpression" eSuperTypes="#//EntityExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+          eType="#//EntityExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="filter" lowerBound="1"
+          eType="#//Lambda" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="entityset">
+    <eClassifiers xsi:type="ecore:EClass" name="ImmutableEntitySet" eSuperTypes="#//EntitySetExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityName" lowerBound="1"
+          eType="#//EntityName"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetNavigationExpression" eSuperTypes="#//EntitySetExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="referenceName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetFilterExpression" eSuperTypes="#//EntitySetExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="filter" lowerBound="1"
+          eType="#//Lambda" containment="true"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>
