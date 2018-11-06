@@ -1,0 +1,19 @@
+import "expression/_importExpression.evl";
+
+pre {
+	for (expr in EXPR!EntityExpression) {
+		expr.prepare();
+	}
+	for (expr in EXPR!EntitySetExpression) {
+		expr.prepare();
+	}
+	
+	for (expr in EXPR!EntityExpression) {
+		expr.println("Expression: ");
+		expr.type.name.println("  - type: ");
+	}
+	for (expr in EXPR!EntitySetExpression) {
+		expr.println("Expression: ");
+		expr.type.name.println("  - type: ");
+	}
+}

@@ -1,0 +1,15 @@
+// dummy EVL for Integer (already covered by syntax checking)
+context EXPR!Integer {
+    constraint Sample {
+    	check: not self.value.isDefined() or self.value.isInteger()
+    	message: "Value is not integer: " + self.value
+    }
+}
+
+// dummy EVL for Decimal (already covered by syntax checking)
+context EXPR!Decimal {
+    constraint Sample {
+    	check: not self.value.isDefined() or self.value.isReal()
+    	message: "Value is not real: " + self.value
+    }
+}

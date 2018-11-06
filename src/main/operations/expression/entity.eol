@@ -1,0 +1,33 @@
+@cached
+operation EXPR!SingleEntitySelectorExpression prepare() : JUDOPSM!Type {
+	if (not self.type.isDefined()) {
+		self.type = self.entitySetExpression.prepare();
+	}
+	
+	return self.type;
+}
+
+@cached
+operation EXPR!EntityNavigationExpression prepare() : JUDOPSM!Type {
+	if (not self.type.isDefined()) {
+		var base = self.entityExpression.prepare();
+		var ref = base.references.selectOne(r | r.name = self.singleReferenceName);
+		
+		if (ref.isDefined()) {
+			self.type = ref.target;
+		}
+	}
+	
+	return self.type;
+}
+
+@cached
+operation EXPR!EntityFilterExpression prepare() : JUDOPSM!Type {
+	if (not self.type.isDefined()) {
+		self.type = self.entityExpression.prepare();
+	}
+	
+	throw "Not implemented yet";
+	
+	//return self.type;
+}

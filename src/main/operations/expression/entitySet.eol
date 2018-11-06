@@ -1,0 +1,45 @@
+@cached
+operation EXPR!ImmutableEntitySet prepare() : JUDOPSM!Type {
+	if (not self.type.isDefined()) {
+		var ns : JUDOPSM!Namespace;
+		
+		for (nsName in self.entityName.namespace.split("\\s*\\::\\s*")) {
+			if (ns.isDefined()) {
+				ns = ns.packages.selectOne(p | p.name = nsName);
+			} else {
+				ns = JUDOPSM!Model.all.selectOne(p | p.name = nsName);
+			}
+		}
+		
+		if (not ns.isDefined()) {
+			throw "Namespace not found: " + self.entityName.namespace;
+		}
+		
+		var et = ns.entityTypes.selectOne(et | et.name = self.entityName.name);
+		self.type = et;
+	}
+	
+	return self.type;
+}
+
+@cached
+operation EXPR!EntitySetNavigationExpression prepare() : JUDOPSM!Type {
+	if (not self.type.isDefined()) {
+		self.type = self.entitySetExpression.prepare();
+	}
+	
+	throw "Not implemented yet";
+	
+	//return self.type;
+}
+
+@cached
+operation EXPR!EntitySetFilterExpression prepare() : JUDOPSM!Type {
+	if (not self.type.isDefined()) {
+		self.type = self.entitySetExpression.prepare();
+	}
+	
+	throw "Not implemented yet";
+	
+	//return self.type;
+}

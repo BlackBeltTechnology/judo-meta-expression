@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:expression="http://blackbelt.hu/judo/meta/expression" xmlns:expression.entity="http://blackbelt.hu/judo/meta/expression/entity" xmlns:expression.entityset="http://blackbelt.hu/judo/meta/expression/entityset">
+  <expression.entity:EntityNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" singleReferenceName="address">
+    <entityExpression xsi:type="expression.entity:EntityNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" singleReferenceName="customer">
+      <entityExpression xsi:type="expression.entity:SingleEntitySelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
+        <entitySetExpression xsi:type="expression.entityset:ImmutableEntitySet" xmi:id="_lfVkkOGpEeiNLd-ce3MxwA" entityName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+      </entityExpression>
+    </entityExpression>
+  </expression.entity:EntityNavigationExpression>
+  <expression:EntityName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
+</xmi:XMI>

@@ -14,9 +14,14 @@
   <eClassifiers xsi:type="ecore:EClass" name="StringExpression" interface="true" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="EnumerationExpression" interface="true"
       eSuperTypes="#//Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EntityExpression" interface="true" eSuperTypes="#//Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="EntitySetExpression" interface="true"
-      eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityExpression" abstract="true" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"
+        transient="true" derived="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EntitySetExpression" abstract="true"
+      eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Lambda">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//LogicalExpression"
@@ -29,7 +34,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/scripting/expression/constant"
+  <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
     <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//constant/Constant #//NumericExpression"/>
@@ -54,7 +59,7 @@
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/scripting/expression/variable"
+  <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/expression/variable"
       nsPrefix="var">
     <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
@@ -67,7 +72,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="EntityVariable" eSuperTypes="#//variable/Variable #//EntityExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="EntitySetVariable" eSuperTypes="#//variable/Variable #//EntitySetExpression"/>
   </eSubpackages>
-  <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/scripting/expression/operator"
+  <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
     <eClassifiers xsi:type="ecore:EEnum" name="NumericComparator">
       <eLiterals name="lessThan" literal="&lt;"/>
@@ -84,7 +89,7 @@
       <eLiterals name="greaterOrEqual" value="3" literal=">="/>
       <eLiterals name="equal" value="4" literal="=="/>
       <eLiterals name="notEqual" value="5" literal="!="/>
-      <eLiterals name="match" value="6" literal="match"/>
+      <eLiterals name="like" value="6" literal="like"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="GenericComparator">
       <eLiterals name="equal" value="4" literal="=="/>
@@ -94,9 +99,9 @@
       <eLiterals name="add" literal="+"/>
       <eLiterals name="substract" value="1" literal="-"/>
       <eLiterals name="multiply" value="2" literal="*"/>
-      <eLiterals name="devide" value="3" literal="/"/>
+      <eLiterals name="divide" value="3" literal="/"/>
       <eLiterals name="modulo" value="4" literal="%"/>
-      <eLiterals name="devideInt" value="5" literal="//"/>
+      <eLiterals name="divideInt" value="5" literal="//"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="LogicalOperator">
       <eLiterals name="or" literal="or"/>
@@ -114,7 +119,7 @@
       <eLiterals name="sum" value="4"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="numeric">
+  <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric">
     <eClassifiers xsi:type="ecore:EClass" name="AritmeticExpression" eSuperTypes="#//NumericExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
           eType="#//NumericExpression"/>
@@ -141,7 +146,7 @@
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="logical">
+  <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical">
     <eClassifiers xsi:type="ecore:EClass" name="NumericComparison" eSuperTypes="#//LogicalExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
           eType="#//NumericExpression"/>
@@ -172,7 +177,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
           eType="#//EnumerationExpression"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
-          eType="#//operator/GenericComparator"/>
+          eType="#//operator/NumericComparator"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NegationExpression" eSuperTypes="#//LogicalExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
@@ -208,13 +213,13 @@
           eType="#//operator/GenericComparator"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="string">
+  <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string">
     <eClassifiers xsi:type="ecore:EClass" name="StringAttribute" eSuperTypes="#//StringExpression #//Attribute"/>
   </eSubpackages>
-  <eSubpackages name="enumeration">
+  <eSubpackages name="enumeration" nsURI="http://blackbelt.hu/judo/meta/expression/enumeration">
     <eClassifiers xsi:type="ecore:EClass" name="EnumerationAttribute" eSuperTypes="#//EnumerationExpression #//Attribute"/>
   </eSubpackages>
-  <eSubpackages name="entity">
+  <eSubpackages name="entity" nsURI="http://blackbelt.hu/judo/meta/expression/entity">
     <eClassifiers xsi:type="ecore:EClass" name="EntityNavigationExpression" eSuperTypes="#//EntityExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
           eType="#//EntityExpression" containment="true"/>
@@ -234,7 +239,7 @@
           eType="#//Lambda" containment="true"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="entityset">
+  <eSubpackages name="entityset" nsURI="http://blackbelt.hu/judo/meta/expression/entityset">
     <eClassifiers xsi:type="ecore:EClass" name="ImmutableEntitySet" eSuperTypes="#//EntitySetExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="entityName" lowerBound="1"
           eType="#//EntityName"/>
