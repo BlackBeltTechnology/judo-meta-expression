@@ -1,50 +1,95 @@
+import "../data/entity.eol";
+
+@cached
+operation EXPR!EntityName getEntityType() : JUDOPSM!Type {
+    var ns : JUDOPSM!Namespace;
+        
+    for (nsName in self.namespace.split("\\s*\\::\\s*")) {
+        if (ns.isDefined()) {
+            ns = ns.packages.selectOne(p | p.name = nsName);
+        } else {
+            ns = JUDOPSM!Model.all.selectOne(p | p.name = nsName);
+        }
+    }
+    
+    if (not ns.isDefined()) {
+        throw "Namespace not found: " + self.entityName.namespace;
+    }
+    
+    var et = ns.entityTypes.selectOne(et | et.name = self.name);
+    return et;
+} 
+
 @cached
 operation EXPR!ImmutableEntitySet prepare() : JUDOPSM!Type {
-	if (not self.type.isDefined()) {
-		var ns : JUDOPSM!Namespace;
-		
-		for (nsName in self.entityName.namespace.split("\\s*\\::\\s*")) {
-			if (ns.isDefined()) {
-				ns = ns.packages.selectOne(p | p.name = nsName);
-			} else {
-				ns = JUDOPSM!Model.all.selectOne(p | p.name = nsName);
-			}
-		}
-		
-		if (not ns.isDefined()) {
-			throw "Namespace not found: " + self.entityName.namespace;
-		}
-		
-		var et = ns.entityTypes.selectOne(et | et.name = self.entityName.name);
-		self.type = et;
+	if (not self.entityType.isDefined()) {
+		self.entityType = self.entityName.getEntityType();
 	}
 	
-	return self.type;
+	return self.entityType;
 }
 
 @cached
 operation EXPR!EntitySetNavigationExpression prepare() : JUDOPSM!Type {
-	if (not self.type.isDefined() and self.entityExpression.isDefined()) {
-		var base = self.entityExpression.prepare();
+	if (not self.entityType.isDefined() and self.entitySetExpression.isDefined()) {
+		var base = self.entitySetExpression.prepare();
 		
-		var ref;
-		if (base.isDefined()) {
-			ref = base.references.selectOne(r | r.name = self.referenceName);
-		}
+		var ref = base.getReferenceByName(self.referenceName);
 		
 		if (ref.isDefined()) {
-			self.type = ref.target;
+			self.entityType = ref.target;
+		} else {
+		    ("Reference named " + self.referenceName + " not found in entity " + self.name + " (or its supertypes)").println();
 		}
 	}
 	
-	return self.type;
+	return self.entityType;
 }
 
 @cached
 operation EXPR!EntitySetFilterExpression prepare() : JUDOPSM!Type {
-	if (not self.type.isDefined()) {
+	if (not self.entityType.isDefined() and self.entitySetExpression.isDefined()) {
+		var base = self.entitySetExpression.prepare();
+		var filter = self.filter;
 		
+		if (filter.isDefined()) {
+	        var filterAndCastingType = filter.filterAndCastingType;
+	        if (filterAndCastingType.isDefined()) {
+	            var et = filterAndCastingType.getEntityType();
+	            
+	            var isSubClass = false;
+	            var super = et.superEntityTypes;
+	            while (super.isDefined() and not super.isEmpty() and not isSubClass) {
+	                if (super.contains(base)) {
+	                    isSubClass = true;
+	                } else {
+	                    var super2 = new Sequence;
+	                    for (s in super) {
+	                        super2.addAll(s.superEntityTypes);
+	                    }
+	                    super = super2;
+	                }
+	            }
+	            
+	            if (isSubClass) {
+	                self.entityType = et;
+	            } else {
+	                (et.name + " is not superEntityType of " + base.name + " so lambda type filter/casting is invalid").println();
+	            }
+	        }
+	        
+	        var expression = filter.expression;
+		}
 	}
 	
-	throw "Not implemented yet";
+	return self.entityType;
+}
+
+@cached
+operation EXPR!EntitySetVariableReference prepare() : JUDOPSM!Type {
+    if (not self.entityType.isDefined() and self.variable.isDefined()) {
+        self.entityType = self.variable.prepare();
+    }
+    
+    return self.entityType;
 }

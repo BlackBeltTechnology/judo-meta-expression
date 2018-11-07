@@ -32,7 +32,7 @@
     <packages xmi:id="_l025cNODEeim9MGHLpE1bQ" name="entities">
       <entityTypes xmi:id="_43ZPcINkEeiLE-B2bbL0fg" name="Category">
         <references xsi:type="data:Endpoint" xmi:id="_892OYLwCEeiOuYiCo6IbXQ" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_CkXK8LwDEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot3WMOKSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <attributes xmi:id="_v7k5EINmEeiLE-B2bbL0fg" name="categoryName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
         <attributes xmi:id="_Vsjt0INuEeiLE-B2bbL0fg" name="description" dataType="_tXQUoIOGEeiLE-B2bbL0fg"/>
@@ -40,10 +40,10 @@
       </entityTypes>
       <entityTypes xmi:id="_6XH80INkEeiLE-B2bbL0fg" name="Product">
         <references xsi:type="data:Endpoint" xmi:id="_CkXK8LwDEeiOuYiCo6IbXQ" name="category" target="_43ZPcINkEeiLE-B2bbL0fg" partner="_892OYLwCEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot39QOKSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="_vfAfILwMEeiOuYiCo6IbXQ" name="supplier" target="_FWhCkINlEeiLE-B2bbL0fg" partner="_7iGdkLwMEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot39QeKSEeiRKu0rpEAR6w"/>
         </references>
         <attributes xmi:id="_LhnHUINvEeiLE-B2bbL0fg" name="productName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
         <attributes xmi:id="_XoxtcINvEeiLE-B2bbL0fg" name="quantityPerUnit" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
@@ -55,27 +55,27 @@
       </entityTypes>
       <entityTypes xmi:id="_86B-cINkEeiLE-B2bbL0fg" name="Customer">
         <references xsi:type="data:Endpoint" xmi:id="_KCBq0LwNEeiOuYiCo6IbXQ" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_OL6RULwNEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot39QuKSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <references xsi:type="data:Containment" xmi:id="_P60NsLwOEeiOuYiCo6IbXQ" name="address" target="_SDnggLv-EeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot4kUOKSEeiRKu0rpEAR6w"/>
         </references>
       </entityTypes>
       <entityTypes xmi:id="_-H4RoINkEeiLE-B2bbL0fg" name="Order">
         <references xsi:type="data:Endpoint" xmi:id="_OL6RULwNEeiOuYiCo6IbXQ" name="customer" target="_86B-cINkEeiLE-B2bbL0fg" partner="_KCBq0LwNEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot4kUeKSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="_WVBGcLwNEeiOuYiCo6IbXQ" name="shipper" target="_GnEEcINlEeiLE-B2bbL0fg" partner="_Z9PKULwNEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot4kUuKSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="_gfRT8LwNEeiOuYiCo6IbXQ" name="employee" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_jOFqoLwNEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot4kU-KSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Containment" xmi:id="_spywELwNEeiOuYiCo6IbXQ" name="shipAddress" target="_vTNmEL2REeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot4kVOKSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Containment" xmi:id="_2CC44LwNEeiOuYiCo6IbXQ" name="orderDetails" target="__XzocINkEeiLE-B2bbL0fg">
-          <cardinality lower="1" upper="-1"/>
+          <cardinality xmi:id="_ot5LYOKSEeiRKu0rpEAR6w" lower="1" upper="-1"/>
         </references>
         <attributes xmi:id="_WXvUoIN1EeiLE-B2bbL0fg" name="orderDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
         <attributes xmi:id="_ebkoMIN1EeiLE-B2bbL0fg" name="requiredDate" dataType="_Z9J8IIN1EeiLE-B2bbL0fg"/>
@@ -85,7 +85,7 @@
       </entityTypes>
       <entityTypes xmi:id="__XzocINkEeiLE-B2bbL0fg" name="OrderDetail">
         <references xsi:type="data:Endpoint" xmi:id="_6QtRsLwNEeiOuYiCo6IbXQ" name="product" target="_6XH80INkEeiLE-B2bbL0fg">
-          <cardinality lower="1"/>
+          <cardinality xmi:id="_ot5LYeKSEeiRKu0rpEAR6w" lower="1"/>
         </references>
         <attributes xmi:id="_bG7OUIN6EeiLE-B2bbL0fg" name="unitPrice" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
         <attributes xmi:id="_d3obYIN6EeiLE-B2bbL0fg" name="quantity" required="true" dataType="_TXtg8IUcEeipmMyz9cMCRA"/>
@@ -100,36 +100,36 @@
       </entityTypes>
       <entityTypes xmi:id="_FWhCkINlEeiLE-B2bbL0fg" name="Supplier" superEntityTypes="_DJ29wINlEeiLE-B2bbL0fg">
         <references xsi:type="data:Endpoint" xmi:id="_7iGdkLwMEeiOuYiCo6IbXQ" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_vfAfILwMEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot5LYuKSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <attributes xmi:id="_-x_D8IN3EeiLE-B2bbL0fg" name="homePage" dataType="_A5EFMIN4EeiLE-B2bbL0fg"/>
       </entityTypes>
       <entityTypes xmi:id="_GnEEcINlEeiLE-B2bbL0fg" name="Shipper">
         <references xsi:type="data:Endpoint" xmi:id="_Z9PKULwNEeiOuYiCo6IbXQ" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_WVBGcLwNEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot5LY-KSEeiRKu0rpEAR6w"/>
         </references>
         <attributes xmi:id="_bFyT8IN8EeiLE-B2bbL0fg" name="companyName" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
         <attributes xmi:id="_da04sIN8EeiLE-B2bbL0fg" name="phone" dataType="_Lw4a8IOGEeiLE-B2bbL0fg"/>
       </entityTypes>
       <entityTypes xmi:id="_MoVqYINlEeiLE-B2bbL0fg" name="InternationalOrder" superEntityTypes="_-H4RoINkEeiLE-B2bbL0fg">
         <attributes xmi:id="_FpOkYIN_EeiLE-B2bbL0fg" name="customsDescription" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
-        <attributes xmi:id="_It85oIN_EeiLE-B2bbL0fg" name="exciseTax" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
+        <attributes xmi:id="_It85oIN_EeiLE-B2bbL0fg" name="exciseTax" required="true" dataType="_VDVVQIUcEeipmMyz9cMCRA"/>
       </entityTypes>
       <entityTypes xmi:id="_ONN9gINlEeiLE-B2bbL0fg" name="Employee" superEntityTypes="_rIapkLzhEeiOuYiCo6IbXQ">
         <references xsi:type="data:Endpoint" xmi:id="_jOFqoLwNEeiOuYiCo6IbXQ" name="orders" target="_-H4RoINkEeiLE-B2bbL0fg" partner="_gfRT8LwNEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot5ycOKSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <references xsi:type="data:Containment" xmi:id="_WyM8QLwOEeiOuYiCo6IbXQ" name="address" target="_SDnggLv-EeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot5yceKSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="_Z6tlULwOEeiOuYiCo6IbXQ" name="reportsTo" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_cfMUQLwOEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot5ycuKSEeiRKu0rpEAR6w"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="_cfMUQLwOEeiOuYiCo6IbXQ" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_Z6tlULwOEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot5yc-KSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="_h-pmkLwOEeiOuYiCo6IbXQ" name="territory" target="_QckxAINlEeiLE-B2bbL0fg" partner="_klno0LwOEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot6ZgOKSEeiRKu0rpEAR6w"/>
         </references>
         <attributes xmi:id="_DtM4YIOGEeiLE-B2bbL0fg" name="titleOfCourtesy" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
         <attributes xmi:id="_GGZkYIOGEeiLE-B2bbL0fg" name="birthDate" dataType="_YoqOYIN1EeiLE-B2bbL0fg"/>
@@ -142,16 +142,16 @@
       </entityTypes>
       <entityTypes xmi:id="_QckxAINlEeiLE-B2bbL0fg" name="Territory">
         <references xsi:type="data:Endpoint" xmi:id="_klno0LwOEeiOuYiCo6IbXQ" name="employees" target="_ONN9gINlEeiLE-B2bbL0fg" partner="_h-pmkLwOEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot6ZgeKSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <references xsi:type="data:Endpoint" xmi:id="__dS14LwOEeiOuYiCo6IbXQ" name="region" target="_RocuQINlEeiLE-B2bbL0fg" partner="_BEhSYLwPEeiOuYiCo6IbXQ">
-          <cardinality/>
+          <cardinality xmi:id="_ot7AkOKSEeiRKu0rpEAR6w"/>
         </references>
         <attributes xmi:id="_XOCQMIOFEeiLE-B2bbL0fg" name="territoryDescription" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       </entityTypes>
       <entityTypes xmi:id="_RocuQINlEeiLE-B2bbL0fg" name="Region">
         <references xsi:type="data:Endpoint" xmi:id="_BEhSYLwPEeiOuYiCo6IbXQ" name="territories" target="_QckxAINlEeiLE-B2bbL0fg" partner="__dS14LwOEeiOuYiCo6IbXQ">
-          <cardinality upper="-1"/>
+          <cardinality xmi:id="_ot7AkeKSEeiRKu0rpEAR6w" upper="-1"/>
         </references>
         <attributes xmi:id="_U_SgsIOFEeiLE-B2bbL0fg" name="regionDescription" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
       </entityTypes>
@@ -166,7 +166,7 @@
       </entityTypes>
       <entityTypes xmi:id="_SDnggLv-EeiOuYiCo6IbXQ" name="Address">
         <references xsi:type="data:Endpoint" xmi:id="_teSs8Lv-EeiOuYiCo6IbXQ" name="city" target="_eKHIwJuzEeidMOq99SGQ3A">
-          <cardinality lower="1"/>
+          <cardinality xmi:id="_ot7AkuKSEeiRKu0rpEAR6w" lower="1"/>
         </references>
         <attributes xmi:id="_VByh0Lv-EeiOuYiCo6IbXQ" name="address" required="true" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>
         <attributes xmi:id="_X28KALv-EeiOuYiCo6IbXQ" name="region" dataType="_Nppx8IUcEeipmMyz9cMCRA"/>

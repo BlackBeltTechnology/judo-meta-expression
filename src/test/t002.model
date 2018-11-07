@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:expression="http://blackbelt.hu/judo/meta/expression" xmlns:expression.entity="http://blackbelt.hu/judo/meta/expression/entity" xmlns:expression.entityset="http://blackbelt.hu/judo/meta/expression/entityset">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:expression="http://blackbelt.hu/judo/meta/expression" xmlns:expression.entity="http://blackbelt.hu/judo/meta/expression/entity" xmlns:expression.entityset="http://blackbelt.hu/judo/meta/expression/entityset" xmlns:expression.logical="http://blackbelt.hu/judo/meta/expression/logical" xmlns:expression.numeric="http://blackbelt.hu/judo/meta/expression/numeric">
   <expression.entity:EntityNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" singleReferenceName="address">
     <entityExpression xsi:type="expression.entity:EntityNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" singleReferenceName="customer">
       <entityExpression xsi:type="expression.entity:SingleEntitySelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
-        <entitySetExpression xsi:type="expression.entityset:ImmutableEntitySet" xmi:id="_lfVkkOGpEeiNLd-ce3MxwA" entityName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+        <entitySetExpression xsi:type="expression.entityset:EntitySetFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
+          <entitySetExpression xsi:type="expression.entityset:ImmutableEntitySet" xmi:id="_Lo4tcOJ5EeiNLd-ce3MxwA" entityName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+          <filter xmi:id="_M5WPwOJ5EeiNLd-ce3MxwA" name="io" filterAndCastingType="_1H5BMOKCEeiNLd-ce3MxwA">
+            <expression xsi:type="expression.logical:NumericComparison" xmi:id="_LNJ04OKTEeiRKu0rpEAR6w" operator=">">
+              <left xsi:type="expression.numeric:NumericAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
+                <entityExpression xsi:type="expression.entity:EntityVariableReference" xmi:id="_L6lA8OKmEeiRKu0rpEAR6w" variable="_M5WPwOJ5EeiNLd-ce3MxwA"/>
+              </left>
+              <right xsi:type="const:Decimal" xmi:id="_cFVyoOKWEeiRKu0rpEAR6w" value="0"/>
+            </expression>
+          </filter>
+        </entitySetExpression>
       </entityExpression>
     </entityExpression>
   </expression.entity:EntityNavigationExpression>
   <expression:EntityName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
+  <expression:EntityName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
 </xmi:XMI>

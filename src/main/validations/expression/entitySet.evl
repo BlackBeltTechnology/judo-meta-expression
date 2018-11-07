@@ -1,6 +1,6 @@
 context EXPR!EntitySetExpression {
     constraint TypeMustBePrepared {
-        check: self.type.isDefined()
+        check: self.entityType.isDefined()
         message: "Type of entity set expression is not defined"
     }
 }
