@@ -9,9 +9,13 @@ operation EXPR!SingleEntitySelectorExpression prepare() : JUDOPSM!Type {
 
 @cached
 operation EXPR!EntityNavigationExpression prepare() : JUDOPSM!Type {
-	if (not self.type.isDefined()) {
+	if (not self.type.isDefined() and self.entityExpression.isDefined()) {
 		var base = self.entityExpression.prepare();
-		var ref = base.references.selectOne(r | r.name = self.singleReferenceName);
+
+		var ref;
+		if (base.isDefined()) {
+			ref = base.references.selectOne(r | r.name = self.singleReferenceName);
+		}
 		
 		if (ref.isDefined()) {
 			self.type = ref.target;
@@ -24,10 +28,7 @@ operation EXPR!EntityNavigationExpression prepare() : JUDOPSM!Type {
 @cached
 operation EXPR!EntityFilterExpression prepare() : JUDOPSM!Type {
 	if (not self.type.isDefined()) {
-		self.type = self.entityExpression.prepare();
 	}
 	
 	throw "Not implemented yet";
-	
-	//return self.type;
 }

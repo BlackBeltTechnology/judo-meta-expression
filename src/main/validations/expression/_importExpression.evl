@@ -1,2 +1,4 @@
+import "entity.evl";
+import "entitySet.evl";
 import "navigation.evl";
 import "numeric.evl";

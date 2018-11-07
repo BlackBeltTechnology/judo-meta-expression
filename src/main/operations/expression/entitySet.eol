@@ -24,22 +24,27 @@ operation EXPR!ImmutableEntitySet prepare() : JUDOPSM!Type {
 
 @cached
 operation EXPR!EntitySetNavigationExpression prepare() : JUDOPSM!Type {
-	if (not self.type.isDefined()) {
-		self.type = self.entitySetExpression.prepare();
+	if (not self.type.isDefined() and self.entityExpression.isDefined()) {
+		var base = self.entityExpression.prepare();
+		
+		var ref;
+		if (base.isDefined()) {
+			ref = base.references.selectOne(r | r.name = self.referenceName);
+		}
+		
+		if (ref.isDefined()) {
+			self.type = ref.target;
+		}
 	}
 	
-	throw "Not implemented yet";
-	
-	//return self.type;
+	return self.type;
 }
 
 @cached
 operation EXPR!EntitySetFilterExpression prepare() : JUDOPSM!Type {
 	if (not self.type.isDefined()) {
-		self.type = self.entitySetExpression.prepare();
+		
 	}
 	
 	throw "Not implemented yet";
-	
-	//return self.type;
 }

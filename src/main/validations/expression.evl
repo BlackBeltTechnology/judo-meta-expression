@@ -10,10 +10,14 @@ pre {
 	
 	for (expr in EXPR!EntityExpression) {
 		expr.println("Expression: ");
-		expr.type.name.println("  - type: ");
+		if (expr.type.isDefined()) {
+			expr.type.name.println("  - type: ");
+		}
 	}
 	for (expr in EXPR!EntitySetExpression) {
 		expr.println("Expression: ");
-		expr.type.name.println("  - type: ");
+		if (expr.type.isDefined()) {
+			expr.type.name.println("  - type: ");
+		}
 	}
 }
