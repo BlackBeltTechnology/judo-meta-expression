@@ -76,7 +76,9 @@ operation EXPR!EntitySetFilterExpression prepare() : JUDOPSM!Type {
 	            } else {
 	                (et.name + " is not superEntityType of " + base.name + " so lambda type filter/casting is invalid").println();
 	            }
-	        }
+	        } else {
+	           self.entityType = base;
+	        } 
 	        
 	        var expression = filter.expression;
 		}

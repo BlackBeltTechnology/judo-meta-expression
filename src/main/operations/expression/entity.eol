@@ -30,9 +30,41 @@ operation EXPR!EntityNavigationExpression prepare() : JUDOPSM!Type {
 operation EXPR!EntityFilterExpression prepare() : JUDOPSM!Type {
 	if (not self.entityType.isDefined() and self.entityExpression.isDefined()) {
 	   var base = self.entityExpression.prepare();
+        var filter = self.filter;
+        
+        if (filter.isDefined()) {
+            var filterAndCastingType = filter.filterAndCastingType;
+            if (filterAndCastingType.isDefined()) {
+                var et = filterAndCastingType.getEntityType();
+                
+                var isSubClass = false;
+                var super = et.superEntityTypes;
+                while (super.isDefined() and not super.isEmpty() and not isSubClass) {
+                    if (super.contains(base)) {
+                        isSubClass = true;
+                    } else {
+                        var super2 = new Sequence;
+                        for (s in super) {
+                            super2.addAll(s.superEntityTypes);
+                        }
+                        super = super2;
+                    }
+                }
+                
+                if (isSubClass) {
+                    self.entityType = et;
+                } else {
+                    (et.name + " is not superEntityType of " + base.name + " so lambda type filter/casting is invalid").println();
+                }
+            } else {
+                self.entityType = base;
+            }
+            
+            var expression = filter.expression;
+        }
 	}
 	
-	throw "Not implemented yet";
+	return self.entityType;
 }
 
 
@@ -41,9 +73,6 @@ operation EXPR!Lambda prepare() : JUDOPSM!Type {
     if (not self.entityType.isDefined()) {
         var entityExpression = EXPR!EntityFilterExpression.all.selectOne(e | e.filter = self);
         var entitySetExpression = EXPR!EntitySetFilterExpression.all.selectOne(e | e.filter = self);
-        
-        entityExpression.println("EXPR: ");
-        entitySetExpression.println("SET EXPR: ");
         
         if (entityExpression.isDefined()) {
             self.entityType = entityExpression.prepare();
