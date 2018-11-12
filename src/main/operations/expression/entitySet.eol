@@ -7,7 +7,7 @@ operation EXPR!EntitySetExpression getEntityType() {
 
 @cached
 operation EXPR!ImmutableEntitySet getEntityType() {
-    return self.entityName.getEntityType();
+    return self.elementName.getEntityType();
 }
 
 @cached

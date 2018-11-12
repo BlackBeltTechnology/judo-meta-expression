@@ -1,5 +1,5 @@
 @cached
-operation EXPR!EntityName getEntityType() : JUDOPSM!EntityType {
+operation EXPR!ElementName getNamespace() : JUDOPSM!Namespace {
     var ns : JUDOPSM!Namespace;
         
     for (nsName in self.namespace.split("\\s*\\::\\s*")) {
@@ -11,10 +11,20 @@ operation EXPR!EntityName getEntityType() : JUDOPSM!EntityType {
     }
     
     if (not ns.isDefined()) {
-        throw "Namespace not found: " + self.entityName.namespace;
+        throw "Namespace not found: " + self.namespace;
     }
     
-    return ns.entityTypes.selectOne(et | et.name = self.name);
+    return ns;
+}
+
+@cached
+operation EXPR!ElementName getEntityType() : JUDOPSM!EntityType {
+    return self.getNamespace().entityTypes.selectOne(et | et.name = self.name);
+}
+
+@cached
+operation EXPR!ElementName getEnumerationType() : JUDOPSM!EntityType {
+    return self.getNamespace().dataTypes.selectOne(t | t.name = self.name);
 }
 
 operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!EntityType {
@@ -87,4 +97,9 @@ operation JUDOPSM!DataType isString() : Boolean {
 @cached
 operation JUDOPSM!DataType isEnumeration() : Boolean {
     return self.isKindOf(JUDOPSM!Enumeration);
+}
+
+operation JUDOPSM!Enumeration contains(member : String) : Boolean {
+    ("IS '" + member + "' member of " + self.name + "?").println();
+    return true;
 }

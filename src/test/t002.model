@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:e="http://blackbelt.hu/judo/meta/expression/entity" xmlns:es="http://blackbelt.hu/judo/meta/expression/entityset" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:e="http://blackbelt.hu/judo/meta/expression/entity" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:es="http://blackbelt.hu/judo/meta/expression/entityset" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
   <e:EntityNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" singleReferenceName="address">
     <entityExpression xsi:type="e:EntityFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
       <entityExpression xsi:type="e:EntityNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" singleReferenceName="customer">
         <entityExpression xsi:type="e:SingleEntitySelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
           <entitySetExpression xsi:type="es:EntitySetFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
-            <entitySetExpression xsi:type="es:ImmutableEntitySet" xmi:id="_Lo4tcOJ5EeiNLd-ce3MxwA" entityName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+            <entitySetExpression xsi:type="es:ImmutableEntitySet" xmi:id="_Lo4tcOJ5EeiNLd-ce3MxwA" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
             <filter xmi:id="_M5WPwOJ5EeiNLd-ce3MxwA" name="io" filterAndCastingType="_1H5BMOKCEeiNLd-ce3MxwA">
               <expression xsi:type="l:NumericComparison" xmi:id="_LNJ04OKTEeiRKu0rpEAR6w" operator=">">
                 <left xsi:type="n:NumericAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
@@ -18,17 +18,31 @@
         </entityExpression>
       </entityExpression>
       <filter xmi:id="_rfIBAONPEeiRKu0rpEAR6w" name="c">
-        <expression xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="==">
-          <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
-            <entityExpression xsi:type="e:EntityNavigationExpression" xmi:id="_MeSwwONQEeiRKu0rpEAR6w" singleReferenceName="address">
-              <entityExpression xsi:type="e:EntityVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_rfIBAONPEeiRKu0rpEAR6w"/>
-            </entityExpression>
+        <expression xsi:type="l:KleeneExpression" xmi:id="_xcIc0OaCEeiefp-kRHrgiQ" operator="and">
+          <left xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="like">
+            <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
+              <entityExpression xsi:type="e:EntityNavigationExpression" xmi:id="_MeSwwONQEeiRKu0rpEAR6w" singleReferenceName="address">
+                <entityExpression xsi:type="e:EntityVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_rfIBAONPEeiRKu0rpEAR6w"/>
+              </entityExpression>
+            </left>
+            <right xsi:type="const:String" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
           </left>
-          <right xsi:type="const:String" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="1111"/>
+          <right xsi:type="l:EnumerationComparison" xmi:id="_C8y3MOaDEeiefp-kRHrgiQ" operator="==">
+            <left xsi:type="enum:EnumerationAttribute" xmi:id="_H62soOaDEeiefp-kRHrgiQ" attributeName="country">
+              <entityExpression xsi:type="e:EntityFilterExpression" xmi:id="_MDmYwOaFEeiefp-kRHrgiQ">
+                <entityExpression xsi:type="e:EntityNavigationExpression" xmi:id="_RnrFUOaFEeiefp-kRHrgiQ" singleReferenceName="address">
+                  <entityExpression xsi:type="e:EntityVariableReference" xmi:id="_TFV9MOaFEeiefp-kRHrgiQ" variable="_rfIBAONPEeiRKu0rpEAR6w"/>
+                </entityExpression>
+                <filter xmi:id="_OSR20OaFEeiefp-kRHrgiQ" name="ia" filterAndCastingType="_9eABUOaEEeiefp-kRHrgiQ"/>
+              </entityExpression>
+            </left>
+            <right xsi:type="const:Literal" xmi:id="_e4peEOaDEeiefp-kRHrgiQ" value="HU"/>
+          </right>
         </expression>
       </filter>
     </entityExpression>
   </e:EntityNavigationExpression>
-  <expr:EntityName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
-  <expr:EntityName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
+  <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
+  <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
+  <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
 </xmi:XMI>

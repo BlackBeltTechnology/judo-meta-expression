@@ -74,13 +74,13 @@ operation EXPR!EnumerationAttribute toString() {
 }
 
 @cached
-operation EXPR!EntityName toString() : String {
+operation EXPR!ElementName toString() : String {
     return self.namespace + "::" + self.name;    
 }
 
 @cached
 operation EXPR!ImmutableEntitySet toString() : String {
-    return self.entityName.toString();
+    return self.elementName.toString();
 }
 
 @cached
@@ -91,9 +91,17 @@ operation EXPR!EntitySetFilterExpression toString() : String {
 @cached
 operation EXPR!Lambda toString() : String {
     if (self.filterAndCastingType.isDefined()) {
-        return self.name + " of " + self.filterAndCastingType.toString() + " | " + self.expression.toString();
+        if (self.expression.isDefined()) {
+            return self.name + " of " + self.filterAndCastingType.toString() + " | " + self.expression.toString();
+        } else {
+            return self.name + " of " + self.filterAndCastingType.toString();
+        }
     } else {
-        return self.name + " | " + self.expression.toString();
+        if (self.expression.isDefined()) {
+            return self.name + " | " + self.expression.toString();
+        } else {
+            return self.name;
+        }
     }
 }
 
@@ -119,7 +127,7 @@ operation EXPR!String toString() : String {
 
 @cached
 operation EXPR!Literal toString() : String {
-    return self.value;
+    return "'" + self.value + "'";
 }
 
 @cached
@@ -174,7 +182,7 @@ operation EXPR!KleeneExpression toString() : String {
 
 @cached
 operation EXPR!InstanceOfExpression toString() : String {
-    return self.entityExpression.toString() + " is " + self.entityName.toString();
+    return self.entityExpression.toString() + " is " + self.elementName.toString();
 }
 
 @cached

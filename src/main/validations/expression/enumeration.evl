@@ -4,3 +4,31 @@ context EXPR!EnumerationAttribute {
         message: "Attribute type is not enumeration"
     }
 }
+
+/*context EXPR!EnumerationComparison {
+    guard: self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    
+    constraint ValidMember {
+	    check: self.left.getEnumeration().contains(self.right.value)
+	    message: "Enumerations are not matching"
+    }
+}
+
+context EXPR!EnumerationComparison {
+    guard: self.right.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    
+    constraint ValidMember {
+        check: self.left.getEnumeration().contains(self.right.value)
+        message: "Enumerations are not matching"
+    }
+}
+
+context EXPR!EnumerationComparison {
+    guard: self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    
+    constraint ValidMember {
+        check: self.left.getEnumeration().contains(self.right.value)
+        message: "Enumerations are not matching"
+    }
+}
+*/
