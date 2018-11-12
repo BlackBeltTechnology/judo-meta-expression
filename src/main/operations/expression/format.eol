@@ -1,0 +1,188 @@
+@cached
+operation EXPR!EntityNavigationExpression toString() : String {
+    return self.entityExpression.toString() + "." + self.singleReferenceName;
+}
+
+@cached
+operation EXPR!EntitySetNavigationExpression toString() : String {
+    return self.entitySetExpression.toString() + "." + self.referenceName;
+}
+
+@cached
+operation EXPR!NumericVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!LogicalVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!StringVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!EnumerationVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!EntityVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!EntitySetVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!EntityFilterExpression toString() : String {
+    return self.entityExpression.toString() + "[" + self.filter.toString() + "]";
+}
+
+@cached
+operation EXPR!SingleEntitySelectorExpression toString() : String {
+    return "(" + self.operationName.toString() + " " + self.entitySetExpression.toString() + ")";
+}
+
+@cached
+operation EXPR!Attribute toString() {
+    return self.entityExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!NumericAttribute toString() {
+    return self.entityExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!LogicalAttribute toString() {
+    return self.entityExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!StringAttribute toString() {
+    return self.entityExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!EnumerationAttribute toString() {
+    return self.entityExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!EntityName toString() : String {
+    return self.namespace + "::" + self.name;    
+}
+
+@cached
+operation EXPR!ImmutableEntitySet toString() : String {
+    return self.entityName.toString();
+}
+
+@cached
+operation EXPR!EntitySetFilterExpression toString() : String {
+    return self.entitySetExpression.toString() + "[" + self.filter.toString() + "]";
+}
+
+@cached
+operation EXPR!Lambda toString() : String {
+    if (self.filterAndCastingType.isDefined()) {
+        return self.name + " of " + self.filterAndCastingType.toString() + " | " + self.expression.toString();
+    } else {
+        return self.name + " | " + self.expression.toString();
+    }
+}
+
+@cached
+operation EXPR!Integer toString() : String {
+    return self.value.toString();
+}
+
+@cached
+operation EXPR!Decimal toString() : String {
+    return self.value.toString();
+}
+
+@cached
+operation EXPR!Boolean toString() : String {
+    return self.value;
+}
+
+@cached
+operation EXPR!String toString() : String {
+    return "'" + self.value + "'";
+}
+
+@cached
+operation EXPR!Literal toString() : String {
+    return self.value;
+}
+
+@cached
+operation EXPR!AritmeticExpression toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!EntitySetCountExpression toString() : String {
+    return "COUNT(" + self.entitySetExpression.toString() + ")";
+}
+
+@cached
+operation EXPR!AggregatedExpression toString() : String {
+    return self.operationName + "(" + self.entitySetExpression.toString() + "." + self.attributeName + ")";
+}
+
+@cached
+operation EXPR!OppositeExpression toString() : String {
+    return "- " + self.expression.toString();
+}
+
+@cached
+operation EXPR!NumericComparison toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!LogicalComparison toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!StringComparison toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!EnumerationComparison toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!NegationExpression toString() : String {
+    return "NOT" + self.expression.toString();
+}
+
+@cached
+operation EXPR!KleeneExpression toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!InstanceOfExpression toString() : String {
+    return self.entityExpression.toString() + " is " + self.entityName.toString();
+}
+
+@cached
+operation EXPR!UndefinedAttributeComparison toString() : String {
+    return self.entityExpression + "." + self.attributeName + " IS NULL";
+}
+
+@cached
+operation EXPR!UndefinedNavigationComparison toString() : String {
+    return self.entityExpression + " IS NULL";
+}

@@ -1,23 +1,40 @@
 import "expression/_importExpression.evl";
 
+@cached
+operation EXPR!Expression getChildren() : Map {
+    var children = new Map;
+    
+    return children;
+}
+
+@cached
+operation EXPR!Expression toString() : String {
+    return self.type().name + "(" + self.getChildren() + ")";
+}
+
 pre {
 	for (expr in EXPR!EntityExpression) {
-		expr.prepare();
+        var type = expr.getEntityType();
+	    expr.toString().println("Expression: ");
+	    if (type.isDefined()) {
+	       expr.type().name.println(" - type: ");
+	       type.name.println(" - ENTITY TYPE of entity expression: ");
+	    }
 	}
 	for (expr in EXPR!EntitySetExpression) {
-		expr.prepare();
+	    var type = expr.getEntityType();
+        expr.toString().println("Expression: ");
+	    if (type.isDefined()) {
+	       expr.type().name.println(" - type: ");
+	       type.name.println(" - ENTITY TYPE of entity set expression: ");
+	    }
 	}
-	
-	for (expr in EXPR!EntityExpression) {
-		expr.println("Expression: ");
-		if (expr.entityType.isDefined()) {
-			expr.entityType.name.println("  - type: ");
-		}
-	}
-	for (expr in EXPR!EntitySetExpression) {
-		expr.println("Expression: ");
-		if (expr.entityType.isDefined()) {
-			expr.entityType.name.println("  - type: ");
-		}
+	for (attr in EXPR!Attribute) {
+	   var type = attr.getAttributeType();
+	   attr.toString().println("Attribute: ");
+	   if (type.isDefined()) {
+	       attr.type().name.println(" - type: ");
+           type.name.println(" - DATA TYPE of attribute: ");
+       }
 	}
 }

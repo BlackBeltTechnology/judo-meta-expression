@@ -1,0 +1,70 @@
+@cached
+operation EXPR!EntityName getEntityType() : JUDOPSM!EntityType {
+    var ns : JUDOPSM!Namespace;
+        
+    for (nsName in self.namespace.split("\\s*\\::\\s*")) {
+        if (ns.isDefined()) {
+            ns = ns.packages.selectOne(p | p.name = nsName);
+        } else {
+            ns = JUDOPSM!Model.all.selectOne(p | p.name = nsName);
+        }
+    }
+    
+    if (not ns.isDefined()) {
+        throw "Namespace not found: " + self.entityName.namespace;
+    }
+    
+    return ns.entityTypes.selectOne(et | et.name = self.name);
+}
+
+operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!EntityType {
+    var ref = self.references.selectOne(r | r.name = name);
+    
+    if (not ref.isDefined()) {
+        // checking super types recursively
+        var super = self.superEntityTypes;
+        while (super.isDefined() and not super.isEmpty()) {
+            var super2 = new Sequence;
+            for (s in super) {
+                ref = s.references.selectOne(r | r.name = name);
+                
+                if (ref.isDefined()) {
+                    return ref.target;
+                }
+                
+                super2.addAll(s.superEntityTypes);
+            }
+            super = super2;
+        }
+    } else {
+        return ref.target;
+    }
+    
+    throw "Reference named " + name + " of entity type " + self.name + " not found";
+}
+
+operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
+    var attr = self.attributes.selectOne(r | r.name = name);
+    
+    if (not attr.isDefined()) {
+        // checking super types recursively
+        var super = self.superEntityTypes;
+        while (super.isDefined() and not super.isEmpty()) {
+            var super2 = new Sequence;
+            for (s in super) {
+                attr = s.attributes.selectOne(r | r.name = name);
+                
+                if (attr.isDefined()) {
+                    return attr.dataType;
+                }
+                
+                super2.addAll(s.superEntityTypes);
+            }
+            super = super2;
+        }
+    } else {
+        return attr.dataType;
+    }
+    
+    throw "Attribute named " + name + " of entity type " + self.name + " not found";
+}

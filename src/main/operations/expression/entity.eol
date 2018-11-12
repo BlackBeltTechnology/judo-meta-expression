@@ -1,96 +1,46 @@
-import "../data/entity.eol";
+import "../data/psm.eol";
 
 @cached
-operation EXPR!SingleEntitySelectorExpression prepare() : JUDOPSM!Type {
-	if (not self.entityType.isDefined()) {
-		self.entityType = self.entitySetExpression.prepare();
-	}
-	
-	return self.entityType;
+operation EXPR!EntityExpression getEntityType() {
+    throw "Unable to detect type";
 }
 
 @cached
-operation EXPR!EntityNavigationExpression prepare() : JUDOPSM!Type {
-	if (not self.entityType.isDefined() and self.entityExpression.isDefined()) {
-		var base = self.entityExpression.prepare();
-
-		var ref = base.getReferenceByName(self.singleReferenceName);
-        
-        if (ref.isDefined()) {
-            self.entityType = ref.target;
-        } else {
-            ("Reference named " + self.singleReferenceName + " not found in entity " + self.name + " (or its supertypes)").println();
-        }
-	}
-	
-	return self.entityType;
+operation EXPR!SingleEntitySelectorExpression getEntityType() {
+    return self.entitySetExpression.getEntityType();
 }
 
 @cached
-operation EXPR!EntityFilterExpression prepare() : JUDOPSM!Type {
-	if (not self.entityType.isDefined() and self.entityExpression.isDefined()) {
-	   var base = self.entityExpression.prepare();
-        var filter = self.filter;
+operation EXPR!EntityFilterExpression getEntityType() {
+    var base = self.entityExpression.getEntityType();
+    if (base.isDefined()) {
+        base.name.println(" - base: ");
         
-        if (filter.isDefined()) {
-            var filterAndCastingType = filter.filterAndCastingType;
-            if (filterAndCastingType.isDefined()) {
-                var et = filterAndCastingType.getEntityType();
-                
-                var isSubClass = false;
-                var super = et.superEntityTypes;
-                while (super.isDefined() and not super.isEmpty() and not isSubClass) {
-                    if (super.contains(base)) {
-                        isSubClass = true;
-                    } else {
-                        var super2 = new Sequence;
-                        for (s in super) {
-                            super2.addAll(s.superEntityTypes);
-                        }
-                        super = super2;
-                    }
-                }
-                
-                if (isSubClass) {
-                    self.entityType = et;
-                } else {
-                    (et.name + " is not superEntityType of " + base.name + " so lambda type filter/casting is invalid").println();
-                }
-            } else {
-                self.entityType = base;
-            }
+        if (self.filter.isDefined()) {
+            self.filter.type().name.println(" - filter: ");
             
-            var expression = filter.expression;
-        }
-	}
-	
-	return self.entityType;
-}
-
-
-@cached
-operation EXPR!Lambda prepare() : JUDOPSM!Type {
-    if (not self.entityType.isDefined()) {
-        var entityExpression = EXPR!EntityFilterExpression.all.selectOne(e | e.filter = self);
-        var entitySetExpression = EXPR!EntitySetFilterExpression.all.selectOne(e | e.filter = self);
-        
-        if (entityExpression.isDefined()) {
-            self.entityType = entityExpression.prepare();
-        } else if (entitySetExpression.isDefined()) {
-            self.entityType = entitySetExpression.prepare();
+            if (self.filter.filterAndCastingType.isDefined()) {
+                return self.filter.filterAndCastingType.getEntityType();
+            } else {
+                return base;
+            }
         } else {
-            ("Could not detect type of lambda expression: " + self.name).println();
+            return base;
         }
     }
-    
-    return self.entityType;
 }
 
 @cached
-operation EXPR!EntityVariableReference prepare() : JUDOPSM!Type {
-    if (not self.entityType.isDefined() and self.variable.isDefined()) {
-        self.entityType = self.variable.prepare();
-    }
-    
-    return self.entityType;
+operation EXPR!EntityNavigationExpression getEntityType() {
+    return self.entityExpression.getEntityType().getReferenceType(self.singleReferenceName);
+}
+
+@cached
+operation EXPR!EntityVariableReference getEntityType() {
+    return self.variable.getEntityType();
+}
+
+@cached
+operation EXPR!Attribute getAttributeType() {
+    return self.entityExpression.getEntityType().getAttributeType(self.attributeName);
 }

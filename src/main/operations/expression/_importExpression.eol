@@ -1,2 +1,5 @@
 import "entity.eol";
 import "entitySet.eol";
+import "expression.eol";
+import "format.eol";
+import "lambda.eol";

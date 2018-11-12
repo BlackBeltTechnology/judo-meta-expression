@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:e="http://blackbelt.hu/judo/meta/expression/entity" xmlns:es="http://blackbelt.hu/judo/meta/expression/entityset" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:e="http://blackbelt.hu/judo/meta/expression/entity" xmlns:es="http://blackbelt.hu/judo/meta/expression/entityset" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
   <e:EntityNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" singleReferenceName="address">
     <entityExpression xsi:type="e:EntityFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
       <entityExpression xsi:type="e:EntityNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" singleReferenceName="customer">
@@ -19,7 +19,7 @@
       </entityExpression>
       <filter xmi:id="_rfIBAONPEeiRKu0rpEAR6w" name="c">
         <expression xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="==">
-          <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postcalCode">
+          <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
             <entityExpression xsi:type="e:EntityNavigationExpression" xmi:id="_MeSwwONQEeiRKu0rpEAR6w" singleReferenceName="address">
               <entityExpression xsi:type="e:EntityVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_rfIBAONPEeiRKu0rpEAR6w"/>
             </entityExpression>

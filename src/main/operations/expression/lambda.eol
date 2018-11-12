@@ -1,0 +1,19 @@
+@cached
+operation EXPR!Lambda getOwner() {
+    var entityFilterExpression = EXPR!EntityFilterExpression.all.selectOne(e | e.filter = self);
+    if (entityFilterExpression.isDefined()) {
+        return entityFilterExpression;
+    }
+    
+    var entitySetFilterExpression = EXPR!EntitySetFilterExpression.all.selectOne(e | e.filter = self);
+    if (entitySetFilterExpression.isDefined()) {
+        return entitySetFilterExpression;
+    }
+    
+    throw "Lambda must have on owner";
+}
+
+@cached
+operation EXPR!Lambda getEntityType() {
+    return self.getOwner().getEntityType();
+}
