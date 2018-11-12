@@ -1,0 +1,6 @@
+context EXPR!LogicalAttribute {
+    constraint ValidType {
+        check: self.getAttributeType().isBoolean()
+        message: "Attribute type is not boolean"
+    }
+}

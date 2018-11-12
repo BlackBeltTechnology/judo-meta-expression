@@ -1,0 +1,6 @@
+context EXPR!EnumerationAttribute {
+    constraint ValidType {
+        check: self.getAttributeType().isEnumeration()
+        message: "Attribute type is not enumeration"
+    }
+}

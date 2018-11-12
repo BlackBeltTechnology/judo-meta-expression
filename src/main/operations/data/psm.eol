@@ -68,3 +68,23 @@ operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
     
     throw "Attribute named " + name + " of entity type " + self.name + " not found";
 }
+
+@cached
+operation JUDOPSM!DataType isNumeric() : Boolean {
+    return self.isKindOf(JUDOPSM!Numeric);
+}
+
+@cached
+operation JUDOPSM!DataType isBoolean() : Boolean {
+    return self.isKindOf(JUDOPSM!Boolean);
+}
+
+@cached
+operation JUDOPSM!DataType isString() : Boolean {
+    return self.isKindOf(JUDOPSM!String);
+}
+
+@cached
+operation JUDOPSM!DataType isEnumeration() : Boolean {
+    return self.isKindOf(JUDOPSM!Enumeration);
+}

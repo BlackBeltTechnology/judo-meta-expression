@@ -13,3 +13,10 @@ context EXPR!Decimal {
     	message: "Value is not real: " + self.value
     }
 }
+
+context EXPR!NumericAttribute {
+    constraint ValidType {
+        check: self.getAttributeType().isNumeric()
+        message: "Attribute type is not numeric"
+    }
+}

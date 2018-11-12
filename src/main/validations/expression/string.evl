@@ -1,0 +1,6 @@
+context EXPR!StringAttribute {
+    constraint ValidType {
+        check: self.getAttributeType().isString()
+        message: "Attribute type is not string"
+    }
+}
