@@ -36,7 +36,7 @@
                 <filter xmi:id="_OSR20OaFEeiefp-kRHrgiQ" name="ia" filterAndCastingType="_9eABUOaEEeiefp-kRHrgiQ"/>
               </entityExpression>
             </left>
-            <right xsi:type="const:Literal" xmi:id="_e4peEOaDEeiefp-kRHrgiQ" value="HU"/>
+            <right xsi:type="const:Literal" xmi:id="_e4peEOaDEeiefp-kRHrgiQ" value="RO"/>
           </right>
         </expression>
       </filter>

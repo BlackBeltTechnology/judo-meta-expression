@@ -99,7 +99,10 @@ operation JUDOPSM!DataType isEnumeration() : Boolean {
     return self.isKindOf(JUDOPSM!Enumeration);
 }
 
-operation JUDOPSM!Enumeration contains(member : String) : Boolean {
-    ("IS '" + member + "' member of " + self.name + "?").println();
-    return true;
+operation JUDOPSM!Enumeration contains(memberName : String) : Boolean {
+    return self.members.selectOne(m | m.name = memberName).isDefined();
+}
+
+operation JUDOPSM!Enumeration getName() : String {
+    return self.name;
 }

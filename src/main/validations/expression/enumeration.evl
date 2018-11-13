@@ -5,21 +5,21 @@ context EXPR!EnumerationAttribute {
     }
 }
 
-/*context EXPR!EnumerationComparison {
-    guard: self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+context EXPR!EnumerationComparison {
+    guard: self.left.getEnumeration().isDefined() and self.right.getEnumeration().isDefined()
     
     constraint ValidMember {
-	    check: self.left.getEnumeration().contains(self.right.value)
+	    check: self.left.getEnumeration() == self.right.getEnumeration()
 	    message: "Enumerations are not matching"
     }
 }
 
 context EXPR!EnumerationComparison {
-    guard: self.right.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    guard: self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
     
     constraint ValidMember {
-        check: self.left.getEnumeration().contains(self.right.value)
-        message: "Enumerations are not matching"
+        check: self.right.getEnumeration().contains(self.left.value)
+        message: "Enumeration " + self.right.getEnumeration().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
     }
 }
 
@@ -28,7 +28,6 @@ context EXPR!EnumerationComparison {
     
     constraint ValidMember {
         check: self.left.getEnumeration().contains(self.right.value)
-        message: "Enumerations are not matching"
+        message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }
 }
-*/
