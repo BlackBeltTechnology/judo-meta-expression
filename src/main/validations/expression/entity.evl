@@ -4,3 +4,21 @@ context EXPR!EntityExpression {
         message: "Type of entity expression is not defined"
     }
 }
+
+context EXPR!EntityFilterExpression {
+    guard: self.filter.filterAndCastingType.isDefined()
+
+    constraint LambdaTypeMustBeSameOrRestricting {
+        check: self.filter.filterAndCastingType.getEntityType().getSuperTypes().contains(self.entityExpression.getEntityType())
+        message: "Type of filtered expression (" + self.entityExpression.getEntityType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getEntityType().getName() + ")"
+    }
+}
+
+context EXPR!EntitySetFilterExpression {
+    guard: self.filter.filterAndCastingType.isDefined()
+
+    constraint LambdaTypeMustBeSameOrRestricting {
+        check: self.filter.filterAndCastingType.getEntityType().getSuperTypes().contains(self.entitySetExpression.getEntityType())
+        message: "Type of filtered expression (" + self.entitySetExpression.getEntityType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getEntityType().getName() + ")"
+    }
+}

@@ -62,7 +62,7 @@ operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
         while (super.isDefined() and not super.isEmpty()) {
             var super2 = new Sequence;
             for (s in super) {
-                attr = s.attributes.selectOne(r | r.name = name);
+                attr = s.attributes.selectOne(a | a.name = name);
                 
                 if (attr.isDefined()) {
                     return attr.dataType;
@@ -77,6 +77,24 @@ operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
     }
     
     throw "Attribute named " + name + " of entity type " + self.name + " not found";
+}
+
+@cached
+operation JUDOPSM!EntityType getSuperTypes() : Sequence {
+    var result = new Sequence;
+    
+    var super = self.superEntityTypes;
+    while (super.isDefined() and not super.isEmpty()) {
+        result.addAll(super);
+        
+        var super2 = new Sequence;
+        for (s in super) {
+            super2.addAll(s.superEntityTypes);
+        }
+        super = super2;
+    }
+    
+    return result;
 }
 
 @cached
@@ -103,6 +121,7 @@ operation JUDOPSM!Enumeration contains(memberName : String) : Boolean {
     return self.members.selectOne(m | m.name = memberName).isDefined();
 }
 
-operation JUDOPSM!Enumeration getName() : String {
+@cached
+operation JUDOPSM!Type getName() : String {
     return self.name;
 }
