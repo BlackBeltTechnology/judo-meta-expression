@@ -31,7 +31,12 @@ operation EXPR!EntitySetFilterExpression getEntityType() {
 }
 
 @cached
-operation EXPR!EntitySetNavigationExpression getEntityType() {
+operation EXPR!EntitySetNavigationFromSingleExpression getEntityType() {
+    return self.entityExpression.getEntityType().getReferenceType(self.referenceName); 
+}
+
+@cached
+operation EXPR!EntitySetNavigationFromMultiExpression getEntityType() {
     return self.entitySetExpression.getEntityType().getReferenceType(self.referenceName); 
 }
 

@@ -4,3 +4,12 @@ context EXPR!LogicalAttribute {
         message: "Attribute type is not boolean"
     }
 }
+
+context EXPR!ContainsExpression {
+    constraint ValidTypeOfElement {
+        check: self.entitySetExpression.getEntityType() == self.entityExpression.getEntityType()
+            or self.entitySetExpression.getEntityType().getSuperTypes().contains(self.entityExpression.getEntityType())
+            or self.entityExpression.getEntityType().getSuperTypes().contains(self.entitySetExpression.getEntityType())
+        message: "Types of entity and entity set are not compatible"  
+    }
+}

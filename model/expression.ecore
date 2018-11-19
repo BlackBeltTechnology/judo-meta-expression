@@ -105,6 +105,8 @@
     <eClassifiers xsi:type="ecore:EEnum" name="LogicalOperator">
       <eLiterals name="or" literal="or"/>
       <eLiterals name="and" value="1" literal="and"/>
+      <eLiterals name="xor" value="2" literal="xor"/>
+      <eLiterals name="implies" value="3" literal="implies"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="SingleEntitySelector">
       <eLiterals name="head" value="8"/>
@@ -220,6 +222,12 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/LogicalVariable"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ContainsExpression" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+          eType="#//EntityExpression" containment="true"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string"
       nsPrefix="str">
@@ -268,9 +276,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//ElementName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="EntitySetNavigationExpression" eSuperTypes="#//EntitySetExpression">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
-          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetNavigationExpression" abstract="true"
+        eSuperTypes="#//EntitySetExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="referenceName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
@@ -280,9 +287,19 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="filter" lowerBound="1"
           eType="#//Lambda" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="EntitySetVariableReference">
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetVariableReference" eSuperTypes="#//EntitySetExpression #//VariableReference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/EntitySetVariable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetNavigationFromSingleExpression"
+        eSuperTypes="#//entityset/EntitySetNavigationExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entityExpression" lowerBound="1"
+          eType="#//EntityExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EntitySetNavigationFromMultiExpression"
+        eSuperTypes="#//entityset/EntitySetNavigationExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="entitySetExpression"
+          lowerBound="1" eType="#//EntitySetExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

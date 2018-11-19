@@ -1,11 +1,16 @@
 @cached
 operation EXPR!EntityNavigationExpression toString() : String {
-    return self.entityExpression.toString() + "." + self.singleReferenceName;
+    return self.entityExpression.toString() + "->" + self.singleReferenceName;
 }
 
 @cached
-operation EXPR!EntitySetNavigationExpression toString() : String {
-    return self.entitySetExpression.toString() + "." + self.referenceName;
+operation EXPR!EntitySetNavigationFromSingleExpression toString() : String {
+    return self.entityExpression.toString() + "=>" + self.referenceName;
+}
+
+@cached
+operation EXPR!EntitySetNavigationFromMultiExpression toString() : String {
+    return self.entitySetExpression.toString() + "=>" + self.referenceName;
 }
 
 @cached
@@ -187,10 +192,15 @@ operation EXPR!InstanceOfExpression toString() : String {
 
 @cached
 operation EXPR!UndefinedAttributeComparison toString() : String {
-    return self.entityExpression + "." + self.attributeName + " IS NULL";
+    return self.entityExpression.toString() + "." + self.attributeName + " IS NULL";
 }
 
 @cached
 operation EXPR!UndefinedNavigationComparison toString() : String {
-    return self.entityExpression + " IS NULL";
+    return self.entityExpression.toString() + " IS NULL";
+}
+
+@cached
+operation EXPR!ContainsExpression toString() : String {
+    return self.entitySetExpression.toString() + " contains " + self.entityExpression.toString();
 }
