@@ -1,14 +1,16 @@
 context EXPR!EnumerationAttribute {
-    constraint ValidType {
+    constraint AttributeTypeIsEnumeration {
+        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        
         check: self.getAttributeType().isEnumeration()
-        message: "Attribute type is not enumeration"
+        message: "Attribute type of " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " is not enumeration"
     }
 }
 
 context EXPR!EnumerationComparison {
     guard: self.left.getEnumeration().isDefined() and self.right.getEnumeration().isDefined()
     
-    constraint ValidMember {
+    constraint BothSidesAreTheSameEnumerations {
 	    check: self.left.getEnumeration() == self.right.getEnumeration()
 	    message: "Enumerations are not matching"
     }
@@ -17,7 +19,7 @@ context EXPR!EnumerationComparison {
 context EXPR!EnumerationComparison {
     guard: self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
     
-    constraint ValidMember {
+    constraint RightSideIsEnumerationContainingLeftSideElement {
         check: self.right.getEnumeration().contains(self.left.value)
         message: "Enumeration " + self.right.getEnumeration().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
     }
@@ -26,7 +28,7 @@ context EXPR!EnumerationComparison {
 context EXPR!EnumerationComparison {
     guard: self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
     
-    constraint ValidMember {
+    constraint LeftSideIsEnumerationContainingRightSideElement {
         check: self.left.getEnumeration().contains(self.right.value)
         message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }

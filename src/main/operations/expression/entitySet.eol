@@ -14,11 +14,7 @@ operation EXPR!ImmutableEntitySet getEntityType() {
 operation EXPR!EntitySetFilterExpression getEntityType() {
     var base = self.entitySetExpression.getEntityType();
     if (base.isDefined()) {
-        base.name.println(" - base: ");
-        
         if (self.filter.isDefined()) {
-            self.filter.type().name.println(" - filter: ");
-            
             if (self.filter.filterAndCastingType.isDefined()) {
                 return self.filter.filterAndCastingType.getEntityType();
             } else {

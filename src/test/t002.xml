@@ -42,7 +42,7 @@
     </models>
     <eolPrograms>
         <Evl>
-            <source>src/main/validations/expression.evl</source>
+            <source>src/main/validations/expressionOnPsm.evl</source>
             <expectedErrors/>
             <expectedWarnings/>
         </Evl>

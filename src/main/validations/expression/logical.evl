@@ -1,12 +1,16 @@
 context EXPR!LogicalAttribute {
-    constraint ValidType {
+    constraint AttributeTypeIsBoolean {
+        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        
         check: self.getAttributeType().isBoolean()
-        message: "Attribute type is not boolean"
+        message: "Attribute type of " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " is not boolean"
     }
 }
 
 context EXPR!ContainsExpression {
-    constraint ValidTypeOfElement {
+    constraint EntitySetAndEntityOfContainsOperationAreCompatible {
+        guard: self.entitySetExpression.satisfiesAll("EntitySetTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        
         check: self.entitySetExpression.getEntityType() == self.entityExpression.getEntityType()
             or self.entitySetExpression.getEntityType().getSuperTypes().contains(self.entityExpression.getEntityType())
             or self.entityExpression.getEntityType().getSuperTypes().contains(self.entitySetExpression.getEntityType())

@@ -1,0 +1,8 @@
+context EXPR!Attribute {
+    constraint AttributeTypeIsDefined {
+        guard: self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        
+        check: self.getAttributeType().isDefined()
+        message: "Attribute named " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " not found"
+    }
+}

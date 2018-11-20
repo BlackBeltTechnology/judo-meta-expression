@@ -1,6 +1,8 @@
 context EXPR!StringAttribute {
-    constraint ValidType {
+    constraint AttributeTypeIsString {
+        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        
         check: self.getAttributeType().isString()
-        message: "Attribute type is not string"
+        message: "Attribute type of " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " is not string"
     }
 }

@@ -5,7 +5,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Expression" abstract="true" interface="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="ElementName">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="namespace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="namespace" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NumericExpression" abstract="true" interface="true"
       eSuperTypes="#//Expression"/>

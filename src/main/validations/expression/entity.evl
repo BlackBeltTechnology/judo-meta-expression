@@ -1,24 +1,15 @@
 context EXPR!EntityExpression {
-    constraint TypeMustBePrepared {
+    constraint EntityTypeIsDefined {
         check: self.getEntityType().isDefined()
-        message: "Type of entity expression is not defined"
+        message: "Type of entity expression is not defined: " + self.toString()
     }
 }
 
-context EXPR!EntityFilterExpression {
-    guard: self.filter.filterAndCastingType.isDefined()
-
-    constraint LambdaTypeMustBeSameOrRestricting {
-        check: self.filter.filterAndCastingType.getEntityType().getSuperTypes().contains(self.entityExpression.getEntityType())
-        message: "Type of filtered expression (" + self.entityExpression.getEntityType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getEntityType().getName() + ")"
-    }
-}
-
-context EXPR!EntitySetFilterExpression {
-    guard: self.filter.filterAndCastingType.isDefined()
-
-    constraint LambdaTypeMustBeSameOrRestricting {
-        check: self.filter.filterAndCastingType.getEntityType().getSuperTypes().contains(self.entitySetExpression.getEntityType())
-        message: "Type of filtered expression (" + self.entitySetExpression.getEntityType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getEntityType().getName() + ")"
+context EXPR!EntityNavigationExpression {
+    constraint NavigationEntityTypeIsDefined {
+        guard: self.satisfiesAll("EntityTypeIsDefined")
+        
+        check: self.entityExpression.getEntityType().isDefined()
+        message: "Reference named " + self.singleReferenceName + " of entity type " + self.entityExpression.getEntityType().getName() + " not found"
     }
 }

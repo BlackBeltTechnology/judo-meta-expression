@@ -10,10 +10,6 @@ operation EXPR!ElementName getNamespace() : JUDOPSM!Namespace {
         }
     }
     
-    if (not ns.isDefined()) {
-        throw "Namespace not found: " + self.namespace;
-    }
-    
     return ns;
 }
 
@@ -50,7 +46,7 @@ operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!EntityType
         return ref.target;
     }
     
-    throw "Reference named " + name + " of entity type " + self.name + " not found";
+    return null;
 }
 
 operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
@@ -76,7 +72,7 @@ operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
         return attr.dataType;
     }
     
-    throw "Attribute named " + name + " of entity type " + self.name + " not found";
+    return null;
 }
 
 @cached

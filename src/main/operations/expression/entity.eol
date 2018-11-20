@@ -1,5 +1,3 @@
-import "../data/psm.eol";
-
 @cached
 operation EXPR!EntityExpression getEntityType() {
     throw "Unable to detect type";
@@ -14,11 +12,7 @@ operation EXPR!SingleEntitySelectorExpression getEntityType() {
 operation EXPR!EntityFilterExpression getEntityType() {
     var base = self.entityExpression.getEntityType();
     if (base.isDefined()) {
-        base.name.println(" - base: ");
-        
         if (self.filter.isDefined()) {
-            self.filter.type().name.println(" - filter: ");
-            
             if (self.filter.filterAndCastingType.isDefined()) {
                 return self.filter.filterAndCastingType.getEntityType();
             } else {
@@ -42,5 +36,11 @@ operation EXPR!EntityVariableReference getEntityType() {
 
 @cached
 operation EXPR!Attribute getAttributeType() {
-    return self.entityExpression.getEntityType().getAttributeType(self.attributeName);
+    var entityType = self.entityExpression.getEntityType();
+    
+    if (entityType.isDefined()) {
+        return entityType.getAttributeType(self.attributeName);
+    } else {
+        return null;
+    }
 }

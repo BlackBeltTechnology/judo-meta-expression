@@ -1,22 +1,8 @@
-// dummy EVL for Integer (already covered by syntax checking)
-context EXPR!Integer {
-    constraint Sample {
-    	check: not self.value.isDefined() or self.value.isInteger()
-    	message: "Value is not integer: " + self.value
-    }
-}
-
-// dummy EVL for Decimal (already covered by syntax checking)
-context EXPR!Decimal {
-    constraint Sample {
-    	check: not self.value.isDefined() or self.value.isReal()
-    	message: "Value is not real: " + self.value
-    }
-}
-
 context EXPR!NumericAttribute {
-    constraint ValidType {
+    constraint AttributeTypeIsNumeric {
+        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+    
         check: self.getAttributeType().isNumeric()
-        message: "Attribute type is not numeric"
+        message: "Attribute type of " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " is not numeric"
     }
 }

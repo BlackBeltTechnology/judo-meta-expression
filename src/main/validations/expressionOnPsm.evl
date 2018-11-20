@@ -1,0 +1,33 @@
+import "../operations/data/psm.eol";
+import "expression/_importExpression.evl";
+
+operation displayAllExpressions() {
+    for (expr in EXPR!EntityExpression) {
+        var type = expr.getEntityType();
+        expr.toString().println("Expression: ");
+        if (type.isDefined()) {
+           expr.type().name.println(" - type: ");
+           type.getName().println(" - ENTITY TYPE of entity expression: ");
+        }
+    }
+    for (expr in EXPR!EntitySetExpression) {
+        var type = expr.getEntityType();
+        expr.toString().println("Expression: ");
+        if (type.isDefined()) {
+           expr.type().name.println(" - type: ");
+           type.getName().println(" - ENTITY TYPE of entity set expression: ");
+        }
+    }
+    for (attr in EXPR!Attribute) {
+       var type = attr.getAttributeType();
+       attr.toString().println("Attribute: ");
+       if (type.isDefined()) {
+           attr.type().name.println(" - type: ");
+           type.getName().println(" - DATA TYPE of attribute: ");
+       }
+    }
+}
+
+pre {
+    displayAllExpressions();
+}

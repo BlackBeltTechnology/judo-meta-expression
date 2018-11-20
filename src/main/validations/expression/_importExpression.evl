@@ -1,7 +1,11 @@
+import "../../operations/expression/_importExpression.eol";
+
+import "attribute.evl";
 import "entity.evl";
 import "entitySet.evl";
 import "enumeration.evl";
+import "expression.evl";
+import "lambda.evl";
 import "logical.evl";
-import "navigation.evl";
 import "numeric.evl";
 import "string.evl";
