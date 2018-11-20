@@ -1,5 +1,3 @@
-import "../data/psm.eol";
-
 @cached
 operation EXPR!EnumerationAttribute getEnumeration() {
     return self.getAttributeType();

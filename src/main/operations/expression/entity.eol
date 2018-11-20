@@ -1,9 +1,4 @@
 @cached
-operation EXPR!EntityExpression getEntityType() {
-    throw "Unable to detect type";
-}
-
-@cached
 operation EXPR!SingleEntitySelectorExpression getEntityType() {
     return self.entitySetExpression.getEntityType();
 }
@@ -32,15 +27,4 @@ operation EXPR!EntityNavigationExpression getEntityType() {
 @cached
 operation EXPR!EntityVariableReference getEntityType() {
     return self.variable.getEntityType();
-}
-
-@cached
-operation EXPR!Attribute getAttributeType() {
-    var entityType = self.entityExpression.getEntityType();
-    
-    if (entityType.isDefined()) {
-        return entityType.getAttributeType(self.attributeName);
-    } else {
-        return null;
-    }
 }

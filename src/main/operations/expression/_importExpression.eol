@@ -1,3 +1,4 @@
+import "attribute.eol";
 import "entity.eol";
 import "entitySet.eol";
 import "enumeration.eol";

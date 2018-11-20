@@ -1,0 +1,10 @@
+@cached
+operation EXPR!Attribute getAttributeType() {
+    var entityType = self.entityExpression.getEntityType();
+    
+    if (entityType.isDefined()) {
+        return entityType.getAttributeType(self.attributeName);
+    } else {
+        return null;
+    }
+}

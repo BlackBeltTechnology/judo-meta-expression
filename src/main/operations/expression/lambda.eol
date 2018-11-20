@@ -10,10 +10,18 @@ operation EXPR!Lambda getOwner() {
         return entitySetFilterExpression;
     }
     
-    throw "Lambda must have on owner";
+    self.toString().println("Unable to detect owner of lambda expression: ");
+    
+    return null;
 }
 
 @cached
 operation EXPR!Lambda getEntityType() {
-    return self.getOwner().getEntityType();
+    var owner = self.getOwner();
+    
+    if (owner.isDefined()) {
+        return owner.getEntityType();
+    } else {
+        return null;
+    }
 }
