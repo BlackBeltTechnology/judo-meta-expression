@@ -1,9 +1,9 @@
 context EXPR!EnumerationAttribute {
     constraint AttributeTypeIsEnumeration {
-        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
         
         check: self.getAttributeType().isEnumeration()
-        message: "Attribute type of " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " is not enumeration"
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not enumeration"
     }
 }
 

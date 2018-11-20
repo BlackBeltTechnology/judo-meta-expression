@@ -1,9 +1,9 @@
 @cached
 operation EXPR!Attribute getAttributeType() {
-    var entityType = self.entityExpression.getEntityType();
+    var objectType = self.objectExpression.getObjectType();
     
-    if (entityType.isDefined()) {
-        return entityType.getAttributeType(self.attributeName);
+    if (objectType.isDefined()) {
+        return objectType.getAttributeType(self.attributeName);
     } else {
         return null;
     }

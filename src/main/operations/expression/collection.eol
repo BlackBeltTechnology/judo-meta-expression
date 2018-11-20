@@ -1,0 +1,35 @@
+@cached
+operation EXPR!ImmutableCollection getObjectType() {
+    return self.elementName.getObjectType();
+}
+
+@cached
+operation EXPR!CollectionFilterExpression getObjectType() {
+    var base = self.collectionExpression.getObjectType();
+    if (base.isDefined()) {
+        if (self.filter.isDefined()) {
+            if (self.filter.filterAndCastingType.isDefined()) {
+                return self.filter.filterAndCastingType.getObjectType();
+            } else {
+                return base;
+            }
+        } else {
+            return base;
+        }
+    }
+}
+
+@cached
+operation EXPR!CollectionNavigationFromObjectExpression getObjectType() {
+    return self.objectExpression.getObjectType().getReferenceType(self.referenceName); 
+}
+
+@cached
+operation EXPR!CollectionNavigationFromCollectionExpression getObjectType() {
+    return self.collectionExpression.getObjectType().getReferenceType(self.referenceName); 
+}
+
+@cached
+operation EXPR!CollectionVariableReference getObjectType() {
+    return self.variable.getObjectType();
+}

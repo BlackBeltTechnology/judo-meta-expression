@@ -6,11 +6,11 @@ context EXPR!ElementName {
         message: "Namespace is not defined: " + self.namespace
     }
     
-    // entity with name defined by ElementName must exists in the namespace
-    constraint EntityTypeIsValid {
+    // object type with name defined by ElementName must exists in the namespace
+    constraint ObjectTypeIsValid {
         guard: self.satisfiesAll("NamespaceIsValid")
         
-        check: self.getEntityType().isDefined()
-        message: "Entity named " + self.name + " not found in namespace " + self.namespace 
+        check: self.getObjectType().isDefined()
+        message: "Object named " + self.name + " not found in namespace " + self.namespace 
     }
 }

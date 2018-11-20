@@ -1,21 +1,21 @@
-context EXPR!EntityFilterExpression {
+context EXPR!ObjectFilterExpression {
     guard: self.filter.filterAndCastingType.isDefined()
 
-    constraint LambdaTypeMustBeSameOrRestricting {
-        guard: self.filter.filterAndCastingType.satisfiesAll("EntityTypeIsValid") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+    constraint ObjectLambdaTypeIsSameOrRestricting {
+        guard: self.filter.filterAndCastingType.satisfiesAll("ObjectTypeIsValid") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
         
-        check: self.filter.filterAndCastingType.getEntityType().getSuperTypes().contains(self.entityExpression.getEntityType())
-        message: "Type of filtered expression (" + self.entityExpression.getEntityType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getEntityType().getName() + ")"
+        check: self.filter.filterAndCastingType.getObjectType().getSuperTypes().contains(self.objectExpression.getObjectType())
+        message: "Type of filtered expression (" + self.objectExpression.getObjectType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getObjectType().getName() + ")"
     }
 }
 
-context EXPR!EntitySetFilterExpression {
+context EXPR!CollectionFilterExpression {
     guard: self.filter.filterAndCastingType.isDefined()
 
-    constraint LambdaTypeMustBeSameOrRestricting {
-        guard: self.filter.filterAndCastingType.satisfiesAll("EntityTypeIsValid") and self.entitySetExpression.satisfiesAll("EntitySetTypeIsDefined")
+    constraint CollectionLambdaTypeIsSameOrRestricting {
+        guard: self.filter.filterAndCastingType.satisfiesAll("ObjectTypeIsValid") and self.collectionExpression.satisfiesAll("CollectionTypeIsDefined")
         
-        check: self.filter.filterAndCastingType.getEntityType().getSuperTypes().contains(self.entitySetExpression.getEntityType())
-        message: "Type of filtered expression (" + self.entitySetExpression.getEntityType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getEntityType().getName() + ")"
+        check: self.filter.filterAndCastingType.getObjectType().getSuperTypes().contains(self.collectionExpression.getObjectType())
+        message: "Type of filtered expression (" + self.collectionExpression.getObjectType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getObjectType().getName() + ")"
     }
 }

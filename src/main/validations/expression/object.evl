@@ -1,0 +1,15 @@
+context EXPR!ObjectExpression {
+    constraint ObjectTypeIsDefined {
+        check: self.getObjectType().isDefined()
+        message: "Type of object expression is not defined: " + self.toString()
+    }
+}
+
+context EXPR!ObjectNavigationExpression {
+    constraint NavigationObjectTpeIsDefined {
+        guard: self.satisfiesAll("ObjectTypeIsDefined")
+        
+        check: self.objectExpression.getObjectType().isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
+    }
+}

@@ -1,16 +1,16 @@
 @cached
-operation EXPR!EntityNavigationExpression toString() : String {
-    return self.entityExpression.toString() + "->" + self.singleReferenceName;
+operation EXPR!ObjectNavigationExpression toString() : String {
+    return self.objectExpression.toString() + "->" + self.referenceName;
 }
 
 @cached
-operation EXPR!EntitySetNavigationFromSingleExpression toString() : String {
-    return self.entityExpression.toString() + "=>" + self.referenceName;
+operation EXPR!CollectionNavigationFromObjectExpression toString() : String {
+    return self.objectExpression.toString() + "=>" + self.referenceName;
 }
 
 @cached
-operation EXPR!EntitySetNavigationFromMultiExpression toString() : String {
-    return self.entitySetExpression.toString() + "=>" + self.referenceName;
+operation EXPR!CollectionNavigationFromCollectionExpression toString() : String {
+    return self.collectionExpression.toString() + "=>" + self.referenceName;
 }
 
 @cached
@@ -34,48 +34,48 @@ operation EXPR!EnumerationVariableReference toString() : String {
 }
 
 @cached
-operation EXPR!EntityVariableReference toString() : String {
+operation EXPR!ObjectVariableReference toString() : String {
     return self.variable.name;
 }
 
 @cached
-operation EXPR!EntitySetVariableReference toString() : String {
+operation EXPR!CollectionVariableReference toString() : String {
     return self.variable.name;
 }
 
 @cached
-operation EXPR!EntityFilterExpression toString() : String {
-    return self.entityExpression.toString() + "[" + self.filter.toString() + "]";
+operation EXPR!ObjectFilterExpression toString() : String {
+    return self.objectExpression.toString() + "[" + self.filter.toString() + "]";
 }
 
 @cached
-operation EXPR!SingleEntitySelectorExpression toString() : String {
-    return "(" + self.operationName.toString() + " " + self.entitySetExpression.toString() + ")";
+operation EXPR!ObjectSelectorExpression toString() : String {
+    return "(" + self.operator.toString() + " " + self.collectionExpression.toString() + ")";
 }
 
 @cached
 operation EXPR!Attribute toString() {
-    return self.entityExpression.toString() + "." + self.attributeName;
+    return self.objectExpression.toString() + "." + self.attributeName;
 }
 
 @cached
 operation EXPR!NumericAttribute toString() {
-    return self.entityExpression.toString() + "." + self.attributeName;
+    return self.objectExpression.toString() + "." + self.attributeName;
 }
 
 @cached
 operation EXPR!LogicalAttribute toString() {
-    return self.entityExpression.toString() + "." + self.attributeName;
+    return self.objectExpression.toString() + "." + self.attributeName;
 }
 
 @cached
 operation EXPR!StringAttribute toString() {
-    return self.entityExpression.toString() + "." + self.attributeName;
+    return self.objectExpression.toString() + "." + self.attributeName;
 }
 
 @cached
 operation EXPR!EnumerationAttribute toString() {
-    return self.entityExpression.toString() + "." + self.attributeName;
+    return self.objectExpression.toString() + "." + self.attributeName;
 }
 
 @cached
@@ -84,13 +84,13 @@ operation EXPR!ElementName toString() : String {
 }
 
 @cached
-operation EXPR!ImmutableEntitySet toString() : String {
+operation EXPR!ImmutableCollection toString() : String {
     return self.elementName.toString();
 }
 
 @cached
-operation EXPR!EntitySetFilterExpression toString() : String {
-    return self.entitySetExpression.toString() + "[" + self.filter.toString() + "]";
+operation EXPR!CollectionFilterExpression toString() : String {
+    return self.collectionExpression.toString() + "[" + self.filter.toString() + "]";
 }
 
 @cached
@@ -141,13 +141,13 @@ operation EXPR!AritmeticExpression toString() : String {
 }
 
 @cached
-operation EXPR!EntitySetCountExpression toString() : String {
-    return "COUNT(" + self.entitySetExpression.toString() + ")";
+operation EXPR!CountExpression toString() : String {
+    return "COUNT(" + self.collectionExpression.toString() + ")";
 }
 
 @cached
 operation EXPR!AggregatedExpression toString() : String {
-    return self.operationName + "(" + self.entitySetExpression.toString() + "." + self.attributeName + ")";
+    return self.operator + "(" + self.collectionExpression.toString() + "." + self.attributeName + ")";
 }
 
 @cached
@@ -187,20 +187,20 @@ operation EXPR!KleeneExpression toString() : String {
 
 @cached
 operation EXPR!InstanceOfExpression toString() : String {
-    return self.entityExpression.toString() + " is " + self.elementName.toString();
+    return self.objectExpression.toString() + " is " + self.elementName.toString();
 }
 
 @cached
 operation EXPR!UndefinedAttributeComparison toString() : String {
-    return self.entityExpression.toString() + "." + self.attributeName + " IS NULL";
+    return self.objectExpression.toString() + "." + self.attributeName + " IS NULL";
 }
 
 @cached
 operation EXPR!UndefinedNavigationComparison toString() : String {
-    return self.entityExpression.toString() + " IS NULL";
+    return self.objectExpression.toString() + " IS NULL";
 }
 
 @cached
 operation EXPR!ContainsExpression toString() : String {
-    return self.entitySetExpression.toString() + " contains " + self.entityExpression.toString();
+    return self.collectionExpression.toString() + " contains " + self.objectExpression.toString();
 }

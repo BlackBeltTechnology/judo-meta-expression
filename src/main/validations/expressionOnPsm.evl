@@ -2,20 +2,20 @@ import "../operations/data/psm.eol";
 import "expression/_importExpression.evl";
 
 operation displayAllExpressions() {
-    for (expr in EXPR!EntityExpression) {
-        var type = expr.getEntityType();
+    for (expr in EXPR!ObjectExpression) {
+        var type = expr.getObjectType();
         expr.toString().println("Expression: ");
         if (type.isDefined()) {
            expr.type().name.println(" - type: ");
-           type.getName().println(" - ENTITY TYPE of entity expression: ");
+           type.getName().println(" - OBJECT TYPE of object expression: ");
         }
     }
-    for (expr in EXPR!EntitySetExpression) {
-        var type = expr.getEntityType();
+    for (expr in EXPR!CollectionExpression) {
+        var type = expr.getObjectType();
         expr.toString().println("Expression: ");
         if (type.isDefined()) {
            expr.type().name.println(" - type: ");
-           type.getName().println(" - ENTITY TYPE of entity set expression: ");
+           type.getName().println(" - OBJECT TYPE of collection expression: ");
         }
     }
     for (attr in EXPR!Attribute) {

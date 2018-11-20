@@ -1,6 +1,6 @@
 import "attribute.eol";
-import "entity.eol";
-import "entitySet.eol";
+import "collection.eol";
 import "enumeration.eol";
 import "format.eol";
 import "lambda.eol";
+import "object.eol";

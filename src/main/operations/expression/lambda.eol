@@ -1,13 +1,13 @@
 @cached
 operation EXPR!Lambda getOwner() {
-    var entityFilterExpression = EXPR!EntityFilterExpression.all.selectOne(e | e.filter = self);
-    if (entityFilterExpression.isDefined()) {
-        return entityFilterExpression;
+    var objectFilterExpression = EXPR!ObjectFilterExpression.all.selectOne(e | e.filter = self);
+    if (objectFilterExpression.isDefined()) {
+        return objectFilterExpression;
     }
     
-    var entitySetFilterExpression = EXPR!EntitySetFilterExpression.all.selectOne(e | e.filter = self);
-    if (entitySetFilterExpression.isDefined()) {
-        return entitySetFilterExpression;
+    var collectionFilterExpression = EXPR!CollectionFilterExpression.all.selectOne(e | e.filter = self);
+    if (collectionFilterExpression.isDefined()) {
+        return collectionFilterExpression;
     }
     
     self.toString().println("Unable to detect owner of lambda expression: ");
@@ -16,11 +16,11 @@ operation EXPR!Lambda getOwner() {
 }
 
 @cached
-operation EXPR!Lambda getEntityType() {
+operation EXPR!Lambda getObjectType() {
     var owner = self.getOwner();
     
     if (owner.isDefined()) {
-        return owner.getEntityType();
+        return owner.getObjectType();
     } else {
         return null;
     }

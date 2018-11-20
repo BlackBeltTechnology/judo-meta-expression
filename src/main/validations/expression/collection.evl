@@ -1,0 +1,24 @@
+context EXPR!CollectionExpression {
+    constraint CollectionTypeIsDefined {
+        check: self.getObjectType().isDefined()
+        message: "Type of collection expression is not defined"
+    }
+}
+
+context EXPR!CollectionNavigationFromObjectExpression {
+    constraint NavigationFromObjectObjectTypeIsDefined {
+        guard: self.satisfiesAll("CollectionTypeIsDefined")
+        
+        check: self.objectExpression.getObjectType().isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
+    }
+}
+
+context EXPR!CollectionNavigationFromCollectionExpression {
+    constraint NavigationFromCollectionObjectTpeIsDefined {
+        guard: self.satisfiesAll("CollectionTypeIsDefined")
+        
+        check: self.collectionExpression.getObjectType().isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+    }
+}

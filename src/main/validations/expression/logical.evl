@@ -1,19 +1,19 @@
 context EXPR!LogicalAttribute {
     constraint AttributeTypeIsBoolean {
-        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
         
         check: self.getAttributeType().isBoolean()
-        message: "Attribute type of " + self.attributeName + " of entity type " + self.entityExpression.getEntityType().getName() + " is not boolean"
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not boolean"
     }
 }
 
 context EXPR!ContainsExpression {
-    constraint EntitySetAndEntityOfContainsOperationAreCompatible {
-        guard: self.entitySetExpression.satisfiesAll("EntitySetTypeIsDefined") and self.entityExpression.satisfiesAll("EntityTypeIsDefined")
+    constraint CollectionAndObjectOfContainsOperationAreCompatible {
+        guard: self.collectionExpression.satisfiesAll("CollectionTypeIsDefined") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
         
-        check: self.entitySetExpression.getEntityType() == self.entityExpression.getEntityType()
-            or self.entitySetExpression.getEntityType().getSuperTypes().contains(self.entityExpression.getEntityType())
-            or self.entityExpression.getEntityType().getSuperTypes().contains(self.entitySetExpression.getEntityType())
-        message: "Types of entity and entity set are not compatible"  
+        check: self.collectionExpression.getObjectType() == self.objectExpression.getObjectType()
+            or self.collectionExpression.getObjectType().getSuperTypes().contains(self.objectExpression.getObjectType())
+            or self.objectExpression.getObjectType().getSuperTypes().contains(self.collectionExpression.getObjectType())
+        message: "Types of collection and object are not compatible"  
     }
 }
