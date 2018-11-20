@@ -99,6 +99,16 @@ operation JUDOPSM!DataType isNumeric() : Boolean {
 }
 
 @cached
+operation JUDOPSM!DataType isInteger() : Boolean {
+    return self.isNumeric() and self.precision == 0;
+}
+
+@cached
+operation JUDOPSM!DataType isDecimal() : Boolean {
+    return self.isNumeric() and self.precision > 0;
+}
+
+@cached
 operation JUDOPSM!DataType isBoolean() : Boolean {
     return self.isKindOf(JUDOPSM!Boolean);
 }

@@ -31,8 +31,8 @@
               </filter>
             </collectionExpression>
             <filter xmi:id="_M5WPwOJ5EeiNLd-ce3MxwA" name="io" filterAndCastingType="_1H5BMOKCEeiNLd-ce3MxwA">
-              <expression xsi:type="l:NumericComparison" xmi:id="_LNJ04OKTEeiRKu0rpEAR6w" operator=">">
-                <left xsi:type="n:NumericAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
+              <expression xsi:type="l:DecimalComparison" xmi:id="_LNJ04OKTEeiRKu0rpEAR6w" operator=">">
+                <left xsi:type="n:DecimalAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
                   <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_L6lA8OKmEeiRKu0rpEAR6w" variable="_M5WPwOJ5EeiNLd-ce3MxwA"/>
                 </left>
                 <right xsi:type="const:Decimal" xmi:id="_cFVyoOKWEeiRKu0rpEAR6w" value="0"/>
@@ -43,7 +43,7 @@
       </objectExpression>
       <filter xmi:id="_rfIBAONPEeiRKu0rpEAR6w" name="c">
         <expression xsi:type="l:KleeneExpression" xmi:id="_xcIc0OaCEeiefp-kRHrgiQ" operator="and">
-          <left xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="like">
+          <left xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="matches">
             <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
               <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_MeSwwONQEeiRKu0rpEAR6w" referenceName="address">
                 <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_rfIBAONPEeiRKu0rpEAR6w"/>

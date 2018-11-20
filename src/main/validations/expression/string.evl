@@ -6,3 +6,4 @@ context EXPR!StringAttribute {
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not string"
     }
 }
+

@@ -14,7 +14,12 @@ operation EXPR!CollectionNavigationFromCollectionExpression toString() : String 
 }
 
 @cached
-operation EXPR!NumericVariableReference toString() : String {
+operation EXPR!IntegerVariableReference toString() : String {
+    return self.variable.name;
+}
+
+@cached
+operation EXPR!DecimalVariableReference toString() : String {
     return self.variable.name;
 }
 
@@ -59,7 +64,12 @@ operation EXPR!Attribute toString() {
 }
 
 @cached
-operation EXPR!NumericAttribute toString() {
+operation EXPR!IntegerAttribute toString() {
+    return self.objectExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!DecimalAttribute toString() {
     return self.objectExpression.toString() + "." + self.attributeName;
 }
 
@@ -136,7 +146,12 @@ operation EXPR!Literal toString() : String {
 }
 
 @cached
-operation EXPR!AritmeticExpression toString() : String {
+operation EXPR!IntegerAritmeticExpression toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
+operation EXPR!DecimalAritmeticExpression toString() : String {
     return self.left.toString() + " " + self.operator + " " + self.right.toString();
 }
 
@@ -146,22 +161,32 @@ operation EXPR!CountExpression toString() : String {
 }
 
 @cached
-operation EXPR!AggregatedExpression toString() : String {
+operation EXPR!IntegerAggregatedExpression toString() : String {
     return self.operator + "(" + self.collectionExpression.toString() + "." + self.attributeName + ")";
 }
 
 @cached
-operation EXPR!OppositeExpression toString() : String {
+operation EXPR!DecimalAggregatedExpression toString() : String {
+    return self.operator + "(" + self.collectionExpression.toString() + "." + self.attributeName + ")";
+}
+
+@cached
+operation EXPR!IntegerOppositeExpression toString() : String {
     return "- " + self.expression.toString();
 }
 
 @cached
-operation EXPR!NumericComparison toString() : String {
+operation EXPR!DecimalOppositeExpression toString() : String {
+    return "- " + self.expression.toString();
+}
+
+@cached
+operation EXPR!IntegerComparison toString() : String {
     return self.left.toString() + " " + self.operator + " " + self.right.toString();
 }
 
 @cached
-operation EXPR!LogicalComparison toString() : String {
+operation EXPR!DecimalComparison toString() : String {
     return self.left.toString() + " " + self.operator + " " + self.right.toString();
 }
 
@@ -203,4 +228,44 @@ operation EXPR!UndefinedNavigationComparison toString() : String {
 @cached
 operation EXPR!ContainsExpression toString() : String {
     return self.collectionExpression.toString() + " contains " + self.objectExpression.toString();
+}
+
+@cached
+operation EXPR!Concatenate toString() : String {
+    return "concat(" + self.left.toString() + ", " + self.objectExpression.toString() + ")";
+}
+
+@cached
+operation EXPR!LowerCase toString() : String {
+    return "lower(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!UpperCase toString() : String {
+    return "upper(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!Length toString() : String {
+    return "length(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!SubString toString() : String {
+    return "substring(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!Position toString() : String {
+    return "position(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!Replace toString() : String {
+    return "replace(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!Trim toString() : String {
+    return "trim(" + self.expression.toString() + ")";
 }
