@@ -33,3 +33,31 @@ operation EXPR!CollectionNavigationFromCollectionExpression getObjectType() {
 operation EXPR!CollectionVariableReference getObjectType() {
     return self.variable.getObjectType();
 }
+
+@cached
+operation EXPR!SortExpression getObjectType() {
+    return self.collectionExpression.getObjectType();
+}
+
+@cached
+operation EXPR!OrderBy getOwner() {
+    var sortExpression = EXPR!SortExpression.all.selectOne(e | e.orderBy = self);
+    if (sortExpression.isDefined()) {
+        return sortExpression;
+    }
+    
+    self.toString().println("Unable to detect owner of order by expression: ");
+    
+    return null;
+}
+
+@cached
+operation EXPR!OrderBy getObjectType() {
+    var owner = self.getOwner();
+    
+    if (owner.isDefined()) {
+        return owner.getObjectType();
+    } else {
+        return null;
+    }
+}

@@ -14,6 +14,26 @@ operation EXPR!CollectionNavigationFromCollectionExpression toString() : String 
 }
 
 @cached
+operation EXPR!SortExpression toString() : String {
+    if (self.orderBy.items.size() == 0) {
+        return self.collectionExpression.toString();
+    } else {
+        return self.collectionExpression.toString() + "[" + self.orderBy.name + " order by " + self.orderBy.items.closure(i | i.toString()).concat(", ") + "]";
+    }
+}
+
+@cached
+operation EXPR!OrderByItem toString() : String {
+    var postfix;
+    if (self.descending) {
+        postfix = "DESC";
+    } else {
+        postfix = "ASC";
+    }
+    return self.expression.toString() + " " + postfix;
+}
+
+@cached
 operation EXPR!IntegerVariableReference toString() : String {
     return self.variable.name;
 }
@@ -90,7 +110,7 @@ operation EXPR!EnumerationAttribute toString() {
 
 @cached
 operation EXPR!ElementName toString() : String {
-    return self.namespace + "::" + self.name;    
+    return /*self.namespace + "::" + */self.name;    
 }
 
 @cached
