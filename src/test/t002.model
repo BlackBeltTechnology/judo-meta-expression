@@ -39,7 +39,14 @@
                   <left xsi:type="n:DecimalAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
                     <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_L6lA8OKmEeiRKu0rpEAR6w" variable="_M5WPwOJ5EeiNLd-ce3MxwA"/>
                   </left>
-                  <right xsi:type="const:Decimal" xmi:id="_cFVyoOKWEeiRKu0rpEAR6w" value="0"/>
+                  <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_WanzgO5zEeicoeazcHGCBw">
+                    <left xsi:type="const:Integer" xmi:id="_vAk1kO5zEeicoeazcHGCBw" value="2"/>
+                    <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" operator="sum" attributeName="unitPrice">
+                      <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" referenceName="orderDetails">
+                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_kztHAO51EeicoeazcHGCBw" variable="_M5WPwOJ5EeiNLd-ce3MxwA"/>
+                      </collectionExpression>
+                    </right>
+                  </right>
                 </expression>
               </filter>
             </collectionExpression>

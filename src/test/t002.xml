@@ -43,8 +43,8 @@
     <eolPrograms>
         <Evl>
             <source>src/main/validations/expressionOnPsm.evl</source>
-            <expectedErrors/>
-            <expectedWarnings/>
+            <!--expectedErrors/-->
+            <!--expectedWarnings/-->
         </Evl>
     </eolPrograms>
 </configuration>

@@ -1,6 +1,6 @@
 context EXPR!Constant {
     constraint Resolved {
-        check: true
-        message: "Unsupported expression: " + self.toString()
+        check: self.value.isDefined()
+        message: "Value of constant is not defined: " + self.toString()
     }
 }

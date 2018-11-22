@@ -1,7 +1,5 @@
 context EXPR!CountExpression {
     constraint Resolved {
-        guard: self.collectionExpression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -9,8 +7,6 @@ context EXPR!CountExpression {
 
 context EXPR!IntegerAritmeticExpression {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -18,10 +14,15 @@ context EXPR!IntegerAritmeticExpression {
 
 context EXPR!DecimalAritmeticExpression {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
+    }
+    
+    critique IntegerAritmeticExpressionIsRecommended {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: not self.left.isKindOf(EXPR!IntegerExpression) or not self.right.isKindOf(EXPR!IntegerExpression)
+        message: "Both arguments are integer so integer aritmetic expression is recommended in: " + self.toString()
     }
 }
 
@@ -70,7 +71,7 @@ context EXPR!IntegerAggregatedExpression {
     }
     
     constraint AttributeTypeIsInteger {
-        guard: self.collectionExpression.satisfiesAll("Resolved")
+        guard: self.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isInteger()
         message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not integer"
@@ -85,10 +86,17 @@ context EXPR!DecimalAggregatedExpression {
         message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
     }
 
-    constraint AttributeTypeIsDecimal {
-        guard: self.collectionExpression.satisfiesAll("Resolved")
+    constraint AttributeTypeIsNumber {
+        guard: self.satisfiesAll("Resolved")
         
-        check: self.getAttributeType().isDecimal()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not decimal"
+        check: self.getAttributeType().isNumeric()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not number"
+    }
+    
+    critique AttributeTypeIsDecimalOrOperationIsNotSupportedOnIntegers {
+        guard: self.satisfiesAll("Resolved", "AttributeTypeIsNumber")
+        
+        check: not (self.getAttributeType().isInteger() and (self.operator == EXPR!DecimalAggregator#sum or self.operator == EXPR!DecimalAggregator#min or self.operator == EXPR!DecimalAggregator#max))
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is integer so integer aggregation is recommended in: " + self.toString()
     }
 }
