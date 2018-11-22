@@ -14,6 +14,13 @@ context EXPR!CollectionNavigationFromObjectExpression {
         check: self.getObjectType().isDefined()
         message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
     }
+    
+    constraint TargetIsCollection {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: self.isCollection()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " is not collection"
+    }
 }
 
 context EXPR!CollectionNavigationFromCollectionExpression {
@@ -22,6 +29,29 @@ context EXPR!CollectionNavigationFromCollectionExpression {
         
         check: self.getObjectType().isDefined()
         message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+    }
+    
+    constraint TargetIsCollection {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: self.isCollection()
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not collection"
+    }
+}
+
+context EXPR!ObjectNavigationFromCollectionExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+    }
+    
+    constraint TargetIsCollection {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: not self.isCollection()
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " is collection"
     }
 }
 

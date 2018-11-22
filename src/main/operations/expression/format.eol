@@ -14,6 +14,11 @@ operation EXPR!CollectionNavigationFromCollectionExpression toString() : String 
 }
 
 @cached
+operation EXPR!ObjectNavigationFromCollectionExpression toString() : String {
+    return self.collectionExpression.toString() + "->" + self.referenceName;
+}
+
+@cached
 operation EXPR!SortExpression toString() : String {
     if (self.orderBy.items.size() == 0) {
         return self.collectionExpression.toString();

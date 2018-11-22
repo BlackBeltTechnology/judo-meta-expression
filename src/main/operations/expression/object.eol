@@ -20,11 +20,30 @@ operation EXPR!ObjectFilterExpression getObjectType() {
 }
 
 @cached
-operation EXPR!ObjectNavigationExpression getObjectType() {
+operation EXPR!ObjectNavigationExpression getReference() {
     var objectType = self.objectExpression.getObjectType();
-    
     if (objectType.isDefined()) {
         return objectType.getReferenceType(self.referenceName);
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!ObjectNavigationExpression getObjectType() {
+    var ref = self.getReference();
+    if (ref.isDefined()) {
+        return ref.getTarget();
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!ObjectNavigationExpression isCollection() {
+    var ref = self.getReference();
+    if (ref.isDefined()) {
+        return ref.isCollection();
     } else {
         return null;
     }

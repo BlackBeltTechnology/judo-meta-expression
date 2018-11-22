@@ -10,7 +10,7 @@
                 <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_U_Z8UOjZEeiJDbyXqjzKLw" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
                 <filter xmi:id="_R6A4sOjZEeiJDbyXqjzKLw" name="o">
                   <expression xsi:type="l:ContainsExpression" xmi:id="_WeHWAOjZEeiJDbyXqjzKLw">
-                    <collectionExpression xsi:type="c:CollectionNavigationFromCollectionExpression" xmi:id="_nyTR0OvSEeicoeazcHGCBw" referenceName="product">
+                    <collectionExpression xsi:type="c:ObjectNavigationFromCollectionExpression" xmi:id="_nyTR0OvSEeicoeazcHGCBw" referenceName="product">
                       <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_oqwj0OvSEeicoeazcHGCBw" referenceName="orderDetails">
                         <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_qLxDkOvSEeicoeazcHGCBw" variable="_R6A4sOjZEeiJDbyXqjzKLw"/>
                       </collectionExpression>

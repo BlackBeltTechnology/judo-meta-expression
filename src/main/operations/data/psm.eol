@@ -23,7 +23,7 @@ operation EXPR!ElementName getEnumerationType() : JUDOPSM!EntityType {
     return self.getNamespace().dataTypes.selectOne(t | t.name = self.name);
 }
 
-operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!EntityType {
+operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!Reference {
     var ref = self.references.selectOne(r | r.name = name);
     
     if (not ref.isDefined()) {
@@ -35,7 +35,7 @@ operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!EntityType
                 ref = s.references.selectOne(r | r.name = name);
                 
                 if (ref.isDefined()) {
-                    return ref.target;
+                    return ref;
                 }
                 
                 super2.addAll(s.superEntityTypes);
@@ -43,10 +43,20 @@ operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!EntityType
             super = super2;
         }
     } else {
-        return ref.target;
+        return ref;
     }
     
     return null;
+}
+
+@cached
+operation JUDOPSM!Reference isCollection() : Boolean {
+    return self.cardinality.upper > 1 or self.cardinality.upper == -1;
+}
+
+@cached
+operation JUDOPSM!Reference getTarget() : JUDOPSM!EntityType {
+    return self.target;
 }
 
 operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {

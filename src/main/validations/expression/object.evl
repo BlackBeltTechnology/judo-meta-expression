@@ -5,6 +5,13 @@ context EXPR!ObjectNavigationExpression {
         check: self.getObjectType().isDefined()
         message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
     }
+    
+    constraint TargetIsCollection {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: not self.isCollection()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " is collection"
+    }
 }
 
 context EXPR!ObjectSelectorExpression {
