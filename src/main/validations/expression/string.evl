@@ -1,9 +1,80 @@
 context EXPR!StringAttribute {
     constraint AttributeTypeIsString {
-        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
+        guard: self.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isString()
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not string"
     }
 }
 
+context EXPR!Concatenate {
+    constraint Resolved {
+        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!LowerCase {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!UpperCase {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!Length {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!SubString {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved") and self.position.satisfiesAll("Resolved") and self.length.satisfiedAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!Position {
+    constraint Resolved {
+        guard: self.container.satisfiesAll("Resolved") and self.containment.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!Replace {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved") and self.pattern.satisfiesAll("Resolved") and self.replacement.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!Trim {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}

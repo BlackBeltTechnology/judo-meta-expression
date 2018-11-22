@@ -1,24 +1,62 @@
-context EXPR!CollectionExpression {
-    constraint CollectionTypeIsDefined {
+context EXPR!ImmutableCollection {
+    constraint Resolved {
+        guard: self.elementName.satisfiesAll("ObjectTypeIsValid")
+        
         check: self.getObjectType().isDefined()
-        message: "Type of collection expression is not defined"
+        message: "Type of collection expression is not defined: " + self.toString()
     }
 }
 
 context EXPR!CollectionNavigationFromObjectExpression {
-    constraint NavigationFromObjectObjectTypeIsDefined {
-        guard: self.satisfiesAll("CollectionTypeIsDefined")
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
         
-        check: self.objectExpression.getObjectType().isDefined()
+        check: self.getObjectType().isDefined()
         message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
     }
 }
 
 context EXPR!CollectionNavigationFromCollectionExpression {
-    constraint NavigationFromCollectionObjectTpeIsDefined {
-        guard: self.satisfiesAll("CollectionTypeIsDefined")
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.collectionExpression.getObjectType().isDefined()
+        check: self.getObjectType().isDefined()
         message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+    }
+}
+
+context EXPR!CollectionFilterExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of collection expression is not defined: " + self.toString()
+    }
+}
+
+context EXPR!CollectionFilterExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of collection expression is not defined: " + self.toString()
+    }
+}
+
+context EXPR!SortExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of collection expression is not defined: " + self.toString()
+    }
+}
+
+context EXPR!SubCollectionExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved") and self.position.satisfiesAll("Resolved") and self.length.satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of collection expression is not defined: " + self.toString()
     }
 }

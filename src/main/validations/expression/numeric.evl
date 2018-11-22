@@ -1,6 +1,51 @@
+context EXPR!CountExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    } 
+}
+
+context EXPR!IntegerAritmeticExpression {
+    constraint Resolved {
+        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+}
+
+context EXPR!DecimalAritmeticExpression {
+    constraint Resolved {
+        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+}
+
+context EXPR!IntegerOppositeExpression {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+}
+
+context EXPR!DecimalOppositeExpression {
+    constraint Resolved {
+        guard: self.expression.satisfiesAll("Resolved")
+        
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+}
+
 context EXPR!IntegerAttribute {
     constraint AttributeTypeIsInteger {
-        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
+        guard: self.satisfiesAll("Resolved")
     
         check: self.getAttributeType().isInteger()
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not integer"
@@ -9,9 +54,41 @@ context EXPR!IntegerAttribute {
 
 context EXPR!DecimalAttribute {
     constraint AttributeTypeIsDecimal {
-        guard: self.satisfiesAll("AttributeTypeIsDefined") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
+        guard: self.satisfiesAll("Resolved")
     
         check: self.getAttributeType().isDecimal()
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not decimal"
+    }
+}
+
+context EXPR!IntegerAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getAttributeType().isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+    }
+    
+    constraint AttributeTypeIsInteger {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getAttributeType().isInteger()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not integer"
+    }
+}
+
+context EXPR!DecimalAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getAttributeType().isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+    }
+
+    constraint AttributeTypeIsDecimal {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getAttributeType().isDecimal()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not decimal"
     }
 }

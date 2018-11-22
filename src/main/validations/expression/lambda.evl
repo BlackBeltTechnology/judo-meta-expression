@@ -2,7 +2,7 @@ context EXPR!ObjectFilterExpression {
     guard: self.filter.filterAndCastingType.isDefined()
 
     constraint ObjectLambdaTypeIsSameOrRestricting {
-        guard: self.filter.filterAndCastingType.satisfiesAll("ObjectTypeIsValid") and self.objectExpression.satisfiesAll("ObjectTypeIsDefined")
+        guard: self.filter.filterAndCastingType.satisfiesAll("ObjectTypeIsValid") and self.objectExpression.satisfiesAll("Resolved")
         
         check: self.filter.filterAndCastingType.getObjectType().getSuperTypes().contains(self.objectExpression.getObjectType())
         message: "Type of filtered expression (" + self.objectExpression.getObjectType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getObjectType().getName() + ")"
@@ -13,9 +13,18 @@ context EXPR!CollectionFilterExpression {
     guard: self.filter.filterAndCastingType.isDefined()
 
     constraint CollectionLambdaTypeIsSameOrRestricting {
-        guard: self.filter.filterAndCastingType.satisfiesAll("ObjectTypeIsValid") and self.collectionExpression.satisfiesAll("CollectionTypeIsDefined")
+        guard: self.filter.filterAndCastingType.satisfiesAll("ObjectTypeIsValid") and self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.filter.filterAndCastingType.getObjectType().getSuperTypes().contains(self.collectionExpression.getObjectType())
         message: "Type of filtered expression (" + self.collectionExpression.getObjectType().getName() + ") is not superType of lambda variable (" + self.filter.filterAndCastingType.getObjectType().getName() + ")"
+    }
+}
+
+context EXPR!Lambda {
+    constraint Resolved {
+        guard: self.getOwner().isDefined() and self.getOwner().satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of lambda variable " + self.name + " is unknown"
     }
 }

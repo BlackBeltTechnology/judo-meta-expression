@@ -1,0 +1,8 @@
+context EXPR!OrderBy {
+    constraint Resolved {
+        guard: self.getOwner().isDefined() and self.getOwner().satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of order by variable " + self.name + " is unknown"
+    }
+}

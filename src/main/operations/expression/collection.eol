@@ -61,3 +61,25 @@ operation EXPR!OrderBy getObjectType() {
         return null;
     }
 }
+
+@cached
+operation EXPR!IntegerAggregatedExpression getAttributeType() {
+    var collectionType = self.collectionExpression.getObjectType();
+    
+    if (collectionType.isDefined()) {
+        return collectionType.getAttributeType(self.attributeName);
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!DecimalAggregatedExpression getAttributeType() {
+    var collectionType = self.collectionExpression.getObjectType();
+    
+    if (collectionType.isDefined()) {
+        return collectionType.getAttributeType(self.attributeName);
+    } else {
+        return null;
+    }
+}

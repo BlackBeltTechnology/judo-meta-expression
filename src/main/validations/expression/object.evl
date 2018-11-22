@@ -1,15 +1,35 @@
-context EXPR!ObjectExpression {
-    constraint ObjectTypeIsDefined {
+context EXPR!ObjectNavigationExpression {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
         check: self.getObjectType().isDefined()
-        message: "Type of object expression is not defined: " + self.toString()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
     }
 }
 
-context EXPR!ObjectNavigationExpression {
-    constraint NavigationObjectTpeIsDefined {
-        guard: self.satisfiesAll("ObjectTypeIsDefined")
+context EXPR!ObjectSelectorExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.objectExpression.getObjectType().isDefined()
-        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType().isDefined()
+        message: "Type of object selector expression is not defined: " + self.toString()
+    }
+}
+
+context EXPR!ObjectFilterExpression {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType().isDefined()
+        message: "Type of object filter expression is not defined: " + self.toString()
+    }
+}
+
+context EXPR!ObjectVariableReference {
+    constraint Resolved {
+        guard: self.variable.satisfiesAll("Resolved")
+        
+        check: true // TODO - check is variable is visible from the scope of reference
+        message: "Type of variable " + self.variable.name + " is not visible in its scope"
     }
 }

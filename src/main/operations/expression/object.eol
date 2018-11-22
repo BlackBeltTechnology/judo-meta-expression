@@ -21,7 +21,13 @@ operation EXPR!ObjectFilterExpression getObjectType() {
 
 @cached
 operation EXPR!ObjectNavigationExpression getObjectType() {
-    return self.objectExpression.getObjectType().getReferenceType(self.referenceName);
+    var objectType = self.objectExpression.getObjectType();
+    
+    if (objectType.isDefined()) {
+        return objectType.getReferenceType(self.referenceName);
+    } else {
+        return null;
+    }
 }
 
 @cached

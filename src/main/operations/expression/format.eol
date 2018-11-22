@@ -110,7 +110,7 @@ operation EXPR!EnumerationAttribute toString() {
 
 @cached
 operation EXPR!ElementName toString() : String {
-    return /*self.namespace + "::" + */self.name;    
+    return self.namespace + "::" + self.name;    
 }
 
 @cached
