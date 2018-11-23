@@ -1,7 +1,5 @@
 context EXPR!StringComparison {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -9,8 +7,6 @@ context EXPR!StringComparison {
 
 context EXPR!EnumerationComparison {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -18,8 +14,6 @@ context EXPR!EnumerationComparison {
 
 context EXPR!NegationExpression {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -27,8 +21,6 @@ context EXPR!NegationExpression {
 
 context EXPR!KleeneExpression {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -36,11 +28,16 @@ context EXPR!KleeneExpression {
 
 context EXPR!InstanceOfExpression {
     constraint Resolved {
-        guard: self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
+    
+    /*constraint ElementTypeIsCompatible {
+        guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
+        
+        check: self.elementName.getObjectType().getSuperTypes().contains(self.objectExpression)
+        message: "Element type (" + self.elementName.toString() + ") is not compatible with " + self.objectExpression.getObjectType().getName() 
+    }*/
 }
 
 context EXPR!UndefinedAttributeComparison {

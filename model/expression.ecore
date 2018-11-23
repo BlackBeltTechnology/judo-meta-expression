@@ -186,14 +186,6 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DecimalAggregatedExpression" eSuperTypes="#//DecimalExpression">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
-          lowerBound="1" eType="#//CollectionExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
-          eType="#//operator/DecimalAggregator"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerVariableReference" eSuperTypes="#//IntegerExpression #//VariableReference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/IntegerVariable"/>
@@ -201,6 +193,14 @@
     <eClassifiers xsi:type="ecore:EClass" name="DecimalVariableReference" eSuperTypes="#//DecimalExpression #//VariableReference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/DecimalVariable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalAggregatedExpression" eSuperTypes="#//DecimalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
+          lowerBound="1" eType="#//CollectionExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/DecimalAggregator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical"
