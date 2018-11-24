@@ -96,7 +96,10 @@
     </objectExpression>
   </o:ObjectNavigationExpression>
   <l:KleeneExpression xmi:id="_qTYLkO8AEeicoeazcHGCBw" operator="and">
-    <left xsi:type="const:Boolean" xmi:id="_rHTi4O8AEeicoeazcHGCBw"/>
+    <left xsi:type="l:DecimalComparison" xmi:id="_qzq4UO_IEeiRQOYQa7_v2A">
+      <left xsi:type="const:Integer" xmi:id="_sIIw4O_IEeiRQOYQa7_v2A" value="1"/>
+      <right xsi:type="const:Decimal" xmi:id="_wvc6QO_IEeiRQOYQa7_v2A" value="1.2"/>
+    </left>
     <right xsi:type="l:InstanceOfExpression" xmi:id="_sSoGgO8AEeicoeazcHGCBw" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
       <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5NI1IO8AEeicoeazcHGCBw">
         <collectionExpression xsi:type="c:SortExpression" xmi:id="_6GlloO8AEeicoeazcHGCBw">

@@ -32,18 +32,16 @@ context EXPR!InstanceOfExpression {
         message: "Unsupported expression: " + self.toString()
     }
     
-    /*constraint ElementTypeIsCompatible {
+    constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: self.elementName.getObjectType().getSuperTypes().contains(self.objectExpression)
+        check: self.elementName.getObjectType().getSuperTypes().contains(self.objectExpression.getObjectType())
         message: "Element type (" + self.elementName.toString() + ") is not compatible with " + self.objectExpression.getObjectType().getName() 
-    }*/
+    }
 }
 
 context EXPR!UndefinedAttributeComparison {
     constraint Resolved {
-        guard: self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -51,8 +49,6 @@ context EXPR!UndefinedAttributeComparison {
 
 context EXPR!UndefinedNavigationComparison {
     constraint Resolved {
-        guard: self.objectExpression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -69,8 +65,6 @@ context EXPR!LogicalAttribute {
 
 context EXPR!ContainsExpression {
     constraint Resolved {
-        guard: self.collectionExpression.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -87,8 +81,6 @@ context EXPR!ContainsExpression {
 
 context EXPR!IntegerComparison {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     }
@@ -96,9 +88,15 @@ context EXPR!IntegerComparison {
 
 context EXPR!DecimalComparison {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
+    }
+    
+    critique IntegerComparisonIsRecommended {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: not (self.left.isKindOf(EXPR!IntegerExpression) 
+            and self.right.isKindOf(EXPR!IntegerExpression))
+        message: "Both arguments are integer so integer comparison is recommended in: " + self.toString()
     }
 }
