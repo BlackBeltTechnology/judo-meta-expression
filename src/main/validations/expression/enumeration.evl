@@ -8,27 +8,23 @@ context EXPR!EnumerationAttribute {
 }
 
 context EXPR!EnumerationComparison {
-    guard: self.left.getEnumeration().isDefined() and self.right.getEnumeration().isDefined()
-    
     constraint BothSidesAreTheSameEnumerations {
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.getEnumeration().isDefined()
+    	
 	    check: self.left.getEnumeration() == self.right.getEnumeration()
 	    message: "Enumerations are not matching"
     }
-}
-
-context EXPR!EnumerationComparison {
-    guard: self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
     
     constraint RightSideIsEnumerationContainingLeftSideElement {
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
+    	
         check: self.right.getEnumeration().contains(self.left.value)
         message: "Enumeration " + self.right.getEnumeration().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
     }
-}
-
-context EXPR!EnumerationComparison {
-    guard: self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
     
     constraint LeftSideIsEnumerationContainingRightSideElement {
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    	
         check: self.left.getEnumeration().contains(self.right.value)
         message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }

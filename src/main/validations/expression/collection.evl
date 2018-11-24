@@ -64,15 +64,6 @@ context EXPR!CollectionFilterExpression {
     }
 }
 
-context EXPR!CollectionFilterExpression {
-    constraint Resolved {
-        guard: self.collectionExpression.satisfiesAll("Resolved")
-        
-        check: self.getObjectType().isDefined()
-        message: "Type of collection expression is not defined: " + self.toString()
-    }
-}
-
 context EXPR!SortExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
@@ -84,7 +75,7 @@ context EXPR!SortExpression {
 
 context EXPR!SubCollectionExpression {
     constraint Resolved {
-        guard: self.collectionExpression.satisfiesAll("Resolved") and self.position.satisfiesAll("Resolved") and self.length.satisfiesAll("Resolved")
+        guard: self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType().isDefined()
         message: "Type of collection expression is not defined: " + self.toString()

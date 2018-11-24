@@ -9,8 +9,6 @@ context EXPR!StringAttribute {
 
 context EXPR!Concatenate {
     constraint Resolved {
-        guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -18,8 +16,6 @@ context EXPR!Concatenate {
 
 context EXPR!LowerCase {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -27,8 +23,6 @@ context EXPR!LowerCase {
 
 context EXPR!UpperCase {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -36,8 +30,6 @@ context EXPR!UpperCase {
 
 context EXPR!Length {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -45,8 +37,6 @@ context EXPR!Length {
 
 context EXPR!SubString {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved") and self.position.satisfiesAll("Resolved") and self.length.satisfiedAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -54,8 +44,6 @@ context EXPR!SubString {
 
 context EXPR!Position {
     constraint Resolved {
-        guard: self.container.satisfiesAll("Resolved") and self.containment.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -63,8 +51,6 @@ context EXPR!Position {
 
 context EXPR!Replace {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved") and self.pattern.satisfiesAll("Resolved") and self.replacement.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
@@ -72,8 +58,6 @@ context EXPR!Replace {
 
 context EXPR!Trim {
     constraint Resolved {
-        guard: self.expression.satisfiesAll("Resolved")
-        
         check: true
         message: "Unsupported expression: " + self.toString()
     } 
