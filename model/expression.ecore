@@ -386,11 +386,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SortExpression" eSuperTypes="#//OrderedCollectionExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="SortExpression" eSuperTypes="#//OrderedCollectionExpression #//variable/ObjectVariable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" lowerBound="1"
-          eType="#//collection/OrderBy" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
+          eType="#//collection/OrderByItem" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="SubCollectionExpression" eSuperTypes="#//OrderedCollectionExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"

@@ -20,10 +20,10 @@ operation EXPR!ObjectNavigationFromCollectionExpression toString() : String {
 
 @cached
 operation EXPR!SortExpression toString() : String {
-    if (self.orderBy.items.size() == 0) {
+    if (self.orderBy.size() == 0) {
         return self.collectionExpression.toString();
     } else {
-        return self.collectionExpression.toString() + "[" + self.orderBy.name + " order by " + self.orderBy.items.closure(i | i.toString()).concat(", ") + "]";
+        return self.collectionExpression.toString() + "[" + self.name + " order by " + self.orderBy.closure(i | i.toString()).concat(", ") + "]";
     }
 }
 

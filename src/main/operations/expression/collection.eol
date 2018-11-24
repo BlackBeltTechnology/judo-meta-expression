@@ -120,29 +120,6 @@ operation EXPR!SortExpression getObjectType() {
 }
 
 @cached
-operation EXPR!OrderBy getOwner() {
-    var sortExpression = EXPR!SortExpression.all.selectOne(e | e.orderBy = self);
-    if (sortExpression.isDefined()) {
-        return sortExpression;
-    }
-    
-    self.toString().println("Unable to detect owner of order by expression: ");
-    
-    return null;
-}
-
-@cached
-operation EXPR!OrderBy getObjectType() {
-    var owner = self.getOwner();
-    
-    if (owner.isDefined()) {
-        return owner.getObjectType();
-    } else {
-        return null;
-    }
-}
-
-@cached
 operation EXPR!IntegerAggregatedExpression getAttributeType() {
     var collectionType = self.collectionExpression.getObjectType();
     

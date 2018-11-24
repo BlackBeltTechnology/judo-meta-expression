@@ -4,7 +4,7 @@
     <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
       <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" referenceName="customer">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
-          <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw">
+          <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw" name="oIo">
             <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
               <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_Pznz8OjZEeiJDbyXqjzKLw">
                 <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_U_Z8UOjZEeiJDbyXqjzKLw" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
@@ -16,7 +16,7 @@
                       </collectionExpression>
                     </collectionExpression>
                     <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_rpXC8OvSEeicoeazcHGCBw">
-                      <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAe2fEeicoeazcHGCBw">
+                      <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAe2fEeicoeazcHGCBw" name="oP">
                         <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_smO64OvSEeicoeazcHGCBw">
                           <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_tSwCoOvSEeicoeazcHGCBw" elementName="_jECy8OvSEeicoeazcHGCBw"/>
                           <filter xmi:id="_vP3PkOvSEeicoeazcHGCBw" name="p">
@@ -28,7 +28,6 @@
                             </expression>
                           </filter>
                         </collectionExpression>
-                        <orderBy xmi:id="_v4MNYO2fEeicoeazcHGCBw" name="oP"/>
                       </collectionExpression>
                     </objectExpression>
                   </expression>
@@ -53,20 +52,18 @@
                 </expression>
               </filter>
             </collectionExpression>
-            <orderBy xmi:id="_ZDgUoO2fEeicoeazcHGCBw" name="oIo">
-              <items xmi:id="_ckbdsO2fEeicoeazcHGCBw">
+              <orderBy xmi:id="_ckbdsO2fEeicoeazcHGCBw">
                 <expression xsi:type="n:DecimalAttribute" xmi:id="_mMPsgO2fEeicoeazcHGCBw" attributeName="freight">
-                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_ZDgUoO2fEeicoeazcHGCBw"/>
+                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
                 </expression>
-              </items>
-              <items xmi:id="_NJ-scO2gEeicoeazcHGCBw" descending="true">
+              </orderBy>
+              <orderBy xmi:id="_NJ-scO2gEeicoeazcHGCBw" descending="true">
                 <expression xsi:type="n:CountExpression" xmi:id="_okfg0O2gEeicoeazcHGCBw">
                   <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_qWaxcO2gEeicoeazcHGCBw" referenceName="orderDetails">
-                    <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_ZDgUoO2fEeicoeazcHGCBw"/>
+                    <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
                   </collectionExpression>
                 </expression>
-              </items>
-            </orderBy>
+              </orderBy>
           </collectionExpression>
         </objectExpression>
       </objectExpression>
@@ -102,9 +99,8 @@
     </left>
     <right xsi:type="l:InstanceOfExpression" xmi:id="_sSoGgO8AEeicoeazcHGCBw" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
       <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5NI1IO8AEeicoeazcHGCBw">
-        <collectionExpression xsi:type="c:SortExpression" xmi:id="_6GlloO8AEeicoeazcHGCBw">
+        <collectionExpression xsi:type="c:SortExpression" xmi:id="_6GlloO8AEeicoeazcHGCBw" name="o">
           <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_9etYAO8AEeicoeazcHGCBw" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
-          <orderBy xmi:id="_8dE74O8AEeicoeazcHGCBw" name="o"/>
         </collectionExpression>
       </objectExpression>
     </right>
