@@ -1,0 +1,33 @@
+import "../operations/data/asm.eol";
+import "expression/_importExpression.evl";
+
+operation displayAllExpressions() {
+    for (expr in EXPR!ObjectExpression) {
+        var type = expr.getObjectType();
+        expr.toString().println("Expression: ");
+        if (type.isDefined()) {
+           expr.type().name.println(" - type: ");
+           type.getName().println(" - OBJECT TYPE of object expression: ");
+        }
+    }
+    for (expr in EXPR!CollectionExpression) {
+        var type = expr.getObjectType();
+        expr.toString().println("Expression: ");
+        if (type.isDefined()) {
+           expr.type().name.println(" - type: ");
+           type.getName().println(" - OBJECT TYPE of collection expression: ");
+        }
+    }
+    for (attr in EXPR!Attribute) {
+       var type = attr.getAttributeType();
+       attr.toString().println("Attribute: ");
+       if (type.isDefined()) {
+           attr.type().name.println(" - type: ");
+           type.getName().println(" - DATA TYPE of attribute: ");
+       }
+    }
+}
+
+pre {
+    displayAllExpressions();
+}

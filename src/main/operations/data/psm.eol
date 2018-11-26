@@ -138,6 +138,6 @@ operation JUDOPSM!Enumeration contains(memberName : String) : Boolean {
 }
 
 @cached
-operation JUDOPSM!Type getName() : String {
+operation JUDOPSM!NamedElement getName() : String {
     return self.name;
 }
