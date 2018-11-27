@@ -176,6 +176,11 @@ operation EXPR!IntegerAritmeticExpression toString() : String {
 }
 
 @cached
+operation EXPR!RoundExpression toString() : String {
+    return "round(" + self.expression.toString() + ")";
+}
+
+@cached
 operation EXPR!DecimalAritmeticExpression toString() : String {
     return self.left.toString() + " " + self.operator + " " + self.right.toString();
 }
@@ -293,4 +298,14 @@ operation EXPR!Replace toString() : String {
 @cached
 operation EXPR!Trim toString() : String {
     return "trim(" + self.expression.toString() + ")";
+}
+
+@cached
+operation EXPR!SwitchCase toString() : String {
+    return " when " + self.condition.toString() + " then " + self.expression.toString();
+}
+
+@cached
+operation EXPR!IntegerSwitchExpression toString() : String {
+    return "(case" + self.cases.collection(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
 }

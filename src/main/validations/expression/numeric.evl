@@ -5,6 +5,13 @@ context EXPR!CountExpression {
     } 
 }
 
+context EXPR!RoundExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+}
+
 context EXPR!IntegerAritmeticExpression {
     constraint Resolved {
         check: true
