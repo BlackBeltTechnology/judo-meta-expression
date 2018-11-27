@@ -187,12 +187,12 @@ operation EXPR!CountExpression toString() : String {
 
 @cached
 operation EXPR!IntegerAggregatedExpression toString() : String {
-    return self.operator + "(" + self.collectionExpression.toString() + "." + self.attributeName + ")";
+    return self.operator + "(" + self.collectionExpression.toString() + ": " + self.expression.toString() + ")";
 }
 
 @cached
 operation EXPR!DecimalAggregatedExpression toString() : String {
-    return self.operator + "(" + self.collectionExpression.toString() + "." + self.attributeName + ")";
+    return self.operator + "(" + self.name + " on " + self.collectionExpression.toString() + ": " + self.expression.toString() + ")";
 }
 
 @cached

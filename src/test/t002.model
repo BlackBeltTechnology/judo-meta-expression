@@ -43,27 +43,35 @@
                       <left xsi:type="const:Integer" xmi:id="_BTx3MO8kEeicoeazcHGCBw" value="2"/>
                       <right xsi:type="const:Integer" xmi:id="_LNYZkO8kEeicoeazcHGCBw" value="1"/>
                     </left>
-                    <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" operator="sum" attributeName="unitPrice">
+                    <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" name="d" operator="sum">
                       <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" referenceName="orderDetails">
                         <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_kztHAO51EeicoeazcHGCBw" variable="_M5WPwOJ5EeiNLd-ce3MxwA"/>
                       </collectionExpression>
+                      <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_5Zn6gPGIEei9nrMUNuzDTw" operator="*">
+                        <left xsi:type="n:DecimalAttribute" xmi:id="_7cpiMPGIEei9nrMUNuzDTw" attributeName="unitPrice">
+                          <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_9gykMPGIEei9nrMUNuzDTw" variable="_OkbBYO51EeicoeazcHGCBw"/>
+                        </left>
+                        <right xsi:type="n:IntegerAttribute" xmi:id="__0N_YPGIEei9nrMUNuzDTw" attributeName="quantity">
+                          <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_Bh7eYPGJEei9nrMUNuzDTw" variable="_OkbBYO51EeicoeazcHGCBw"/>
+                        </right>
+                      </expression>
                     </right>
                   </right>
                 </expression>
               </filter>
             </collectionExpression>
-              <orderBy xmi:id="_ckbdsO2fEeicoeazcHGCBw">
-                <expression xsi:type="n:DecimalAttribute" xmi:id="_mMPsgO2fEeicoeazcHGCBw" attributeName="freight">
-                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
-                </expression>
-              </orderBy>
-              <orderBy xmi:id="_NJ-scO2gEeicoeazcHGCBw" descending="true">
-                <expression xsi:type="n:CountExpression" xmi:id="_okfg0O2gEeicoeazcHGCBw">
-                  <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_qWaxcO2gEeicoeazcHGCBw" referenceName="orderDetails">
-                    <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
-                  </collectionExpression>
-                </expression>
-              </orderBy>
+            <orderBy xmi:id="_ckbdsO2fEeicoeazcHGCBw">
+              <expression xsi:type="n:DecimalAttribute" xmi:id="_mMPsgO2fEeicoeazcHGCBw" attributeName="freight">
+                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
+              </expression>
+            </orderBy>
+            <orderBy xmi:id="_NJ-scO2gEeicoeazcHGCBw" descending="true">
+              <expression xsi:type="n:CountExpression" xmi:id="_okfg0O2gEeicoeazcHGCBw">
+                <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_qWaxcO2gEeicoeazcHGCBw" referenceName="orderDetails">
+                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
+                </collectionExpression>
+              </expression>
+            </orderBy>
           </collectionExpression>
         </objectExpression>
       </objectExpression>

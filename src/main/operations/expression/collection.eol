@@ -120,6 +120,16 @@ operation EXPR!SortExpression getObjectType() {
 }
 
 @cached
+operation EXPR!IntegerAggregatedExpression getObjectType() {
+    return self.collectionExpression.getObjectType();
+}
+
+@cached
+operation EXPR!DecimalAggregatedExpression getObjectType() {
+    return self.collectionExpression.getObjectType();
+}
+
+/*@cached
 operation EXPR!IntegerAggregatedExpression getAttributeType() {
     var collectionType = self.collectionExpression.getObjectType();
     
@@ -139,4 +149,4 @@ operation EXPR!DecimalAggregatedExpression getAttributeType() {
     } else {
         return null;
     }
-}
+} */
