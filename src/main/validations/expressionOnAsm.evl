@@ -18,7 +18,7 @@ operation displayAllExpressions() {
            type.getName().println(" - OBJECT TYPE of collection expression: ");
         }
     }
-    for (attr in EXPR!Attribute) {
+    for (attr in EXPR!AttributeReference) {
        var type = attr.getAttributeType();
        attr.toString().println("Attribute: ");
        if (type.isDefined()) {

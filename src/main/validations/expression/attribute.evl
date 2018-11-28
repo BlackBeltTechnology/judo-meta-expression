@@ -1,4 +1,4 @@
-context EXPR!Attribute {
+context EXPR!AttributeReference {
     constraint Resolved {
         guard: self.objectExpression.satisfiesAll("Resolved")
         

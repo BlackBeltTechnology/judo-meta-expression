@@ -1,5 +1,5 @@
 @cached
-operation EXPR!Attribute getAttributeType() {
+operation EXPR!AttributeReference getAttributeType() {
     var objectType = self.objectExpression.getObjectType();
     
     if (objectType.isDefined()) {

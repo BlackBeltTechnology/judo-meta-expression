@@ -84,7 +84,7 @@ operation EXPR!ObjectSelectorExpression toString() : String {
 }
 
 @cached
-operation EXPR!Attribute toString() {
+operation EXPR!AttributeReference toString() {
     return self.objectExpression.toString() + "." + self.attributeName;
 }
 
