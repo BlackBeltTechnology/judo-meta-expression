@@ -47,13 +47,10 @@ operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
     var attr = self.eAllAttributes.selectOne(r | r.name = name);
     if (attr.isDefined()) {
         var type = attr.eAttributeType;
-        attr.println("ATTR: ");
         if (type.isKindOf(ASM!EEnum)) {
-            type.println("ENUM: ");
             return type;
         } else {
             var dataType = attr.eAttributeType.name.getDataTypeByName();
-            dataType.println("DATATYPE: ");
             return dataType;
         }
     } else {

@@ -157,7 +157,7 @@ operation EXPR!Decimal toString() : String {
 
 @cached
 operation EXPR!Boolean toString() : String {
-    return self.value;
+    return self.value.toString();
 }
 
 @cached
@@ -307,5 +307,20 @@ operation EXPR!SwitchCase toString() : String {
 
 @cached
 operation EXPR!IntegerSwitchExpression toString() : String {
-    return "(case" + self.cases.collection(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
+    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
+}
+
+@cached
+operation EXPR!DecimalSwitchExpression toString() : String {
+    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
+}
+
+@cached
+operation EXPR!StringSwitchExpression toString() : String {
+    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
+}
+
+@cached
+operation EXPR!EnumerationSwitchExpression toString() : String {
+    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
 }

@@ -1,0 +1,4 @@
+@cached
+operation EXPR!SwitchCase getSwitchExpression() {
+    return EXPR!SwitchExpression.all.selectOne(e | e.cases.contains(self));
+}

@@ -29,3 +29,26 @@ context EXPR!EnumerationComparison {
         message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }
 }
+
+context EXPR!EnumerationSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+    
+    constraint TypeOfDefaultCaseIsEnumeration {
+        guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
+        
+        check: self.defaultExpression.isKindOf(EXPR!EnumerationExpression)
+        message: "Type of default case expression is not enumeration: " + self.defaultExpression.toString()
+    }
+}
+
+context EXPR!SwitchCase {
+    constraint TypeOfSwitchCaseIsEnumeration {
+        guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!EnumerationExpression)
+        
+        check: self.expression.isKindOf(EXPR!EnumerationExpression)
+        message: "Type of switch case expression is not enumeration: " + self.expression.toString()
+    }
+}

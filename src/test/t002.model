@@ -115,6 +115,29 @@
       </objectExpression>
     </right>
   </l:KleeneExpression>
+  <n:DecimalSwitchExpression xmi:id="_OuMfgPL2EeiVnPNfsZPgMw">
+    <cases xmi:id="_QWFDUPL2EeiVnPNfsZPgMw">
+      <condition xsi:type="const:Boolean" xmi:id="_Z_ploPL2EeiVnPNfsZPgMw" value="true"/>
+      <expression xsi:type="const:Decimal" xmi:id="_NchsMPMKEeiVnPNfsZPgMw" value="1.2"/>
+    </cases>
+    <cases xmi:id="_CreH8PMLEeiVnPNfsZPgMw">
+      <condition xsi:type="l:IntegerComparison" xmi:id="_F2MXgPMLEeiVnPNfsZPgMw" operator=">">
+        <left xsi:type="n:CountExpression" xmi:id="_IwbUAPMLEeiVnPNfsZPgMw">
+          <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_KeeKMPMLEeiVnPNfsZPgMw">
+            <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_c2j70PMLEeiVnPNfsZPgMw" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+            <filter xmi:id="_fX5QIPMLEeiVnPNfsZPgMw" name="pr">
+              <expression xsi:type="l:LogicalAttribute" xmi:id="_rNPtgPMLEeiVnPNfsZPgMw" attributeName="discounted">
+                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_CN2iYPMMEeiVnPNfsZPgMw" variable="_fX5QIPMLEeiVnPNfsZPgMw"/>
+              </expression>
+            </filter>
+          </collectionExpression>
+        </left>
+        <right xsi:type="const:Integer" xmi:id="_Hok7IPMLEeiVnPNfsZPgMw" value="10"/>
+      </condition>
+      <expression xsi:type="const:Decimal" xmi:id="_2JtbEPMLEeiVnPNfsZPgMw" value="8.7"/>
+    </cases>
+    <defaultExpression xsi:type="const:Integer" xmi:id="_T0XvIPL2EeiVnPNfsZPgMw" value="50"/>
+  </n:DecimalSwitchExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
