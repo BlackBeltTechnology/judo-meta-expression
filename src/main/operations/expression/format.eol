@@ -75,7 +75,21 @@ operation EXPR!CollectionVariableReference toString() : String {
 
 @cached
 operation EXPR!ObjectFilterExpression toString() : String {
-    return self.objectExpression.toString() + "[" + self.filter.toString() + "]";
+    var lambda;
+    if (self.filterAndCastingType.isDefined()) {
+        if (self.condition.isDefined()) {
+            lambda = self.name + " of " + self.filterAndCastingType.toString() + " | " + self.condition.toString();
+        } else {
+            lambda = self.name + " of " + self.filterAndCastingType.toString();
+        }
+    } else {
+        if (self.condition.isDefined()) {
+            lambda = self.name + " | " + self.condition.toString();
+        } else {
+            lambda = self.name;
+        }
+    }
+    return self.objectExpression.toString() + "[" + lambda + "]";
 }
 
 @cached
@@ -125,24 +139,21 @@ operation EXPR!ImmutableCollection toString() : String {
 
 @cached
 operation EXPR!CollectionFilterExpression toString() : String {
-    return self.collectionExpression.toString() + "[" + self.filter.toString() + "]";
-}
-
-@cached
-operation EXPR!Lambda toString() : String {
+    var lambda;
     if (self.filterAndCastingType.isDefined()) {
-        if (self.expression.isDefined()) {
-            return self.name + " of " + self.filterAndCastingType.toString() + " | " + self.expression.toString();
+        if (self.condition.isDefined()) {
+            lambda = self.name + " of " + self.filterAndCastingType.toString() + " | " + self.condition.toString();
         } else {
-            return self.name + " of " + self.filterAndCastingType.toString();
+            lambda = self.name + " of " + self.filterAndCastingType.toString();
         }
     } else {
-        if (self.expression.isDefined()) {
-            return self.name + " | " + self.expression.toString();
+        if (self.condition.isDefined()) {
+            lambda = self.name + " | " + self.condition.toString();
         } else {
-            return self.name;
+            lambda = self.name;
         }
     }
+    return self.collectionExpression.toString() + "[" + lambda + "]";
 }
 
 @cached

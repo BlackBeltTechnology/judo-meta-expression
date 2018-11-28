@@ -1,4 +1,4 @@
-@cached
+/*@cached
 operation EXPR!Lambda getOwner() {
     var objectFilterExpression = EXPR!ObjectFilterExpression.all.selectOne(e | e.filter = self);
     if (objectFilterExpression.isDefined()) {
@@ -25,3 +25,4 @@ operation EXPR!Lambda getObjectType() {
         return null;
     }
 }
+*/

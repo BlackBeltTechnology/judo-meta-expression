@@ -7,12 +7,8 @@ operation EXPR!ObjectSelectorExpression getObjectType() {
 operation EXPR!ObjectFilterExpression getObjectType() {
     var base = self.objectExpression.getObjectType();
     if (base.isDefined()) {
-        if (self.filter.isDefined()) {
-            if (self.filter.filterAndCastingType.isDefined()) {
-                return self.filter.filterAndCastingType.getObjectType();
-            } else {
-                return base;
-            }
+        if (self.filterAndCastingType.isDefined()) {
+            return self.filterAndCastingType.getObjectType();
         } else {
             return base;
         }

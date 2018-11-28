@@ -20,8 +20,8 @@
       eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="CollectionExpression" abstract="true"
       interface="true" eSuperTypes="#//Expression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Lambda" eSuperTypes="#//variable/ObjectVariable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//LogicalExpression"
+  <eClassifiers xsi:type="ecore:EClass" name="Filter" eSuperTypes="#//variable/ObjectVariable">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="condition" eType="#//LogicalExpression"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="filterAndCastingType" eType="#//ElementName"/>
   </eClassifiers>
@@ -369,11 +369,9 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/ObjectSelector"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression #//Filter">
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="filter" lowerBound="1"
-          eType="#//Lambda" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ObjectVariableReference" eSuperTypes="#//ObjectExpression #//VariableReference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
@@ -386,11 +384,9 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//ElementName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression #//Filter">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="filter" lowerBound="1"
-          eType="#//Lambda" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CollectionVariableReference" eSuperTypes="#//CollectionExpression #//VariableReference">
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"

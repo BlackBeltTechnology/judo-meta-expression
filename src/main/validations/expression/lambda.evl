@@ -1,4 +1,4 @@
-context EXPR!ObjectFilterExpression {
+/*context EXPR!ObjectFilterExpression {
     guard: self.filter.filterAndCastingType.isDefined()
 
     constraint ObjectLambdaTypeIsSameOrRestricting {
@@ -28,3 +28,4 @@ context EXPR!Lambda {
         message: "Type of lambda variable " + self.name + " is unknown"
     }
 }
+ */
