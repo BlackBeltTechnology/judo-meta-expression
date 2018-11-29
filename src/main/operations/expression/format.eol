@@ -75,21 +75,7 @@ operation EXPR!CollectionVariableReference toString() : String {
 
 @cached
 operation EXPR!ObjectFilterExpression toString() : String {
-    var lambda;
-    if (self.filterAndCastingType.isDefined()) {
-        if (self.condition.isDefined()) {
-            lambda = self.name + " of " + self.filterAndCastingType.toString() + " | " + self.condition.toString();
-        } else {
-            lambda = self.name + " of " + self.filterAndCastingType.toString();
-        }
-    } else {
-        if (self.condition.isDefined()) {
-            lambda = self.name + " | " + self.condition.toString();
-        } else {
-            lambda = self.name;
-        }
-    }
-    return self.objectExpression.toString() + "[" + lambda + "]";
+    return self.objectExpression.toString() + "[" + self.name + " | " + self.condition.toString() + "]";
 }
 
 @cached
@@ -139,21 +125,7 @@ operation EXPR!ImmutableCollection toString() : String {
 
 @cached
 operation EXPR!CollectionFilterExpression toString() : String {
-    var lambda;
-    if (self.filterAndCastingType.isDefined()) {
-        if (self.condition.isDefined()) {
-            lambda = self.name + " of " + self.filterAndCastingType.toString() + " | " + self.condition.toString();
-        } else {
-            lambda = self.name + " of " + self.filterAndCastingType.toString();
-        }
-    } else {
-        if (self.condition.isDefined()) {
-            lambda = self.name + " | " + self.condition.toString();
-        } else {
-            lambda = self.name;
-        }
-    }
-    return self.collectionExpression.toString() + "[" + lambda + "]";
+    return self.collectionExpression.toString() + "[" + self.name + " | " + self.condition.toString() + "]";
 }
 
 @cached
@@ -334,4 +306,14 @@ operation EXPR!StringSwitchExpression toString() : String {
 @cached
 operation EXPR!EnumerationSwitchExpression toString() : String {
     return "(case" + self.cases.collect(c | c.toString()).concat(" ") + " default " + self.defaultExpression.toString() + ")"; 
+}
+
+@cached
+operation EXPR!CastObject toString() : String {
+    return self.objectExpression.toString() + "[as " + self.elementName + "]";
+}
+
+@cached
+operation EXPR!CastCollection toString() : String {
+    return self.collectionExpression.toString() + "[as " + self.elementName + "]"; 
 }

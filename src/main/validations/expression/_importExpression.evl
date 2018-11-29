@@ -5,7 +5,6 @@ import "collection.evl";
 import "constant.evl";
 import "enumeration.evl";
 import "expression.evl";
-import "lambda.evl";
 import "logical.evl";
 import "numeric.evl";
 import "object.evl";

@@ -5,14 +5,7 @@ operation EXPR!ImmutableCollection getObjectType() {
 
 @cached
 operation EXPR!CollectionFilterExpression getObjectType() {
-    var base = self.collectionExpression.getObjectType();
-    if (base.isDefined()) {
-        if (self.filterAndCastingType.isDefined()) {
-            return self.filterAndCastingType.getObjectType();
-        } else {
-            return base;
-        }
-    }
+    return self.collectionExpression.getObjectType();
 }
 
 @cached
@@ -123,6 +116,11 @@ operation EXPR!IntegerAggregatedExpression getObjectType() {
 @cached
 operation EXPR!DecimalAggregatedExpression getObjectType() {
     return self.collectionExpression.getObjectType();
+}
+
+@cached
+operation EXPR!CastCollection getObjectType() {
+    return self.elementName.getObjectType();
 }
 
 /*@cached

@@ -3,5 +3,4 @@ import "collection.eol";
 import "expression.eol";
 import "enumeration.eol";
 import "format.eol";
-import "lambda.eol";
 import "object.eol";

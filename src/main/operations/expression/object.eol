@@ -5,14 +5,7 @@ operation EXPR!ObjectSelectorExpression getObjectType() {
 
 @cached
 operation EXPR!ObjectFilterExpression getObjectType() {
-    var base = self.objectExpression.getObjectType();
-    if (base.isDefined()) {
-        if (self.filterAndCastingType.isDefined()) {
-            return self.filterAndCastingType.getObjectType();
-        } else {
-            return base;
-        }
-    }
+    return self.objectExpression.getObjectType();
 }
 
 @cached
@@ -48,4 +41,9 @@ operation EXPR!ObjectNavigationExpression isCollection() {
 @cached
 operation EXPR!ObjectVariableReference getObjectType() {
     return self.variable.getObjectType();
+}
+
+@cached
+operation EXPR!CastObject getObjectType() {
+    return self.elementName.getObjectType();
 }
