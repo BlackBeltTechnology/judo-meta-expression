@@ -2,20 +2,14 @@ import "../operations/data/psm.eol";
 import "expression/_importExpression.evl";
 
 operation displayAllExpressions() {
-    for (expr in EXPR!ObjectExpression) {
-        var type = expr.getObjectType();
+    for (expr in EXPR!Expression) {
         expr.toString().println("Expression: ");
-        if (type.isDefined()) {
-           expr.type().name.println(" - type: ");
-           type.getName().println(" - OBJECT TYPE of object expression: ");
-        }
-    }
-    for (expr in EXPR!CollectionExpression) {
-        var type = expr.getObjectType();
-        expr.toString().println("Expression: ");
-        if (type.isDefined()) {
-           expr.type().name.println(" - type: ");
-           type.getName().println(" - OBJECT TYPE of collection expression: ");
+        expr.type().name.println(" - type: ");
+        expr.getLeaves().collect(l | l.toString()).println(" - leaves: ");
+        //expr.getExportedVariables().collect(v | v.name).println(" - exported variables: ");
+        //expr.getImportedVariables().collect(v | v.variable.name).println(" - imported variables: ");
+        if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
+            expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
     }
     for (attr in EXPR!AttributeReference) {

@@ -23,7 +23,7 @@ operation EXPR!SortExpression toString() : String {
     if (self.orderBy.size() == 0) {
         return self.collectionExpression.toString();
     } else {
-        return self.collectionExpression.toString() + "[" + self.name + " order by " + self.orderBy.closure(i | i.toString()).concat(", ") + "]";
+        return self.collectionExpression.toString() + "[" + self.getVariableName() + " order by " + self.orderBy.closure(i | i.toString()).concat(", ") + "]";
     }
 }
 
@@ -75,7 +75,7 @@ operation EXPR!CollectionVariableReference toString() : String {
 
 @cached
 operation EXPR!ObjectFilterExpression toString() : String {
-    return self.objectExpression.toString() + "[" + self.name + " | " + self.condition.toString() + "]";
+    return self.objectExpression.toString() + "[" + self.getVariableName() + " | " + self.condition.toString() + "]";
 }
 
 @cached
@@ -125,7 +125,7 @@ operation EXPR!ImmutableCollection toString() : String {
 
 @cached
 operation EXPR!CollectionFilterExpression toString() : String {
-    return self.collectionExpression.toString() + "[" + self.name + " | " + self.condition.toString() + "]";
+    return self.collectionExpression.toString() + "[" + self.getVariableName() + "| " + self.condition.toString() + "]";
 }
 
 @cached
@@ -175,12 +175,12 @@ operation EXPR!CountExpression toString() : String {
 
 @cached
 operation EXPR!IntegerAggregatedExpression toString() : String {
-    return self.operator + "(" + self.collectionExpression.toString() + ": " + self.expression.toString() + ")";
+    return self.operator + "(" + self.getVariableName() + " on " + self.collectionExpression.toString() + ": " + self.expression.toString() + ")";
 }
 
 @cached
 operation EXPR!DecimalAggregatedExpression toString() : String {
-    return self.operator + "(" + self.name + " on " + self.collectionExpression.toString() + ": " + self.expression.toString() + ")";
+    return self.operator + "(" + self.getVariableName() + " on " + self.collectionExpression.toString() + ": " + self.expression.toString() + ")";
 }
 
 @cached
@@ -310,10 +310,10 @@ operation EXPR!EnumerationSwitchExpression toString() : String {
 
 @cached
 operation EXPR!CastObject toString() : String {
-    return self.objectExpression.toString() + "[as " + self.elementName + "]";
+    return self.objectExpression.toString() + "[as " + self.elementName.toString() + "]";
 }
 
 @cached
 operation EXPR!CastCollection toString() : String {
-    return self.collectionExpression.toString() + "[as " + self.elementName + "]"; 
+    return self.collectionExpression.toString() + "[as " + self.elementName.toString() + "]"; 
 }

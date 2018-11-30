@@ -69,7 +69,7 @@ operation EXPR!ObjectNavigationFromCollectionExpression getObjectType() {
 }
 
 @cached
-operation EXPR!CollectionNavigationFromObjectExpression isCollection() {
+operation EXPR!CollectionNavigationFromObjectExpression isCollection() : Boolean {
     var ref = self.getReference();
     if (ref.isDefined()) {
         return ref.isCollection();
@@ -79,7 +79,7 @@ operation EXPR!CollectionNavigationFromObjectExpression isCollection() {
 }
 
 @cached
-operation EXPR!CollectionNavigationFromCollectionExpression isCollection() {
+operation EXPR!CollectionNavigationFromCollectionExpression isCollection() :Boolean {
     var ref = self.getReference();
     if (ref.isDefined()) {
         return ref.isCollection();
@@ -89,7 +89,7 @@ operation EXPR!CollectionNavigationFromCollectionExpression isCollection() {
 }
 
 @cached
-operation EXPR!ObjectNavigationFromCollectionExpression isCollection() {
+operation EXPR!ObjectNavigationFromCollectionExpression isCollection() : Boolean {
     var ref = self.getReference();
     if (ref.isDefined()) {
         return ref.isCollection();
@@ -144,3 +144,63 @@ operation EXPR!DecimalAggregatedExpression getAttributeType() {
         return null;
     }
 } */
+
+/*operation EXPR!CollectionFilterExpression getVariables() : Collection {
+    var variables = self.getOperands().getVariables().clone();
+    variables.add(self);
+    return variables;
+} */
+
+@cached
+operation EXPR!CollectionFilterExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!CollectionNavigationFromObjectExpression getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!CollectionNavigationFromCollectionExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!ObjectNavigationFromCollectionExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!SortExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!SubCollectionExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!CastCollection getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!CollectionFilterExpression getLambdaExpressions() : Collection {
+    return Set{self.condition};
+}
+
+@cached
+operation EXPR!CollectionFilterExpression getLambdaExpressions() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!SortExpression getLambdaExpressions() : Collection {
+    if (self.orderBy.isDefined()) {
+        return self.orderBy.collect(o | o.expression).clone();
+    } else {
+        return new Set;
+    }
+}

@@ -29,7 +29,7 @@ operation EXPR!ObjectNavigationExpression getObjectType() {
 }
 
 @cached
-operation EXPR!ObjectNavigationExpression isCollection() {
+operation EXPR!ObjectNavigationExpression isCollection() : Boolean {
     var ref = self.getReference();
     if (ref.isDefined()) {
         return ref.isCollection();
@@ -46,4 +46,29 @@ operation EXPR!ObjectVariableReference getObjectType() {
 @cached
 operation EXPR!CastObject getObjectType() {
     return self.elementName.getObjectType();
+}
+
+@cached
+operation EXPR!ObjectNavigationExpression getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!ObjectSelectorExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!ObjectFilterExpression getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!CastObject getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!ObjectFilterExpression getLambdaExpressions() : Collection {
+    return Set{self.condition};
 }

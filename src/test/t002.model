@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
   <o:ObjectNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" referenceName="address">
-    <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w" name="c">
-      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" referenceName="customer">
+    <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
+      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" referenceName="customer" name="c">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
-          <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw" name="oIo">
-            <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA" name="io">
-              <collectionExpression xsi:type="c:CastCollection" xmi:id="_y9MkEPPBEeiVnPNfsZPgMw" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
-                <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_Pznz8OjZEeiJDbyXqjzKLw" name="o">
-                  <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_U_Z8UOjZEeiJDbyXqjzKLw" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+          <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw">
+            <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
+              <collectionExpression xsi:type="c:CastCollection" xmi:id="_y9MkEPPBEeiVnPNfsZPgMw" name="io" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
+                <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_Pznz8OjZEeiJDbyXqjzKLw">
+                  <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_U_Z8UOjZEeiJDbyXqjzKLw" name="o" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
                   <condition xsi:type="l:ContainsExpression" xmi:id="_WeHWAOjZEeiJDbyXqjzKLw">
                     <collectionExpression xsi:type="c:ObjectNavigationFromCollectionExpression" xmi:id="_nyTR0OvSEeicoeazcHGCBw" referenceName="product">
                       <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_oqwj0OvSEeicoeazcHGCBw" referenceName="orderDetails">
-                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_qLxDkOvSEeicoeazcHGCBw" variable="_Pznz8OjZEeiJDbyXqjzKLw"/>
+                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_qLxDkOvSEeicoeazcHGCBw" variable="_U_Z8UOjZEeiJDbyXqjzKLw"/>
                       </collectionExpression>
                     </collectionExpression>
                     <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_rpXC8OvSEeicoeazcHGCBw">
-                      <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAe2fEeicoeazcHGCBw" name="oP">
-                        <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_smO64OvSEeicoeazcHGCBw" name="p">
-                          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_tSwCoOvSEeicoeazcHGCBw" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+                      <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAe2fEeicoeazcHGCBw">
+                        <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_smO64OvSEeicoeazcHGCBw">
+                          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_tSwCoOvSEeicoeazcHGCBw" name="p" elementName="_jECy8OvSEeicoeazcHGCBw"/>
                           <condition xsi:type="l:StringComparison" xmi:id="_x1q0MOvSEeicoeazcHGCBw" operator="==">
                             <left xsi:type="str:StringAttribute" xmi:id="_0wFW4OvSEeicoeazcHGCBw" attributeName="productName">
-                              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_14bfAOvSEeicoeazcHGCBw" variable="_smO64OvSEeicoeazcHGCBw"/>
+                              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_14bfAOvSEeicoeazcHGCBw" variable="_tSwCoOvSEeicoeazcHGCBw"/>
                             </left>
                             <right xsi:type="const:String" xmi:id="_35kQUOvSEeicoeazcHGCBw" value="Lenovo B51"/>
                           </condition>
@@ -33,23 +33,23 @@
               </collectionExpression>
               <condition xsi:type="l:DecimalComparison" xmi:id="_LNJ04OKTEeiRKu0rpEAR6w" operator=">">
                 <left xsi:type="n:DecimalAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
-                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_L6lA8OKmEeiRKu0rpEAR6w" variable="_J5GK0OJ5EeiNLd-ce3MxwA"/>
+                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_L6lA8OKmEeiRKu0rpEAR6w" variable="_y9MkEPPBEeiVnPNfsZPgMw"/>
                 </left>
                 <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_WanzgO5zEeicoeazcHGCBw">
                   <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_AjuTQO8kEeicoeazcHGCBw" operator="/">
                     <left xsi:type="const:Integer" xmi:id="_BTx3MO8kEeicoeazcHGCBw" value="2"/>
                     <right xsi:type="const:Integer" xmi:id="_LNYZkO8kEeicoeazcHGCBw" value="1"/>
                   </left>
-                  <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" name="d" operator="sum">
-                    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" referenceName="orderDetails">
-                      <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_kztHAO51EeicoeazcHGCBw" variable="_J5GK0OJ5EeiNLd-ce3MxwA"/>
+                  <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" operator="sum">
+                    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" referenceName="orderDetails" name="od">
+                      <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_kztHAO51EeicoeazcHGCBw" variable="_U_Z8UOjZEeiJDbyXqjzKLw"/>
                     </collectionExpression>
                     <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_5Zn6gPGIEei9nrMUNuzDTw" operator="*">
                       <left xsi:type="n:DecimalAttribute" xmi:id="_7cpiMPGIEei9nrMUNuzDTw" attributeName="unitPrice">
-                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_9gykMPGIEei9nrMUNuzDTw" variable="_OkbBYO51EeicoeazcHGCBw"/>
+                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_9gykMPGIEei9nrMUNuzDTw" variable="_jZQiQO51EeicoeazcHGCBw"/>
                       </left>
                       <right xsi:type="n:IntegerAttribute" xmi:id="__0N_YPGIEei9nrMUNuzDTw" attributeName="quantity">
-                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_Bh7eYPGJEei9nrMUNuzDTw" variable="_OkbBYO51EeicoeazcHGCBw"/>
+                        <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_Bh7eYPGJEei9nrMUNuzDTw" variable="_jZQiQO51EeicoeazcHGCBw"/>
                       </right>
                     </expression>
                   </right>
@@ -58,13 +58,13 @@
             </collectionExpression>
             <orderBy xmi:id="_ckbdsO2fEeicoeazcHGCBw">
               <expression xsi:type="n:DecimalAttribute" xmi:id="_mMPsgO2fEeicoeazcHGCBw" attributeName="freight">
-                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
+                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_U_Z8UOjZEeiJDbyXqjzKLw"/>
               </expression>
             </orderBy>
             <orderBy xmi:id="_NJ-scO2gEeicoeazcHGCBw" descending="true">
               <expression xsi:type="n:CountExpression" xmi:id="_okfg0O2gEeicoeazcHGCBw">
                 <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_qWaxcO2gEeicoeazcHGCBw" referenceName="orderDetails">
-                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_XeZYAO2fEeicoeazcHGCBw"/>
+                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_U_Z8UOjZEeiJDbyXqjzKLw"/>
                 </collectionExpression>
               </expression>
             </orderBy>
@@ -75,16 +75,16 @@
         <left xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="matches">
           <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
             <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_MeSwwONQEeiRKu0rpEAR6w" referenceName="address">
-              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_oYxUEONPEeiRKu0rpEAR6w"/>
+              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_g7rMIOGpEeiNLd-ce3MxwA"/>
             </objectExpression>
           </left>
           <right xsi:type="const:String" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
         </left>
         <right xsi:type="l:EnumerationComparison" xmi:id="_C8y3MOaDEeiefp-kRHrgiQ" operator="==">
           <left xsi:type="enum:EnumerationAttribute" xmi:id="_H62soOaDEeiefp-kRHrgiQ" attributeName="country">
-            <objectExpression xsi:type="o:CastObject" xmi:id="_y9NLIPPBEeiVnPNfsZPgMw" elementName="_9eABUOaEEeiefp-kRHrgiQ">
+            <objectExpression xsi:type="o:CastObject" xmi:id="_y9NLIPPBEeiVnPNfsZPgMw" name="ia" elementName="_9eABUOaEEeiefp-kRHrgiQ">
               <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_RnrFUOaFEeiefp-kRHrgiQ" referenceName="address">
-                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_TFV9MOaFEeiefp-kRHrgiQ" variable="_oYxUEONPEeiRKu0rpEAR6w"/>
+                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_TFV9MOaFEeiefp-kRHrgiQ" variable="_g7rMIOGpEeiNLd-ce3MxwA"/>
               </objectExpression>
             </objectExpression>
           </left>
@@ -102,8 +102,8 @@
     </left>
     <right xsi:type="l:InstanceOfExpression" xmi:id="_sSoGgO8AEeicoeazcHGCBw" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
       <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5NI1IO8AEeicoeazcHGCBw">
-        <collectionExpression xsi:type="c:SortExpression" xmi:id="_6GlloO8AEeicoeazcHGCBw" name="o">
-          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_9etYAO8AEeicoeazcHGCBw" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+        <collectionExpression xsi:type="c:SortExpression" xmi:id="_6GlloO8AEeicoeazcHGCBw">
+          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_9etYAO8AEeicoeazcHGCBw" name="ord" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
         </collectionExpression>
       </objectExpression>
     </right>
@@ -116,10 +116,10 @@
     <cases xmi:id="_CreH8PMLEeiVnPNfsZPgMw">
       <condition xsi:type="l:IntegerComparison" xmi:id="_F2MXgPMLEeiVnPNfsZPgMw" operator=">">
         <left xsi:type="n:CountExpression" xmi:id="_IwbUAPMLEeiVnPNfsZPgMw">
-          <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_KeeKMPMLEeiVnPNfsZPgMw" name="pr">
-            <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_c2j70PMLEeiVnPNfsZPgMw" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+          <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_KeeKMPMLEeiVnPNfsZPgMw">
+            <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_c2j70PMLEeiVnPNfsZPgMw" name="pr" elementName="_jECy8OvSEeicoeazcHGCBw"/>
             <condition xsi:type="l:LogicalAttribute" xmi:id="_rNPtgPMLEeiVnPNfsZPgMw" attributeName="discounted">
-              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_CN2iYPMMEeiVnPNfsZPgMw" variable="_KeeKMPMLEeiVnPNfsZPgMw"/>
+              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_CN2iYPMMEeiVnPNfsZPgMw" variable="_c2j70PMLEeiVnPNfsZPgMw"/>
             </condition>
           </collectionExpression>
         </left>

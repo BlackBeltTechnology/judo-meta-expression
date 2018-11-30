@@ -1,0 +1,54 @@
+@cached
+operation EXPR!StringComparison getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!EnumerationComparison getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!NegationExpression getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!KleeneExpression getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!InstanceOfExpression getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!StringComparison getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!UndefinedAttributeComparison getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!UndefinedNavigationComparison getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!ContainsExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!IntegerComparison getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!DecimalComparison getOperands() : Collection {
+    return Set{self.left, self.right};
+}

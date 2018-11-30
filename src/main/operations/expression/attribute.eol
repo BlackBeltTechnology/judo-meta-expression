@@ -8,3 +8,13 @@ operation EXPR!AttributeReference getAttributeType() {
         return null;
     }
 }
+
+@cached
+operation EXPR!AttributeReference getOperands() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!AggregatedExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}

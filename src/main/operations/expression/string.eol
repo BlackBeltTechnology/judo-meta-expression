@@ -1,0 +1,39 @@
+@cached
+operation EXPR!Concatenate getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!LowerCase getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!UpperCase getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!Length getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!SubString getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!Position getOperands() : Collection {
+    return Set{self.container, self.containment};
+}
+
+@cached
+operation EXPR!Replace getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!Trim getOperands() : Collection {
+    return Set{self.expression};
+}

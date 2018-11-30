@@ -2,3 +2,69 @@
 operation EXPR!SwitchCase getSwitchExpression() {
     return EXPR!SwitchExpression.all.selectOne(e | e.cases.contains(self));
 }
+
+@cached
+operation EXPR!Expression getOperands() : Collection {
+    return new Set;
+}
+
+@cached
+operation EXPR!Expression getVariableName() : String {
+    if (self.isKindOf(EXPR!Variable)) {
+        return self.name;
+    } else {
+        var operandVariable = self.getOperands().selectOne(o | o.getVariableName().isDefined());
+        if (operandVariable.isDefined()) {
+            return operandVariable.getVariableName();
+        }
+    }
+    return null;
+}
+
+@cached
+operation EXPR!Expression getExportedVariables() : Collection {
+    var variables = self.getOperands().collect(o | o.getExportedVariables()).flatten().clone();
+    if (self.isKindOf(EXPR!Variable) or self.isKindOf(EXPR!Base)) {
+        variables.add(self);
+    } else {
+        var lambda = EXPR!Lambda.all.selectOne(l | l.getLambdaExpressions().contains(self));
+        if (lambda.isDefined()) {
+            variables.add(lambda);
+        }
+    }
+    return variables;
+}
+
+@cached
+operation EXPR!Expression getImportedVariables() : Collection {
+    var variableReferences = self.getOperands().collect(o | o.getImportedVariables()).flatten().clone();
+    if (self.isKindOf(EXPR!VariableReference)) {
+        variableReferences.add(self);
+    }
+    return variableReferences;
+}
+
+@cached
+operation EXPR!VariableReference getImportedVariables() : Collection {
+    return Set{self};
+}
+
+@cached
+operation EXPR!Expression getLeaves() : Collection {
+    if (self.isKindOf(EXPR!Constant) or self.isKindOf(EXPR!Base) or self.isKindOf(EXPR!ObjectVariableReference) or self.isKindOf(EXPR!CollectionVariableReference)) {
+        return Set{self};
+    } else {
+        return self.getOperands().collect(o | o.getLeaves()).flatten().clone();
+    }
+}
+
+@cached
+operation EXPR!SwitchExpression getOperands() : Collection {
+    var operands = new Set;
+    operands.addAll(self.cases.collect(c | c.condition));
+    operands.addAll(self.cases.collect(c | c.expression));
+    if (self.defaultExpression.isDefined()) {
+        operands.addAll(self.defaultExpression);
+    }
+    return operands;
+}

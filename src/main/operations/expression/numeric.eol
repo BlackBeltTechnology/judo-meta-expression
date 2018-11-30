@@ -1,0 +1,29 @@
+@cached
+operation EXPR!CountExpression getOperands() : Collection {
+    return Set{self.collectionExpression};
+}
+
+@cached
+operation EXPR!IntegerAritmeticExpression getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!DecimalAritmeticExpression getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!IntegerOppositeExpression getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!DecimalOppositeExpression getOperands() : Collection {
+    return Set{self.expression};
+}
+
+@cached
+operation EXPR!RoundExpression getOperands() : Collection {
+    return Set{self.expression};
+}
