@@ -39,6 +39,11 @@ operation EXPR!UndefinedNavigationComparison getOperands() : Collection {
 }
 
 @cached
+operation EXPR!ObjectComparison getOperands() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
 operation EXPR!ContainsExpression getOperands() : Collection {
     return Set{self.collectionExpression};
 }

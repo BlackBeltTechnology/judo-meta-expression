@@ -129,8 +129,26 @@
     </cases>
     <defaultExpression xsi:type="const:Integer" xmi:id="_T0XvIPL2EeiVnPNfsZPgMw" value="50"/>
   </n:DecimalSwitchExpression>
+  <c:CollectionFilterExpression xmi:id="_GsJI8Pb5Eei6VpsqfFnFTg">
+    <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_INUn0Pb5Eei6VpsqfFnFTg" name="cat" elementName="_LxfSIPb5Eei6VpsqfFnFTg"/>
+    <condition xsi:type="l:IntegerComparison" xmi:id="_PTJbAPb5Eei6VpsqfFnFTg" operator=">">
+      <left xsi:type="n:CountExpression" xmi:id="_Rx9m0Pb5Eei6VpsqfFnFTg">
+        <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_UnvhIPb5Eei6VpsqfFnFTg">
+          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_WQK3gPb5Eei6VpsqfFnFTg" name="prod" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+          <condition xsi:type="l:ObjectComparison" xmi:id="_ZESk8Pb5Eei6VpsqfFnFTg">
+            <left xsi:type="o:ObjectNavigationExpression" xmi:id="_Z_wHoPb5Eei6VpsqfFnFTg" referenceName="category" name="">
+              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_azqQ0Pb5Eei6VpsqfFnFTg" variable="_WQK3gPb5Eei6VpsqfFnFTg"/>
+            </left>
+            <right xsi:type="o:ObjectVariableReference" xmi:id="_d2rV4Pb5Eei6VpsqfFnFTg" variable="_INUn0Pb5Eei6VpsqfFnFTg"/>
+          </condition>
+        </collectionExpression>
+      </left>
+      <right xsi:type="const:Integer" xmi:id="_QLhNcPb5Eei6VpsqfFnFTg" value="10"/>
+    </condition>
+  </c:CollectionFilterExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind::entities"/>
+  <expr:ElementName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind::entities"/>
 </xmi:XMI>

@@ -214,6 +214,11 @@ operation EXPR!EnumerationComparison toString() : String {
 }
 
 @cached
+operation EXPR!ObjectComparison toString() : String {
+    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+}
+
+@cached
 operation EXPR!NegationExpression toString() : String {
     return "NOT" + self.expression.toString();
 }

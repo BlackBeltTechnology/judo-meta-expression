@@ -168,6 +168,10 @@
         <eLiterals name="avg" value="3"/>
         <eLiterals name="sum" value="4"/>
       </eClassifiers>
+      <eClassifiers xsi:type="ecore:EEnum" name="ObjectComparator">
+        <eLiterals name="equal" value="4"/>
+        <eLiterals name="notEqual" value="5" literal="notEqual"/>
+      </eClassifiers>
     </eSubpackages>
     <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric"
         nsPrefix="n">
@@ -297,6 +301,14 @@
             eType="#/0/NumericExpression" containment="true"/>
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
             eType="#/0/operator/DecimalComparator"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ObjectComparison" eSuperTypes="#/0/LogicalExpression">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+            eType="#/0/ObjectExpression" containment="true"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+            eType="#/0/ObjectExpression" containment="true"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+            eType="#/0/operator/ObjectComparator"/>
       </eClassifiers>
     </eSubpackages>
     <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string"

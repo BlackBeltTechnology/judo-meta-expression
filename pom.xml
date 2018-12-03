@@ -118,6 +118,9 @@
                                         </versionRange>
                                         <goals>
                                             <goal>execute</goal>
+                                            <goal>
+                                                executeConfiguration
+                                            </goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
