@@ -5,9 +5,6 @@ operation displayAllExpressions() {
     for (expr in EXPR!Expression) {
         expr.toString().println("Expression: ");
         expr.type().name.println(" - type: ");
-        expr.getLeaves().collect(l | l.toString()).println(" - leaves: ");
-        //expr.getExportedVariables().collect(v | v.name).println(" - exported variables: ");
-        //expr.getImportedVariables().collect(v | v.variable.name).println(" - imported variables: ");
         if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
@@ -23,5 +20,8 @@ operation displayAllExpressions() {
 }
 
 pre {
+    for (e in getStandaloneExpressions()) {
+        e.toString().println("Standalone expression: ");
+    }
     displayAllExpressions();
 }

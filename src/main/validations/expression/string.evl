@@ -85,3 +85,6 @@ context EXPR!SwitchCase {
         message: "Type of switch case expression is not string: " + self.expression.toString()
     }
 }
+
+// TODO: ConcatenateCollection -> collection must be ordered
+// TODO: ConcatenateCollection -> fork is not allowed (by expression argument)

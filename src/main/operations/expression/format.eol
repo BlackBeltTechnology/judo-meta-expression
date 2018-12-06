@@ -249,6 +249,11 @@ operation EXPR!ContainsExpression toString() : String {
 }
 
 @cached
+operation EXPR!MemberOfExpression toString() : String {
+    return self.objectExpression.toString() + " in " + self.collectionExpression.toString();
+}
+
+@cached
 operation EXPR!Concatenate toString() : String {
     return "concat(" + self.left.toString() + ", " + self.objectExpression.toString() + ")";
 }
@@ -321,4 +326,9 @@ operation EXPR!CastObject toString() : String {
 @cached
 operation EXPR!CastCollection toString() : String {
     return self.collectionExpression.toString() + "[as " + self.elementName.toString() + "]"; 
+}
+
+@cached
+operation EXPR!ConcatenateCollection toString() : String {
+    return "concat(" + self.getVariableName() + " on " + self.collectionExpression.toString() + ": " + self.expression.toString() + " using separator " + self.separator.toString() + ")"; 
 }

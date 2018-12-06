@@ -1,59 +1,69 @@
 @cached
-operation EXPR!StringComparison getOperands() : Collection {
+operation EXPR!StringComparison getLambdaExpressions() : Collection {
     return Set{self.left, self.right};
 }
 
 @cached
-operation EXPR!EnumerationComparison getOperands() : Collection {
+operation EXPR!EnumerationComparison getLambdaExpressions() : Collection {
     return Set{self.left, self.right};
 }
 
 @cached
-operation EXPR!NegationExpression getOperands() : Collection {
+operation EXPR!NegationExpression getLambdaExpressions() : Collection {
     return Set{self.expression};
 }
 
 @cached
-operation EXPR!KleeneExpression getOperands() : Collection {
+operation EXPR!KleeneExpression getLambdaExpressions() : Collection {
     return Set{self.left, self.right};
 }
 
 @cached
-operation EXPR!InstanceOfExpression getOperands() : Collection {
+operation EXPR!InstanceOfExpression getLambdaExpressions() : Collection {
     return Set{self.objectExpression};
 }
 
 @cached
-operation EXPR!StringComparison getOperands() : Collection {
+operation EXPR!UndefinedAttributeComparison getLambdaExpressions() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!UndefinedNavigationComparison getLambdaExpressions() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!ContainsExpression getInputExpression() : EXPR!CollectionExpression {
+    return self.collectionExpression;
+}
+
+@cached
+operation EXPR!ContainsExpression getLambdaExpressions() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
+operation EXPR!IntegerComparison getLambdaExpressions() : Collection {
     return Set{self.left, self.right};
 }
 
 @cached
-operation EXPR!UndefinedAttributeComparison getOperands() : Collection {
-    return Set{self.objectExpression};
-}
-
-@cached
-operation EXPR!UndefinedNavigationComparison getOperands() : Collection {
-    return Set{self.objectExpression};
-}
-
-@cached
-operation EXPR!ObjectComparison getOperands() : Collection {
+operation EXPR!DecimalComparison getLambdaExpressions() : Collection {
     return Set{self.left, self.right};
 }
 
 @cached
-operation EXPR!ContainsExpression getOperands() : Collection {
+operation EXPR!ObjectComparison getLambdaExpressions() : Collection {
+    return Set{self.left, self.right};
+}
+
+@cached
+operation EXPR!MemberOfExpression getInputExpression() : EXPR!ObjectExpression {
+    return self.objectExpression;
+}
+
+@cached
+operation EXPR!MemberOfExpression getLambdaExpressions() : Collection {
     return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!IntegerComparison getOperands() : Collection {
-    return Set{self.left, self.right};
-}
-
-@cached
-operation EXPR!DecimalComparison getOperands() : Collection {
-    return Set{self.left, self.right};
 }

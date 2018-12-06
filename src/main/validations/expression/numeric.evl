@@ -153,3 +153,6 @@ context EXPR!SwitchCase {
         message: "Type of switch case expression is not numeric: " + self.expression.toString()
     }
 }
+
+// TODO: IntegerAggregatedExpression -> fork is not allowed (by expression argument)
+// TODO: DecimalAggregatedExpression -> fork is not allowed (by expression argument)

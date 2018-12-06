@@ -109,16 +109,6 @@ operation EXPR!SortExpression getObjectType() {
 }
 
 @cached
-operation EXPR!IntegerAggregatedExpression getObjectType() {
-    return self.collectionExpression.getObjectType();
-}
-
-@cached
-operation EXPR!DecimalAggregatedExpression getObjectType() {
-    return self.collectionExpression.getObjectType();
-}
-
-@cached
 operation EXPR!CastCollection getObjectType() {
     return self.elementName.getObjectType();
 }
@@ -152,38 +142,8 @@ operation EXPR!DecimalAggregatedExpression getAttributeType() {
 } */
 
 @cached
-operation EXPR!CollectionFilterExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!CollectionNavigationFromObjectExpression getOperands() : Collection {
-    return Set{self.objectExpression};
-}
-
-@cached
-operation EXPR!CollectionNavigationFromCollectionExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!ObjectNavigationFromCollectionExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!SortExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!SubCollectionExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!CastCollection getOperands() : Collection {
-    return Set{self.collectionExpression};
+operation EXPR!CollectionFilterExpression getInputExpression() : EXPR!CollectionExpression {
+    return self.collectionExpression;
 }
 
 @cached
@@ -192,8 +152,23 @@ operation EXPR!CollectionFilterExpression getLambdaExpressions() : Collection {
 }
 
 @cached
-operation EXPR!CollectionFilterExpression getLambdaExpressions() : Collection {
-    return Set{self.collectionExpression};
+operation EXPR!CollectionNavigationFromObjectExpression getInputExpression() : EXPR!ObjectExpression {
+    return self.objectExpression;
+}
+
+@cached
+operation EXPR!CollectionNavigationFromCollectionExpression getInputExpression() : EXPR!CollectionExpression {
+    return self.collectionExpression;
+}
+
+@cached
+operation EXPR!ObjectNavigationFromCollectionExpression getInputExpression() : EXPR!CollectionExpression{
+    return self.collectionExpression;
+}
+
+@cached
+operation EXPR!SortExpression getInputExpression() : EXPR!CollectionExpression{
+    return self.collectionExpression;
 }
 
 @cached
@@ -203,4 +178,19 @@ operation EXPR!SortExpression getLambdaExpressions() : Collection {
     } else {
         return new Set;
     }
+}
+
+@cached
+operation EXPR!SubCollectionExpression getInputExpression() : EXPR!CollectionExpression {
+    return self.collectionExpression;
+}
+
+@cached
+operation EXPR!SubCollectionExpression getLambdaExpressions() : Collection {
+    return Set{self.position, self.length};
+}
+
+@cached
+operation EXPR!CastCollection getInputExpression() : EXPR!CollectionExpression {
+    return self.collectionExpression;
 }

@@ -10,11 +10,11 @@ operation EXPR!AttributeReference getAttributeType() {
 }
 
 @cached
-operation EXPR!AttributeReference getOperands() : Collection {
-    return Set{self.objectExpression};
+operation EXPR!AttributeReference getInputExpression() : EXPR!ObjectExpression {
+    return self.objectExpression;
 }
 
 @cached
-operation EXPR!AggregatedExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
+operation EXPR!AggregatedExpression getInputExpression() : EXPR!CollectionExpression {
+    return self.collectionExpression;
 }
