@@ -17,9 +17,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="EnumerationExpression" abstract="true"
       interface="true" eSuperTypes="#//DataExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="ObjectExpression" abstract="true" interface="true"
-      eSuperTypes="#//Expression"/>
+      eSuperTypes="#//ReferenceExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="CollectionExpression" abstract="true"
-      interface="true" eSuperTypes="#//Expression"/>
+      interface="true" eSuperTypes="#//ReferenceExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeReference" abstract="true"
       eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
@@ -59,6 +59,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression" lowerBound="1"
         eType="#//CollectionExpression" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferenceExpression" abstract="true"
+      interface="true" eSuperTypes="#//Expression"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
