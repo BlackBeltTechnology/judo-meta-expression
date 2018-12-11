@@ -1,5 +1,5 @@
 @cached
-operation EXPR!AttributeReference getAttributeType() {
+operation EXPR!AttributeSelector getAttributeType() {
     var objectType = self.objectExpression.getObjectType();
     
     if (objectType.isDefined()) {
@@ -10,7 +10,7 @@ operation EXPR!AttributeReference getAttributeType() {
 }
 
 @cached
-operation EXPR!AttributeReference getInputExpression() : EXPR!ObjectExpression {
+operation EXPR!AttributeSelector getInputExpression() : EXPR!ObjectExpression {
     return self.objectExpression;
 }
 

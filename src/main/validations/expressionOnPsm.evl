@@ -9,7 +9,7 @@ operation displayAllExpressions() {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
     }
-    for (attr in EXPR!AttributeReference) {
+    for (attr in EXPR!AttributeSelector) {
        var type = attr.getAttributeType();
        attr.toString().println("Attribute: ");
        if (type.isDefined()) {
