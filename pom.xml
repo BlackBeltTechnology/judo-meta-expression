@@ -53,6 +53,19 @@
                 <version>3.0.0</version>
                 <executions>
                     <execution>
+                        <id>add-model-gen-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>src-genmodel</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>attach-artifacts</id>
                         <phase>package</phase>
                         <goals>
@@ -79,18 +92,51 @@
                 <configuration>
                     <obrRepository>NONE</obrRepository>
                     <instructions>
-                        <Export-Package>meta/expression;version=${project.version}</Export-Package>
-                        <Judo-Tatami-Meta-Model-Paths>
-                            meta/expression/expression.ecore
-                        </Judo-Tatami-Meta-Model-Paths>
-                        <Include-Resource>{maven-resources},meta/expression=model</Include-Resource>
+                        <Import-Package>
+                            !lombok, *
+                        </Import-Package>
+                        <Export-Package>
+                            meta/expression;version=${project.version},
+                            hu.blackbelt.judo.meta.expression;version=${project.version},
+                            hu.blackbelt.judo.meta.expression.*;version=${project.version}
+                        </Export-Package>
+                        <Include-Resource>
+                            {maven-resources},
+                            meta/expression/expression.ecore=model/expression.ecore,
+                            judo/expression/operations=src/main/operations,
+                            judo/expression/validations=src/main/validations
+                        </Include-Resource>
                     </instructions>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <additionalparam>${javadoc.opts}</additionalparam>
                 </configuration>
             </plugin>
         </plugins>
 
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                    </configuration>
+                </plugin>
+
                 <plugin>
                     <groupId>hu.blackbelt.epsilon</groupId>
                     <artifactId>epsilon-maven-plugin</artifactId>
@@ -135,9 +181,60 @@
         </pluginManagement>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.common</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.emf</groupId>
+            <artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.cmpn</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.annotation</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.osgi.utils</groupId>
+            <artifactId>osgi-api</artifactId>
+            <version>1.0.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.0</version>
+        </dependency>
+    </dependencies>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <epsilon.maven.plugin.version>1.1.2_develop-34</epsilon.maven.plugin.version>
+
+        <src.dir>src/main</src.dir>
     </properties>
 
     <profiles>
