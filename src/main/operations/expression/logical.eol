@@ -24,6 +24,11 @@ operation EXPR!InstanceOfExpression getLambdaExpressions() : Collection {
 }
 
 @cached
+operation EXPR!TypeOfExpression getLambdaExpressions() : Collection {
+    return Set{self.objectExpression};
+}
+
+@cached
 operation EXPR!UndefinedAttributeComparison getLambdaExpressions() : Collection {
     return Set{self.objectExpression};
 }

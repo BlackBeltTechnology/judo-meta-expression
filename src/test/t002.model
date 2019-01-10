@@ -2,7 +2,7 @@
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
   <o:ObjectNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" referenceName="address">
     <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
-      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" referenceName="customer" name="c">
+      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" name="c" referenceName="customer">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
           <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw">
             <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
@@ -41,7 +41,7 @@
                     <right xsi:type="const:Integer" xmi:id="_LNYZkO8kEeicoeazcHGCBw" value="1"/>
                   </left>
                   <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" operator="sum">
-                    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" referenceName="orderDetails" name="od">
+                    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" name="od" referenceName="orderDetails">
                       <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_kztHAO51EeicoeazcHGCBw" variable="_U_Z8UOjZEeiJDbyXqjzKLw"/>
                     </collectionExpression>
                     <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_5Zn6gPGIEei9nrMUNuzDTw" operator="*">
@@ -136,7 +136,7 @@
         <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_UnvhIPb5Eei6VpsqfFnFTg">
           <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_WQK3gPb5Eei6VpsqfFnFTg" name="prod" elementName="_jECy8OvSEeicoeazcHGCBw"/>
           <condition xsi:type="l:ObjectComparison" xmi:id="_ZESk8Pb5Eei6VpsqfFnFTg">
-            <left xsi:type="o:ObjectNavigationExpression" xmi:id="_Z_wHoPb5Eei6VpsqfFnFTg" referenceName="category" name="">
+            <left xsi:type="o:ObjectNavigationExpression" xmi:id="_Z_wHoPb5Eei6VpsqfFnFTg" name="" referenceName="category">
               <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_azqQ0Pb5Eei6VpsqfFnFTg" variable="_WQK3gPb5Eei6VpsqfFnFTg"/>
             </left>
             <right xsi:type="o:ObjectVariableReference" xmi:id="_d2rV4Pb5Eei6VpsqfFnFTg" variable="_INUn0Pb5Eei6VpsqfFnFTg"/>

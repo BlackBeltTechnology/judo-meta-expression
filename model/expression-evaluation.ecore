@@ -7,8 +7,10 @@
         eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//Base"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Step">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="from" lowerBound="1" eType="#//Navigable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="to" lowerBound="1" eType="#//Navigable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//Navigable"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+        eType="#//Navigable"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="conditions" upperBound="-1"
         eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//Expression"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ordering" upperBound="-1"
@@ -16,9 +18,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Navigable" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//ElementName"/>
+        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//ElementName"
+        derived="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Collection" eSuperTypes="#//Navigable">
+  <eClassifiers xsi:type="ecore:EClass" name="Multi" eSuperTypes="#//Navigable">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
         eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//CollectionExpression"/>
   </eClassifiers>

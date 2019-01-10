@@ -40,6 +40,20 @@ context EXPR!InstanceOfExpression {
     }
 }
 
+context EXPR!TypeOfExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+    
+    constraint ElementTypeIsCompatible {
+        guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
+        
+        check: self.elementName.getObjectType().getSuperTypes().contains(self.objectExpression.getObjectType())
+        message: "Element type (" + self.elementName.toString() + ") is not " + self.objectExpression.getObjectType().getName() 
+    }
+}
+
 context EXPR!UndefinedAttributeComparison {
     constraint Resolved {
         check: true

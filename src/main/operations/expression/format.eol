@@ -234,6 +234,11 @@ operation EXPR!InstanceOfExpression toString() : String {
 }
 
 @cached
+operation EXPR!TypeOfExpression toString() : String {
+    return self.objectExpression.toString() + " is " + self.elementName.toString();
+}
+
+@cached
 operation EXPR!UndefinedAttributeComparison toString() : String {
     return self.objectExpression.toString() + "." + self.attributeName + " IS NULL";
 }

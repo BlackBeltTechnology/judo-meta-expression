@@ -214,7 +214,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/DecimalAggregator"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
-          eType="#//DecimalExpression" containment="true"/>
+          eType="#//NumericExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="RoundExpression" eSuperTypes="#//IntegerExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
@@ -309,6 +309,12 @@
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TypeOfExpression" eSuperTypes="#//LogicalExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
+          eType="#//ObjectExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
+          eType="#//ElementName"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string"
@@ -407,6 +413,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectSwitchExpression" eSuperTypes="#//SwitchExpression #//ObjectExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
+          eType="#//ElementName"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="collection" nsURI="http://blackbelt.hu/judo/meta/expression/collection"
       nsPrefix="c">
@@ -462,6 +472,10 @@
           eType="#//ElementName"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CollectionSwitchExpression" eSuperTypes="#//SwitchExpression #//ObjectExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
+          eType="#//ElementName"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
