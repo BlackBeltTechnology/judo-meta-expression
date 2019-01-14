@@ -7,6 +7,10 @@ operation EXPR!ElementName getNamespace() : JUDOPSM!Namespace {
             ns = ns.packages.selectOne(p | p.name = nsName);
         } else {
             ns = JUDOPSM!Model.all.selectOne(p | p.name = nsName);
+            if (not ns.isDefined()) {
+                nsName.println("Model not found: ");
+                return null;
+            }
         }
     }
     
@@ -15,71 +19,83 @@ operation EXPR!ElementName getNamespace() : JUDOPSM!Namespace {
 
 @cached
 operation EXPR!ElementName getObjectType() : JUDOPSM!EntityType {
-    return self.getNamespace().entityTypes.selectOne(et | et.name = self.name);
+    return self.getNamespace().types.selectOne(et | et.name = self.name);
 }
 
 @cached
 operation EXPR!ElementName getEnumerationType() : JUDOPSM!EntityType {
-    return self.getNamespace().dataTypes.selectOne(t | t.name = self.name);
+    return self.getNamespace().types.selectOne(t | t.name = self.name);
 }
 
-operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!Reference {
-    var ref = self.references.selectOne(r | r.name = name);
+operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!ReferenceTypedElement {
+    var relation = self.relations.selectOne(r | r.name = name);
+    var navigation = JUDOPSM!NavigationProperty.all.selectOne(n | n.name = name and n.owner = self);
     
-    if (not ref.isDefined()) {
+    if (relation.isDefined()) {
+        return relation;
+    } else if (navigation.isDefined()) {
+        return navigation;
+    } else {
         // checking super types recursively
         var super = self.superEntityTypes;
         while (super.isDefined() and not super.isEmpty()) {
             var super2 = new Sequence;
             for (s in super) {
-                ref = s.references.selectOne(r | r.name = name);
+                relation = s.relations.selectOne(r | r.name = name);
+                navigation = JUDOPSM!NavigationProperty.all.selectOne(n | n.name = name and n.owner = s);
                 
-                if (ref.isDefined()) {
-                    return ref;
+                if (relation.isDefined()) {
+                    return relation;
+                } else if (navigation.isDefined()) {
+                    return navigation;
                 }
                 
                 super2.addAll(s.superEntityTypes);
             }
             super = super2;
         }
-    } else {
-        return ref;
     }
     
     return null;
 }
 
 @cached
-operation JUDOPSM!Reference isCollection() : Boolean {
+operation JUDOPSM!ReferenceTypedElement isCollection() : Boolean {
     return self.cardinality.upper > 1 or self.cardinality.upper == -1;
 }
 
 @cached
-operation JUDOPSM!Reference getTarget() : JUDOPSM!EntityType {
+operation JUDOPSM!ReferenceTypedElement getTarget() : JUDOPSM!EntityType {
     return self.target;
 }
 
-operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!DataType {
+operation JUDOPSM!EntityType getAttributeType(name: String) : JUDOPSM!Primitive {
     var attr = self.attributes.selectOne(r | r.name = name);
+    var prop = JUDOPSM!DataProperty.all.selectOne(p | p.name = name and p.owner = self);
     
-    if (not attr.isDefined()) {
+    if (attr.isDefined()) {
+        return attr.dataType;
+    } else if (prop.isDefined()) {
+        return prop.dataType;
+    } else {
         // checking super types recursively
         var super = self.superEntityTypes;
         while (super.isDefined() and not super.isEmpty()) {
             var super2 = new Sequence;
             for (s in super) {
                 attr = s.attributes.selectOne(a | a.name = name);
+                prop = JUDOPSM!DataProperty.all.selectOne(p | p.name = name and p.owner = s);
                 
                 if (attr.isDefined()) {
                     return attr.dataType;
+                } else if (prop.isDefined()) {
+                    return prop.dataType;
                 }
                 
                 super2.addAll(s.superEntityTypes);
             }
             super = super2;
         }
-    } else {
-        return attr.dataType;
     }
     
     return null;
@@ -104,32 +120,32 @@ operation JUDOPSM!EntityType getSuperTypes() : Sequence {
 }
 
 @cached
-operation JUDOPSM!DataType isNumeric() : Boolean {
+operation JUDOPSM!Primitive isNumeric() : Boolean {
     return self.isKindOf(JUDOPSM!Numeric);
 }
 
 @cached
-operation JUDOPSM!DataType isInteger() : Boolean {
+operation JUDOPSM!Primitive isInteger() : Boolean {
     return self.isNumeric() and self.precision == 0;
 }
 
 @cached
-operation JUDOPSM!DataType isDecimal() : Boolean {
+operation JUDOPSM!Primitive isDecimal() : Boolean {
     return self.isNumeric() and self.precision > 0;
 }
 
 @cached
-operation JUDOPSM!DataType isBoolean() : Boolean {
+operation JUDOPSM!Primitive isBoolean() : Boolean {
     return self.isKindOf(JUDOPSM!Boolean);
 }
 
 @cached
-operation JUDOPSM!DataType isString() : Boolean {
+operation JUDOPSM!Primitive isString() : Boolean {
     return self.isKindOf(JUDOPSM!String);
 }
 
 @cached
-operation JUDOPSM!DataType isEnumeration() : Boolean {
+operation JUDOPSM!Primitive isEnumeration() : Boolean {
     return self.isKindOf(JUDOPSM!Enumeration);
 }
 

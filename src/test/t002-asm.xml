@@ -53,7 +53,7 @@
     </models>
     <eolPrograms>
         <Evl>
-            <source>src/main/validations/expressionOnAsm.evl</source>
+            <source>src/test/validations/expressionOnAsm.evl</source>
             <!--expectedErrors/-->
             <!--expectedWarnings/-->
         </Evl>

@@ -2,7 +2,7 @@
 <configuration xmlns="http://epsilon.blackbelt.hu/maven/plugin/v1/xml/ns/definition">
     <metaModels>
         <metaModel>model/expression.ecore</metaModel>
-        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:1.0.0-develop-83</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:1.0.0-SNAPSHOT</metaModel>
     </metaModels>
     <models>
         <model>
@@ -36,13 +36,13 @@
                 <param>http://blackbelt.hu/judo/meta/psm/namespace</param>
                 <param>http://blackbelt.hu/judo/meta/psm/type</param>
                 <param>http://blackbelt.hu/judo/meta/psm/data</param>
-                <param>http://blackbelt.hu/judo/meta/psm/facade</param>
+                <param>http://blackbelt.hu/judo/meta/psm/derived</param>
             </metaModelUris>
         </model>
     </models>
     <eolPrograms>
         <Evl>
-            <source>src/main/validations/expressionOnPsm.evl</source>
+            <source>src/test/validations/expressionOnPsm.evl</source>
             <!--expectedErrors/-->
             <!--expectedWarnings/-->
         </Evl>

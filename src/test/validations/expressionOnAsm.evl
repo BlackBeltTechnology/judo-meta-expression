@@ -1,5 +1,5 @@
-import "../operations/data/asm.eol";
-import "expression/_importExpression.evl";
+import "../operations/asm.eol";
+import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
     for (expr in EXPR!Expression) {
