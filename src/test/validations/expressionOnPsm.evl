@@ -1,5 +1,5 @@
-import "../operations/data/psm.eol";
-import "expression/_importExpression.evl";
+import "../operations/psm.eol";
+import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
     for (expr in EXPR!Expression) {

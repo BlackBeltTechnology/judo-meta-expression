@@ -86,6 +86,10 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Instance" eSuperTypes="#//constant/Constant #//ObjectExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
+          eType="#//ElementName"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/expression/variable"
       nsPrefix="var">

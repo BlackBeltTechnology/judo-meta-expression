@@ -397,6 +397,5 @@
         <eStructuralFeatures xsi:type="ecore:EAttribute" name="country" eType="/1/dataTypes/Countries"/>
       </eClassifiers>
     </eSubpackages>
-    <eSubpackages name="facades" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/facades" nsPrefix="rtNorthwindFacades"/>
   </ecore:EPackage>
 </xmi:XMI>

@@ -1,6 +1,34 @@
-context EXPR!Constant {
+context EXPR!Integer {
     constraint Resolved {
         check: self.value.isDefined()
-        message: "Value of constant is not defined: " + self.toString()
+        message: "Value of integer constant is not defined"
+    }
+}
+
+context EXPR!Decimal {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of decimal constant is not defined"
+    }
+}
+
+context EXPR!Boolean {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of boolean constant is not defined"
+    }
+}
+
+context EXPR!String {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of string constant is not defined"
+    }
+}
+
+context EXPR!Literal {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of enumeration literal constant is not defined"
     }
 }

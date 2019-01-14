@@ -337,3 +337,8 @@ operation EXPR!CastCollection toString() : String {
 operation EXPR!ConcatenateCollection toString() : String {
     return "concat(" + self.getVariableName() + " on " + self.collectionExpression.toString() + ": " + self.expression.toString() + " using separator " + self.separator.toString() + ")"; 
 }
+
+@cached
+operation EXPR!Instance toString() : String {
+    return self.elementName.toString() + " instance";
+}
