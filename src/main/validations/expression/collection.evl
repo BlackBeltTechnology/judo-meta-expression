@@ -15,6 +15,7 @@ context EXPR!CollectionNavigationFromObjectExpression {
         message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
     }
     
+    // target must be a collection
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
