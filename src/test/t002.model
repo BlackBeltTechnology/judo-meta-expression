@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
-  <o:ObjectNavigationExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" referenceName="address">
+  <c:CollectionNavigationFromObjectExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" referenceName="addresses">
     <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
       <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" name="c" referenceName="customer">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
@@ -74,8 +74,12 @@
       <condition xsi:type="l:KleeneExpression" xmi:id="_xcIc0OaCEeiefp-kRHrgiQ" operator="and">
         <left xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="matches">
           <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
-            <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_MeSwwONQEeiRKu0rpEAR6w" referenceName="address">
-              <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_R6GSIONQEeiRKu0rpEAR6w" variable="_g7rMIOGpEeiNLd-ce3MxwA"/>
+            <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_7WfnQBmSEemlcrqtQk4dUg">
+              <collectionExpression xsi:type="c:SortExpression" xmi:id="_AiHXkBmTEemlcrqtQk4dUg">
+                <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_HwLgwBmTEemlcrqtQk4dUg" referenceName="addresses">
+                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_KqeusBmTEemlcrqtQk4dUg" variable="_g7rMIOGpEeiNLd-ce3MxwA"/>
+                </collectionExpression>
+              </collectionExpression>
             </objectExpression>
           </left>
           <right xsi:type="const:String" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
@@ -83,8 +87,12 @@
         <right xsi:type="l:EnumerationComparison" xmi:id="_C8y3MOaDEeiefp-kRHrgiQ" operator="==">
           <left xsi:type="enum:EnumerationAttribute" xmi:id="_H62soOaDEeiefp-kRHrgiQ" attributeName="country">
             <objectExpression xsi:type="o:CastObject" xmi:id="_y9NLIPPBEeiVnPNfsZPgMw" name="ia" elementName="_9eABUOaEEeiefp-kRHrgiQ">
-              <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_RnrFUOaFEeiefp-kRHrgiQ" referenceName="address">
-                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_TFV9MOaFEeiefp-kRHrgiQ" variable="_g7rMIOGpEeiNLd-ce3MxwA"/>
+              <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_7WfnQRmSEemlcrqtQk4dUg">
+                <collectionExpression xsi:type="c:SortExpression" xmi:id="_BPPjUBmTEemlcrqtQk4dUg">
+                  <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_ImkWMBmTEemlcrqtQk4dUg" referenceName="addresses">
+                    <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_O3m2cBmTEemlcrqtQk4dUg" variable="_g7rMIOGpEeiNLd-ce3MxwA"/>
+                  </collectionExpression>
+                </collectionExpression>
               </objectExpression>
             </objectExpression>
           </left>
@@ -92,7 +100,7 @@
         </right>
       </condition>
     </objectExpression>
-  </o:ObjectNavigationExpression>
+  </c:CollectionNavigationFromObjectExpression>
   <l:KleeneExpression xmi:id="_qTYLkO8AEeicoeazcHGCBw" operator="and">
     <left xsi:type="l:DecimalComparison" xmi:id="_qzq4UO_IEeiRQOYQa7_v2A">
       <left xsi:type="n:RoundExpression" xmi:id="_2JLR0PJWEeiVnPNfsZPgMw">

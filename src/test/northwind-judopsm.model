@@ -9,8 +9,8 @@
       <elements xsi:type="type:NumericType" xmi:id="_WX24MIUcEeipmMyz9cMCRA" name="Float" precision="4" scale="7"/>
       <elements xsi:type="type:BooleanType" xmi:id="_Xos1AIUcEeipmMyz9cMCRA" name="Boolean"/>
       <elements xsi:type="type:CustomType" xmi:id="_j-zrcINuEeiLE-B2bbL0fg" name="Binary"/>
-      <elements xsi:type="type:CustomType" xmi:id="_YoqOYIN1EeiLE-B2bbL0fg" name="Date"/>
-      <elements xsi:type="type:CustomType" xmi:id="_Z9J8IIN1EeiLE-B2bbL0fg" name="Timestamp"/>
+      <elements xsi:type="type:DateType" xmi:id="_YoqOYIN1EeiLE-B2bbL0fg" name="Date"/>
+      <elements xsi:type="type:TimestampType" xmi:id="_Z9J8IIN1EeiLE-B2bbL0fg" name="Timestamp"/>
       <elements xsi:type="type:StringType" xmi:id="_Lw4a8IOGEeiLE-B2bbL0fg" name="Phone" maxLength="20"/>
       <elements xsi:type="type:StringType" xmi:id="_tXQUoIOGEeiLE-B2bbL0fg" name="Text" maxLength="250"/>
       <elements xsi:type="type:StringType" xmi:id="_A5EFMIN4EeiLE-B2bbL0fg" name="URL" maxLength="1024"/>
