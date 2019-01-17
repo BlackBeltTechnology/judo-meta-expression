@@ -110,6 +110,11 @@ operation ASM!EDataType isEnumeration() : Boolean {
     return self.isKindOf(ASM!EEnum);
 }
 
+@cached
+operation JUDOPSM!Primitive isCustom() : Boolean {
+    return not self.isNumeric() and not self.isBoolean() and not self.isString() and not self.isEnumeration();
+}
+
 operation ASM!EEnum contains(memberName : String) : Boolean {
     return self.eLiterals.selectOne(m | m.name = memberName).isDefined();
 }

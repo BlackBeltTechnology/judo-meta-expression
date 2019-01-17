@@ -62,6 +62,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceExpression" abstract="true"
       interface="true" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceSelector" abstract="true" eSuperTypes="#//NavigationExpression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="CustomExpression" abstract="true" interface="true"
+      eSuperTypes="#//DataExpression"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
@@ -90,6 +92,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//ElementName"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomData" eSuperTypes="#//constant/Constant #//CustomExpression">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/expression/variable"
       nsPrefix="var">
@@ -108,6 +114,7 @@
         eSuperTypes="#//variable/Variable"/>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerVariable" abstract="true" eSuperTypes="#//variable/Variable"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalVariable" abstract="true" eSuperTypes="#//variable/Variable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomVariable" eSuperTypes="#//variable/Variable"/>
   </eSubpackages>
   <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
@@ -484,5 +491,14 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//ElementName"/>
     </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="custom" nsURI="http://blackbelt.hu/judo/meta/expression/custom"
+      nsPrefix="cust">
+    <eClassifiers xsi:type="ecore:EClass" name="CustomAttribute" eSuperTypes="#//CustomExpression #//AttributeSelector"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomVariableReference" eSuperTypes="#//CustomExpression #//VariableReference">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
+          eType="#//variable/CustomVariable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomSwitchExpression" eSuperTypes="#//SwitchExpression #//CustomExpression"/>
   </eSubpackages>
 </ecore:EPackage>
