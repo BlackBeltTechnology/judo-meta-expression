@@ -387,7 +387,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/EnumerationVariable"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="EnumerationSwitchExpression" eSuperTypes="#//SwitchExpression #//EnumerationExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EnumerationSwitchExpression" eSuperTypes="#//SwitchExpression #//EnumerationExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
+          eType="#//ElementName"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="object" nsURI="http://blackbelt.hu/judo/meta/expression/object"
       nsPrefix="o">
