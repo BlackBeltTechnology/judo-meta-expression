@@ -154,6 +154,11 @@
                                     <type>ecore</type>
                                     <classifier>expression</classifier>
                                 </artifact>
+                                <artifact>
+                                    <file>model/expression.genmodel</file>
+                                    <type>genmodel</type>
+                                    <classifier>expression</classifier>
+                                </artifact>
                             </artifacts>
                         </configuration>
                     </execution>
