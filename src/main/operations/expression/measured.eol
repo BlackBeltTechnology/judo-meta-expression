@@ -1,0 +1,246 @@
+@cached
+operation EXPR!NumericAttribute isMeasured() {
+    self.println("I ATTR: ");
+    return self.getAttributeType().isMeasured();
+}
+
+@cached
+operation EXPR!NumericAttribute getMeasure() {
+    self.println("G ATTR: ");
+    if (self.isMeasured()) {
+        return JUDOPSM!Measure.all.selectOne(m | m.units.contains(self.getUnit())); 
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!NumericAttribute getUnit() : JUDOPSM!Unit {
+    self.println("U ATTR: ");
+    if (self.isMeasured()) {
+        return self.getAttributeType().getUnit();
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!MeasuredDecimal getMeasure() {
+    return self.measure.getMeasure();
+}
+
+@cached
+operation EXPR!MeasuredDecimal getUnit() {
+    var measure = self.getMeasure();
+    if (measure.isDefined()) {
+        return self.getMeasure().getUnit(self.unitName);
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!MeasuredInteger getMeasure() {
+    return self.measure.getMeasure();
+}
+
+@cached
+operation EXPR!MeasuredInteger getUnit() {
+    var measure = self.getMeasure();
+    if (measure.isDefined()) {
+        return self.getMeasure().getUnit(self.unitName);
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!CountExpression isMeasured() : Boolean {
+    return false;
+}
+
+@cached
+operation EXPR!IntegerAritmeticExpression isMeasured() : Boolean {
+    return self.left.isMeasured() or self.right.isMeasured();
+}
+
+@cached
+operation EXPR!DecimalAritmeticExpression isMeasured() : Boolean {
+    return self.left.isMeasured() or self.right.isMeasured();
+}
+
+@cached
+operation EXPR!IntegerOppositeExpression isMeasured() : Boolean {
+    return self.expression.isMeasured();
+}
+
+@cached
+operation EXPR!DecimalOppositeExpression isMeasured() : Boolean {
+    return self.expression.isMeasured();
+}
+
+@cached
+operation EXPR!IntegerAggregatedExpression isMeasured() : Boolean {
+    return self.expression.isMeasured();
+}
+
+@cached
+operation EXPR!DecimalAggregatedExpression isMeasured() : Boolean {
+    return self.expression.isMeasured();
+}
+
+@cached
+operation EXPR!RoundExpression isMeasured() : Boolean {
+    return self.expression.isMeasured();
+}
+
+@cached
+operation EXPR!IntegerSwitchExpression isMeasured() : Boolean {
+    var foundMeasuredOperand = false;
+    if (self.defaultExpression.isDefined()) {
+        foundMeasuredOperand = foundMeasuredOperand or self.defaultExpression.isMeasured();
+    }
+    for (c in self.cases) {
+        foundMeasuredOperand = foundMeasuredOperand or c.expression.isMeasured();
+    }
+    return foundMeasuredOperand;
+}
+
+@cached
+operation EXPR!DecimalSwitchExpression isMeasured() : Boolean {
+    var foundMeasuredOperand = false;
+    if (self.defaultExpression.isDefined()) {
+        foundMeasuredOperand = foundMeasuredOperand or self.defaultExpression.isMeasured();
+    }
+    for (c in self.cases) {
+        foundMeasuredOperand = foundMeasuredOperand or c.expression.isMeasured();
+    }
+    return foundMeasuredOperand;
+}
+
+@cached
+operation EXPR!Integer isMeasured() : Boolean {
+    return false;
+}
+
+@cached
+operation EXPR!Decimal isMeasured() : Boolean {
+    return false;
+}
+
+@cached
+operation EXPR!MeasuredInteger isMeasured() : Boolean {
+    return true;
+}
+
+@cached
+operation EXPR!MeasuredDecimal isMeasured() : Boolean {
+    return true;
+}
+
+@cached
+operation EXPR!IntegerAritmeticExpression getMeasure() {
+    var leftMeasure = self.left.getMeasure();
+    var rightMeasure = self.right.getMeasure();
+    
+    if (leftMeasure == rightMeasure) {
+        return leftMeasure;
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!DecimalAritmeticExpression getMeasure() {
+    var leftMeasure = self.left.getMeasure();
+    var rightMeasure = self.right.getMeasure();
+    
+    if (leftMeasure == rightMeasure) {
+        return leftMeasure;
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!IntegerOppositeExpression getMeasure() {
+    return self.expression.getMeasure();
+}
+
+@cached
+operation EXPR!DecimalOppositeExpression getMeasure() {
+    return self.expression.getMeasure();
+}
+
+@cached
+operation EXPR!IntegerAggregatedExpression getMeasure() {
+    return self.expression.getMeasure();
+}
+
+@cached
+operation EXPR!DecimalAggregatedExpression getMeasure() {
+    return self.expression.getMeasure();
+}
+
+@cached
+operation EXPR!RoundExpression getMeasure() {
+    return self.expression.getMeasure();
+}
+
+@cached
+operation EXPR!IntegerSwitchExpression getMeasure() {
+    var measure;
+    
+    for (c in self.cases) {
+        var m = c.expression.getMeasure();
+        if (measure.isDefined() and measure <> m) {
+            return null;
+        }
+        measure = m;
+    }
+    
+    if (self.defaultExpression.isDefined() and self.defaultExpression.getMeasure() <> measure) {
+        return null;
+    }
+    
+    return measure;
+}
+
+@cached
+operation EXPR!DecimalSwitchExpression getMeasure() {
+    var measure;
+    
+    for (c in self.cases) {
+        var m = c.expression.getMeasure();
+        if (measure.isDefined() and measure <> m) {
+            return null;
+        }
+        measure = m;
+    }
+    
+    if (self.defaultExpression.isDefined() and self.defaultExpression.getMeasure() <> measure) {
+        return null;
+    }
+    
+    return measure;
+}
+
+@cached
+operation EXPR!Integer getMeasure() {
+    return null;
+}
+
+@cached
+operation EXPR!Decimal getMeasure() {
+    return null;
+}
+
+@cached
+operation EXPR!MeasuredInteger getMeasure() {
+    return self.getMeasure();
+}
+
+@cached
+operation EXPR!MeasuredDecimal getMeasure() {
+    return self.getMeasure();
+}

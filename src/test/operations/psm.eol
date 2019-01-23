@@ -1,7 +1,7 @@
 @cached
-operation EXPR!ElementName getNamespace() : JUDOPSM!Namespace {
+operation EXPR!ElementName getNamespace() : JUDOPSM!NamedElement {
     var ns : JUDOPSM!Namespace;
-        
+    
     for (nsName in self.namespace.split("\\s*\\::\\s*")) {
         if (ns.isDefined()) {
             ns = ns.packages.selectOne(p | p.name = nsName);
@@ -18,6 +18,11 @@ operation EXPR!ElementName getNamespace() : JUDOPSM!Namespace {
 }
 
 @cached
+operation EXPR!ElementName get() : JUDOPSM!NamedElement {
+    return self.getNamespace().elements.selectOne(ne | ne.name = self.name);
+}
+
+@cached
 operation EXPR!ElementName getObjectType() : JUDOPSM!Type {
     return self.getNamespace().elements.selectOne(et | et.name = self.name);
 }
@@ -25,6 +30,11 @@ operation EXPR!ElementName getObjectType() : JUDOPSM!Type {
 @cached
 operation EXPR!ElementName getEnumerationType() : JUDOPSM!EntityType {
     return self.getNamespace().elements.selectOne(t | t.name = self.name);
+}
+
+@cached
+operation EXPR!ElementName getMeasure() : JUDOPSM!Measure {
+    return self.getNamespace().elements.selectOne(m | m.name = self.name);
 }
 
 operation JUDOPSM!EntityType getReferenceType(name: String) : JUDOPSM!ReferenceTypedElement {
@@ -135,6 +145,11 @@ operation JUDOPSM!Primitive isDecimal() : Boolean {
 }
 
 @cached
+operation JUDOPSM!Primitive isMeasured() : Boolean {
+    return self.isKindOf(JUDOPSM!MeasuredType);
+}
+
+@cached
 operation JUDOPSM!Primitive isBoolean() : Boolean {
     return self.isKindOf(JUDOPSM!BooleanType);
 }
@@ -161,4 +176,22 @@ operation JUDOPSM!EnumerationType contains(memberName : String) : Boolean {
 @cached
 operation JUDOPSM!NamedElement getName() : String {
     return self.name;
+}
+
+operation JUDOPSM!Measure getUnit(name : String) : JUDOPSM!Unit {
+    return self.units.selectOne(u | u.name = name or u.symbol = name);
+}
+
+@cached
+operation JUDOPSM!MeasuredType getUnit() : JUDOPSM!Unit {
+    return self.storeUnit;
+}
+
+@cached
+operation JUDOPSM!Unit toString() : String {
+    if (self.symbol.isDefined()) {
+        return self.symbol;
+    } else {
+        return self.name;
+    }
 }

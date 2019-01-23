@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant">
-  <const:Integer value="10"/>
-  <const:Decimal value="3.14"/>
-  <const:String value="Sample text"/>
-  <const:Boolean value="true"/>
-  <const:Literal value="RED"/>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:expr="http://blackbelt.hu/judo/meta/expression">
+  <const:Integer xmi:id="_FCZQMB5GEemwg4NgOjaKeA" value="10"/>
+  <const:Decimal xmi:id="_FCZQMR5GEemwg4NgOjaKeA" value="3.14"/>
+  <const:String xmi:id="_FCZQMh5GEemwg4NgOjaKeA" value="Sample text"/>
+  <const:Boolean xmi:id="_FCZQMx5GEemwg4NgOjaKeA" value="true"/>
+  <const:Literal xmi:id="_FCZQNB5GEemwg4NgOjaKeA" value="RED"/>
+  <const:MeasuredDecimal xmi:id="_FCZQNR5GEemwg4NgOjaKeA" value="10" measure="_FCZQNh5GEemwg4NgOjaKeA" unitName="kilogram"/>
+  <expr:ElementName xmi:id="_FCZQNh5GEemwg4NgOjaKeA" name="Mass" namespace="Template::measures"/>
 </xmi:XMI>

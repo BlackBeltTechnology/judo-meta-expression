@@ -154,9 +154,24 @@
       <right xsi:type="const:Integer" xmi:id="_QLhNcPb5Eei6VpsqfFnFTg" value="10"/>
     </condition>
   </c:CollectionFilterExpression>
+  <n:DecimalAritmeticExpression xmi:id="_GmGacB5NEemwg4NgOjaKeA">
+    <left xsi:type="const:MeasuredDecimal" xmi:id="_I4IugB5NEemwg4NgOjaKeA" value="123" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="gramm"/>
+    <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_KAW60B5NEemwg4NgOjaKeA">
+      <left xsi:type="n:DecimalAttribute" xmi:id="_TYjZQB5NEemwg4NgOjaKeA" attributeName="weight">
+        <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5bQ7YB5NEemwg4NgOjaKeA">
+          <collectionExpression xsi:type="c:SortExpression" xmi:id="_6TIXgB5NEemwg4NgOjaKeA">
+            <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_65QjYB5NEemwg4NgOjaKeA" name="" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+          </collectionExpression>
+        </objectExpression>
+      </left>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" value="4" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="kg"/>
+    </right>
+  </n:DecimalAritmeticExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind::entities"/>
+  <expr:ElementName xmi:id="_GmHokB5NEemwg4NgOjaKeA" name="Mass" namespace="northwind::measures"/>
+  <expr:ElementName xmi:id="_Piye0B7gEemwg4NgOjaKeA" name="Length" namespace="northwind::measures"/>
 </xmi:XMI>

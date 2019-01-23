@@ -8,6 +8,13 @@ operation displayAllExpressions() {
         if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
+        if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
+            if (expr.getMeasure().isDefined()) {
+                expr.getMeasure().name.println(" - measure: ");
+            } else {
+                "UNKNOWN".println(" - measure: ");
+            }
+        }
     }
     for (attr in EXPR!AttributeSelector) {
        var type = attr.getAttributeType();
