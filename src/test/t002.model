@@ -155,7 +155,13 @@
     </condition>
   </c:CollectionFilterExpression>
   <n:DecimalAritmeticExpression xmi:id="_GmGacB5NEemwg4NgOjaKeA">
-    <left xsi:type="const:MeasuredDecimal" xmi:id="_I4IugB5NEemwg4NgOjaKeA" value="123" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="gramm"/>
+    <left xsi:type="n:DecimalSwitchExpression" xmi:id="_D1bHsB7_EemlZKbj92vNQw">
+      <cases xmi:id="_FKVsMB7_EemlZKbj92vNQw">
+        <condition xsi:type="const:Boolean" xmi:id="_JmQd4B7_EemlZKbj92vNQw" value="true"/>
+        <expression xsi:type="const:MeasuredDecimal" xmi:id="_LG9boB7_EemlZKbj92vNQw" value="8" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="dkg"/>
+      </cases>
+      <defaultExpression xsi:type="const:MeasuredDecimal" xmi:id="_Gg_WEB7_EemlZKbj92vNQw" value="5" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="gramm"/>
+    </left>
     <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_KAW60B5NEemwg4NgOjaKeA">
       <left xsi:type="n:DecimalAttribute" xmi:id="_TYjZQB5NEemwg4NgOjaKeA" attributeName="weight">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5bQ7YB5NEemwg4NgOjaKeA">

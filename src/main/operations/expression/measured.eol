@@ -1,12 +1,10 @@
 @cached
 operation EXPR!NumericAttribute isMeasured() {
-    self.println("I ATTR: ");
     return self.getAttributeType().isMeasured();
 }
 
 @cached
 operation EXPR!NumericAttribute getMeasure() {
-    self.println("G ATTR: ");
     if (self.isMeasured()) {
         return JUDOPSM!Measure.all.selectOne(m | m.units.contains(self.getUnit())); 
     } else {
@@ -16,7 +14,6 @@ operation EXPR!NumericAttribute getMeasure() {
 
 @cached
 operation EXPR!NumericAttribute getUnit() : JUDOPSM!Unit {
-    self.println("U ATTR: ");
     if (self.isMeasured()) {
         return self.getAttributeType().getUnit();
     } else {
