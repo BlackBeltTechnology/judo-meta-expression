@@ -207,7 +207,7 @@ operation EXPR!IntegerAritmeticExpression getMeasure() {
                 var m = getDimensions().get(bases);
                 
                 if (not m.isDefined()) {
-                    ("No measure is defined for dimension: " + leftMeasure.name + operator + rightMeasure.name).println();
+                    ("No measure is defined for dimension: " + leftMeasure.name + self.operator + rightMeasure.name).println();
                 }
                 
                 return m;
@@ -284,7 +284,7 @@ operation EXPR!DecimalAritmeticExpression getMeasure() {
                 var m = getDimensions().get(bases);
                 
                 if (not m.isDefined()) {
-                    ("No measure is defined for dimension: " + leftMeasure.name + operator + rightMeasure.name).println();
+                    ("No measure is defined for dimension: " + leftMeasure.name + self.operator + rightMeasure.name).println();
                 }
                 
                 return m;
