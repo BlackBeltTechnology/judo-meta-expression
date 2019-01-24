@@ -25,7 +25,7 @@
       <members xmi:id="_j3WXEI57EeioH6CUzUrG0Q" name="MR" ordinal="2"/>
       <members xmi:id="_kgvSUI57EeioH6CUzUrG0Q" name="DR" ordinal="3"/>
     </elements>
-    <elements xsi:type="measure:MeasuredType" xmi:id="_E5f5QB5OEemwg4NgOjaKeA" name="MassStoredInKg" precision="2" scale="15" storeUnit="_o9FRsB5NEemwg4NgOjaKeA"/>
+    <elements xsi:type="measure:MeasuredType" xmi:id="_E5f5QB5OEemwg4NgOjaKeA" name="MassStoredInKg" precision="2" scale="15" storeUnit="judoPSM.model#_C8XYsB1SEemwg4NgOjaKeA"/>
   </packages>
   <packages xmi:id="_l025cNODEeim9MGHLpE1bQ" name="entities">
     <elements xsi:type="data:EntityType" xmi:id="_43ZPcINkEeiLE-B2bbL0fg" name="Category">
@@ -217,21 +217,6 @@
       <relations xsi:type="data:Endpoint" xmi:id="_gqZAEOdVEeiJv53TEP0vvQ" name="products" target="_6XH80INkEeiLE-B2bbL0fg" partner="_VnJ8IOdVEeiJv53TEP0vvQ">
         <cardinality xmi:id="_oRVjUOdVEeiJv53TEP0vvQ" upper="-1"/>
       </relations>
-    </elements>
-  </packages>
-  <packages xmi:id="_ipkFMB5NEemwg4NgOjaKeA" name="measures">
-    <elements xsi:type="measure:Measure" xmi:id="_kXVOkB5NEemwg4NgOjaKeA" name="Mass">
-      <units xmi:id="_n1W0oB5NEemwg4NgOjaKeA" name="gram" symbol="g"/>
-      <units xmi:id="_o9FRsB5NEemwg4NgOjaKeA" name="kilogram" rateDivisor="1000.0" symbol="kg"/>
-      <units xmi:id="_rif0wB5NEemwg4NgOjaKeA" name="tonne" rateDivisor="1000000.0" symbol="t"/>
-      <units xmi:id="_vKFmgB5NEemwg4NgOjaKeA" name="dekagram" rateDivisor="10.0" symbol="dkg"/>
-    </elements>
-    <elements xsi:type="measure:Measure" xmi:id="_UvhCYB7gEemwg4NgOjaKeA" name="Length">
-      <units xmi:id="_Vsb9oB7gEemwg4NgOjaKeA" name="millimetre" rateDivisor="1000.0" symbol="mm"/>
-      <units xmi:id="_WDvqYB7gEemwg4NgOjaKeA" name="centimetre" rateDivisor="100.0" symbol="cm"/>
-      <units xmi:id="_WltvAB7gEemwg4NgOjaKeA" name="decimetre" rateDivisor="10.0" symbol="dm"/>
-      <units xmi:id="_W8zZUB7gEemwg4NgOjaKeA" name="metre" symbol="m"/>
-      <units xmi:id="_XdtG8B7gEemwg4NgOjaKeA" name="kilometre" rateDividend="1000.0" symbol="km"/>
     </elements>
   </packages>
 </namespace:Model>

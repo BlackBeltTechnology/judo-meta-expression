@@ -176,11 +176,37 @@
       <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" measure="_GmHokB5NEemwg4NgOjaKeA" value="4" unitName="kg"/>
     </right>
   </n:DecimalAritmeticExpression>
+  <n:DecimalAritmeticExpression xmi:id="_tknRoB-6EemlZKbj92vNQw" operator="*">
+    <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_5VFc8B_kEemlZKbj92vNQw" operator="*">
+      <left xsi:type="n:IntegerAritmeticExpression" xmi:id="_BsfMwB_lEemlZKbj92vNQw">
+        <left xsi:type="const:Integer" xmi:id="_CRBdMB_lEemlZKbj92vNQw" value="2"/>
+        <right xsi:type="const:Integer" xmi:id="_Cr7QgB_lEemlZKbj92vNQw" value="4"/>
+      </left>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_FKjPEB_lEemlZKbj92vNQw" measure="_GmHokB5NEemwg4NgOjaKeA" value="8" unitName="kg"/>
+    </left>
+    <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_7FV2QB-7EemlZKbj92vNQw" operator="/">
+      <left xsi:type="const:MeasuredDecimal" xmi:id="_CGaFQB-8EemlZKbj92vNQw" measure="_uZnxkh-7EemlZKbj92vNQw" value="60" unitName="km/h"/>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_LF2sgB-8EemlZKbj92vNQw" measure="_Xbi20B-8EemlZKbj92vNQw" value="3" unitName="s"/>
+    </right>
+  </n:DecimalAritmeticExpression>
+  <n:DecimalAritmeticExpression xmi:id="_cBULcB_lEemlZKbj92vNQw" operator="/">
+    <left xsi:type="const:Decimal" xmi:id="_eOvsUB_lEemlZKbj92vNQw" value="1"/>
+    <right xsi:type="const:MeasuredDecimal" xmi:id="_fgUB4B_lEemlZKbj92vNQw" measure="_Xbi20B-8EemlZKbj92vNQw" value="4" unitName="s"/>
+  </n:DecimalAritmeticExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind::entities"/>
-  <expr:ElementName xmi:id="_GmHokB5NEemwg4NgOjaKeA" name="Mass" namespace="northwind::measures"/>
-  <expr:ElementName xmi:id="_Piye0B7gEemwg4NgOjaKeA" name="Length" namespace="northwind::measures"/>
+  <expr:ElementName xmi:id="_GmHokB5NEemwg4NgOjaKeA" name="Mass" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_Piye0B7gEemwg4NgOjaKeA" name="Length" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxkB-7EemlZKbj92vNQw" name="Area" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxkR-7EemlZKbj92vNQw" name="Volume" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxkh-7EemlZKbj92vNQw" name="Velocity" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxkx-7EemlZKbj92vNQw" name="Acceleration" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxlB-7EemlZKbj92vNQw" name="Momentum" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxlR-7EemlZKbj92vNQw" name="Force" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxlh-7EemlZKbj92vNQw" name="Work" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_uZnxlx-7EemlZKbj92vNQw" name="Power" namespace="Template::measures"/>
+  <expr:ElementName xmi:id="_Xbi20B-8EemlZKbj92vNQw" name="Time" namespace="Template::measures"/>
 </xmi:XMI>

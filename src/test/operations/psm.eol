@@ -195,3 +195,45 @@ operation JUDOPSM!Unit toString() : String {
         return self.name;
     }
 }
+
+@cached
+operation JUDOPSM!Unit getMeasure() : JUDOPSM!Measure {
+    return JUDOPSM!Measure.all.selectOne(m | m.units.contains(self));
+}
+
+@cached
+operation getDimensions() : Map {
+    var dimensions = new Map;
+    for (m in JUDOPSM!Measure.all) {
+        dimensions.put(m.getBaseMeasures(), m);
+    }
+    return dimensions;
+}
+
+@cached
+operation JUDOPSM!Measure getBaseMeasures() : Map {
+    if (self.isKindOf(JUDOPSM!DerivedMeasure)) {
+        var baseMeasures = new Map;
+        for (t in self.terms) {
+            var termBases = t.unit.getMeasure().getBaseMeasures();
+            for (m in termBases.keySet()) {
+                var exponent = termBases.get(m) * t.exponent;
+
+                var currentExponent = baseMeasures.get(m);
+                if (currentExponent.isDefined()) {
+                    var newExponent = currentExponent + exponent;
+                    if (newExponent <> 0) {
+                        baseMeasures.put(m, newExponent);
+                    } else {
+                        baseMeasures.remove(m);
+                    }
+                } else {
+                    baseMeasures.put(m, exponent);
+                }
+            }
+        }
+        return baseMeasures;
+    } else {
+        return Map{self = 1};
+    }
+}

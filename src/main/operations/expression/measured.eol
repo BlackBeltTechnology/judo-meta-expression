@@ -137,25 +137,159 @@ operation EXPR!MeasuredDecimal isMeasured() : Boolean {
 
 @cached
 operation EXPR!IntegerAritmeticExpression getMeasure() {
-    var leftMeasure = self.left.getMeasure();
-    var rightMeasure = self.right.getMeasure();
+    var leftMeasure = null;
+    var rightMeasure = null;
     
-    if (leftMeasure == rightMeasure) {
-        return leftMeasure;
-    } else {
-        return null;
+    if (self.left.isMeasured()) {
+        leftMeasure = self.left.getMeasure();
+    }
+    if (self.right.isMeasured()) {
+        rightMeasure = self.right.getMeasure();
+    }
+    
+    switch (self.operator) {
+        case EXPR!IntegerOperator#add: continue;
+        case EXPR!IntegerOperator#substract:
+            if (leftMeasure == rightMeasure) {
+                return leftMeasure;
+            } else if (not leftMeasure.isDefined() or not rightMeasure.isDefined()) {
+                "Addition of scalar and measured values is not allowed".println();
+                return null;
+            } else {
+                ("Additional operands must match: " + leftMeasure.name + ", " + rightMeasure.name).println();
+                return null;
+            }
+        case EXPR!IntegerOperator#multiply: continue;
+        case EXPR!IntegerOperator#modulo: continue;
+        case EXPR!IntegerOperator#divide:
+            if (leftMeasure == rightMeasure) {
+                return null;
+            } else {
+                var leftBases = Map{};
+                if (leftMeasure.isDefined()) {
+                    leftBases = leftMeasure.getBaseMeasures();
+                }
+                
+                var rightBases = Map{};
+                if (rightMeasure.isDefined()) {
+                    rightBases = rightMeasure.getBaseMeasures();
+                }
+                
+                var bases = new Map;
+                for (m in leftBases.keySet()) {
+                    bases.put(m, leftBases.get(m));
+                }
+                for (m in rightBases.keySet()) {
+                    var exponent = rightBases.get(m);
+                    var currentExponent = bases.get(m);
+                    if (currentExponent.isDefined()) {
+                        var newExponent;
+                        switch (self.operator) {
+                            case EXPR!IntegerOperator#multiply: newExponent = currentExponent + exponent;
+                            case EXPR!IntegerOperator#modulo: newExponent = currentExponent - exponent;
+                            case EXPR!IntegerOperator#divide: newExponent = currentExponent - exponent;
+                        }
+                        if (newExponent <> 0) {
+                            bases.put(m, newExponent);
+                        } else {
+                            bases.remove(m);
+                        }
+                    } else {
+                        switch (self.operator) {
+                            case EXPR!IntegerOperator#multiply: bases.put(m, exponent);
+                            case EXPR!IntegerOperator#modulo: bases.put(m, -exponent);
+                            case EXPR!IntegerOperator#divide: bases.put(m, -exponent);
+                        }
+                        bases.put(m, exponent);
+                    }
+                }
+                
+                var m = getDimensions().get(bases);
+                
+                if (not m.isDefined()) {
+                    ("No measure is defined for dimension: " + leftMeasure.name + operator + rightMeasure.name).println();
+                }
+                
+                return m;
+            }
+        default: throw "Unsupported operation";
     }
 }
 
 @cached
 operation EXPR!DecimalAritmeticExpression getMeasure() {
-    var leftMeasure = self.left.getMeasure();
-    var rightMeasure = self.right.getMeasure();
+    var leftMeasure = null;
+    var rightMeasure = null;
     
-    if (leftMeasure == rightMeasure) {
-        return leftMeasure;
-    } else {
-        return null;
+    if (self.left.isMeasured()) {
+        leftMeasure = self.left.getMeasure();
+    }
+    if (self.right.isMeasured()) {
+        rightMeasure = self.right.getMeasure();
+    }
+    
+    switch (self.operator) {
+        case EXPR!DecimalOperator#add: continue;
+        case EXPR!DecimalOperator#substract:
+            if (leftMeasure == rightMeasure) {
+                return leftMeasure;
+            } else if (not leftMeasure.isDefined() or not rightMeasure.isDefined()) {
+                "Addition of scalar and measured values is not allowed".println();
+                return null;
+            } else {
+                ("Additional operands must match: " + leftMeasure.name + ", " + rightMeasure.name).println();
+                return null;
+            }
+        case EXPR!DecimalOperator#multiply: continue;
+        case EXPR!DecimalOperator#divide:
+            if (leftMeasure == rightMeasure) {
+                return null;
+            } else {
+                var leftBases = Map{};
+                if (leftMeasure.isDefined()) {
+                    leftBases = leftMeasure.getBaseMeasures();
+                }
+                
+                var rightBases = Map{};
+                if (rightMeasure.isDefined()) {
+                    rightBases = rightMeasure.getBaseMeasures();
+                }
+
+                var bases = new Map;
+                for (m in leftBases.keySet()) {
+                    bases.put(m, leftBases.get(m));
+                }
+                for (m in rightBases.keySet()) {
+                    var exponent = rightBases.get(m);
+                    var currentExponent = bases.get(m);
+                    if (currentExponent.isDefined()) {
+                        var newExponent;
+                        switch (self.operator) {
+                            case EXPR!DecimalOperator#multiply: newExponent = currentExponent + exponent;
+                            case EXPR!DecimalOperator#divide: newExponent = currentExponent - exponent;
+                        }
+	                    if (newExponent <> 0) {
+	                        bases.put(m, newExponent);
+	                    } else {
+	                        bases.remove(m);
+	                    }
+                    } else {
+                        switch (self.operator) {
+                            case EXPR!DecimalOperator#multiply: bases.put(m, exponent);
+                            case EXPR!DecimalOperator#divide: bases.put(m, -exponent);
+                        }
+                    }
+                }
+                
+                var m = getDimensions().get(bases);
+                
+                if (not m.isDefined()) {
+                    ("No measure is defined for dimension: " + leftMeasure.name + operator + rightMeasure.name).println();
+                }
+                
+                return m;
+            }
+        default: throw "Unsupported operation";
     }
 }
 

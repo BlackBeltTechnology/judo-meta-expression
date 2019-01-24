@@ -50,7 +50,9 @@ context EXPR!DecimalAttribute {
 
 context EXPR!IntegerAritmeticExpression {
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved") and self.isMeasured() and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        guard: self.satisfiesAll("Resolved") and self.isMeasured() and
+               (not self.left.isMeasured() or self.left.satisfiesAll("MeasureIsValid")) and 
+               (not self.right.isMeasured() or self.right.satisfiesAll("MeasureIsValid"))
         
         check: self.getMeasure().isDefined()
         message: "Measure of expression is invalid: " + self.toString()
@@ -59,7 +61,9 @@ context EXPR!IntegerAritmeticExpression {
 
 context EXPR!DecimalAritmeticExpression {
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved") and self.isMeasured() and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        guard: self.satisfiesAll("Resolved") and self.isMeasured() and
+               (not self.left.isMeasured() or self.left.satisfiesAll("MeasureIsValid")) and 
+               (not self.right.isMeasured() or self.right.satisfiesAll("MeasureIsValid"))
         
         check: self.getMeasure().isDefined()
         message: "Measure of expression is invalid: " + self.toString()
