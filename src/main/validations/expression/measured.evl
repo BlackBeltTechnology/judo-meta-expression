@@ -131,22 +131,18 @@ context EXPR!IntegerOppositeExpression {
 
 context EXPR!IntegerSwitchExpression {
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved") and self.isMeasured()
+        guard: self.satisfiesAll("Resolved") and self.isMeasured() and self.cases.select(c | not c.expression.satisfiesAll("MeasureIsValid")).size() == 0 and (not self.defaultExpression.isDefined() or self.defaultExpression.satisfiesAll("MeasureIsValid"))
         
         check: self.getMeasure().isDefined()
         message: "Measure of expression is invalid: " + self.toString()
     }
-    
-    // TODO - check measure of cases
 }
 
 context EXPR!DecimalSwitchExpression {
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved") and self.isMeasured()
+        guard: self.satisfiesAll("Resolved") and self.isMeasured() and self.cases.select(c | not c.expression.satisfiesAll("MeasureIsValid")).size() == 0 and (not self.defaultExpression.isDefined() or self.defaultExpression.satisfiesAll("MeasureIsValid"))
         
         check: self.getMeasure().isDefined()
         message: "Measure of expression is invalid: " + self.toString()
     }
-    
-    // TODO - check measure of cases
 }

@@ -158,9 +158,12 @@
     <left xsi:type="n:DecimalSwitchExpression" xmi:id="_D1bHsB7_EemlZKbj92vNQw">
       <cases xmi:id="_FKVsMB7_EemlZKbj92vNQw">
         <condition xsi:type="const:Boolean" xmi:id="_JmQd4B7_EemlZKbj92vNQw" value="true"/>
-        <expression xsi:type="const:MeasuredDecimal" xmi:id="_LG9boB7_EemlZKbj92vNQw" value="8" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="dkg"/>
+        <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_nnA5gB-0EemlZKbj92vNQw">
+          <left xsi:type="const:MeasuredDecimal" xmi:id="_o-CW0B-0EemlZKbj92vNQw" measure="_GmHokB5NEemwg4NgOjaKeA" value="8" unitName="dkg"/>
+          <right xsi:type="const:MeasuredDecimal" xmi:id="_r2vCQB-0EemlZKbj92vNQw" measure="_GmHokB5NEemwg4NgOjaKeA" value="12" unitName="g"/>
+        </expression>
       </cases>
-      <defaultExpression xsi:type="const:MeasuredDecimal" xmi:id="_Gg_WEB7_EemlZKbj92vNQw" value="5" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="gramm"/>
+      <defaultExpression xsi:type="const:MeasuredDecimal" xmi:id="_LohY4B-1EemlZKbj92vNQw" measure="_GmHokB5NEemwg4NgOjaKeA" value="2" unitName="g"/>
     </left>
     <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_KAW60B5NEemwg4NgOjaKeA">
       <left xsi:type="n:DecimalAttribute" xmi:id="_TYjZQB5NEemwg4NgOjaKeA" attributeName="weight">
@@ -170,7 +173,7 @@
           </collectionExpression>
         </objectExpression>
       </left>
-      <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" value="4" measure="_GmHokB5NEemwg4NgOjaKeA" unitName="kg"/>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" measure="_GmHokB5NEemwg4NgOjaKeA" value="4" unitName="kg"/>
     </right>
   </n:DecimalAritmeticExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>

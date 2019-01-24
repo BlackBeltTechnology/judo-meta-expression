@@ -221,7 +221,7 @@
   </packages>
   <packages xmi:id="_ipkFMB5NEemwg4NgOjaKeA" name="measures">
     <elements xsi:type="measure:Measure" xmi:id="_kXVOkB5NEemwg4NgOjaKeA" name="Mass">
-      <units xmi:id="_n1W0oB5NEemwg4NgOjaKeA" name="gramm" symbol="g"/>
+      <units xmi:id="_n1W0oB5NEemwg4NgOjaKeA" name="gram" symbol="g"/>
       <units xmi:id="_o9FRsB5NEemwg4NgOjaKeA" name="kilogram" rateDivisor="1000.0" symbol="kg"/>
       <units xmi:id="_rif0wB5NEemwg4NgOjaKeA" name="tonne" rateDivisor="1000000.0" symbol="t"/>
       <units xmi:id="_vKFmgB5NEemwg4NgOjaKeA" name="dekagram" rateDivisor="10.0" symbol="dkg"/>
