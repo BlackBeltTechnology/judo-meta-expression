@@ -173,7 +173,7 @@
           </collectionExpression>
         </objectExpression>
       </left>
-      <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" measure="_GmHokB5NEemwg4NgOjaKeA" value="4" unitName="kg"/>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" measure="_GmHokB5NEemwg4NgOjaKeA" value="4" unitName="g"/>
     </right>
   </n:DecimalAritmeticExpression>
   <n:DecimalAritmeticExpression xmi:id="_tknRoB-6EemlZKbj92vNQw" operator="*">
@@ -190,8 +190,11 @@
     </right>
   </n:DecimalAritmeticExpression>
   <n:DecimalAritmeticExpression xmi:id="_cBULcB_lEemlZKbj92vNQw" operator="/">
-    <left xsi:type="const:Decimal" xmi:id="_eOvsUB_lEemlZKbj92vNQw" value="1"/>
-    <right xsi:type="const:MeasuredDecimal" xmi:id="_fgUB4B_lEemlZKbj92vNQw" measure="_Xbi20B-8EemlZKbj92vNQw" value="4" unitName="s"/>
+    <left xsi:type="const:MeasuredDecimal" xmi:id="_PUXtkCB7Eem84oR5A2vsXg" measure="_Piye0B7gEemwg4NgOjaKeA" value="9" unitName="m"/>
+    <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_oTTs0CB6Eem84oR5A2vsXg" operator="/">
+      <left xsi:type="const:Decimal" xmi:id="_JUGhUCCIEem84oR5A2vsXg" value="1"/>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_rDShICB6Eem84oR5A2vsXg" measure="_Piye0B7gEemwg4NgOjaKeA" value="45" unitName="mm"/>
+    </right>
   </n:DecimalAritmeticExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>

@@ -234,6 +234,20 @@ operation JUDOPSM!Measure getBaseMeasures() : Map {
         }
         return baseMeasures;
     } else {
-        return Map{self = 1};
+        return Map{self.name = 1};
     }
+}
+
+@cached
+operation EXPR!NumericAttribute getMeasure() : JUDOPSM!Measure {
+	if (self.isMeasured()) {
+		return JUDOPSM!Measure.all.selectOne(m | m.units.contains(self.getUnit()));
+	} else {
+		return Map{};
+	}
+}
+
+@cached
+operation Map getMeasure() : JUDOPSM!Measure {
+	return getDimensions().get(self);
 }

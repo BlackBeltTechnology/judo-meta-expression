@@ -1,19 +1,19 @@
 @cached
-operation EXPR!NumericAttribute isMeasured() {
+operation EXPR!NumericAttribute isMeasured() : Boolean {
     return self.getAttributeType().isMeasured();
 }
 
 @cached
-operation EXPR!NumericAttribute getMeasure() {
-    if (self.isMeasured()) {
-        return JUDOPSM!Measure.all.selectOne(m | m.units.contains(self.getUnit())); 
-    } else {
-        return null;
-    }
+operation EXPR!NumericAttribute getBaseMeasures() : Map {
+	if (self.isMeasured()) {
+		return self.getMeasure().getBaseMeasures();
+	} else {
+		return Map{};
+	}
 }
 
 @cached
-operation EXPR!NumericAttribute getUnit() : JUDOPSM!Unit {
+operation EXPR!NumericAttribute getUnit() {
     if (self.isMeasured()) {
         return self.getAttributeType().getUnit();
     } else {
@@ -23,7 +23,12 @@ operation EXPR!NumericAttribute getUnit() : JUDOPSM!Unit {
 
 @cached
 operation EXPR!MeasuredDecimal getMeasure() {
-    return self.measure.getMeasure();
+	return self.measure.getMeasure();
+}
+
+@cached
+operation EXPR!MeasuredDecimal getBaseMeasures() : Map {
+    return self.getMeasure().getBaseMeasures();
 }
 
 @cached
@@ -38,7 +43,12 @@ operation EXPR!MeasuredDecimal getUnit() {
 
 @cached
 operation EXPR!MeasuredInteger getMeasure() {
-    return self.measure.getMeasure();
+	return self.measure.getMeasure();
+}
+
+@cached
+operation EXPR!MeasuredInteger getBaseMeasures() : Map {
+    return self.getMeasure().getBaseMeasures();
 }
 
 @cached
@@ -58,12 +68,14 @@ operation EXPR!CountExpression isMeasured() : Boolean {
 
 @cached
 operation EXPR!IntegerAritmeticExpression isMeasured() : Boolean {
-    return self.left.isMeasured() or self.right.isMeasured();
+	var baseMeasures = self.getBaseMeasures();
+	return baseMeasures.isDefined() and not baseMeasures.isEmpty();
 }
 
 @cached
 operation EXPR!DecimalAritmeticExpression isMeasured() : Boolean {
-    return self.left.isMeasured() or self.right.isMeasured();
+    var baseMeasures = self.getBaseMeasures();
+	return baseMeasures.isDefined() and not baseMeasures.isEmpty();
 }
 
 @cached
@@ -136,242 +148,176 @@ operation EXPR!MeasuredDecimal isMeasured() : Boolean {
 }
 
 @cached
-operation EXPR!IntegerAritmeticExpression getMeasure() {
-    var leftMeasure = null;
-    var rightMeasure = null;
+operation EXPR!DecimalAritmeticExpression getBaseMeasures() : Map {
+	var leftBaseMeasures = Map{};
+    var rightBaseMeasures = Map{};
     
     if (self.left.isMeasured()) {
-        leftMeasure = self.left.getMeasure();
+        leftBaseMeasures = self.left.getBaseMeasures();
     }
     if (self.right.isMeasured()) {
-        rightMeasure = self.right.getMeasure();
+        rightBaseMeasures = self.right.getBaseMeasures();
     }
     
-    switch (self.operator) {
+    return getBaseMeasures(self.operator, leftBaseMeasures, rightBaseMeasures);
+}
+
+@cached
+operation EXPR!IntegerAritmeticExpression getBaseMeasures() : Map {
+	var leftBaseMeasures = Map{};
+    var rightBaseMeasures = Map{};
+    
+    if (self.left.isMeasured()) {
+        leftBaseMeasures = self.left.getBaseMeasures();
+    }
+    if (self.right.isMeasured()) {
+        rightBaseMeasures = self.right.getBaseMeasures();
+    }
+    
+    return getBaseMeasures(self.operator, leftBaseMeasures, rightBaseMeasures);
+}
+
+operation getBaseMeasures(operator, leftBaseMeasures : Map, rightBaseMeasures : Map) {
+	switch (operator) {
         case EXPR!IntegerOperator#add: continue;
-        case EXPR!IntegerOperator#substract:
-            if (leftMeasure == rightMeasure) {
-                return leftMeasure;
-            } else if (not leftMeasure.isDefined() or not rightMeasure.isDefined()) {
+        case EXPR!IntegerOperator#substract: continue;
+        case EXPR!DecimalOperator#add: continue;
+        case EXPR!DecimalOperator#substract:
+            if (leftBaseMeasures == rightBaseMeasures) {
+                return leftBaseMeasures;
+            } else if (not leftBaseMeasures.isDefined() or not rightBaseMeasures.isDefined()) {
                 "Addition of scalar and measured values is not allowed".println();
                 return null;
             } else {
-                ("Additional operands must match: " + leftMeasure.name + ", " + rightMeasure.name).println();
+                "Additional operands must match".println();
                 return null;
             }
         case EXPR!IntegerOperator#multiply: continue;
         case EXPR!IntegerOperator#modulo: continue;
-        case EXPR!IntegerOperator#divide:
-            if (leftMeasure == rightMeasure) {
-                return null;
-            } else {
-                var leftBases = Map{};
-                if (leftMeasure.isDefined()) {
-                    leftBases = leftMeasure.getBaseMeasures();
-                }
-                
-                var rightBases = Map{};
-                if (rightMeasure.isDefined()) {
-                    rightBases = rightMeasure.getBaseMeasures();
-                }
-                
-                var bases = new Map;
-                for (m in leftBases.keySet()) {
-                    bases.put(m, leftBases.get(m));
-                }
-                for (m in rightBases.keySet()) {
-                    var exponent = rightBases.get(m);
-                    var currentExponent = bases.get(m);
-                    if (currentExponent.isDefined()) {
-                        var newExponent;
-                        switch (self.operator) {
-                            case EXPR!IntegerOperator#multiply: newExponent = currentExponent + exponent;
-                            case EXPR!IntegerOperator#modulo: newExponent = currentExponent - exponent;
-                            case EXPR!IntegerOperator#divide: newExponent = currentExponent - exponent;
-                        }
-                        if (newExponent <> 0) {
-                            bases.put(m, newExponent);
-                        } else {
-                            bases.remove(m);
-                        }
-                    } else {
-                        switch (self.operator) {
-                            case EXPR!IntegerOperator#multiply: bases.put(m, exponent);
-                            case EXPR!IntegerOperator#modulo: bases.put(m, -exponent);
-                            case EXPR!IntegerOperator#divide: bases.put(m, -exponent);
-                        }
-                        bases.put(m, exponent);
-                    }
-                }
-                
-                var m = getDimensions().get(bases);
-                
-                if (not m.isDefined()) {
-                    ("No measure is defined for dimension: " + leftMeasure.name + self.operator + rightMeasure.name).println();
-                }
-                
-                return m;
-            }
-        default: throw "Unsupported operation";
-    }
-}
-
-@cached
-operation EXPR!DecimalAritmeticExpression getMeasure() {
-    var leftMeasure = null;
-    var rightMeasure = null;
-    
-    if (self.left.isMeasured()) {
-        leftMeasure = self.left.getMeasure();
-    }
-    if (self.right.isMeasured()) {
-        rightMeasure = self.right.getMeasure();
-    }
-    
-    switch (self.operator) {
-        case EXPR!DecimalOperator#add: continue;
-        case EXPR!DecimalOperator#substract:
-            if (leftMeasure == rightMeasure) {
-                return leftMeasure;
-            } else if (not leftMeasure.isDefined() or not rightMeasure.isDefined()) {
-                "Addition of scalar and measured values is not allowed".println();
-                return null;
-            } else {
-                ("Additional operands must match: " + leftMeasure.name + ", " + rightMeasure.name).println();
-                return null;
-            }
+        case EXPR!IntegerOperator#divide: continue;
         case EXPR!DecimalOperator#multiply: continue;
         case EXPR!DecimalOperator#divide:
-            if (leftMeasure == rightMeasure) {
-                return null;
-            } else {
-                var leftBases = Map{};
-                if (leftMeasure.isDefined()) {
-                    leftBases = leftMeasure.getBaseMeasures();
-                }
-                
-                var rightBases = Map{};
-                if (rightMeasure.isDefined()) {
-                    rightBases = rightMeasure.getBaseMeasures();
-                }
-
-                var bases = new Map;
-                for (m in leftBases.keySet()) {
-                    bases.put(m, leftBases.get(m));
-                }
-                for (m in rightBases.keySet()) {
-                    var exponent = rightBases.get(m);
-                    var currentExponent = bases.get(m);
-                    if (currentExponent.isDefined()) {
-                        var newExponent;
-                        switch (self.operator) {
-                            case EXPR!DecimalOperator#multiply: newExponent = currentExponent + exponent;
-                            case EXPR!DecimalOperator#divide: newExponent = currentExponent - exponent;
-                        }
-	                    if (newExponent <> 0) {
-	                        bases.put(m, newExponent);
-	                    } else {
-	                        bases.remove(m);
-	                    }
+            var bases = new Map;
+            for (m in leftBaseMeasures.keySet()) {
+                bases.put(m, leftBaseMeasures.get(m));
+            }
+            for (m in rightBaseMeasures.keySet()) {
+                var exponent = rightBaseMeasures.get(m);
+                var currentExponent = bases.get(m);
+                if (currentExponent.isDefined()) {
+                    var newExponent;
+                    switch (operator) {
+                    	case EXPR!IntegerOperator#multiply: newExponent = currentExponent + exponent;
+                        case EXPR!IntegerOperator#modulo: newExponent = currentExponent - exponent;
+                        case EXPR!IntegerOperator#divide: newExponent = currentExponent - exponent;
+                        case EXPR!DecimalOperator#multiply: newExponent = currentExponent + exponent;
+                        case EXPR!DecimalOperator#divide: newExponent = currentExponent - exponent;
+                    }
+                    if (newExponent <> 0) {
+                        bases.put(m, newExponent);
                     } else {
-                        switch (self.operator) {
-                            case EXPR!DecimalOperator#multiply: bases.put(m, exponent);
-                            case EXPR!DecimalOperator#divide: bases.put(m, -exponent);
-                        }
+                        bases.remove(m);
+                    }
+                } else {
+                    switch (operator) {
+                    	case EXPR!IntegerOperator#multiply: bases.put(m, exponent);
+                    	case EXPR!IntegerOperator#modulo: bases.put(m, -exponent);
+                    	case EXPR!IntegerOperator#divide: bases.put(m, -exponent);
+                        case EXPR!DecimalOperator#multiply: bases.put(m, exponent);
+                        case EXPR!DecimalOperator#divide: bases.put(m, -exponent);
                     }
                 }
-                
-                var m = getDimensions().get(bases);
-                
-                if (not m.isDefined()) {
-                    ("No measure is defined for dimension: " + leftMeasure.name + self.operator + rightMeasure.name).println();
-                }
-                
-                return m;
             }
+            
+            return bases;
         default: throw "Unsupported operation";
     }
 }
 
 @cached
-operation EXPR!IntegerOppositeExpression getMeasure() {
-    return self.expression.getMeasure();
+operation EXPR!IntegerOppositeExpression getBaseMeasures() : Map {
+    return self.expression.getBaseMeasures();
 }
 
 @cached
-operation EXPR!DecimalOppositeExpression getMeasure() {
-    return self.expression.getMeasure();
+operation EXPR!DecimalOppositeExpression getBaseMeasures() : Map {
+    return self.expression.getBaseMeasures();
 }
 
 @cached
-operation EXPR!IntegerAggregatedExpression getMeasure() {
-    return self.expression.getMeasure();
+operation EXPR!IntegerAggregatedExpression getBaseMeasures() : Map {
+    return self.expression.getBaseMeasures();
 }
 
 @cached
-operation EXPR!DecimalAggregatedExpression getMeasure() {
-    return self.expression.getMeasure();
+operation EXPR!DecimalAggregatedExpression getBaseMeasures() : Map {
+    return self.expression.getBaseMeasures();
 }
 
 @cached
-operation EXPR!RoundExpression getMeasure() {
-    return self.expression.getMeasure();
+operation EXPR!RoundExpression getBaseMeasures() : Map {
+    return self.expression.getBaseMeasures();
 }
 
 @cached
-operation EXPR!IntegerSwitchExpression getMeasure() {
-    var measure;
+operation EXPR!IntegerSwitchExpression getBaseMeasures() : Map {
+    var baseMeasures;
     
     for (c in self.cases) {
-        var m = c.expression.getMeasure();
-        if (measure.isDefined() and measure <> m) {
+        var bm = c.expression.getBaseMeasures();
+        if (baseMeasures.isDefined() and baseMeasures <> bm) {
+        	"Measure of switch cases are not matching".println();
             return null;
         }
-        measure = m;
+        baseMeasures = bm;
     }
     
-    if (self.defaultExpression.isDefined() and self.defaultExpression.getMeasure() <> measure) {
+    if (self.defaultExpression.isDefined() and self.defaultExpression.getBaseMeasures() <> baseMeasures) {
+    	"Measure of default switch case is not matching".println();
         return null;
     }
     
-    return measure;
+    return baseMeasures;
 }
 
 @cached
-operation EXPR!DecimalSwitchExpression getMeasure() {
-    var measure;
+operation EXPR!DecimalSwitchExpression getBaseMeasures() : Map {
+    var baseMeasures;
     
     for (c in self.cases) {
-        var m = c.expression.getMeasure();
-        if (measure.isDefined() and measure <> m) {
+        var bm = c.expression.getBaseMeasures();
+        if (baseMeasures.isDefined() and baseMeasures <> bm) {
+        	"Measure of switch cases are not matching".println();
             return null;
         }
-        measure = m;
+        baseMeasures = bm;
     }
     
-    if (self.defaultExpression.isDefined() and self.defaultExpression.getMeasure() <> measure) {
+    if (self.defaultExpression.isDefined() and self.defaultExpression.getBaseMeasures() <> baseMeasures) {
+    	"Measure of default switch case is not matching".println();
         return null;
     }
     
-    return measure;
+    return baseMeasures;
 }
 
 @cached
-operation EXPR!Integer getMeasure() {
-    return null;
+operation EXPR!Integer getBaseMeasures() : Map {
+    return Map{};
 }
 
 @cached
-operation EXPR!Decimal getMeasure() {
-    return null;
+operation EXPR!Decimal getBaseMeasures() : Map {
+    return Map{};
 }
 
 @cached
-operation EXPR!MeasuredInteger getMeasure() {
-    return self.getMeasure();
-}
-
-@cached
-operation EXPR!MeasuredDecimal getMeasure() {
-    return self.getMeasure();
+operation EXPR!NumericExpression getMeasure() {
+	var baseMeasures = self.getBaseMeasures();
+	
+	if (baseMeasures.isDefined()) {
+		return baseMeasures.getMeasure();
+	} else {
+		return null;
+	}
 }
