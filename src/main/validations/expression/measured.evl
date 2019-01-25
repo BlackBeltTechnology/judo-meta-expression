@@ -65,7 +65,7 @@ context EXPR!IntegerAritmeticExpression {
                (not self.left.isMeasured() or self.left.satisfiesAll("MeasureIsValid")) and 
                (not self.right.isMeasured() or self.right.satisfiesAll("MeasureIsValid"))
     	
-    	check: self.getBaseMeasures().isDefined()
+        check: self.getBaseMeasures().isDefined() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
     	message: "Operation of measured expression is invalid: " + self.toString()
    	}
 }
@@ -87,7 +87,7 @@ context EXPR!DecimalAritmeticExpression {
                (not self.left.isMeasured() or self.left.satisfiesAll("MeasureIsValid")) and 
                (not self.right.isMeasured() or self.right.satisfiesAll("MeasureIsValid"))
     	
-    	check: self.getBaseMeasures().isDefined()
+        check: self.getBaseMeasures().isDefined() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
     	message: "Operation of measured expression is invalid: " + self.toString()
    	}
 }
