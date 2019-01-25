@@ -22,42 +22,18 @@ operation EXPR!NumericAttribute getUnit() {
 }
 
 @cached
-operation EXPR!MeasuredDecimal getMeasure() {
-	return self.measure.getMeasure();
-}
-
-@cached
 operation EXPR!MeasuredDecimal getBaseMeasures() : Map {
-    return self.getMeasure().getBaseMeasures();
-}
-
-@cached
-operation EXPR!MeasuredDecimal getUnit() {
-    var measure = self.getMeasure();
-    if (measure.isDefined()) {
-        return self.getMeasure().getUnit(self.unitName);
-    } else {
-        return null;
+    var unit = self.getUnit();
+    if (unit.isDefined()) {
+        return unit.getMeasure().getBaseMeasures();
     }
 }
 
 @cached
-operation EXPR!MeasuredInteger getMeasure() {
-	return self.measure.getMeasure();
-}
-
-@cached
 operation EXPR!MeasuredInteger getBaseMeasures() : Map {
-    return self.getMeasure().getBaseMeasures();
-}
-
-@cached
-operation EXPR!MeasuredInteger getUnit() {
-    var measure = self.getMeasure();
-    if (measure.isDefined()) {
-        return self.getMeasure().getUnit(self.unitName);
-    } else {
-        return null;
+    var unit = self.getUnit();
+    if (unit.isDefined()) {
+        return unit.getMeasure().getBaseMeasures();
     }
 }
 
@@ -178,6 +154,9 @@ operation EXPR!IntegerAritmeticExpression getBaseMeasures() : Map {
 }
 
 operation getBaseMeasures(operator, leftBaseMeasures : Map, rightBaseMeasures : Map) {
+    if (not leftBaseMeasures.isDefined() or not rightBaseMeasures.isDefined()) {
+        return null;
+    }
 	switch (operator) {
         case EXPR!IntegerOperator#add: continue;
         case EXPR!IntegerOperator#substract: continue;
@@ -320,4 +299,9 @@ operation EXPR!NumericExpression getMeasure() {
 	} else {
 		return null;
 	}
+}
+
+@cached
+operation Map getMeasure() {
+    return getDimensions().get(self);
 }

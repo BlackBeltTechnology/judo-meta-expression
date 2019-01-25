@@ -190,10 +190,10 @@
     </right>
   </n:DecimalAritmeticExpression>
   <n:DecimalAritmeticExpression xmi:id="_cBULcB_lEemlZKbj92vNQw" operator="/">
-    <left xsi:type="const:MeasuredDecimal" xmi:id="_PUXtkCB7Eem84oR5A2vsXg" measure="_Piye0B7gEemwg4NgOjaKeA" value="9" unitName="m"/>
+    <left xsi:type="const:MeasuredDecimal" xmi:id="_PUXtkCB7Eem84oR5A2vsXg" value="9" unitName="mm"/>
     <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_oTTs0CB6Eem84oR5A2vsXg" operator="/">
       <left xsi:type="const:Decimal" xmi:id="_JUGhUCCIEem84oR5A2vsXg" value="1"/>
-      <right xsi:type="const:MeasuredDecimal" xmi:id="_rDShICB6Eem84oR5A2vsXg" measure="_Piye0B7gEemwg4NgOjaKeA" value="45" unitName="mm"/>
+      <right xsi:type="const:MeasuredDecimal" xmi:id="_rDShICB6Eem84oR5A2vsXg" value="45" unitName="cm"/>
     </right>
   </n:DecimalAritmeticExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>

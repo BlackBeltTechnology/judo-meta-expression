@@ -234,7 +234,7 @@ operation JUDOPSM!Measure getBaseMeasures() : Map {
         }
         return baseMeasures;
     } else {
-        return Map{self.name = 1};
+        return Map{self = 1};
     }
 }
 
@@ -248,6 +248,32 @@ operation EXPR!NumericAttribute getMeasure() : JUDOPSM!Measure {
 }
 
 @cached
-operation Map getMeasure() : JUDOPSM!Measure {
-	return getDimensions().get(self);
+operation EXPR!MeasuredDecimal getUnit() {
+    if (self.measure.isDefined()) {
+        return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+    } else {
+        var units = JUDOPSM!Unit.all.select(u | u.name = self.unitName or u.symbol = self.unitName);
+        if (units.size() == 1) {
+            return units.get(0);
+        } else {
+            units.collect(u | u.getMeasure().name + ": " + u.name + " [" + u.symbol + "]").concat(", ").println("Multiple units found with name " + self.unitName + ": ");
+            return null;
+        }
+    }
 }
+
+@cached
+operation EXPR!MeasuredInteger getUnit() {
+    if (self.measure.isDefined()) {
+        return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+    } else {
+        var units = JUDOPSM!Unit.all.select(u | u.name = self.unitName or u.symbol = self.unitName);
+        if (units.size() == 1) {
+            return units.get(0);
+        } else {
+            units.collect(u | u.getMeasure().name + ": " + u.name + " [" + u.symbol + "]").concat(", ").println("Multiple units found with name " + self.unitName + ": ");
+            return null;
+        }
+    }
+}
+

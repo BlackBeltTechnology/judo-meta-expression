@@ -2,7 +2,7 @@
 <configuration xmlns="http://epsilon.blackbelt.hu/maven/plugin/v1/xml/ns/definition">
     <metaModels>
         <metaModel>model/expression.ecore</metaModel>
-        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:1.0.0-feature_measures-169</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:1.0.0-feature_measures-172</metaModel>
     </metaModels>
     <models>
         <model>
@@ -29,21 +29,6 @@
         <model>
             <artifact>src/test/northwind-judopsm.model</artifact>
             <name>NW</name>
-            <aliases>
-                <alias>JUDOPSM</alias>
-            </aliases>
-            <storeOnDisposal>false</storeOnDisposal>
-            <metaModelUris>
-                <param>http://blackbelt.hu/judo/meta/psm/namespace</param>
-                <param>http://blackbelt.hu/judo/meta/psm/type</param>
-                <param>http://blackbelt.hu/judo/meta/psm/measure</param>
-                <param>http://blackbelt.hu/judo/meta/psm/data</param>
-                <param>http://blackbelt.hu/judo/meta/psm/derived</param>
-            </metaModelUris>
-        </model>
-        <model>
-            <artifact>src/test/judoPSM.model</artifact>
-            <name>TEMPLATE</name>
             <aliases>
                 <alias>JUDOPSM</alias>
             </aliases>

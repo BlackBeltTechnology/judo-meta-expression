@@ -65,8 +65,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="CustomExpression" abstract="true" interface="true"
       eSuperTypes="#//DataExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="MeasuredExpression" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="measure" lowerBound="1"
-        eType="#//ElementName"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//ElementName"/>
   </eClassifiers>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">

@@ -362,18 +362,10 @@ operation EXPR!CustomAttribute toString() {
 
 @cached
 operation EXPR!MeasuredDecimal toString() {
-    var unit = "";
-    if (self.getUnit().isDefined()) {
-        unit = " [" + self.getUnit().toString() + "]";
-    }
-    return self.value.toString() + unit;
+    return self.value.toString() + " [" + self.unitName + "]";
 }
 
 @cached
 operation EXPR!MeasuredInteger toString() {
-    var unit = "";
-    if (self.getUnit().isDefined()) {
-        unit = " [" + self.getUnit().toString() + "]";
-    }
-    return self.value.toString();
+    return self.value.toString() + " [" + self.unitName + "]";
 }

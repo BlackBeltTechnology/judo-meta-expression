@@ -3,7 +3,7 @@ context EXPR!MeasuredInteger {
         guard: self.satisfiesAll("Resolved")
         
         check: self.getBaseMeasures().isDefined()
-        message: "Measure of integer constant is invalid: " + self.measure.toString()
+        message: "Measure of integer constant is invalid: " + self.toString()
     }
     
     constraint UnitIsInvalid {
@@ -19,7 +19,7 @@ context EXPR!MeasuredDecimal {
         guard: self.satisfiesAll("Resolved")
         
         check: self.getBaseMeasures().isDefined()
-        message: "Measure of decimal constant is invalid: " + self.measure.toString()
+        message: "Measure of decimal constant is invalid: " + self.toString()
     }
     
     constraint UnitIsInvalid {
@@ -170,5 +170,14 @@ context EXPR!DecimalSwitchExpression {
         
         check: self.getBaseMeasures().isDefined()
         message: "Measure of expression is invalid: " + self.toString()
+    }
+}
+
+context EXPR!NumericExpression {
+    constraint MeasureOfStandaloneExpressionIsDefined {
+        guard: self.satisfiesAll("Resolved") and self.isStandalone() and self.isMeasured()
+        
+        check: self.getMeasure().isDefined()
+        message: "Measure is not defined for standalone expression: " + self.toString()
     }
 }
