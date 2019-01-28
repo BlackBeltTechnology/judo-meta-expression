@@ -1,6 +1,6 @@
 context EXPR!MeasuredInteger {
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved")
+        guard: self.satisfiesAll("Resolved") and self.isMeasured()
         
         check: self.getBaseMeasures().isDefined()
         message: "Measure of integer constant is invalid: " + self.toString()
@@ -16,7 +16,7 @@ context EXPR!MeasuredInteger {
 
 context EXPR!MeasuredDecimal {
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved")
+        guard: self.satisfiesAll("Resolved") and self.isMeasured()
         
         check: self.getBaseMeasures().isDefined()
         message: "Measure of decimal constant is invalid: " + self.toString()

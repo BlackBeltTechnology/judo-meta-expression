@@ -14,6 +14,11 @@ operation EXPR!ElementName getNamespace() : ASM!EPackage {
 }
 
 @cached
+operation EXPR!ElementName get() : ASM!EClass {
+    return self.getNamespace().eClassifiers.selectOne(ne | ne.isKindOf(ASM!EClass) and ne.name = self.name);
+}
+
+@cached
 operation EXPR!ElementName getObjectType() : ASM!EClass {
     // not restricted to entity classes!
     return self.getNamespace().eClassifiers.selectOne(et | et.isKindOf(ASM!EClass) and et.name = self.name);

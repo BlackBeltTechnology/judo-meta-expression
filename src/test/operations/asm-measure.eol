@@ -1,0 +1,14 @@
+@cached
+operation EXPR!MeasuredInteger isMeasured() : Boolean {
+    return false;
+}
+
+@cached
+operation EXPR!MeasuredDecimal isMeasured() : Boolean {
+    return false;
+}
+
+@cached
+operation ASM!EDataType isMeasured() : Boolean {
+    return false;
+}

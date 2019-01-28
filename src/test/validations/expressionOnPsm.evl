@@ -1,4 +1,5 @@
 import "../operations/psm.eol";
+import "../operations/psm-measure.eol";
 import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
