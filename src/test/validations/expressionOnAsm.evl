@@ -1,5 +1,5 @@
-import "../operations/asm.eol";
-import "../operations/asm-measure.eol";
+import "../operations/expression-asm.eol";
+import "../operations/expression-asm-measure.eol";
 import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
