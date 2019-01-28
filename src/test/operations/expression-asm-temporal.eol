@@ -1,0 +1,15 @@
+@cached
+operation ASM!EDataType isDate() : Boolean {
+    return "EDate".getDataTypeByName() == self
+        or "JDate".getDataTypeByName() == self;
+}
+
+@cached
+operation ASM!EDataType isTimestamp() : Boolean {
+    return "JTimestamp".getDataTypeByName() == self;
+}
+
+@cached
+operation EXPR!TimestampAdditionExpression hasValidDurationUnit() : Boolean {
+    return true; // TODO
+}

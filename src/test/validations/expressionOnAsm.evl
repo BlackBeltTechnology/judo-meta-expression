@@ -1,5 +1,6 @@
 import "../operations/expression-asm.eol";
 import "../operations/expression-asm-measure.eol";
+import "../operations/expression-asm-temporal.eol";
 import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
@@ -8,6 +9,14 @@ operation displayAllExpressions() {
         expr.type().name.println(" - type: ");
         if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
+        }
+        if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
+            var measure = expr.getMeasure();
+            if (measure.isDefined()) {
+                measure.name.println(" - measure: ");
+            } else {
+                "UNKNOWN".println(" - measure: ");
+            }
         }
     }
     for (attr in EXPR!AttributeSelector) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string" xmlns:t="http://blackbelt.hu/judo/meta/expression/temporal">
   <c:CollectionNavigationFromObjectExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" referenceName="addresses">
     <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
       <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" name="c" referenceName="customer">
@@ -200,6 +200,20 @@
     <left xsi:type="const:MeasuredDecimal" xmi:id="_3O5UoCLmEemiuM_tO8e5iw" value="9" unitName="mg"/>
     <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" value="2" unitName="kg"/>
   </l:DecimalComparison>
+  <t:TimestampAdditionExpression xmi:id="_n93ogCMQEemiuM_tO8e5iw">
+    <timestamp xsi:type="const:Timestamp" xmi:id="_pw0z4CMQEemiuM_tO8e5iw" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
+    <duration xsi:type="const:MeasuredDecimal" xmi:id="_3aOzYCMREemiuM_tO8e5iw" value="102" unitName="s"/>
+  </t:TimestampAdditionExpression>
+  <t:TimestampAdditionExpression xmi:id="_D9HoACMZEemiuM_tO8e5iw" operator="-">
+    <timestamp xsi:type="t:TimestampAttribute" xmi:id="_JSa4wCMZEemiuM_tO8e5iw" attributeName="orderDate">
+      <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_PkvLYCMZEemiuM_tO8e5iw">
+        <collectionExpression xsi:type="c:SortExpression" xmi:id="_QKQTQCMZEemiuM_tO8e5iw">
+          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_RVpvYCMZEemiuM_tO8e5iw" elementName="_s9EE8OGqEeiNLd-ce3MxwA"/>
+        </collectionExpression>
+      </objectExpression>
+    </timestamp>
+    <duration xsi:type="const:MeasuredDecimal" xmi:id="_GS2wUCMZEemiuM_tO8e5iw" value="3" unitName="day"/>
+  </t:TimestampAdditionExpression>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>

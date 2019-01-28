@@ -2,7 +2,7 @@
 <configuration xmlns="http://epsilon.blackbelt.hu/maven/plugin/v1/xml/ns/definition">
     <metaModels>
         <metaModel>model/expression.ecore</metaModel>
-        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:1.0.0-feature_measures-172</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-psm:model:psm:1.0.0-develop-178</metaModel>
     </metaModels>
     <models>
         <model>
@@ -24,6 +24,7 @@
                 <param>http://blackbelt.hu/judo/meta/expression/object</param>
                 <param>http://blackbelt.hu/judo/meta/expression/collection</param>
                 <param>http://blackbelt.hu/judo/meta/expression/custom</param>
+                <param>http://blackbelt.hu/judo/meta/expression/temporal</param>
             </metaModelUris>
         </model>
         <model>

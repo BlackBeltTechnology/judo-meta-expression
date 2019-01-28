@@ -67,6 +67,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="MeasuredExpression" abstract="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//ElementName"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DateExpression" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TimestampExpression" abstract="true"
+      interface="true" eSuperTypes="#//DataExpression"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
@@ -97,7 +100,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CustomData" eSuperTypes="#//constant/Constant #//CustomExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimal" eSuperTypes="#//MeasuredExpression #//constant/Decimal">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
@@ -105,6 +108,14 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="MeasuredInteger" eSuperTypes="#//constant/Integer #//MeasuredExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Date" eSuperTypes="#//constant/Constant #//DateExpression">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Timestamp" eSuperTypes="#//constant/Constant #//TimestampExpression">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
   </eSubpackages>
@@ -177,6 +188,10 @@
     <eClassifiers xsi:type="ecore:EEnum" name="ObjectComparator">
       <eLiterals name="equal" value="4"/>
       <eLiterals name="notEqual" value="5" literal="notEqual"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="TimestampDurationOperator">
+      <eLiterals name="add" literal="+"/>
+      <eLiterals name="substract" value="1" literal="-"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric"
@@ -479,5 +494,20 @@
       nsPrefix="cust">
     <eClassifiers xsi:type="ecore:EClass" name="CustomAttribute" eSuperTypes="#//CustomExpression #//AttributeSelector"/>
     <eClassifiers xsi:type="ecore:EClass" name="CustomSwitchExpression" eSuperTypes="#//SwitchExpression #//CustomExpression"/>
+  </eSubpackages>
+  <eSubpackages name="temporal" nsURI="http://blackbelt.hu/judo/meta/expression/temporal"
+      nsPrefix="t">
+    <eClassifiers xsi:type="ecore:EClass" name="DateAttribute" eSuperTypes="#//DateExpression #//AttributeSelector"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampAttribute" eSuperTypes="#//TimestampExpression #//AttributeSelector"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DateSwitchExpression" eSuperTypes="#//SwitchExpression #//DateExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampSwitchExpression" eSuperTypes="#//SwitchExpression #//TimestampExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampAdditionExpression" eSuperTypes="#//TimestampExpression">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="duration" lowerBound="1"
+          eType="#//NumericExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/TimestampDurationOperator"/>
+    </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
