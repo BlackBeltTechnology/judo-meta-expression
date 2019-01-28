@@ -1,426 +1,427 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmi:id="_BO1z8CMFEemiuM_tO8e5iw" name="northwind" nsURI="http://blackbelt.hu/judo/meta/asm/northwind" nsPrefix="rtNorthwind">
-  <eSubpackages xmi:id="_BO1z8SMFEemiuM_tO8e5iw" name="dataTypes" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/dataTypes" nsPrefix="rtNorthwindDataTypes">
-    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_BO1z8iMFEemiuM_tO8e5iw" name="Countries">
-      <eLiterals xmi:id="_BO1z8yMFEemiuM_tO8e5iw" name="HU" literal="HU"/>
-      <eLiterals xmi:id="_BO1z9CMFEemiuM_tO8e5iw" name="AT" value="1" literal="AT"/>
-      <eLiterals xmi:id="_BO1z9SMFEemiuM_tO8e5iw" name="RO" value="2" literal="RO"/>
-      <eLiterals xmi:id="_BO1z9iMFEemiuM_tO8e5iw" name="SK" value="3" literal="SK"/>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="northwind" nsURI="http://blackbelt.hu/judo/meta/asm/northwind" nsPrefix="rtNorthwind">
+  <eSubpackages name="types" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/types" nsPrefix="rtNorthwindTypes">
+    <eClassifiers xsi:type="ecore:EEnum" name="Countries">
+      <eLiterals name="HU" literal="HU"/>
+      <eLiterals name="AT" value="1" literal="AT"/>
+      <eLiterals name="RO" value="2" literal="RO"/>
+      <eLiterals name="SK" value="3" literal="SK"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" xmi:id="_BO1z9yMFEemiuM_tO8e5iw" name="Titles">
-      <eLiterals xmi:id="_BO1z-CMFEemiuM_tO8e5iw" name="MS" literal="MS"/>
-      <eLiterals xmi:id="_BO1z-SMFEemiuM_tO8e5iw" name="MRS" value="1" literal="MRS"/>
-      <eLiterals xmi:id="_BO1z-iMFEemiuM_tO8e5iw" name="MR" value="2" literal="MR"/>
-      <eLiterals xmi:id="_BO1z-yMFEemiuM_tO8e5iw" name="DR" value="3" literal="DR"/>
+    <eClassifiers xsi:type="ecore:EEnum" name="Titles">
+      <eLiterals name="MS" literal="MS"/>
+      <eLiterals name="MRS" value="1" literal="MRS"/>
+      <eLiterals name="MR" value="2" literal="MR"/>
+      <eLiterals name="DR" value="3" literal="DR"/>
     </eClassifiers>
+    <eSubpackages name="measured" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/types/measured" nsPrefix="rtNorthwindTypesMeasured"/>
   </eSubpackages>
-  <eSubpackages xmi:id="_BO1z_CMFEemiuM_tO8e5iw" name="entities" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/entities" nsPrefix="rtNorthwindEntities">
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO1z_SMFEemiuM_tO8e5iw" name="Category">
-      <eAnnotations xmi:id="_BO2bACMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO2bASMFEemiuM_tO8e5iw" key="entity" value="true"/>
+  <eSubpackages name="entities" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/entities" nsPrefix="rtNorthwindEntities">
+    <eClassifiers xsi:type="ecore:EClass" name="Category">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bAyMFEemiuM_tO8e5iw" name="categoryName" lowerBound="1">
-        <eAnnotations xmi:id="_BO2bBCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO2bBSMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="categoryName" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bByMFEemiuM_tO8e5iw" name="description">
-        <eAnnotations xmi:id="_BO2bCCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO2bCSMFEemiuM_tO8e5iw" key="maxLength" value="250"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="description">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="250"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bCyMFEemiuM_tO8e5iw" name="picture">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="picture">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JByteArray"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO2bDSMFEemiuM_tO8e5iw" name="products" upperBound="-1" eType="_BO2bDyMFEemiuM_tO8e5iw" eOpposite="_BO3CESMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO2bDiMFEemiuM_tO8e5iw" name="owner" lowerBound="1" eType="_BO4QRiMFEemiuM_tO8e5iw" eOpposite="_BO4QZSMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1" eType="//entities/Product" eOpposite="//entities/Product/category"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="owner" lowerBound="1" eType="//entities/Employee" eOpposite="//entities/Employee/category"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO2bDyMFEemiuM_tO8e5iw" name="Product">
-      <eAnnotations xmi:id="_BO2bECMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO2bESMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Product">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bEyMFEemiuM_tO8e5iw" name="productName" lowerBound="1">
-        <eAnnotations xmi:id="_BO2bFCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO2bFSMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="productName" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bFyMFEemiuM_tO8e5iw" name="quantityPerUnit">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="quantityPerUnit">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JInteger"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bGSMFEemiuM_tO8e5iw" name="unitPrice">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitPrice">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bGyMFEemiuM_tO8e5iw" name="unitsInStock">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitsInStock">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JInteger"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bHSMFEemiuM_tO8e5iw" name="unitsOnOrder">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitsOnOrder">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JInteger"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bHyMFEemiuM_tO8e5iw" name="reorderLevel">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="reorderLevel">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JInteger"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO2bISMFEemiuM_tO8e5iw" name="discounted">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="discounted">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JBoolean"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CESMFEemiuM_tO8e5iw" name="category" eType="_BO1z_SMFEemiuM_tO8e5iw" eOpposite="_BO2bDSMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CEyMFEemiuM_tO8e5iw" name="supplier" eType="_BO3pOCMFEemiuM_tO8e5iw" eOpposite="_BO3pQSMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CFCMFEemiuM_tO8e5iw" name="manufacturers" upperBound="-1" eType="_BO3CPiMFEemiuM_tO8e5iw" eOpposite="_BO3pNiMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CFSMFEemiuM_tO8e5iw" name="store" lowerBound="1" eType="_BO5eWSMFEemiuM_tO8e5iw" eOpposite="_BO5eXSMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_DLuXYCMFEemiuM_tO8e5iw" name="weight">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="weight">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="category" eType="//entities/Category" eOpposite="//entities/Category/products"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="supplier" eType="//entities/Supplier" eOpposite="//entities/Supplier/suppliedProducts"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="manufacturers" upperBound="-1" eType="//entities/Company" eOpposite="//entities/Company/manufacturedProducts"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="store" lowerBound="1" eType="//entities/Store" eOpposite="//entities/Store/products"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3CFiMFEemiuM_tO8e5iw" name="Customer">
-      <eAnnotations xmi:id="_BO3CFyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3CGCMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Customer">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CGiMFEemiuM_tO8e5iw" name="orders" upperBound="-1" eType="_BO3CHCMFEemiuM_tO8e5iw" eOpposite="_BO3CLCMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CGyMFEemiuM_tO8e5iw" name="addresses" upperBound="-1" eType="_BO43bCMFEemiuM_tO8e5iw" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orders" upperBound="-1" eType="//entities/Order" eOpposite="//entities/Order/customer"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="addresses" upperBound="-1" eType="//entities/Address" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3CHCMFEemiuM_tO8e5iw" name="Order">
-      <eAnnotations xmi:id="_BO3CHSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3CHiMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Order">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3CICMFEemiuM_tO8e5iw" name="orderDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="orderDate">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JTimestamp"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3CIiMFEemiuM_tO8e5iw" name="requiredDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="requiredDate">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JTimestamp"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3CJCMFEemiuM_tO8e5iw" name="shippedDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="shippedDate">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JTimestamp"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3CJiMFEemiuM_tO8e5iw" name="freight">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="freight">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3CKCMFEemiuM_tO8e5iw" name="shipName">
-        <eAnnotations xmi:id="_BO3CKSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3CKiMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="shipName">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CLCMFEemiuM_tO8e5iw" name="customer" eType="_BO3CFiMFEemiuM_tO8e5iw" eOpposite="_BO3CGiMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CLiMFEemiuM_tO8e5iw" name="shipper" eType="_BO3pQyMFEemiuM_tO8e5iw" eOpposite="_BO3pTyMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CLyMFEemiuM_tO8e5iw" name="employee" eType="_BO4QRiMFEemiuM_tO8e5iw" eOpposite="_BO4QZyMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CMCMFEemiuM_tO8e5iw" name="shipAddress" eType="_BO43iCMFEemiuM_tO8e5iw" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CMSMFEemiuM_tO8e5iw" name="orderDetails" lowerBound="1" upperBound="-1" eType="_BO3CMiMFEemiuM_tO8e5iw" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="customer" eType="//entities/Customer" eOpposite="//entities/Customer/orders"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="shipper" eType="//entities/Shipper" eOpposite="//entities/Shipper/orders"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="employee" eType="//entities/Employee" eOpposite="//entities/Employee/orders"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="shipAddress" eType="//entities/InternationalAddress" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orderDetails" lowerBound="1" upperBound="-1" eType="//entities/OrderDetail" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3CMiMFEemiuM_tO8e5iw" name="OrderDetail">
-      <eAnnotations xmi:id="_BO3CMyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3CNCMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OrderDetail">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3CNiMFEemiuM_tO8e5iw" name="unitPrice" lowerBound="1">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitPrice" lowerBound="1">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3COCMFEemiuM_tO8e5iw" name="quantity" lowerBound="1">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="quantity" lowerBound="1">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JInteger"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3COiMFEemiuM_tO8e5iw" name="discount" lowerBound="1">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="discount" lowerBound="1">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3CPCMFEemiuM_tO8e5iw" name="product" lowerBound="1" eType="_BO2bDyMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="product" lowerBound="1" eType="//entities/Product"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3CPiMFEemiuM_tO8e5iw" name="Company">
-      <eAnnotations xmi:id="_BO3CPyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3CQCMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Company">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
-      <eSuperTypes href="#_BO3CFiMFEemiuM_tO8e5iw"/>
+      <eSuperTypes href="#//entities/Customer"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pIiMFEemiuM_tO8e5iw" name="companyName" lowerBound="1">
-        <eAnnotations xmi:id="_BO3pIyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pJCMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="companyName" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pJiMFEemiuM_tO8e5iw" name="contactName">
-        <eAnnotations xmi:id="_BO3pJyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pKCMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="contactName">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pKiMFEemiuM_tO8e5iw" name="contactTitle">
-        <eAnnotations xmi:id="_BO3pKyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pLCMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="contactTitle">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pLiMFEemiuM_tO8e5iw" name="phone">
-        <eAnnotations xmi:id="_BO3pLyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pMCMFEemiuM_tO8e5iw" key="maxLength" value="20"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phone">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="20"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pMiMFEemiuM_tO8e5iw" name="fax">
-        <eAnnotations xmi:id="_BO3pMyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pNCMFEemiuM_tO8e5iw" key="maxLength" value="20"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="fax">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="20"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3pNiMFEemiuM_tO8e5iw" name="manufacturedProducts" upperBound="-1" eType="_BO2bDyMFEemiuM_tO8e5iw" eOpposite="_BO3CFCMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="manufacturedProducts" upperBound="-1" eType="//entities/Product" eOpposite="//entities/Product/manufacturers"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3pOCMFEemiuM_tO8e5iw" name="Supplier">
-      <eAnnotations xmi:id="_BO3pOSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3pOiMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Supplier">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
-      <eSuperTypes href="#_BO3CPiMFEemiuM_tO8e5iw"/>
+      <eSuperTypes href="#//entities/Company"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pPSMFEemiuM_tO8e5iw" name="homePage">
-        <eAnnotations xmi:id="_BO3pPiMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pPyMFEemiuM_tO8e5iw" key="maxLength" value="1024"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="homePage">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="1024"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3pQSMFEemiuM_tO8e5iw" name="suppliedProducts" upperBound="-1" eType="_BO2bDyMFEemiuM_tO8e5iw" eOpposite="_BO3CEyMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="suppliedProducts" upperBound="-1" eType="//entities/Product" eOpposite="//entities/Product/supplier"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3pQyMFEemiuM_tO8e5iw" name="Shipper">
-      <eAnnotations xmi:id="_BO3pRCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3pRSMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Shipper">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pRyMFEemiuM_tO8e5iw" name="companyName" lowerBound="1">
-        <eAnnotations xmi:id="_BO3pSCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pSSMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="companyName" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO3pSyMFEemiuM_tO8e5iw" name="phone">
-        <eAnnotations xmi:id="_BO3pTCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO3pTSMFEemiuM_tO8e5iw" key="maxLength" value="20"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phone">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="20"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3pTyMFEemiuM_tO8e5iw" name="orders" upperBound="-1" eType="_BO3CHCMFEemiuM_tO8e5iw" eOpposite="_BO3CLiMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO3pUSMFEemiuM_tO8e5iw" name="territory" eType="_BO4QbyMFEemiuM_tO8e5iw" eOpposite="_BO43QiMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orders" upperBound="-1" eType="//entities/Order" eOpposite="//entities/Order/shipper"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="territory" eType="//entities/Territory" eOpposite="//entities/Territory/shipper"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO3pUiMFEemiuM_tO8e5iw" name="InternationalOrder">
-      <eAnnotations xmi:id="_BO3pUyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO3pVCMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternationalOrder">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
-      <eSuperTypes href="#_BO3CHCMFEemiuM_tO8e5iw"/>
+      <eSuperTypes href="#//entities/Order"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QMiMFEemiuM_tO8e5iw" name="customsDescription" lowerBound="1">
-        <eAnnotations xmi:id="_BO4QMyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QNCMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="customsDescription" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QNiMFEemiuM_tO8e5iw" name="exciseTax" lowerBound="1">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="exciseTax" lowerBound="1">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO4QOCMFEemiuM_tO8e5iw" name="Person">
-      <eAnnotations xmi:id="_BO4QOSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO4QOiMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Person">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QPCMFEemiuM_tO8e5iw" name="lastName" lowerBound="1">
-        <eAnnotations xmi:id="_BO4QPSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QPiMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastName" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QQCMFEemiuM_tO8e5iw" name="firstName" lowerBound="1">
-        <eAnnotations xmi:id="_BO4QQSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QQiMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstName" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QRCMFEemiuM_tO8e5iw" name="title" eType="_BO1z9yMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="//types/Titles"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO4QRiMFEemiuM_tO8e5iw" name="Employee">
-      <eAnnotations xmi:id="_BO4QRyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO4QSCMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Employee">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
-      <eSuperTypes href="#_BO4QOCMFEemiuM_tO8e5iw"/>
+      <eSuperTypes href="#//entities/Person"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QSyMFEemiuM_tO8e5iw" name="titleOfCourtesy">
-        <eAnnotations xmi:id="_BO4QTCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QTSMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="titleOfCourtesy">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QTyMFEemiuM_tO8e5iw" name="birthDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="birthDate">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDate"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QUSMFEemiuM_tO8e5iw" name="hireDate">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hireDate">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDate"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QUyMFEemiuM_tO8e5iw" name="homePhone">
-        <eAnnotations xmi:id="_BO4QVCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QVSMFEemiuM_tO8e5iw" key="maxLength" value="20"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="homePhone">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="20"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QVyMFEemiuM_tO8e5iw" name="extension">
-        <eAnnotations xmi:id="_BO4QWCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QWSMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="extension">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QWyMFEemiuM_tO8e5iw" name="photo">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="photo">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JByteArray"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QXSMFEemiuM_tO8e5iw" name="notes">
-        <eAnnotations xmi:id="_BO4QXiMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QXyMFEemiuM_tO8e5iw" key="maxLength" value="250"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="notes">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="250"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QYSMFEemiuM_tO8e5iw" name="photoPath">
-        <eAnnotations xmi:id="_BO4QYiMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO4QYyMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="photoPath">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO4QZSMFEemiuM_tO8e5iw" name="category" eType="_BO1z_SMFEemiuM_tO8e5iw" eOpposite="_BO2bDiMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO4QZyMFEemiuM_tO8e5iw" name="orders" upperBound="-1" eType="_BO3CHCMFEemiuM_tO8e5iw" eOpposite="_BO3CLyMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO4QaSMFEemiuM_tO8e5iw" name="reportsTo" eType="_BO4QRiMFEemiuM_tO8e5iw" eOpposite="_BO4QayMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO4QayMFEemiuM_tO8e5iw" name="employees" upperBound="-1" eType="_BO4QRiMFEemiuM_tO8e5iw" eOpposite="_BO4QaSMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO4QbSMFEemiuM_tO8e5iw" name="territory" eType="_BO4QbyMFEemiuM_tO8e5iw" eOpposite="_BO43RCMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO4QbiMFEemiuM_tO8e5iw" name="address" eType="_BO43bCMFEemiuM_tO8e5iw" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="category" eType="//entities/Category" eOpposite="//entities/Category/owner"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orders" upperBound="-1" eType="//entities/Order" eOpposite="//entities/Order/employee"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="reportsTo" eType="//entities/Employee" eOpposite="//entities/Employee/employees"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="employees" upperBound="-1" eType="//entities/Employee" eOpposite="//entities/Employee/reportsTo"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="territory" eType="//entities/Territory" eOpposite="//entities/Territory/employees"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="address" eType="//entities/Address" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO4QbyMFEemiuM_tO8e5iw" name="Territory">
-      <eAnnotations xmi:id="_BO4QcCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO4QcSMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Territory">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO4QcyMFEemiuM_tO8e5iw" name="territoryDescription" lowerBound="1">
-        <eAnnotations xmi:id="_BO4QdCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43QCMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="territoryDescription" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO43QiMFEemiuM_tO8e5iw" name="shipper" eType="_BO3pQyMFEemiuM_tO8e5iw" eOpposite="_BO3pUSMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO43RCMFEemiuM_tO8e5iw" name="employees" upperBound="-1" eType="_BO4QRiMFEemiuM_tO8e5iw" eOpposite="_BO4QbSMFEemiuM_tO8e5iw"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO43RiMFEemiuM_tO8e5iw" name="region" eType="_BO43RyMFEemiuM_tO8e5iw" eOpposite="_BO43TyMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="shipper" eType="//entities/Shipper" eOpposite="//entities/Shipper/territory"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="employees" upperBound="-1" eType="//entities/Employee" eOpposite="//entities/Employee/territory"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="region" eType="//entities/Region" eOpposite="//entities/Region/territories"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43RyMFEemiuM_tO8e5iw" name="Region">
-      <eAnnotations xmi:id="_BO43SCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43SSMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Region">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43SyMFEemiuM_tO8e5iw" name="regionDescription" lowerBound="1">
-        <eAnnotations xmi:id="_BO43TCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43TSMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="regionDescription" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO43TyMFEemiuM_tO8e5iw" name="territories" upperBound="-1" eType="_BO4QbyMFEemiuM_tO8e5iw" eOpposite="_BO43RiMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="territories" upperBound="-1" eType="//entities/Territory" eOpposite="//entities/Territory/region"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43USMFEemiuM_tO8e5iw" name="OnlineOrder">
-      <eAnnotations xmi:id="_BO43UiMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43UyMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OnlineOrder">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
-      <eSuperTypes href="#_BO3CHCMFEemiuM_tO8e5iw"/>
+      <eSuperTypes href="#//entities/Order"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43ViMFEemiuM_tO8e5iw" name="webshopUrl" lowerBound="1">
-        <eAnnotations xmi:id="_BO43VyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43WCMFEemiuM_tO8e5iw" key="maxLength" value="1024"/>
-        </eAnnotations>
-        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
-      </eStructuralFeatures>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43WiMFEemiuM_tO8e5iw" name="OnlineInternationalOrder">
-      <eAnnotations xmi:id="_BO43WyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43XCMFEemiuM_tO8e5iw" key="entity" value="true"/>
-      </eAnnotations>
-      <eSuperTypes href="#_BO3pUiMFEemiuM_tO8e5iw"/>
-      <eSuperTypes href="#_BO43USMFEemiuM_tO8e5iw"/>
-      <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43YCMFEemiuM_tO8e5iw" name="onlineTrackingNumber">
-        <eAnnotations xmi:id="_BO43YSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43YiMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="webshopUrl" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="1024"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43ZCMFEemiuM_tO8e5iw" name="City">
-      <eAnnotations xmi:id="_BO43ZSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43ZiMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OnlineInternationalOrder">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
+      <eSuperTypes href="#//entities/InternationalOrder"/>
+      <eSuperTypes href="#//entities/OnlineOrder"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43aCMFEemiuM_tO8e5iw" name="name">
-        <eAnnotations xmi:id="_BO43aSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43aiMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="onlineTrackingNumber">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43bCMFEemiuM_tO8e5iw" name="Address">
-      <eAnnotations xmi:id="_BO43bSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43biMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="City">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43cCMFEemiuM_tO8e5iw" name="address" lowerBound="1">
-        <eAnnotations xmi:id="_BO43cSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43ciMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
-        </eAnnotations>
-        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43dCMFEemiuM_tO8e5iw" name="region">
-        <eAnnotations xmi:id="_BO43dSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43diMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
-        </eAnnotations>
-        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43eCMFEemiuM_tO8e5iw" name="postalCode" lowerBound="1">
-        <eAnnotations xmi:id="_BO43eSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43eiMFEemiuM_tO8e5iw" key="maxLength" value="255"/>
-        </eAnnotations>
-        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
-      </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO43fCMFEemiuM_tO8e5iw" name="city" lowerBound="1" eType="_BO43ZCMFEemiuM_tO8e5iw"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43fiMFEemiuM_tO8e5iw" name="Individual">
-      <eAnnotations xmi:id="_BO43fyMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43gCMFEemiuM_tO8e5iw" key="entity" value="true"/>
-      </eAnnotations>
-      <eSuperTypes href="#_BO4QOCMFEemiuM_tO8e5iw"/>
-      <eSuperTypes href="#_BO3CFiMFEemiuM_tO8e5iw"/>
-      <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43hCMFEemiuM_tO8e5iw" name="phone">
-        <eAnnotations xmi:id="_BO43hSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details xmi:id="_BO43hiMFEemiuM_tO8e5iw" key="maxLength" value="20"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43iCMFEemiuM_tO8e5iw" name="InternationalAddress">
-      <eAnnotations xmi:id="_BO43iSMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43iiMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Address">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
-      <eSuperTypes href="#_BO43bCMFEemiuM_tO8e5iw"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_BO43jSMFEemiuM_tO8e5iw" name="country" eType="_BO1z8iMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="address" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="region">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="postalCode" lowerBound="1">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="255"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="city" lowerBound="1" eType="//entities/City"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO43jyMFEemiuM_tO8e5iw" name="PaymentList">
-      <eAnnotations xmi:id="_BO43kCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO43kSMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Individual">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
+      <eSuperTypes href="#//entities/Person"/>
+      <eSuperTypes href="#//entities/Customer"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO5eUSMFEemiuM_tO8e5iw" name="employees" lowerBound="1" upperBound="-1" eType="_BO4QRiMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phone">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="maxLength" value="20"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
+      </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO5eUyMFEemiuM_tO8e5iw" name="MailingList">
-      <eAnnotations xmi:id="_BO5eVCMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO5eVSMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternationalAddress">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
+      <eSuperTypes href="#//entities/Address"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO5eVyMFEemiuM_tO8e5iw" name="person" eType="_BO4QOCMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="country" eType="//types/Countries"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" xmi:id="_BO5eWSMFEemiuM_tO8e5iw" name="Store">
-      <eAnnotations xmi:id="_BO5eWiMFEemiuM_tO8e5iw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-        <details xmi:id="_BO5eWyMFEemiuM_tO8e5iw" key="entity" value="true"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PaymentList">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
       </eAnnotations>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_BO5eXSMFEemiuM_tO8e5iw" name="products" upperBound="-1" eType="_BO2bDyMFEemiuM_tO8e5iw" eOpposite="_BO3CFSMFEemiuM_tO8e5iw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="employees" lowerBound="1" upperBound="-1" eType="//entities/Employee"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MailingList">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
+      </eAnnotations>
+      <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="person" eType="//entities/Person"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Store">
+      <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+        <details key="entity" value="true"/>
+      </eAnnotations>
+      <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="products" upperBound="-1" eType="//entities/Product" eOpposite="//entities/Product/store"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
