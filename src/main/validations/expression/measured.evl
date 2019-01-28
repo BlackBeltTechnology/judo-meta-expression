@@ -181,3 +181,49 @@ context EXPR!NumericExpression {
         message: "Measure is not defined for standalone expression: " + self.toString()
     }
 }
+
+context EXPR!IntegerComparison {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+    
+    // both compared values must be measured
+    constraint ComparisonIsMeasured {
+        guard: self.satisfiesAll("Resolved") and (self.left.isMeasured() or self.right.isMeasured())
+        
+        check: self.left.isMeasured() and self.right.isMeasured()
+        message: "Both left and right sides must be measured: " + self.toString()
+    }
+    
+    // dimensions of compared measured values must match
+    constraint MeasuresAreMatching {
+        guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        
+        check: self.left.getBaseMeasures() == self.right.getBaseMeasures()
+        message: "Dimensions of comparison are not matching: " + self.toString()
+    }
+}
+
+context EXPR!DecimalComparison {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self.toString()
+    }
+    
+    // both compared values must be measured
+    constraint ComparisonIsMeasured {
+        guard: self.satisfiesAll("Resolved") and (self.left.isMeasured() or self.right.isMeasured())
+        
+        check: self.left.isMeasured() and self.right.isMeasured()
+        message: "Both left and right sides must be measured: " + self.toString()
+    }
+    
+    // dimensions of compared measured values must match
+    constraint MeasuresAreMatching {
+        guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        
+        check: self.left.getBaseMeasures() == self.right.getBaseMeasures()
+        message: "Dimensions of comparison are not matching: " + self.toString()
+    }
+}

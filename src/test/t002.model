@@ -196,6 +196,10 @@
       <right xsi:type="const:MeasuredDecimal" xmi:id="_rDShICB6Eem84oR5A2vsXg" value="45" unitName="cm"/>
     </right>
   </n:DecimalAritmeticExpression>
+  <l:DecimalComparison xmi:id="_bez44CLmEemiuM_tO8e5iw">
+    <left xsi:type="const:MeasuredDecimal" xmi:id="_3O5UoCLmEemiuM_tO8e5iw" value="9" unitName="mg"/>
+    <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" value="2" unitName="kg"/>
+  </l:DecimalComparison>
   <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
   <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
