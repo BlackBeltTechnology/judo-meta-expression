@@ -11,16 +11,16 @@ operation JUDOPSM!Primitive isTimestamp() : Boolean {
 @cached
 operation EXPR!TimestampAdditionExpression hasValidDurationUnit() : Boolean {
     var unit = self.duration.getUnit();
-    if (not unit.isDefined() or not unit.isKindOf(JUDOPSM!SystemUnit)) {
+    if (not unit.isDefined() or not unit.isKindOf(JUDOPSM!DurationUnit)) {
         return false;
     }
     
-    var systemUnitType = unit.systemUnitType;
+    var unitType = unit.unitType;
     
-    return systemUnitType == JUDOPSM!SystemUnitType#millisecond
-        or systemUnitType == JUDOPSM!SystemUnitType#second
-        or systemUnitType == JUDOPSM!SystemUnitType#minute
-        or systemUnitType == JUDOPSM!SystemUnitType#hour
-        or systemUnitType == JUDOPSM!SystemUnitType#day
-        or systemUnitType == JUDOPSM!SystemUnitType#week;
+    return unitType == JUDOPSM!DurationType#millisecond
+        or unitType == JUDOPSM!DurationType#second
+        or unitType == JUDOPSM!DurationType#minute
+        or unitType == JUDOPSM!DurationType#hour
+        or unitType == JUDOPSM!DurationType#day
+        or unitType == JUDOPSM!DurationType#week;
 }
