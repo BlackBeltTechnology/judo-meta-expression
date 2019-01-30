@@ -11,5 +11,15 @@ operation ASM!EDataType isTimestamp() : Boolean {
 
 @cached
 operation EXPR!TimestampAdditionExpression hasValidDurationUnit() : Boolean {
-    return true; // TODO
+    var unit = self.duration.getUnit();
+    if (not unit.isDefined() or not unit.isKindOf(MEASURES!DurationUnit)) {
+        return false;
+    }
+    
+    return unit.type == MEASURES!DurationType#millisecond
+        or unit.type == MEASURES!DurationType#second
+        or unit.type == MEASURES!DurationType#minute
+        or unit.type == MEASURES!DurationType#hour
+        or unit.type == MEASURES!DurationType#day
+        or unit.type == MEASURES!DurationType#week;
 }

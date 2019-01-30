@@ -48,8 +48,18 @@ operation String getDataTypeByName() : ASM!EDataType {
     return ASM!EDataType.all.selectOne(t | t.name = self);
 }
 
+operation ASM!EClass getAttribute(name: String) : ASM!EAttribute {
+    // TODO - check if no derived annotation is present
+    return self.eAllAttributes.selectOne(r | r.name = name);
+}
+
+operation ASM!EClass getProperty(name: String) : ASM!EAttribute {
+    // TODO - check if derived annotation is present
+    return null;
+}
+
 operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
-    var attr = self.eAllAttributes.selectOne(r | r.name = name);
+    var attr = self.getAttribute(name);
     if (attr.isDefined()) {
         var type = attr.eAttributeType;
         if (type.isKindOf(ASM!EEnum)) {
