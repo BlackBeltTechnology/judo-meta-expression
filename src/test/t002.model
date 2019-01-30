@@ -198,7 +198,7 @@
   </n:DecimalAritmeticExpression>
   <l:DecimalComparison xmi:id="_bez44CLmEemiuM_tO8e5iw">
     <left xsi:type="const:MeasuredDecimal" xmi:id="_3O5UoCLmEemiuM_tO8e5iw" value="9" unitName="mg"/>
-    <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" value="2" unitName="kg"/>
+    <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" measure="_7VLCACSdEemLpvUY7MQgng" value="2" unitName="kg"/>
   </l:DecimalComparison>
   <t:TimestampAdditionExpression xmi:id="_n93ogCMQEemiuM_tO8e5iw">
     <timestamp xsi:type="const:Timestamp" xmi:id="_pw0z4CMQEemiuM_tO8e5iw" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
@@ -214,9 +214,14 @@
     </timestamp>
     <duration xsi:type="const:MeasuredDecimal" xmi:id="_GS2wUCMZEemiuM_tO8e5iw" value="3" unitName="day"/>
   </t:TimestampAdditionExpression>
-  <expr:ElementName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
-  <expr:ElementName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
-  <expr:ElementName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
-  <expr:ElementName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind::entities"/>
-  <expr:ElementName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind::entities"/>
+  <t:TimestampDifferenceExpression xmi:id="_UiuaICSfEemLpvUY7MQgng">
+    <startTimestamp xsi:type="const:Timestamp" xmi:id="_V46J8CSfEemLpvUY7MQgng" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
+    <endTimestamp xsi:type="const:Timestamp" xmi:id="_WQtl8CSfEemLpvUY7MQgng" value="2019-01-30 15:57:08.123+01:00 [Europe/Budapest]"/>
+  </t:TimestampDifferenceExpression>
+  <expr:TypeName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
+  <expr:TypeName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
+  <expr:TypeName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
+  <expr:TypeName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind::entities"/>
+  <expr:TypeName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind::entities"/>
+  <expr:MeasureName xmi:id="_7VLCACSdEemLpvUY7MQgng" name="Mass" namespace="Template::measures"/>
 </xmi:XMI>

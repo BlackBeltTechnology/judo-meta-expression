@@ -6,5 +6,5 @@
   <const:Boolean xmi:id="_FCZQMx5GEemwg4NgOjaKeA" value="true"/>
   <const:Literal xmi:id="_FCZQNB5GEemwg4NgOjaKeA" value="RED"/>
   <const:MeasuredDecimal xmi:id="_FCZQNR5GEemwg4NgOjaKeA" value="10" measure="_FCZQNh5GEemwg4NgOjaKeA" unitName="kilogram"/>
-  <expr:ElementName xmi:id="_FCZQNh5GEemwg4NgOjaKeA" name="Mass" namespace="Template::measures"/>
+  <expr:MeasureName xmi:id="_FCZQNh5GEemwg4NgOjaKeA" name="Mass" namespace="Template::measures"/>
 </xmi:XMI>

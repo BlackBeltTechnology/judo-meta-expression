@@ -10,16 +10,26 @@ operation ASM!EDataType isTimestamp() : Boolean {
 }
 
 @cached
+operation MEASURES!Unit isValidDurationUnit() : Boolean {
+    return false;
+}
+
+@cached
+operation MEASURES!DurationUnit isValidDurationUnit() : Boolean {
+    return self.type == MEASURES!DurationType#millisecond
+        or self.type == MEASURES!DurationType#second
+        or self.type == MEASURES!DurationType#minute
+        or self.type == MEASURES!DurationType#hour
+        or self.type == MEASURES!DurationType#day
+        or self.type == MEASURES!DurationType#week;
+}
+
+@cached
 operation EXPR!TimestampAdditionExpression hasValidDurationUnit() : Boolean {
     var unit = self.duration.getUnit();
     if (not unit.isDefined() or not unit.isKindOf(MEASURES!DurationUnit)) {
         return false;
     }
     
-    return unit.type == MEASURES!DurationType#millisecond
-        or unit.type == MEASURES!DurationType#second
-        or unit.type == MEASURES!DurationType#minute
-        or unit.type == MEASURES!DurationType#hour
-        or unit.type == MEASURES!DurationType#day
-        or unit.type == MEASURES!DurationType#week;
+    return unit.isValidDurationUnit();
 }

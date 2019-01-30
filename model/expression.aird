@@ -635,8 +635,9 @@
     <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_qs2gEBjEEemJ9IMxFeLS3g" name="ElementName" tooltipText="" width="12" height="10">
       <target xmi:type="ecore:EClass" href="expression.ecore#//ElementName"/>
       <semanticElements xmi:type="ecore:EClass" href="expression.ecore#//ElementName"/>
-      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_qs2gERjEEemJ9IMxFeLS3g" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
-        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
+      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_o8dlUCSdEemLpvUY7MQgng" iconPath="/org.eclipse.emf.ecoretools.design/icons/full/obj16/EClass_abstract.gif" borderSize="1" borderSizeComputationExpression="1" borderColor="125,125,125" backgroundStyle="Liquid" foregroundColor="228,228,228">
+        <labelFormat>italic</labelFormat>
+        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@conditionnalStyles.1/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
       <ownedElements xmi:type="diagram:DNodeListElement" xmi:id="_qtL3QBjEEemJ9IMxFeLS3g" name="name : EString" tooltipText="">
@@ -857,6 +858,7 @@
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_qtQvwxjEEemJ9IMxFeLS3g" description="_qtQvwBjEEemJ9IMxFeLS3g" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_qtQvxBjEEemJ9IMxFeLS3g" showIcon="false">
           <customFeatures>labelSize</customFeatures>
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
         <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_qtQvxRjEEemJ9IMxFeLS3g" showIcon="false" labelColor="39,76,114">
           <customFeatures>labelSize</customFeatures>
@@ -870,6 +872,7 @@
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_qtRW0BjEEemJ9IMxFeLS3g" description="_qtQvwBjEEemJ9IMxFeLS3g" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_qtRW0RjEEemJ9IMxFeLS3g" showIcon="false">
           <customFeatures>labelSize</customFeatures>
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
         <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_qtRW0hjEEemJ9IMxFeLS3g" showIcon="false" labelColor="39,76,114">
           <customFeatures>labelSize</customFeatures>
@@ -896,6 +899,7 @@
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_qtR95BjEEemJ9IMxFeLS3g" description="_qtQvwBjEEemJ9IMxFeLS3g" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_qtR95RjEEemJ9IMxFeLS3g" showIcon="false">
           <customFeatures>labelSize</customFeatures>
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
         <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_qtR95hjEEemJ9IMxFeLS3g" showIcon="false" labelColor="39,76,114">
           <customFeatures>labelSize</customFeatures>
@@ -909,6 +913,7 @@
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_qtSk8RjEEemJ9IMxFeLS3g" description="_qtQvwBjEEemJ9IMxFeLS3g" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_qtSk8hjEEemJ9IMxFeLS3g" showIcon="false">
           <customFeatures>labelSize</customFeatures>
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
         <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_qtSk8xjEEemJ9IMxFeLS3g" showIcon="false" labelColor="39,76,114">
           <customFeatures>labelSize</customFeatures>
@@ -922,6 +927,7 @@
       <ownedStyle xmi:type="diagram:EdgeStyle" xmi:id="_qtTMARjEEemJ9IMxFeLS3g" description="_qtQvwBjEEemJ9IMxFeLS3g" sourceArrow="FillDiamond" routingStyle="manhattan" strokeColor="0,0,0">
         <centerLabelStyle xmi:type="diagram:CenterLabelStyle" xmi:id="_qtTMAhjEEemJ9IMxFeLS3g" showIcon="false">
           <customFeatures>labelSize</customFeatures>
+          <labelFormat>bold</labelFormat>
         </centerLabelStyle>
         <endLabelStyle xmi:type="diagram:EndLabelStyle" xmi:id="_qtTMAxjEEemJ9IMxFeLS3g" showIcon="false" labelColor="39,76,114">
           <customFeatures>labelSize</customFeatures>

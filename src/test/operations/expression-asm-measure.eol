@@ -52,6 +52,11 @@ operation EXPR!NumericAttribute getUnit() {
 }
 
 @cached
+operation EXPR!MeasureName getMeasure() : MEASURES!Measure {
+    return MEASURES!Measure.all.selectOne(m | m.name = self.name and m.namespace = self.namespace);
+}
+
+@cached
 operation EXPR!MeasuredInteger isMeasured() : Boolean {
     return true;
 }
@@ -158,4 +163,9 @@ operation EXPR!MeasuredInteger getUnit() {
             return null;
         }
     }
+}
+
+@cached
+operation getDurationMeasure() : MEASURES!Measure {
+    return MEASURES!Measure.all.selectOne(m | m.units.selectOne(u | u.isValidDurationUnit()).isDefined());
 }
