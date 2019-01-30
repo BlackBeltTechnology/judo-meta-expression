@@ -2,9 +2,9 @@
  */
 package hu.blackbelt.judo.meta.expression.logical;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 /**
  * <!-- begin-user-doc -->
@@ -59,12 +59,12 @@ public interface TypeOfExpression extends LogicalExpression {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Element Name</em>' reference.
-	 * @see #setElementName(ElementName)
+	 * @see #setElementName(TypeName)
 	 * @see hu.blackbelt.judo.meta.expression.logical.LogicalPackage#getTypeOfExpression_ElementName()
 	 * @model required="true"
 	 * @generated
 	 */
-	ElementName getElementName();
+	TypeName getElementName();
 
 	/**
 	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.logical.TypeOfExpression#getElementName <em>Element Name</em>}' reference.
@@ -74,6 +74,6 @@ public interface TypeOfExpression extends LogicalExpression {
 	 * @see #getElementName()
 	 * @generated
 	 */
-	void setElementName(ElementName value);
+	void setElementName(TypeName value);
 
 } // TypeOfExpression

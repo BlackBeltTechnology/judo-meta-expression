@@ -10,7 +10,6 @@ import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.string.*;
 
@@ -82,10 +81,6 @@ public class StringAdapterFactory extends AdapterFactoryImpl {
 				return createStringAttributeAdapter();
 			}
 			@Override
-			public Adapter caseStringVariableReference(StringVariableReference object) {
-				return createStringVariableReferenceAdapter();
-			}
-			@Override
 			public Adapter caseConcatenate(Concatenate object) {
 				return createConcatenateAdapter();
 			}
@@ -142,10 +137,6 @@ public class StringAdapterFactory extends AdapterFactoryImpl {
 				return createAttributeSelectorAdapter();
 			}
 			@Override
-			public Adapter caseVariableReference(VariableReference object) {
-				return createVariableReferenceAdapter();
-			}
-			@Override
 			public Adapter caseNumericExpression(NumericExpression object) {
 				return createNumericExpressionAdapter();
 			}
@@ -192,20 +183,6 @@ public class StringAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createStringAttributeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.string.StringVariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.string.StringVariableReference
-	 * @generated
-	 */
-	public Adapter createStringVariableReferenceAdapter() {
 		return null;
 	}
 
@@ -402,20 +379,6 @@ public class StringAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeSelectorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.VariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.VariableReference
-	 * @generated
-	 */
-	public Adapter createVariableReferenceAdapter() {
 		return null;
 	}
 

@@ -155,4 +155,34 @@
             type="collection"
             class="hu.blackbelt.judo.meta.expression.collection.util.CollectionResourceFactoryImpl"/>
    </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/custom"
+            class="hu.blackbelt.judo.meta.expression.custom.CustomPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="custom"
+            class="hu.blackbelt.judo.meta.expression.custom.util.CustomResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/temporal"
+            class="hu.blackbelt.judo.meta.expression.temporal.TemporalPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="temporal"
+            class="hu.blackbelt.judo.meta.expression.temporal.util.TemporalResourceFactoryImpl"/>
+   </extension>
 </plugin>

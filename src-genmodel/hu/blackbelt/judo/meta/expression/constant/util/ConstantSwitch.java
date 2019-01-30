@@ -2,19 +2,31 @@
  */
 package hu.blackbelt.judo.meta.expression.constant.util;
 
+import hu.blackbelt.judo.meta.expression.CustomExpression;
 import hu.blackbelt.judo.meta.expression.DataExpression;
+import hu.blackbelt.judo.meta.expression.DateExpression;
 import hu.blackbelt.judo.meta.expression.DecimalExpression;
 import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
+import hu.blackbelt.judo.meta.expression.MeasuredExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
+import hu.blackbelt.judo.meta.expression.TimestampExpression;
 
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
+import hu.blackbelt.judo.meta.expression.constant.CustomData;
+import hu.blackbelt.judo.meta.expression.constant.Date;
 import hu.blackbelt.judo.meta.expression.constant.Decimal;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
+import hu.blackbelt.judo.meta.expression.constant.Timestamp;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -148,6 +160,72 @@ public class ConstantSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ConstantPackage.INSTANCE: {
+				Instance instance = (Instance)theEObject;
+				T result = caseInstance(instance);
+				if (result == null) result = caseConstant(instance);
+				if (result == null) result = caseObjectExpression(instance);
+				if (result == null) result = caseReferenceExpression(instance);
+				if (result == null) result = caseExpression(instance);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ConstantPackage.CUSTOM_DATA: {
+				CustomData customData = (CustomData)theEObject;
+				T result = caseCustomData(customData);
+				if (result == null) result = caseConstant(customData);
+				if (result == null) result = caseCustomExpression(customData);
+				if (result == null) result = caseDataExpression(customData);
+				if (result == null) result = caseExpression(customData);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ConstantPackage.MEASURED_DECIMAL: {
+				MeasuredDecimal measuredDecimal = (MeasuredDecimal)theEObject;
+				T result = caseMeasuredDecimal(measuredDecimal);
+				if (result == null) result = caseMeasuredExpression(measuredDecimal);
+				if (result == null) result = caseDecimal(measuredDecimal);
+				if (result == null) result = caseNumber(measuredDecimal);
+				if (result == null) result = caseDecimalExpression(measuredDecimal);
+				if (result == null) result = caseConstant(measuredDecimal);
+				if (result == null) result = caseNumericExpression(measuredDecimal);
+				if (result == null) result = caseDataExpression(measuredDecimal);
+				if (result == null) result = caseExpression(measuredDecimal);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ConstantPackage.MEASURED_INTEGER: {
+				MeasuredInteger measuredInteger = (MeasuredInteger)theEObject;
+				T result = caseMeasuredInteger(measuredInteger);
+				if (result == null) result = caseInteger(measuredInteger);
+				if (result == null) result = caseMeasuredExpression(measuredInteger);
+				if (result == null) result = caseNumber(measuredInteger);
+				if (result == null) result = caseIntegerExpression(measuredInteger);
+				if (result == null) result = caseConstant(measuredInteger);
+				if (result == null) result = caseNumericExpression(measuredInteger);
+				if (result == null) result = caseDataExpression(measuredInteger);
+				if (result == null) result = caseExpression(measuredInteger);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ConstantPackage.DATE: {
+				Date date = (Date)theEObject;
+				T result = caseDate(date);
+				if (result == null) result = caseConstant(date);
+				if (result == null) result = caseDateExpression(date);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ConstantPackage.TIMESTAMP: {
+				Timestamp timestamp = (Timestamp)theEObject;
+				T result = caseTimestamp(timestamp);
+				if (result == null) result = caseConstant(timestamp);
+				if (result == null) result = caseTimestampExpression(timestamp);
+				if (result == null) result = caseDataExpression(timestamp);
+				if (result == null) result = caseExpression(timestamp);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -254,6 +332,96 @@ public class ConstantSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseLiteral(Literal object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Instance</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Instance</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseInstance(Instance object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Custom Data</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Custom Data</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCustomData(CustomData object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Measured Decimal</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Measured Decimal</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMeasuredDecimal(MeasuredDecimal object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Measured Integer</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Measured Integer</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMeasuredInteger(MeasuredInteger object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Date</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Date</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDate(Date object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Timestamp</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Timestamp</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTimestamp(Timestamp object) {
 		return null;
 	}
 
@@ -374,6 +542,96 @@ public class ConstantSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEnumerationExpression(EnumerationExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Reference Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Reference Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseReferenceExpression(ReferenceExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Object Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Object Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseObjectExpression(ObjectExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Custom Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Custom Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseCustomExpression(CustomExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Measured Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Measured Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMeasuredExpression(MeasuredExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Date Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Date Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDateExpression(DateExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Timestamp Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Timestamp Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTimestampExpression(TimestampExpression object) {
 		return null;
 	}
 

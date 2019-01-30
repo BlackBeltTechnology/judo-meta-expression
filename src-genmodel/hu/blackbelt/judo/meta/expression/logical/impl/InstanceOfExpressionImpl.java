@@ -2,8 +2,8 @@
  */
 package hu.blackbelt.judo.meta.expression.logical.impl;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.logical.InstanceOfExpression;
 import hu.blackbelt.judo.meta.expression.logical.LogicalPackage;
@@ -50,7 +50,7 @@ public class InstanceOfExpressionImpl extends MinimalEObjectImpl.Container imple
 	 * @generated
 	 * @ordered
 	 */
-	protected ElementName elementName;
+	protected TypeName elementName;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -119,10 +119,10 @@ public class InstanceOfExpressionImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName getElementName() {
+	public TypeName getElementName() {
 		if (elementName != null && elementName.eIsProxy()) {
 			InternalEObject oldElementName = (InternalEObject)elementName;
-			elementName = (ElementName)eResolveProxy(oldElementName);
+			elementName = (TypeName)eResolveProxy(oldElementName);
 			if (elementName != oldElementName) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, LogicalPackage.INSTANCE_OF_EXPRESSION__ELEMENT_NAME, oldElementName, elementName));
@@ -136,7 +136,7 @@ public class InstanceOfExpressionImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName basicGetElementName() {
+	public TypeName basicGetElementName() {
 		return elementName;
 	}
 
@@ -145,8 +145,8 @@ public class InstanceOfExpressionImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElementName(ElementName newElementName) {
-		ElementName oldElementName = elementName;
+	public void setElementName(TypeName newElementName) {
+		TypeName oldElementName = elementName;
 		elementName = newElementName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, LogicalPackage.INSTANCE_OF_EXPRESSION__ELEMENT_NAME, oldElementName, elementName));
@@ -195,7 +195,7 @@ public class InstanceOfExpressionImpl extends MinimalEObjectImpl.Container imple
 				setObjectExpression((ObjectExpression)newValue);
 				return;
 			case LogicalPackage.INSTANCE_OF_EXPRESSION__ELEMENT_NAME:
-				setElementName((ElementName)newValue);
+				setElementName((TypeName)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -213,7 +213,7 @@ public class InstanceOfExpressionImpl extends MinimalEObjectImpl.Container imple
 				setObjectExpression((ObjectExpression)null);
 				return;
 			case LogicalPackage.INSTANCE_OF_EXPRESSION__ELEMENT_NAME:
-				setElementName((ElementName)null);
+				setElementName((TypeName)null);
 				return;
 		}
 		super.eUnset(featureID);

@@ -12,6 +12,10 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
 import hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl;
@@ -44,10 +48,13 @@ import hu.blackbelt.judo.meta.expression.string.StringAttribute;
 import hu.blackbelt.judo.meta.expression.string.StringFactory;
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 import hu.blackbelt.judo.meta.expression.string.StringSwitchExpression;
-import hu.blackbelt.judo.meta.expression.string.StringVariableReference;
 import hu.blackbelt.judo.meta.expression.string.SubString;
 import hu.blackbelt.judo.meta.expression.string.Trim;
 import hu.blackbelt.judo.meta.expression.string.UpperCase;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -72,13 +79,6 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 	 * @generated
 	 */
 	private EClass stringAttributeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass stringVariableReferenceEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -206,6 +206,8 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theStringPackage.createPackageContents();
@@ -218,6 +220,8 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 		theEnumerationPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theStringPackage.initializePackageContents();
@@ -230,6 +234,8 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 		theEnumerationPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theStringPackage.freeze();
@@ -247,24 +253,6 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 	 */
 	public EClass getStringAttribute() {
 		return stringAttributeEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getStringVariableReference() {
-		return stringVariableReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getStringVariableReference_Variable() {
-		return (EReference)stringVariableReferenceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -531,9 +519,6 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 		// Create classes and their features
 		stringAttributeEClass = createEClass(STRING_ATTRIBUTE);
 
-		stringVariableReferenceEClass = createEClass(STRING_VARIABLE_REFERENCE);
-		createEReference(stringVariableReferenceEClass, STRING_VARIABLE_REFERENCE__VARIABLE);
-
 		concatenateEClass = createEClass(CONCATENATE);
 		createEReference(concatenateEClass, CONCATENATE__LEFT);
 		createEReference(concatenateEClass, CONCATENATE__RIGHT);
@@ -596,7 +581,6 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 
 		// Obtain other dependent packages
 		ExpressionPackage theExpressionPackage = (ExpressionPackage)EPackage.Registry.INSTANCE.getEPackage(ExpressionPackage.eNS_URI);
-		VariablePackage theVariablePackage = (VariablePackage)EPackage.Registry.INSTANCE.getEPackage(VariablePackage.eNS_URI);
 
 		// Create type parameters
 
@@ -605,8 +589,6 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 		// Add supertypes to classes
 		stringAttributeEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
 		stringAttributeEClass.getESuperTypes().add(theExpressionPackage.getAttributeSelector());
-		stringVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
-		stringVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
 		concatenateEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
 		lowerCaseEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
 		upperCaseEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
@@ -622,9 +604,6 @@ public class StringPackageImpl extends EPackageImpl implements StringPackage {
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(stringAttributeEClass, StringAttribute.class, "StringAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(stringVariableReferenceEClass, StringVariableReference.class, "StringVariableReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getStringVariableReference_Variable(), theVariablePackage.getStringVariable(), null, "variable", null, 1, 1, StringVariableReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(concatenateEClass, Concatenate.class, "Concatenate", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConcatenate_Left(), theExpressionPackage.getStringExpression(), null, "left", null, 1, 1, Concatenate.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

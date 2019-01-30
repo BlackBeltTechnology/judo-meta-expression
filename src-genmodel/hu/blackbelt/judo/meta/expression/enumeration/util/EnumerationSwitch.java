@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.enumeration.*;
 
@@ -83,16 +82,6 @@ public class EnumerationSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case EnumerationPackage.ENUMERATION_VARIABLE_REFERENCE: {
-				EnumerationVariableReference enumerationVariableReference = (EnumerationVariableReference)theEObject;
-				T result = caseEnumerationVariableReference(enumerationVariableReference);
-				if (result == null) result = caseEnumerationExpression(enumerationVariableReference);
-				if (result == null) result = caseVariableReference(enumerationVariableReference);
-				if (result == null) result = caseDataExpression(enumerationVariableReference);
-				if (result == null) result = caseExpression(enumerationVariableReference);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case EnumerationPackage.ENUMERATION_SWITCH_EXPRESSION: {
 				EnumerationSwitchExpression enumerationSwitchExpression = (EnumerationSwitchExpression)theEObject;
 				T result = caseEnumerationSwitchExpression(enumerationSwitchExpression);
@@ -119,21 +108,6 @@ public class EnumerationSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEnumerationAttribute(EnumerationAttribute object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEnumerationVariableReference(EnumerationVariableReference object) {
 		return null;
 	}
 
@@ -209,21 +183,6 @@ public class EnumerationSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseAttributeSelector(AttributeSelector object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseVariableReference(VariableReference object) {
 		return null;
 	}
 

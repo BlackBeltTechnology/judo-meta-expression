@@ -2,8 +2,8 @@
  */
 package hu.blackbelt.judo.meta.expression.object.impl;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ObjectPackage;
@@ -65,7 +65,7 @@ public class CastObjectImpl extends MinimalEObjectImpl.Container implements Cast
 	 * @generated
 	 * @ordered
 	 */
-	protected ElementName elementName;
+	protected TypeName elementName;
 
 	/**
 	 * The cached value of the '{@link #getObjectExpression() <em>Object Expression</em>}' containment reference.
@@ -122,10 +122,10 @@ public class CastObjectImpl extends MinimalEObjectImpl.Container implements Cast
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName getElementName() {
+	public TypeName getElementName() {
 		if (elementName != null && elementName.eIsProxy()) {
 			InternalEObject oldElementName = (InternalEObject)elementName;
-			elementName = (ElementName)eResolveProxy(oldElementName);
+			elementName = (TypeName)eResolveProxy(oldElementName);
 			if (elementName != oldElementName) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ObjectPackage.CAST_OBJECT__ELEMENT_NAME, oldElementName, elementName));
@@ -139,7 +139,7 @@ public class CastObjectImpl extends MinimalEObjectImpl.Container implements Cast
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName basicGetElementName() {
+	public TypeName basicGetElementName() {
 		return elementName;
 	}
 
@@ -148,8 +148,8 @@ public class CastObjectImpl extends MinimalEObjectImpl.Container implements Cast
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElementName(ElementName newElementName) {
-		ElementName oldElementName = elementName;
+	public void setElementName(TypeName newElementName) {
+		TypeName oldElementName = elementName;
 		elementName = newElementName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, ObjectPackage.CAST_OBJECT__ELEMENT_NAME, oldElementName, elementName));
@@ -243,7 +243,7 @@ public class CastObjectImpl extends MinimalEObjectImpl.Container implements Cast
 				setName((String)newValue);
 				return;
 			case ObjectPackage.CAST_OBJECT__ELEMENT_NAME:
-				setElementName((ElementName)newValue);
+				setElementName((TypeName)newValue);
 				return;
 			case ObjectPackage.CAST_OBJECT__OBJECT_EXPRESSION:
 				setObjectExpression((ObjectExpression)newValue);
@@ -264,7 +264,7 @@ public class CastObjectImpl extends MinimalEObjectImpl.Container implements Cast
 				setName(NAME_EDEFAULT);
 				return;
 			case ObjectPackage.CAST_OBJECT__ELEMENT_NAME:
-				setElementName((ElementName)null);
+				setElementName((TypeName)null);
 				return;
 			case ObjectPackage.CAST_OBJECT__OBJECT_EXPRESSION:
 				setObjectExpression((ObjectExpression)null);

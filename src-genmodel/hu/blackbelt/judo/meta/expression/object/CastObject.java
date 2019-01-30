@@ -2,8 +2,8 @@
  */
 package hu.blackbelt.judo.meta.expression.object;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 
@@ -34,12 +34,12 @@ public interface CastObject extends ObjectExpression, ObjectVariable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Element Name</em>' reference.
-	 * @see #setElementName(ElementName)
+	 * @see #setElementName(TypeName)
 	 * @see hu.blackbelt.judo.meta.expression.object.ObjectPackage#getCastObject_ElementName()
 	 * @model required="true"
 	 * @generated
 	 */
-	ElementName getElementName();
+	TypeName getElementName();
 
 	/**
 	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.object.CastObject#getElementName <em>Element Name</em>}' reference.
@@ -49,7 +49,7 @@ public interface CastObject extends ObjectExpression, ObjectVariable {
 	 * @see #getElementName()
 	 * @generated
 	 */
-	void setElementName(ElementName value);
+	void setElementName(TypeName value);
 
 	/**
 	 * Returns the value of the '<em><b>Object Expression</b></em>' containment reference.

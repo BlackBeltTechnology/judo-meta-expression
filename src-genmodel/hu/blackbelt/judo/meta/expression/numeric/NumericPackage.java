@@ -427,80 +427,6 @@ public interface NumericPackage extends EPackage {
 	int INTEGER_AGGREGATED_EXPRESSION_OPERATION_COUNT = ExpressionPackage.INTEGER_EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.IntegerVariableReferenceImpl <em>Integer Variable Reference</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.IntegerVariableReferenceImpl
-	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getIntegerVariableReference()
-	 * @generated
-	 */
-	int INTEGER_VARIABLE_REFERENCE = 8;
-
-	/**
-	 * The feature id for the '<em><b>Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INTEGER_VARIABLE_REFERENCE__VARIABLE = ExpressionPackage.INTEGER_EXPRESSION_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Integer Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INTEGER_VARIABLE_REFERENCE_FEATURE_COUNT = ExpressionPackage.INTEGER_EXPRESSION_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Integer Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INTEGER_VARIABLE_REFERENCE_OPERATION_COUNT = ExpressionPackage.INTEGER_EXPRESSION_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.DecimalVariableReferenceImpl <em>Decimal Variable Reference</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.DecimalVariableReferenceImpl
-	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getDecimalVariableReference()
-	 * @generated
-	 */
-	int DECIMAL_VARIABLE_REFERENCE = 9;
-
-	/**
-	 * The feature id for the '<em><b>Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DECIMAL_VARIABLE_REFERENCE__VARIABLE = ExpressionPackage.DECIMAL_EXPRESSION_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Decimal Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DECIMAL_VARIABLE_REFERENCE_FEATURE_COUNT = ExpressionPackage.DECIMAL_EXPRESSION_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Decimal Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DECIMAL_VARIABLE_REFERENCE_OPERATION_COUNT = ExpressionPackage.DECIMAL_EXPRESSION_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.DecimalAggregatedExpressionImpl <em>Decimal Aggregated Expression</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -508,7 +434,7 @@ public interface NumericPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getDecimalAggregatedExpression()
 	 * @generated
 	 */
-	int DECIMAL_AGGREGATED_EXPRESSION = 10;
+	int DECIMAL_AGGREGATED_EXPRESSION = 8;
 
 	/**
 	 * The feature id for the '<em><b>Collection Expression</b></em>' containment reference.
@@ -563,7 +489,7 @@ public interface NumericPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getRoundExpression()
 	 * @generated
 	 */
-	int ROUND_EXPRESSION = 11;
+	int ROUND_EXPRESSION = 9;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -600,7 +526,7 @@ public interface NumericPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getIntegerSwitchExpression()
 	 * @generated
 	 */
-	int INTEGER_SWITCH_EXPRESSION = 12;
+	int INTEGER_SWITCH_EXPRESSION = 10;
 
 	/**
 	 * The feature id for the '<em><b>Cases</b></em>' containment reference list.
@@ -646,7 +572,7 @@ public interface NumericPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getDecimalSwitchExpression()
 	 * @generated
 	 */
-	int DECIMAL_SWITCH_EXPRESSION = 13;
+	int DECIMAL_SWITCH_EXPRESSION = 11;
 
 	/**
 	 * The feature id for the '<em><b>Cases</b></em>' containment reference list.
@@ -683,6 +609,52 @@ public interface NumericPackage extends EPackage {
 	 * @ordered
 	 */
 	int DECIMAL_SWITCH_EXPRESSION_OPERATION_COUNT = ExpressionPackage.SWITCH_EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.NumericAttributeImpl <em>Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericAttributeImpl
+	 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getNumericAttribute()
+	 * @generated
+	 */
+	int NUMERIC_ATTRIBUTE = 12;
+
+	/**
+	 * The feature id for the '<em><b>Object Expression</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NUMERIC_ATTRIBUTE__OBJECT_EXPRESSION = ExpressionPackage.ATTRIBUTE_SELECTOR__OBJECT_EXPRESSION;
+
+	/**
+	 * The feature id for the '<em><b>Attribute Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NUMERIC_ATTRIBUTE__ATTRIBUTE_NAME = ExpressionPackage.ATTRIBUTE_SELECTOR__ATTRIBUTE_NAME;
+
+	/**
+	 * The number of structural features of the '<em>Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NUMERIC_ATTRIBUTE_FEATURE_COUNT = ExpressionPackage.ATTRIBUTE_SELECTOR_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NUMERIC_ATTRIBUTE_OPERATION_COUNT = ExpressionPackage.ATTRIBUTE_SELECTOR_OPERATION_COUNT + 0;
 
 
 	/**
@@ -876,48 +848,6 @@ public interface NumericPackage extends EPackage {
 	EReference getIntegerAggregatedExpression_Expression();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference <em>Integer Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Integer Variable Reference</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference
-	 * @generated
-	 */
-	EClass getIntegerVariableReference();
-
-	/**
-	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference#getVariable <em>Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference#getVariable()
-	 * @see #getIntegerVariableReference()
-	 * @generated
-	 */
-	EReference getIntegerVariableReference_Variable();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference <em>Decimal Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Decimal Variable Reference</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference
-	 * @generated
-	 */
-	EClass getDecimalVariableReference();
-
-	/**
-	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference#getVariable <em>Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference#getVariable()
-	 * @see #getDecimalVariableReference()
-	 * @generated
-	 */
-	EReference getDecimalVariableReference_Variable();
-
-	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression <em>Decimal Aggregated Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -989,6 +919,16 @@ public interface NumericPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getDecimalSwitchExpression();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.numeric.NumericAttribute <em>Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Attribute</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.numeric.NumericAttribute
+	 * @generated
+	 */
+	EClass getNumericAttribute();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1174,42 +1114,6 @@ public interface NumericPackage extends EPackage {
 		EReference INTEGER_AGGREGATED_EXPRESSION__EXPRESSION = eINSTANCE.getIntegerAggregatedExpression_Expression();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.IntegerVariableReferenceImpl <em>Integer Variable Reference</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.numeric.impl.IntegerVariableReferenceImpl
-		 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getIntegerVariableReference()
-		 * @generated
-		 */
-		EClass INTEGER_VARIABLE_REFERENCE = eINSTANCE.getIntegerVariableReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference INTEGER_VARIABLE_REFERENCE__VARIABLE = eINSTANCE.getIntegerVariableReference_Variable();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.DecimalVariableReferenceImpl <em>Decimal Variable Reference</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.numeric.impl.DecimalVariableReferenceImpl
-		 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getDecimalVariableReference()
-		 * @generated
-		 */
-		EClass DECIMAL_VARIABLE_REFERENCE = eINSTANCE.getDecimalVariableReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference DECIMAL_VARIABLE_REFERENCE__VARIABLE = eINSTANCE.getDecimalVariableReference_Variable();
-
-		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.DecimalAggregatedExpressionImpl <em>Decimal Aggregated Expression</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1272,6 +1176,16 @@ public interface NumericPackage extends EPackage {
 		 * @generated
 		 */
 		EClass DECIMAL_SWITCH_EXPRESSION = eINSTANCE.getDecimalSwitchExpression();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.numeric.impl.NumericAttributeImpl <em>Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericAttributeImpl
+		 * @see hu.blackbelt.judo.meta.expression.numeric.impl.NumericPackageImpl#getNumericAttribute()
+		 * @generated
+		 */
+		EClass NUMERIC_ATTRIBUTE = eINSTANCE.getNumericAttribute();
 
 	}
 

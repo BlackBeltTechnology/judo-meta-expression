@@ -6,7 +6,6 @@ import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.logical.*;
 
@@ -142,16 +141,6 @@ public class LogicalSwitch<T> extends Switch<T> {
 				if (result == null) result = caseLogicalExpression(undefinedNavigationComparison);
 				if (result == null) result = caseDataExpression(undefinedNavigationComparison);
 				if (result == null) result = caseExpression(undefinedNavigationComparison);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case LogicalPackage.LOGICAL_VARIABLE_REFERENCE: {
-				LogicalVariableReference logicalVariableReference = (LogicalVariableReference)theEObject;
-				T result = caseLogicalVariableReference(logicalVariableReference);
-				if (result == null) result = caseLogicalExpression(logicalVariableReference);
-				if (result == null) result = caseVariableReference(logicalVariableReference);
-				if (result == null) result = caseDataExpression(logicalVariableReference);
-				if (result == null) result = caseExpression(logicalVariableReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -334,21 +323,6 @@ public class LogicalSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLogicalVariableReference(LogicalVariableReference object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Contains Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -495,21 +469,6 @@ public class LogicalSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseAttributeSelector(AttributeSelector object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseVariableReference(VariableReference object) {
 		return null;
 	}
 

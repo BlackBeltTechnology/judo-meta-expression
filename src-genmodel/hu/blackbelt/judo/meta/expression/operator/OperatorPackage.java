@@ -154,6 +154,16 @@ public interface OperatorPackage extends EPackage {
 	 */
 	int OBJECT_COMPARATOR = 9;
 
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator <em>Timestamp Duration Operator</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator
+	 * @see hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl#getTimestampDurationOperator()
+	 * @generated
+	 */
+	int TIMESTAMP_DURATION_OPERATOR = 10;
+
 
 	/**
 	 * Returns the meta object for enum '{@link hu.blackbelt.judo.meta.expression.operator.StringComparator <em>String Comparator</em>}'.
@@ -254,6 +264,16 @@ public interface OperatorPackage extends EPackage {
 	 * @generated
 	 */
 	EEnum getObjectComparator();
+
+	/**
+	 * Returns the meta object for enum '{@link hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator <em>Timestamp Duration Operator</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Timestamp Duration Operator</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator
+	 * @generated
+	 */
+	EEnum getTimestampDurationOperator();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -377,6 +397,16 @@ public interface OperatorPackage extends EPackage {
 		 * @generated
 		 */
 		EEnum OBJECT_COMPARATOR = eINSTANCE.getObjectComparator();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator <em>Timestamp Duration Operator</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator
+		 * @see hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl#getTimestampDurationOperator()
+		 * @generated
+		 */
+		EEnum TIMESTAMP_DURATION_OPERATOR = eINSTANCE.getTimestampDurationOperator();
 
 	}
 

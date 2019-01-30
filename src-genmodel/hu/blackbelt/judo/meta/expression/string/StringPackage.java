@@ -104,43 +104,6 @@ public interface StringPackage extends EPackage {
 	int STRING_ATTRIBUTE_OPERATION_COUNT = ExpressionPackage.STRING_EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.string.impl.StringVariableReferenceImpl <em>Variable Reference</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringVariableReferenceImpl
-	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getStringVariableReference()
-	 * @generated
-	 */
-	int STRING_VARIABLE_REFERENCE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STRING_VARIABLE_REFERENCE__VARIABLE = ExpressionPackage.STRING_EXPRESSION_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STRING_VARIABLE_REFERENCE_FEATURE_COUNT = ExpressionPackage.STRING_EXPRESSION_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STRING_VARIABLE_REFERENCE_OPERATION_COUNT = ExpressionPackage.STRING_EXPRESSION_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.string.impl.ConcatenateImpl <em>Concatenate</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -148,7 +111,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getConcatenate()
 	 * @generated
 	 */
-	int CONCATENATE = 2;
+	int CONCATENATE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -194,7 +157,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getLowerCase()
 	 * @generated
 	 */
-	int LOWER_CASE = 3;
+	int LOWER_CASE = 2;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -231,7 +194,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getUpperCase()
 	 * @generated
 	 */
-	int UPPER_CASE = 4;
+	int UPPER_CASE = 3;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -268,7 +231,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getLength()
 	 * @generated
 	 */
-	int LENGTH = 5;
+	int LENGTH = 4;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -305,7 +268,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getSubString()
 	 * @generated
 	 */
-	int SUB_STRING = 6;
+	int SUB_STRING = 5;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -360,7 +323,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getPosition()
 	 * @generated
 	 */
-	int POSITION = 7;
+	int POSITION = 6;
 
 	/**
 	 * The feature id for the '<em><b>Container</b></em>' containment reference.
@@ -406,7 +369,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getReplace()
 	 * @generated
 	 */
-	int REPLACE = 8;
+	int REPLACE = 7;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' containment reference.
@@ -461,7 +424,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getTrim()
 	 * @generated
 	 */
-	int TRIM = 9;
+	int TRIM = 8;
 
 	/**
 	 * The feature id for the '<em><b>Expression</b></em>' reference.
@@ -498,7 +461,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getStringSwitchExpression()
 	 * @generated
 	 */
-	int STRING_SWITCH_EXPRESSION = 10;
+	int STRING_SWITCH_EXPRESSION = 9;
 
 	/**
 	 * The feature id for the '<em><b>Cases</b></em>' containment reference list.
@@ -544,7 +507,7 @@ public interface StringPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getConcatenateCollection()
 	 * @generated
 	 */
-	int CONCATENATE_COLLECTION = 11;
+	int CONCATENATE_COLLECTION = 10;
 
 	/**
 	 * The feature id for the '<em><b>Collection Expression</b></em>' containment reference.
@@ -601,27 +564,6 @@ public interface StringPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getStringAttribute();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.string.StringVariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Variable Reference</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.string.StringVariableReference
-	 * @generated
-	 */
-	EClass getStringVariableReference();
-
-	/**
-	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.string.StringVariableReference#getVariable <em>Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.string.StringVariableReference#getVariable()
-	 * @see #getStringVariableReference()
-	 * @generated
-	 */
-	EReference getStringVariableReference_Variable();
 
 	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.string.Concatenate <em>Concatenate</em>}'.
@@ -931,24 +873,6 @@ public interface StringPackage extends EPackage {
 		 * @generated
 		 */
 		EClass STRING_ATTRIBUTE = eINSTANCE.getStringAttribute();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.string.impl.StringVariableReferenceImpl <em>Variable Reference</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.string.impl.StringVariableReferenceImpl
-		 * @see hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl#getStringVariableReference()
-		 * @generated
-		 */
-		EClass STRING_VARIABLE_REFERENCE = eINSTANCE.getStringVariableReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference STRING_VARIABLE_REFERENCE__VARIABLE = eINSTANCE.getStringVariableReference_Variable();
 
 		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.string.impl.ConcatenateImpl <em>Concatenate</em>}' class.

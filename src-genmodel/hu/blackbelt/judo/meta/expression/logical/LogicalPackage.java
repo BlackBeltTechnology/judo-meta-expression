@@ -436,43 +436,6 @@ public interface LogicalPackage extends EPackage {
 	int UNDEFINED_NAVIGATION_COMPARISON_OPERATION_COUNT = ExpressionPackage.LOGICAL_EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.logical.impl.LogicalVariableReferenceImpl <em>Variable Reference</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalVariableReferenceImpl
-	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getLogicalVariableReference()
-	 * @generated
-	 */
-	int LOGICAL_VARIABLE_REFERENCE = 8;
-
-	/**
-	 * The feature id for the '<em><b>Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOGICAL_VARIABLE_REFERENCE__VARIABLE = ExpressionPackage.LOGICAL_EXPRESSION_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOGICAL_VARIABLE_REFERENCE_FEATURE_COUNT = ExpressionPackage.LOGICAL_EXPRESSION_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOGICAL_VARIABLE_REFERENCE_OPERATION_COUNT = ExpressionPackage.LOGICAL_EXPRESSION_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.logical.impl.ContainsExpressionImpl <em>Contains Expression</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -480,7 +443,7 @@ public interface LogicalPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getContainsExpression()
 	 * @generated
 	 */
-	int CONTAINS_EXPRESSION = 9;
+	int CONTAINS_EXPRESSION = 8;
 
 	/**
 	 * The feature id for the '<em><b>Collection Expression</b></em>' containment reference.
@@ -526,7 +489,7 @@ public interface LogicalPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getIntegerComparison()
 	 * @generated
 	 */
-	int INTEGER_COMPARISON = 10;
+	int INTEGER_COMPARISON = 9;
 
 	/**
 	 * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -581,7 +544,7 @@ public interface LogicalPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getDecimalComparison()
 	 * @generated
 	 */
-	int DECIMAL_COMPARISON = 11;
+	int DECIMAL_COMPARISON = 10;
 
 	/**
 	 * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -636,7 +599,7 @@ public interface LogicalPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getObjectComparison()
 	 * @generated
 	 */
-	int OBJECT_COMPARISON = 12;
+	int OBJECT_COMPARISON = 11;
 
 	/**
 	 * The feature id for the '<em><b>Left</b></em>' containment reference.
@@ -691,7 +654,7 @@ public interface LogicalPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getMemberOfExpression()
 	 * @generated
 	 */
-	int MEMBER_OF_EXPRESSION = 13;
+	int MEMBER_OF_EXPRESSION = 12;
 
 	/**
 	 * The feature id for the '<em><b>Collection Expression</b></em>' containment reference.
@@ -737,7 +700,7 @@ public interface LogicalPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getTypeOfExpression()
 	 * @generated
 	 */
-	int TYPE_OF_EXPRESSION = 14;
+	int TYPE_OF_EXPRESSION = 13;
 
 	/**
 	 * The feature id for the '<em><b>Object Expression</b></em>' containment reference.
@@ -1020,27 +983,6 @@ public interface LogicalPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getUndefinedNavigationComparison_ObjectExression();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Variable Reference</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference
-	 * @generated
-	 */
-	EClass getLogicalVariableReference();
-
-	/**
-	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference#getVariable <em>Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference#getVariable()
-	 * @see #getLogicalVariableReference()
-	 * @generated
-	 */
-	EReference getLogicalVariableReference_Variable();
 
 	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.logical.ContainsExpression <em>Contains Expression</em>}'.
@@ -1489,24 +1431,6 @@ public interface LogicalPackage extends EPackage {
 		 * @generated
 		 */
 		EReference UNDEFINED_NAVIGATION_COMPARISON__OBJECT_EXRESSION = eINSTANCE.getUndefinedNavigationComparison_ObjectExression();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.logical.impl.LogicalVariableReferenceImpl <em>Variable Reference</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalVariableReferenceImpl
-		 * @see hu.blackbelt.judo.meta.expression.logical.impl.LogicalPackageImpl#getLogicalVariableReference()
-		 * @generated
-		 */
-		EClass LOGICAL_VARIABLE_REFERENCE = eINSTANCE.getLogicalVariableReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference LOGICAL_VARIABLE_REFERENCE__VARIABLE = eINSTANCE.getLogicalVariableReference_Variable();
 
 		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.logical.impl.ContainsExpressionImpl <em>Contains Expression</em>}' class.

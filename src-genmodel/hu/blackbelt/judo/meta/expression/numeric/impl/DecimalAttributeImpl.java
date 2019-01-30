@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.expression.ExpressionPackage;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAttribute;
+import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.numeric.NumericPackage;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -242,6 +243,11 @@ public class DecimalAttributeImpl extends MinimalEObjectImpl.Container implement
 				default: return -1;
 			}
 		}
+		if (baseClass == NumericAttribute.class) {
+			switch (derivedFeatureID) {
+				default: return -1;
+			}
+		}
 		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
 	}
 
@@ -256,6 +262,11 @@ public class DecimalAttributeImpl extends MinimalEObjectImpl.Container implement
 			switch (baseFeatureID) {
 				case ExpressionPackage.ATTRIBUTE_SELECTOR__OBJECT_EXPRESSION: return NumericPackage.DECIMAL_ATTRIBUTE__OBJECT_EXPRESSION;
 				case ExpressionPackage.ATTRIBUTE_SELECTOR__ATTRIBUTE_NAME: return NumericPackage.DECIMAL_ATTRIBUTE__ATTRIBUTE_NAME;
+				default: return -1;
+			}
+		}
+		if (baseClass == NumericAttribute.class) {
+			switch (baseFeatureID) {
 				default: return -1;
 			}
 		}

@@ -31,15 +31,6 @@ public interface EnumerationFactory extends EFactory {
 	EnumerationAttribute createEnumerationAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Variable Reference</em>'.
-	 * @generated
-	 */
-	EnumerationVariableReference createEnumerationVariableReference();
-
-	/**
 	 * Returns a new object of class '<em>Switch Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

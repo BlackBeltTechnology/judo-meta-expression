@@ -22,15 +22,6 @@ public interface ExpressionFactory extends EFactory {
 	ExpressionFactory eINSTANCE = hu.blackbelt.judo.meta.expression.impl.ExpressionFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Element Name</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Element Name</em>'.
-	 * @generated
-	 */
-	ElementName createElementName();
-
-	/**
 	 * Returns a new object of class '<em>Switch Case</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -38,6 +29,24 @@ public interface ExpressionFactory extends EFactory {
 	 * @generated
 	 */
 	SwitchCase createSwitchCase();
+
+	/**
+	 * Returns a new object of class '<em>Type Name</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Type Name</em>'.
+	 * @generated
+	 */
+	TypeName createTypeName();
+
+	/**
+	 * Returns a new object of class '<em>Measure Name</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Measure Name</em>'.
+	 * @generated
+	 */
+	MeasureName createMeasureName();
 
 	/**
 	 * Returns the package supported by this factory.

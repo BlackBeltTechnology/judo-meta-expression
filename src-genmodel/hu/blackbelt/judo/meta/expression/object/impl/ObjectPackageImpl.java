@@ -12,6 +12,10 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
 import hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl;
@@ -42,6 +46,10 @@ import hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl;
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -159,6 +167,8 @@ public class ObjectPackageImpl extends EPackageImpl implements ObjectPackage {
 		StringPackageImpl theStringPackage = (StringPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(StringPackage.eNS_URI) instanceof StringPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(StringPackage.eNS_URI) : StringPackage.eINSTANCE);
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theObjectPackage.createPackageContents();
@@ -171,6 +181,8 @@ public class ObjectPackageImpl extends EPackageImpl implements ObjectPackage {
 		theStringPackage.createPackageContents();
 		theEnumerationPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theObjectPackage.initializePackageContents();
@@ -183,6 +195,8 @@ public class ObjectPackageImpl extends EPackageImpl implements ObjectPackage {
 		theStringPackage.initializePackageContents();
 		theEnumerationPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theObjectPackage.freeze();
@@ -440,11 +454,11 @@ public class ObjectPackageImpl extends EPackageImpl implements ObjectPackage {
 		initEReference(getObjectVariableReference_Variable(), theVariablePackage.getObjectVariable(), null, "variable", null, 1, 1, ObjectVariableReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(castObjectEClass, CastObject.class, "CastObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getCastObject_ElementName(), theExpressionPackage.getElementName(), null, "elementName", null, 1, 1, CastObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCastObject_ElementName(), theExpressionPackage.getTypeName(), null, "elementName", null, 1, 1, CastObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCastObject_ObjectExpression(), theExpressionPackage.getObjectExpression(), null, "objectExpression", null, 1, 1, CastObject.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(objectSwitchExpressionEClass, ObjectSwitchExpression.class, "ObjectSwitchExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getObjectSwitchExpression_ElementName(), theExpressionPackage.getElementName(), null, "elementName", null, 1, 1, ObjectSwitchExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getObjectSwitchExpression_ElementName(), theExpressionPackage.getTypeName(), null, "elementName", null, 1, 1, ObjectSwitchExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //ObjectPackageImpl

@@ -156,6 +156,30 @@ public class ExpressionAdapterFactory extends AdapterFactoryImpl {
 				return createReferenceSelectorAdapter();
 			}
 			@Override
+			public Adapter caseCustomExpression(CustomExpression object) {
+				return createCustomExpressionAdapter();
+			}
+			@Override
+			public Adapter caseMeasuredExpression(MeasuredExpression object) {
+				return createMeasuredExpressionAdapter();
+			}
+			@Override
+			public Adapter caseDateExpression(DateExpression object) {
+				return createDateExpressionAdapter();
+			}
+			@Override
+			public Adapter caseTimestampExpression(TimestampExpression object) {
+				return createTimestampExpressionAdapter();
+			}
+			@Override
+			public Adapter caseTypeName(TypeName object) {
+				return createTypeNameAdapter();
+			}
+			@Override
+			public Adapter caseMeasureName(MeasureName object) {
+				return createMeasureNameAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -480,6 +504,90 @@ public class ExpressionAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createReferenceSelectorAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.CustomExpression <em>Custom Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.CustomExpression
+	 * @generated
+	 */
+	public Adapter createCustomExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.MeasuredExpression <em>Measured Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.MeasuredExpression
+	 * @generated
+	 */
+	public Adapter createMeasuredExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.DateExpression <em>Date Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.DateExpression
+	 * @generated
+	 */
+	public Adapter createDateExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.TimestampExpression <em>Timestamp Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.TimestampExpression
+	 * @generated
+	 */
+	public Adapter createTimestampExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.TypeName <em>Type Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.TypeName
+	 * @generated
+	 */
+	public Adapter createTypeNameAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.MeasureName <em>Measure Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.MeasureName
+	 * @generated
+	 */
+	public Adapter createMeasureNameAdapter() {
 		return null;
 	}
 

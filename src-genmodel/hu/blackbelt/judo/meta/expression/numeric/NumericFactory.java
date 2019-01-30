@@ -94,24 +94,6 @@ public interface NumericFactory extends EFactory {
 	IntegerAggregatedExpression createIntegerAggregatedExpression();
 
 	/**
-	 * Returns a new object of class '<em>Integer Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Integer Variable Reference</em>'.
-	 * @generated
-	 */
-	IntegerVariableReference createIntegerVariableReference();
-
-	/**
-	 * Returns a new object of class '<em>Decimal Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Decimal Variable Reference</em>'.
-	 * @generated
-	 */
-	DecimalVariableReference createDecimalVariableReference();
-
-	/**
 	 * Returns a new object of class '<em>Decimal Aggregated Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

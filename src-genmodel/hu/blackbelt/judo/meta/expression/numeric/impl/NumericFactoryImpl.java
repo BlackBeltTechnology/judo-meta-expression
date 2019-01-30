@@ -64,8 +64,6 @@ public class NumericFactoryImpl extends EFactoryImpl implements NumericFactory {
 			case NumericPackage.INTEGER_ATTRIBUTE: return createIntegerAttribute();
 			case NumericPackage.DECIMAL_ATTRIBUTE: return createDecimalAttribute();
 			case NumericPackage.INTEGER_AGGREGATED_EXPRESSION: return createIntegerAggregatedExpression();
-			case NumericPackage.INTEGER_VARIABLE_REFERENCE: return createIntegerVariableReference();
-			case NumericPackage.DECIMAL_VARIABLE_REFERENCE: return createDecimalVariableReference();
 			case NumericPackage.DECIMAL_AGGREGATED_EXPRESSION: return createDecimalAggregatedExpression();
 			case NumericPackage.ROUND_EXPRESSION: return createRoundExpression();
 			case NumericPackage.INTEGER_SWITCH_EXPRESSION: return createIntegerSwitchExpression();
@@ -153,26 +151,6 @@ public class NumericFactoryImpl extends EFactoryImpl implements NumericFactory {
 	public IntegerAggregatedExpression createIntegerAggregatedExpression() {
 		IntegerAggregatedExpressionImpl integerAggregatedExpression = new IntegerAggregatedExpressionImpl();
 		return integerAggregatedExpression;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public IntegerVariableReference createIntegerVariableReference() {
-		IntegerVariableReferenceImpl integerVariableReference = new IntegerVariableReferenceImpl();
-		return integerVariableReference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DecimalVariableReference createDecimalVariableReference() {
-		DecimalVariableReferenceImpl decimalVariableReference = new DecimalVariableReferenceImpl();
-		return decimalVariableReference;
 	}
 
 	/**

@@ -5,7 +5,6 @@ package hu.blackbelt.judo.meta.expression.variable;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
 
 /**
  * <!-- begin-user-doc -->
@@ -94,126 +93,6 @@ public interface VariablePackage extends EPackage {
 	int VARIABLE_OPERATION_COUNT = 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.LogicalVariableImpl <em>Logical Variable</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.LogicalVariableImpl
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getLogicalVariable()
-	 * @generated
-	 */
-	int LOGICAL_VARIABLE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOGICAL_VARIABLE__NAME = VARIABLE__NAME;
-
-	/**
-	 * The number of structural features of the '<em>Logical Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOGICAL_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Logical Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOGICAL_VARIABLE_OPERATION_COUNT = VARIABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.StringVariableImpl <em>String Variable</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.StringVariableImpl
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getStringVariable()
-	 * @generated
-	 */
-	int STRING_VARIABLE = 2;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STRING_VARIABLE__NAME = VARIABLE__NAME;
-
-	/**
-	 * The number of structural features of the '<em>String Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STRING_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>String Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STRING_VARIABLE_OPERATION_COUNT = VARIABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.EnumerationVariableImpl <em>Enumeration Variable</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.EnumerationVariableImpl
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getEnumerationVariable()
-	 * @generated
-	 */
-	int ENUMERATION_VARIABLE = 3;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE__NAME = VARIABLE__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Element Name</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE__ELEMENT_NAME = VARIABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Enumeration Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Enumeration Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE_OPERATION_COUNT = VARIABLE_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.ObjectVariableImpl <em>Object Variable</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -221,7 +100,7 @@ public interface VariablePackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getObjectVariable()
 	 * @generated
 	 */
-	int OBJECT_VARIABLE = 4;
+	int OBJECT_VARIABLE = 1;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -258,7 +137,7 @@ public interface VariablePackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getCollectionVariable()
 	 * @generated
 	 */
-	int COLLECTION_VARIABLE = 5;
+	int COLLECTION_VARIABLE = 2;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -287,80 +166,6 @@ public interface VariablePackage extends EPackage {
 	 */
 	int COLLECTION_VARIABLE_OPERATION_COUNT = VARIABLE_OPERATION_COUNT + 0;
 
-	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.IntegerVariableImpl <em>Integer Variable</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.IntegerVariableImpl
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getIntegerVariable()
-	 * @generated
-	 */
-	int INTEGER_VARIABLE = 6;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INTEGER_VARIABLE__NAME = VARIABLE__NAME;
-
-	/**
-	 * The number of structural features of the '<em>Integer Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INTEGER_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Integer Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INTEGER_VARIABLE_OPERATION_COUNT = VARIABLE_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.DecimalVariableImpl <em>Decimal Variable</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.DecimalVariableImpl
-	 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getDecimalVariable()
-	 * @generated
-	 */
-	int DECIMAL_VARIABLE = 7;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DECIMAL_VARIABLE__NAME = VARIABLE__NAME;
-
-	/**
-	 * The number of structural features of the '<em>Decimal Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DECIMAL_VARIABLE_FEATURE_COUNT = VARIABLE_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of operations of the '<em>Decimal Variable</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DECIMAL_VARIABLE_OPERATION_COUNT = VARIABLE_OPERATION_COUNT + 0;
-
 
 	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.Variable <em>Variable</em>}'.
@@ -384,47 +189,6 @@ public interface VariablePackage extends EPackage {
 	EAttribute getVariable_Name();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.LogicalVariable <em>Logical Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Logical Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.variable.LogicalVariable
-	 * @generated
-	 */
-	EClass getLogicalVariable();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.StringVariable <em>String Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>String Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.variable.StringVariable
-	 * @generated
-	 */
-	EClass getStringVariable();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.EnumerationVariable <em>Enumeration Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Enumeration Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.variable.EnumerationVariable
-	 * @generated
-	 */
-	EClass getEnumerationVariable();
-
-	/**
-	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.variable.EnumerationVariable#getElementName <em>Element Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Element Name</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.variable.EnumerationVariable#getElementName()
-	 * @see #getEnumerationVariable()
-	 * @generated
-	 */
-	EReference getEnumerationVariable_ElementName();
-
-	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.ObjectVariable <em>Object Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -443,26 +207,6 @@ public interface VariablePackage extends EPackage {
 	 * @generated
 	 */
 	EClass getCollectionVariable();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.IntegerVariable <em>Integer Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Integer Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.variable.IntegerVariable
-	 * @generated
-	 */
-	EClass getIntegerVariable();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.variable.DecimalVariable <em>Decimal Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Decimal Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.variable.DecimalVariable
-	 * @generated
-	 */
-	EClass getDecimalVariable();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -506,44 +250,6 @@ public interface VariablePackage extends EPackage {
 		EAttribute VARIABLE__NAME = eINSTANCE.getVariable_Name();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.LogicalVariableImpl <em>Logical Variable</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.LogicalVariableImpl
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getLogicalVariable()
-		 * @generated
-		 */
-		EClass LOGICAL_VARIABLE = eINSTANCE.getLogicalVariable();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.StringVariableImpl <em>String Variable</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.StringVariableImpl
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getStringVariable()
-		 * @generated
-		 */
-		EClass STRING_VARIABLE = eINSTANCE.getStringVariable();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.EnumerationVariableImpl <em>Enumeration Variable</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.EnumerationVariableImpl
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getEnumerationVariable()
-		 * @generated
-		 */
-		EClass ENUMERATION_VARIABLE = eINSTANCE.getEnumerationVariable();
-
-		/**
-		 * The meta object literal for the '<em><b>Element Name</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ENUMERATION_VARIABLE__ELEMENT_NAME = eINSTANCE.getEnumerationVariable_ElementName();
-
-		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.ObjectVariableImpl <em>Object Variable</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -562,26 +268,6 @@ public interface VariablePackage extends EPackage {
 		 * @generated
 		 */
 		EClass COLLECTION_VARIABLE = eINSTANCE.getCollectionVariable();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.IntegerVariableImpl <em>Integer Variable</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.IntegerVariableImpl
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getIntegerVariable()
-		 * @generated
-		 */
-		EClass INTEGER_VARIABLE = eINSTANCE.getIntegerVariable();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.variable.impl.DecimalVariableImpl <em>Decimal Variable</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.DecimalVariableImpl
-		 * @see hu.blackbelt.judo.meta.expression.variable.impl.VariablePackageImpl#getDecimalVariable()
-		 * @generated
-		 */
-		EClass DECIMAL_VARIABLE = eINSTANCE.getDecimalVariable();
 
 	}
 

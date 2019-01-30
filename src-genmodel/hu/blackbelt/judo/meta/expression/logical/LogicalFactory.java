@@ -94,15 +94,6 @@ public interface LogicalFactory extends EFactory {
 	UndefinedNavigationComparison createUndefinedNavigationComparison();
 
 	/**
-	 * Returns a new object of class '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Variable Reference</em>'.
-	 * @generated
-	 */
-	LogicalVariableReference createLogicalVariableReference();
-
-	/**
 	 * Returns a new object of class '<em>Contains Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

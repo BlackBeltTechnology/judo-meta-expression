@@ -10,7 +10,6 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.numeric.*;
 
@@ -110,14 +109,6 @@ public class NumericAdapterFactory extends AdapterFactoryImpl {
 				return createIntegerAggregatedExpressionAdapter();
 			}
 			@Override
-			public Adapter caseIntegerVariableReference(IntegerVariableReference object) {
-				return createIntegerVariableReferenceAdapter();
-			}
-			@Override
-			public Adapter caseDecimalVariableReference(DecimalVariableReference object) {
-				return createDecimalVariableReferenceAdapter();
-			}
-			@Override
 			public Adapter caseDecimalAggregatedExpression(DecimalAggregatedExpression object) {
 				return createDecimalAggregatedExpressionAdapter();
 			}
@@ -132,6 +123,10 @@ public class NumericAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseDecimalSwitchExpression(DecimalSwitchExpression object) {
 				return createDecimalSwitchExpressionAdapter();
+			}
+			@Override
+			public Adapter caseNumericAttribute(NumericAttribute object) {
+				return createNumericAttributeAdapter();
 			}
 			@Override
 			public Adapter caseExpression(Expression object) {
@@ -160,10 +155,6 @@ public class NumericAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseAttributeSelector(AttributeSelector object) {
 				return createAttributeSelectorAdapter();
-			}
-			@Override
-			public Adapter caseVariableReference(VariableReference object) {
-				return createVariableReferenceAdapter();
 			}
 			@Override
 			public Adapter caseSwitchExpression(SwitchExpression object) {
@@ -302,34 +293,6 @@ public class NumericAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference <em>Integer Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference
-	 * @generated
-	 */
-	public Adapter createIntegerVariableReferenceAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference <em>Decimal Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference
-	 * @generated
-	 */
-	public Adapter createDecimalVariableReferenceAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression <em>Decimal Aggregated Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -382,6 +345,20 @@ public class NumericAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDecimalSwitchExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.numeric.NumericAttribute <em>Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.numeric.NumericAttribute
+	 * @generated
+	 */
+	public Adapter createNumericAttributeAdapter() {
 		return null;
 	}
 
@@ -480,20 +457,6 @@ public class NumericAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeSelectorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.VariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.VariableReference
-	 * @generated
-	 */
-	public Adapter createVariableReferenceAdapter() {
 		return null;
 	}
 

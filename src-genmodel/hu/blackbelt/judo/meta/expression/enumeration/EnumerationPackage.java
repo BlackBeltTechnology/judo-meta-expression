@@ -104,43 +104,6 @@ public interface EnumerationPackage extends EPackage {
 	int ENUMERATION_ATTRIBUTE_OPERATION_COUNT = ExpressionPackage.ENUMERATION_EXPRESSION_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationVariableReferenceImpl <em>Variable Reference</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationVariableReferenceImpl
-	 * @see hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl#getEnumerationVariableReference()
-	 * @generated
-	 */
-	int ENUMERATION_VARIABLE_REFERENCE = 1;
-
-	/**
-	 * The feature id for the '<em><b>Variable</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE_REFERENCE__VARIABLE = ExpressionPackage.ENUMERATION_EXPRESSION_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE_REFERENCE_FEATURE_COUNT = ExpressionPackage.ENUMERATION_EXPRESSION_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Variable Reference</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ENUMERATION_VARIABLE_REFERENCE_OPERATION_COUNT = ExpressionPackage.ENUMERATION_EXPRESSION_OPERATION_COUNT + 0;
-
-	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationSwitchExpressionImpl <em>Switch Expression</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -148,7 +111,7 @@ public interface EnumerationPackage extends EPackage {
 	 * @see hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl#getEnumerationSwitchExpression()
 	 * @generated
 	 */
-	int ENUMERATION_SWITCH_EXPRESSION = 2;
+	int ENUMERATION_SWITCH_EXPRESSION = 1;
 
 	/**
 	 * The feature id for the '<em><b>Cases</b></em>' containment reference list.
@@ -169,13 +132,22 @@ public interface EnumerationPackage extends EPackage {
 	int ENUMERATION_SWITCH_EXPRESSION__DEFAULT_EXPRESSION = ExpressionPackage.SWITCH_EXPRESSION__DEFAULT_EXPRESSION;
 
 	/**
+	 * The feature id for the '<em><b>Element Name</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUMERATION_SWITCH_EXPRESSION__ELEMENT_NAME = ExpressionPackage.SWITCH_EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
 	 * The number of structural features of the '<em>Switch Expression</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENUMERATION_SWITCH_EXPRESSION_FEATURE_COUNT = ExpressionPackage.SWITCH_EXPRESSION_FEATURE_COUNT + 0;
+	int ENUMERATION_SWITCH_EXPRESSION_FEATURE_COUNT = ExpressionPackage.SWITCH_EXPRESSION_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Switch Expression</em>' class.
@@ -198,27 +170,6 @@ public interface EnumerationPackage extends EPackage {
 	EClass getEnumerationAttribute();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Variable Reference</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference
-	 * @generated
-	 */
-	EClass getEnumerationVariableReference();
-
-	/**
-	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference#getVariable <em>Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Variable</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference#getVariable()
-	 * @see #getEnumerationVariableReference()
-	 * @generated
-	 */
-	EReference getEnumerationVariableReference_Variable();
-
-	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.enumeration.EnumerationSwitchExpression <em>Switch Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -227,6 +178,17 @@ public interface EnumerationPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEnumerationSwitchExpression();
+
+	/**
+	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.enumeration.EnumerationSwitchExpression#getElementName <em>Element Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Element Name</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.enumeration.EnumerationSwitchExpression#getElementName()
+	 * @see #getEnumerationSwitchExpression()
+	 * @generated
+	 */
+	EReference getEnumerationSwitchExpression_ElementName();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -262,24 +224,6 @@ public interface EnumerationPackage extends EPackage {
 		EClass ENUMERATION_ATTRIBUTE = eINSTANCE.getEnumerationAttribute();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationVariableReferenceImpl <em>Variable Reference</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationVariableReferenceImpl
-		 * @see hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl#getEnumerationVariableReference()
-		 * @generated
-		 */
-		EClass ENUMERATION_VARIABLE_REFERENCE = eINSTANCE.getEnumerationVariableReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Variable</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ENUMERATION_VARIABLE_REFERENCE__VARIABLE = eINSTANCE.getEnumerationVariableReference_Variable();
-
-		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationSwitchExpressionImpl <em>Switch Expression</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -288,6 +232,14 @@ public interface EnumerationPackage extends EPackage {
 		 * @generated
 		 */
 		EClass ENUMERATION_SWITCH_EXPRESSION = eINSTANCE.getEnumerationSwitchExpression();
+
+		/**
+		 * The meta object literal for the '<em><b>Element Name</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENUMERATION_SWITCH_EXPRESSION__ELEMENT_NAME = eINSTANCE.getEnumerationSwitchExpression_ElementName();
 
 	}
 

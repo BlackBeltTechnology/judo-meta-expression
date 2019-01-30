@@ -222,6 +222,26 @@ public interface OperatorFactory extends EFactory {
 	String convertObjectComparator(ObjectComparator instanceValue);
 
 	/**
+	 * Returns an instance of data type '<em>Timestamp Duration Operator</em>' corresponding the given literal.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param literal a literal of the data type.
+	 * @return a new instance value of the data type.
+	 * @generated
+	 */
+	TimestampDurationOperator createTimestampDurationOperator(String literal);
+
+	/**
+	 * Returns a literal representation of an instance of data type '<em>Timestamp Duration Operator</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param instanceValue an instance value of the data type.
+	 * @return a literal representation of the instance value.
+	 * @generated
+	 */
+	String convertTimestampDurationOperator(TimestampDurationOperator instanceValue);
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

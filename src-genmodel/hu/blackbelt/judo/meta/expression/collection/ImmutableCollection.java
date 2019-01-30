@@ -4,7 +4,7 @@ package hu.blackbelt.judo.meta.expression.collection;
 
 import hu.blackbelt.judo.meta.expression.Base;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 
@@ -34,12 +34,12 @@ public interface ImmutableCollection extends CollectionExpression, Base, ObjectV
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Element Name</em>' reference.
-	 * @see #setElementName(ElementName)
+	 * @see #setElementName(TypeName)
 	 * @see hu.blackbelt.judo.meta.expression.collection.CollectionPackage#getImmutableCollection_ElementName()
 	 * @model required="true"
 	 * @generated
 	 */
-	ElementName getElementName();
+	TypeName getElementName();
 
 	/**
 	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.collection.ImmutableCollection#getElementName <em>Element Name</em>}' reference.
@@ -49,6 +49,6 @@ public interface ImmutableCollection extends CollectionExpression, Base, ObjectV
 	 * @see #getElementName()
 	 * @generated
 	 */
-	void setElementName(ElementName value);
+	void setElementName(TypeName value);
 
 } // ImmutableCollection

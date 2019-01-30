@@ -57,7 +57,6 @@ public class StringFactoryImpl extends EFactoryImpl implements StringFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case StringPackage.STRING_ATTRIBUTE: return createStringAttribute();
-			case StringPackage.STRING_VARIABLE_REFERENCE: return createStringVariableReference();
 			case StringPackage.CONCATENATE: return createConcatenate();
 			case StringPackage.LOWER_CASE: return createLowerCase();
 			case StringPackage.UPPER_CASE: return createUpperCase();
@@ -81,16 +80,6 @@ public class StringFactoryImpl extends EFactoryImpl implements StringFactory {
 	public StringAttribute createStringAttribute() {
 		StringAttributeImpl stringAttribute = new StringAttributeImpl();
 		return stringAttribute;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public StringVariableReference createStringVariableReference() {
-		StringVariableReferenceImpl stringVariableReference = new StringVariableReferenceImpl();
-		return stringVariableReference;
 	}
 
 	/**

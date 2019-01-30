@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.enumeration.*;
 
@@ -79,10 +78,6 @@ public class EnumerationAdapterFactory extends AdapterFactoryImpl {
 				return createEnumerationAttributeAdapter();
 			}
 			@Override
-			public Adapter caseEnumerationVariableReference(EnumerationVariableReference object) {
-				return createEnumerationVariableReferenceAdapter();
-			}
-			@Override
 			public Adapter caseEnumerationSwitchExpression(EnumerationSwitchExpression object) {
 				return createEnumerationSwitchExpressionAdapter();
 			}
@@ -101,10 +96,6 @@ public class EnumerationAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseAttributeSelector(AttributeSelector object) {
 				return createAttributeSelectorAdapter();
-			}
-			@Override
-			public Adapter caseVariableReference(VariableReference object) {
-				return createVariableReferenceAdapter();
 			}
 			@Override
 			public Adapter caseSwitchExpression(SwitchExpression object) {
@@ -141,20 +132,6 @@ public class EnumerationAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createEnumerationAttributeAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference
-	 * @generated
-	 */
-	public Adapter createEnumerationVariableReferenceAdapter() {
 		return null;
 	}
 
@@ -225,20 +202,6 @@ public class EnumerationAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeSelectorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.VariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.VariableReference
-	 * @generated
-	 */
-	public Adapter createVariableReferenceAdapter() {
 		return null;
 	}
 

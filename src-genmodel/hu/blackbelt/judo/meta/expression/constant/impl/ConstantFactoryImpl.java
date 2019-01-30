@@ -4,8 +4,14 @@ package hu.blackbelt.judo.meta.expression.constant.impl;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantFactory;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
+import hu.blackbelt.judo.meta.expression.constant.CustomData;
+import hu.blackbelt.judo.meta.expression.constant.Date;
 import hu.blackbelt.judo.meta.expression.constant.Decimal;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
+import hu.blackbelt.judo.meta.expression.constant.Timestamp;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -64,6 +70,12 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 			case ConstantPackage.BOOLEAN: return createBoolean();
 			case ConstantPackage.STRING: return createString();
 			case ConstantPackage.LITERAL: return createLiteral();
+			case ConstantPackage.INSTANCE: return createInstance();
+			case ConstantPackage.CUSTOM_DATA: return createCustomData();
+			case ConstantPackage.MEASURED_DECIMAL: return createMeasuredDecimal();
+			case ConstantPackage.MEASURED_INTEGER: return createMeasuredInteger();
+			case ConstantPackage.DATE: return createDate();
+			case ConstantPackage.TIMESTAMP: return createTimestamp();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -117,6 +129,66 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	public Literal createLiteral() {
 		LiteralImpl literal = new LiteralImpl();
 		return literal;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Instance createInstance() {
+		InstanceImpl instance = new InstanceImpl();
+		return instance;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CustomData createCustomData() {
+		CustomDataImpl customData = new CustomDataImpl();
+		return customData;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MeasuredDecimal createMeasuredDecimal() {
+		MeasuredDecimalImpl measuredDecimal = new MeasuredDecimalImpl();
+		return measuredDecimal;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MeasuredInteger createMeasuredInteger() {
+		MeasuredIntegerImpl measuredInteger = new MeasuredIntegerImpl();
+		return measuredInteger;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Date createDate() {
+		DateImpl date = new DateImpl();
+		return date;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Timestamp createTimestamp() {
+		TimestampImpl timestamp = new TimestampImpl();
+		return timestamp;
 	}
 
 	/**

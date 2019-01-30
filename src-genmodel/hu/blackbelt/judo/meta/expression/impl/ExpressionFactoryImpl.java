@@ -56,8 +56,9 @@ public class ExpressionFactoryImpl extends EFactoryImpl implements ExpressionFac
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case ExpressionPackage.ELEMENT_NAME: return createElementName();
 			case ExpressionPackage.SWITCH_CASE: return createSwitchCase();
+			case ExpressionPackage.TYPE_NAME: return createTypeName();
+			case ExpressionPackage.MEASURE_NAME: return createMeasureName();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -68,9 +69,9 @@ public class ExpressionFactoryImpl extends EFactoryImpl implements ExpressionFac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName createElementName() {
-		ElementNameImpl elementName = new ElementNameImpl();
-		return elementName;
+	public SwitchCase createSwitchCase() {
+		SwitchCaseImpl switchCase = new SwitchCaseImpl();
+		return switchCase;
 	}
 
 	/**
@@ -78,9 +79,19 @@ public class ExpressionFactoryImpl extends EFactoryImpl implements ExpressionFac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public SwitchCase createSwitchCase() {
-		SwitchCaseImpl switchCase = new SwitchCaseImpl();
-		return switchCase;
+	public TypeName createTypeName() {
+		TypeNameImpl typeName = new TypeNameImpl();
+		return typeName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MeasureName createMeasureName() {
+		MeasureNameImpl measureName = new MeasureNameImpl();
+		return measureName;
 	}
 
 	/**

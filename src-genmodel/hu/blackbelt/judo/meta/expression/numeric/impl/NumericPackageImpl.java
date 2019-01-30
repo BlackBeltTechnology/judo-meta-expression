@@ -12,6 +12,10 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
 import hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl;
@@ -28,13 +32,12 @@ import hu.blackbelt.judo.meta.expression.numeric.DecimalAritmeticExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAttribute;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalOppositeExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference;
 import hu.blackbelt.judo.meta.expression.numeric.IntegerAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.numeric.IntegerAritmeticExpression;
 import hu.blackbelt.judo.meta.expression.numeric.IntegerAttribute;
 import hu.blackbelt.judo.meta.expression.numeric.IntegerOppositeExpression;
 import hu.blackbelt.judo.meta.expression.numeric.IntegerSwitchExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerVariableReference;
+import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.numeric.NumericFactory;
 import hu.blackbelt.judo.meta.expression.numeric.NumericPackage;
 import hu.blackbelt.judo.meta.expression.numeric.RoundExpression;
@@ -50,6 +53,10 @@ import hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl;
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -130,20 +137,6 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass integerVariableReferenceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass decimalVariableReferenceEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass decimalAggregatedExpressionEClass = null;
 
 	/**
@@ -166,6 +159,13 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 	 * @generated
 	 */
 	private EClass decimalSwitchExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass numericAttributeEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -223,6 +223,8 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theNumericPackage.createPackageContents();
@@ -235,6 +237,8 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		theEnumerationPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theNumericPackage.initializePackageContents();
@@ -247,6 +251,8 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		theEnumerationPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theNumericPackage.freeze();
@@ -424,42 +430,6 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getIntegerVariableReference() {
-		return integerVariableReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getIntegerVariableReference_Variable() {
-		return (EReference)integerVariableReferenceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDecimalVariableReference() {
-		return decimalVariableReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getDecimalVariableReference_Variable() {
-		return (EReference)decimalVariableReferenceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getDecimalAggregatedExpression() {
 		return decimalAggregatedExpressionEClass;
 	}
@@ -523,6 +493,15 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getNumericAttribute() {
+		return numericAttributeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public NumericFactory getNumericFactory() {
 		return (NumericFactory)getEFactoryInstance();
 	}
@@ -572,12 +551,6 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		createEAttribute(integerAggregatedExpressionEClass, INTEGER_AGGREGATED_EXPRESSION__OPERATOR);
 		createEReference(integerAggregatedExpressionEClass, INTEGER_AGGREGATED_EXPRESSION__EXPRESSION);
 
-		integerVariableReferenceEClass = createEClass(INTEGER_VARIABLE_REFERENCE);
-		createEReference(integerVariableReferenceEClass, INTEGER_VARIABLE_REFERENCE__VARIABLE);
-
-		decimalVariableReferenceEClass = createEClass(DECIMAL_VARIABLE_REFERENCE);
-		createEReference(decimalVariableReferenceEClass, DECIMAL_VARIABLE_REFERENCE__VARIABLE);
-
 		decimalAggregatedExpressionEClass = createEClass(DECIMAL_AGGREGATED_EXPRESSION);
 		createEAttribute(decimalAggregatedExpressionEClass, DECIMAL_AGGREGATED_EXPRESSION__OPERATOR);
 		createEReference(decimalAggregatedExpressionEClass, DECIMAL_AGGREGATED_EXPRESSION__EXPRESSION);
@@ -588,6 +561,8 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		integerSwitchExpressionEClass = createEClass(INTEGER_SWITCH_EXPRESSION);
 
 		decimalSwitchExpressionEClass = createEClass(DECIMAL_SWITCH_EXPRESSION);
+
+		numericAttributeEClass = createEClass(NUMERIC_ATTRIBUTE);
 	}
 
 	/**
@@ -616,7 +591,6 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		// Obtain other dependent packages
 		ExpressionPackage theExpressionPackage = (ExpressionPackage)EPackage.Registry.INSTANCE.getEPackage(ExpressionPackage.eNS_URI);
 		OperatorPackage theOperatorPackage = (OperatorPackage)EPackage.Registry.INSTANCE.getEPackage(OperatorPackage.eNS_URI);
-		VariablePackage theVariablePackage = (VariablePackage)EPackage.Registry.INSTANCE.getEPackage(VariablePackage.eNS_URI);
 
 		// Create type parameters
 
@@ -630,15 +604,11 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		integerOppositeExpressionEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
 		decimalOppositeExpressionEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
 		integerAttributeEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
-		integerAttributeEClass.getESuperTypes().add(theExpressionPackage.getAttributeSelector());
+		integerAttributeEClass.getESuperTypes().add(this.getNumericAttribute());
 		decimalAttributeEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
-		decimalAttributeEClass.getESuperTypes().add(theExpressionPackage.getAttributeSelector());
+		decimalAttributeEClass.getESuperTypes().add(this.getNumericAttribute());
 		integerAggregatedExpressionEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
 		integerAggregatedExpressionEClass.getESuperTypes().add(theExpressionPackage.getAggregatedExpression());
-		integerVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
-		integerVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
-		decimalVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
-		decimalVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
 		decimalAggregatedExpressionEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
 		decimalAggregatedExpressionEClass.getESuperTypes().add(theExpressionPackage.getAggregatedExpression());
 		roundExpressionEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
@@ -646,6 +616,8 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		integerSwitchExpressionEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
 		decimalSwitchExpressionEClass.getESuperTypes().add(theExpressionPackage.getSwitchExpression());
 		decimalSwitchExpressionEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
+		numericAttributeEClass.getESuperTypes().add(theExpressionPackage.getAttributeSelector());
+		numericAttributeEClass.getESuperTypes().add(theExpressionPackage.getNumericExpression());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(countExpressionEClass, CountExpression.class, "CountExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -674,12 +646,6 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		initEAttribute(getIntegerAggregatedExpression_Operator(), theOperatorPackage.getIntegerAggregator(), "operator", null, 1, 1, IntegerAggregatedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getIntegerAggregatedExpression_Expression(), theExpressionPackage.getIntegerExpression(), null, "expression", null, 1, 1, IntegerAggregatedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(integerVariableReferenceEClass, IntegerVariableReference.class, "IntegerVariableReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getIntegerVariableReference_Variable(), theVariablePackage.getIntegerVariable(), null, "variable", null, 1, 1, IntegerVariableReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(decimalVariableReferenceEClass, DecimalVariableReference.class, "DecimalVariableReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDecimalVariableReference_Variable(), theVariablePackage.getDecimalVariable(), null, "variable", null, 1, 1, DecimalVariableReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(decimalAggregatedExpressionEClass, DecimalAggregatedExpression.class, "DecimalAggregatedExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getDecimalAggregatedExpression_Operator(), theOperatorPackage.getDecimalAggregator(), "operator", null, 1, 1, DecimalAggregatedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getDecimalAggregatedExpression_Expression(), theExpressionPackage.getNumericExpression(), null, "expression", null, 1, 1, DecimalAggregatedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -690,6 +656,8 @@ public class NumericPackageImpl extends EPackageImpl implements NumericPackage {
 		initEClass(integerSwitchExpressionEClass, IntegerSwitchExpression.class, "IntegerSwitchExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(decimalSwitchExpressionEClass, DecimalSwitchExpression.class, "DecimalSwitchExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(numericAttributeEClass, NumericAttribute.class, "NumericAttribute", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 	}
 
 } //NumericPackageImpl

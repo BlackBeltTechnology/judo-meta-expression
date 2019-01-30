@@ -3,7 +3,7 @@
 package hu.blackbelt.judo.meta.expression.collection;
 
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 
@@ -34,12 +34,12 @@ public interface CastCollection extends CollectionExpression, ObjectVariable {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Element Name</em>' reference.
-	 * @see #setElementName(ElementName)
+	 * @see #setElementName(TypeName)
 	 * @see hu.blackbelt.judo.meta.expression.collection.CollectionPackage#getCastCollection_ElementName()
 	 * @model required="true"
 	 * @generated
 	 */
-	ElementName getElementName();
+	TypeName getElementName();
 
 	/**
 	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.collection.CastCollection#getElementName <em>Element Name</em>}' reference.
@@ -49,7 +49,7 @@ public interface CastCollection extends CollectionExpression, ObjectVariable {
 	 * @see #getElementName()
 	 * @generated
 	 */
-	void setElementName(ElementName value);
+	void setElementName(TypeName value);
 
 	/**
 	 * Returns the value of the '<em><b>Collection Expression</b></em>' containment reference.

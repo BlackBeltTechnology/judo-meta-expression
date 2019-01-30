@@ -12,6 +12,10 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
 import hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl;
@@ -27,7 +31,6 @@ import hu.blackbelt.judo.meta.expression.logical.KleeneExpression;
 import hu.blackbelt.judo.meta.expression.logical.LogicalAttribute;
 import hu.blackbelt.judo.meta.expression.logical.LogicalFactory;
 import hu.blackbelt.judo.meta.expression.logical.LogicalPackage;
-import hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference;
 import hu.blackbelt.judo.meta.expression.logical.MemberOfExpression;
 import hu.blackbelt.judo.meta.expression.logical.NegationExpression;
 import hu.blackbelt.judo.meta.expression.logical.ObjectComparison;
@@ -51,6 +54,10 @@ import hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl;
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -125,13 +132,6 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 	 * @generated
 	 */
 	private EClass undefinedNavigationComparisonEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass logicalVariableReferenceEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -231,6 +231,8 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theLogicalPackage.createPackageContents();
@@ -243,6 +245,8 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 		theEnumerationPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theLogicalPackage.initializePackageContents();
@@ -255,6 +259,8 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 		theEnumerationPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theLogicalPackage.freeze();
@@ -470,24 +476,6 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 	 */
 	public EReference getUndefinedNavigationComparison_ObjectExression() {
 		return (EReference)undefinedNavigationComparisonEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getLogicalVariableReference() {
-		return logicalVariableReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getLogicalVariableReference_Variable() {
-		return (EReference)logicalVariableReferenceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -738,9 +726,6 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 		undefinedNavigationComparisonEClass = createEClass(UNDEFINED_NAVIGATION_COMPARISON);
 		createEReference(undefinedNavigationComparisonEClass, UNDEFINED_NAVIGATION_COMPARISON__OBJECT_EXRESSION);
 
-		logicalVariableReferenceEClass = createEClass(LOGICAL_VARIABLE_REFERENCE);
-		createEReference(logicalVariableReferenceEClass, LOGICAL_VARIABLE_REFERENCE__VARIABLE);
-
 		containsExpressionEClass = createEClass(CONTAINS_EXPRESSION);
 		createEReference(containsExpressionEClass, CONTAINS_EXPRESSION__COLLECTION_EXPRESSION);
 		createEReference(containsExpressionEClass, CONTAINS_EXPRESSION__OBJECT_EXPRESSION);
@@ -795,7 +780,6 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 		// Obtain other dependent packages
 		ExpressionPackage theExpressionPackage = (ExpressionPackage)EPackage.Registry.INSTANCE.getEPackage(ExpressionPackage.eNS_URI);
 		OperatorPackage theOperatorPackage = (OperatorPackage)EPackage.Registry.INSTANCE.getEPackage(OperatorPackage.eNS_URI);
-		VariablePackage theVariablePackage = (VariablePackage)EPackage.Registry.INSTANCE.getEPackage(VariablePackage.eNS_URI);
 
 		// Create type parameters
 
@@ -811,8 +795,6 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 		logicalAttributeEClass.getESuperTypes().add(theExpressionPackage.getAttributeSelector());
 		undefinedAttributeComparisonEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
 		undefinedNavigationComparisonEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
-		logicalVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
-		logicalVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
 		containsExpressionEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
 		integerComparisonEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
 		decimalComparisonEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
@@ -841,7 +823,7 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 
 		initEClass(instanceOfExpressionEClass, InstanceOfExpression.class, "InstanceOfExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInstanceOfExpression_ObjectExpression(), theExpressionPackage.getObjectExpression(), null, "objectExpression", null, 1, 1, InstanceOfExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInstanceOfExpression_ElementName(), theExpressionPackage.getElementName(), null, "elementName", null, 1, 1, InstanceOfExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getInstanceOfExpression_ElementName(), theExpressionPackage.getTypeName(), null, "elementName", null, 1, 1, InstanceOfExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(logicalAttributeEClass, LogicalAttribute.class, "LogicalAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -851,9 +833,6 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 
 		initEClass(undefinedNavigationComparisonEClass, UndefinedNavigationComparison.class, "UndefinedNavigationComparison", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getUndefinedNavigationComparison_ObjectExression(), theExpressionPackage.getObjectExpression(), null, "objectExression", null, 1, 1, UndefinedNavigationComparison.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-		initEClass(logicalVariableReferenceEClass, LogicalVariableReference.class, "LogicalVariableReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getLogicalVariableReference_Variable(), theVariablePackage.getLogicalVariable(), null, "variable", null, 1, 1, LogicalVariableReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(containsExpressionEClass, ContainsExpression.class, "ContainsExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getContainsExpression_CollectionExpression(), theExpressionPackage.getCollectionExpression(), null, "collectionExpression", null, 1, 1, ContainsExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -880,7 +859,7 @@ public class LogicalPackageImpl extends EPackageImpl implements LogicalPackage {
 
 		initEClass(typeOfExpressionEClass, TypeOfExpression.class, "TypeOfExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getTypeOfExpression_ObjectExpression(), theExpressionPackage.getObjectExpression(), null, "objectExpression", null, 1, 1, TypeOfExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getTypeOfExpression_ElementName(), theExpressionPackage.getElementName(), null, "elementName", null, 1, 1, TypeOfExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTypeOfExpression_ElementName(), theExpressionPackage.getTypeName(), null, "elementName", null, 1, 1, TypeOfExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //LogicalPackageImpl

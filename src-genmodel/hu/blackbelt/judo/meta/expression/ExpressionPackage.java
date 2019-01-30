@@ -771,6 +771,219 @@ public interface ExpressionPackage extends EPackage {
 	 */
 	int REFERENCE_SELECTOR_OPERATION_COUNT = NAVIGATION_EXPRESSION_OPERATION_COUNT + 0;
 
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.CustomExpression <em>Custom Expression</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.CustomExpression
+	 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getCustomExpression()
+	 * @generated
+	 */
+	int CUSTOM_EXPRESSION = 22;
+
+	/**
+	 * The number of structural features of the '<em>Custom Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CUSTOM_EXPRESSION_FEATURE_COUNT = DATA_EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Custom Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CUSTOM_EXPRESSION_OPERATION_COUNT = DATA_EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.impl.MeasuredExpressionImpl <em>Measured Expression</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.impl.MeasuredExpressionImpl
+	 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getMeasuredExpression()
+	 * @generated
+	 */
+	int MEASURED_EXPRESSION = 23;
+
+	/**
+	 * The feature id for the '<em><b>Measure</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURED_EXPRESSION__MEASURE = 0;
+
+	/**
+	 * The number of structural features of the '<em>Measured Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURED_EXPRESSION_FEATURE_COUNT = 1;
+
+	/**
+	 * The number of operations of the '<em>Measured Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURED_EXPRESSION_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.DateExpression <em>Date Expression</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.DateExpression
+	 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getDateExpression()
+	 * @generated
+	 */
+	int DATE_EXPRESSION = 24;
+
+	/**
+	 * The number of structural features of the '<em>Date Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATE_EXPRESSION_FEATURE_COUNT = 0;
+
+	/**
+	 * The number of operations of the '<em>Date Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATE_EXPRESSION_OPERATION_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.TimestampExpression <em>Timestamp Expression</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.TimestampExpression
+	 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getTimestampExpression()
+	 * @generated
+	 */
+	int TIMESTAMP_EXPRESSION = 25;
+
+	/**
+	 * The number of structural features of the '<em>Timestamp Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIMESTAMP_EXPRESSION_FEATURE_COUNT = DATA_EXPRESSION_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Timestamp Expression</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIMESTAMP_EXPRESSION_OPERATION_COUNT = DATA_EXPRESSION_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.impl.TypeNameImpl <em>Type Name</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.impl.TypeNameImpl
+	 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getTypeName()
+	 * @generated
+	 */
+	int TYPE_NAME = 26;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE_NAME__NAME = ELEMENT_NAME__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Namespace</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE_NAME__NAMESPACE = ELEMENT_NAME__NAMESPACE;
+
+	/**
+	 * The number of structural features of the '<em>Type Name</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE_NAME_FEATURE_COUNT = ELEMENT_NAME_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Type Name</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE_NAME_OPERATION_COUNT = ELEMENT_NAME_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.impl.MeasureNameImpl <em>Measure Name</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.impl.MeasureNameImpl
+	 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getMeasureName()
+	 * @generated
+	 */
+	int MEASURE_NAME = 27;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURE_NAME__NAME = ELEMENT_NAME__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Namespace</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURE_NAME__NAMESPACE = ELEMENT_NAME__NAMESPACE;
+
+	/**
+	 * The number of structural features of the '<em>Measure Name</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURE_NAME_FEATURE_COUNT = ELEMENT_NAME_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of operations of the '<em>Measure Name</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURE_NAME_OPERATION_COUNT = ELEMENT_NAME_OPERATION_COUNT + 0;
+
 
 	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.Expression <em>Expression</em>}'.
@@ -1103,6 +1316,77 @@ public interface ExpressionPackage extends EPackage {
 	EClass getReferenceSelector();
 
 	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.CustomExpression <em>Custom Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Custom Expression</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.CustomExpression
+	 * @generated
+	 */
+	EClass getCustomExpression();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.MeasuredExpression <em>Measured Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Measured Expression</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.MeasuredExpression
+	 * @generated
+	 */
+	EClass getMeasuredExpression();
+
+	/**
+	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.MeasuredExpression#getMeasure <em>Measure</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Measure</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.MeasuredExpression#getMeasure()
+	 * @see #getMeasuredExpression()
+	 * @generated
+	 */
+	EReference getMeasuredExpression_Measure();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.DateExpression <em>Date Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Date Expression</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.DateExpression
+	 * @generated
+	 */
+	EClass getDateExpression();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.TimestampExpression <em>Timestamp Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Timestamp Expression</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.TimestampExpression
+	 * @generated
+	 */
+	EClass getTimestampExpression();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.TypeName <em>Type Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Type Name</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.TypeName
+	 * @generated
+	 */
+	EClass getTypeName();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.MeasureName <em>Measure Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Measure Name</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.MeasureName
+	 * @generated
+	 */
+	EClass getMeasureName();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1424,6 +1708,74 @@ public interface ExpressionPackage extends EPackage {
 		 * @generated
 		 */
 		EClass REFERENCE_SELECTOR = eINSTANCE.getReferenceSelector();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.CustomExpression <em>Custom Expression</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.CustomExpression
+		 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getCustomExpression()
+		 * @generated
+		 */
+		EClass CUSTOM_EXPRESSION = eINSTANCE.getCustomExpression();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.impl.MeasuredExpressionImpl <em>Measured Expression</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.impl.MeasuredExpressionImpl
+		 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getMeasuredExpression()
+		 * @generated
+		 */
+		EClass MEASURED_EXPRESSION = eINSTANCE.getMeasuredExpression();
+
+		/**
+		 * The meta object literal for the '<em><b>Measure</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MEASURED_EXPRESSION__MEASURE = eINSTANCE.getMeasuredExpression_Measure();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.DateExpression <em>Date Expression</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.DateExpression
+		 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getDateExpression()
+		 * @generated
+		 */
+		EClass DATE_EXPRESSION = eINSTANCE.getDateExpression();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.TimestampExpression <em>Timestamp Expression</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.TimestampExpression
+		 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getTimestampExpression()
+		 * @generated
+		 */
+		EClass TIMESTAMP_EXPRESSION = eINSTANCE.getTimestampExpression();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.impl.TypeNameImpl <em>Type Name</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.impl.TypeNameImpl
+		 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getTypeName()
+		 * @generated
+		 */
+		EClass TYPE_NAME = eINSTANCE.getTypeName();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.impl.MeasureNameImpl <em>Measure Name</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.impl.MeasureNameImpl
+		 * @see hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl#getMeasureName()
+		 * @generated
+		 */
+		EClass MEASURE_NAME = eINSTANCE.getMeasureName();
 
 	}
 

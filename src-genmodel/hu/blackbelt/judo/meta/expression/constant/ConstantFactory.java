@@ -67,6 +67,60 @@ public interface ConstantFactory extends EFactory {
 	Literal createLiteral();
 
 	/**
+	 * Returns a new object of class '<em>Instance</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Instance</em>'.
+	 * @generated
+	 */
+	Instance createInstance();
+
+	/**
+	 * Returns a new object of class '<em>Custom Data</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Custom Data</em>'.
+	 * @generated
+	 */
+	CustomData createCustomData();
+
+	/**
+	 * Returns a new object of class '<em>Measured Decimal</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Measured Decimal</em>'.
+	 * @generated
+	 */
+	MeasuredDecimal createMeasuredDecimal();
+
+	/**
+	 * Returns a new object of class '<em>Measured Integer</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Measured Integer</em>'.
+	 * @generated
+	 */
+	MeasuredInteger createMeasuredInteger();
+
+	/**
+	 * Returns a new object of class '<em>Date</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Date</em>'.
+	 * @generated
+	 */
+	Date createDate();
+
+	/**
+	 * Returns a new object of class '<em>Timestamp</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Timestamp</em>'.
+	 * @generated
+	 */
+	Timestamp createTimestamp();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

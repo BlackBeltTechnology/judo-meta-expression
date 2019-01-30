@@ -64,7 +64,6 @@ public class LogicalFactoryImpl extends EFactoryImpl implements LogicalFactory {
 			case LogicalPackage.LOGICAL_ATTRIBUTE: return createLogicalAttribute();
 			case LogicalPackage.UNDEFINED_ATTRIBUTE_COMPARISON: return createUndefinedAttributeComparison();
 			case LogicalPackage.UNDEFINED_NAVIGATION_COMPARISON: return createUndefinedNavigationComparison();
-			case LogicalPackage.LOGICAL_VARIABLE_REFERENCE: return createLogicalVariableReference();
 			case LogicalPackage.CONTAINS_EXPRESSION: return createContainsExpression();
 			case LogicalPackage.INTEGER_COMPARISON: return createIntegerComparison();
 			case LogicalPackage.DECIMAL_COMPARISON: return createDecimalComparison();
@@ -154,16 +153,6 @@ public class LogicalFactoryImpl extends EFactoryImpl implements LogicalFactory {
 	public UndefinedNavigationComparison createUndefinedNavigationComparison() {
 		UndefinedNavigationComparisonImpl undefinedNavigationComparison = new UndefinedNavigationComparisonImpl();
 		return undefinedNavigationComparison;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public LogicalVariableReference createLogicalVariableReference() {
-		LogicalVariableReferenceImpl logicalVariableReference = new LogicalVariableReferenceImpl();
-		return logicalVariableReference;
 	}
 
 	/**

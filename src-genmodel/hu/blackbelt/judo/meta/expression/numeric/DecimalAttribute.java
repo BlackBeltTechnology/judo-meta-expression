@@ -2,7 +2,6 @@
  */
 package hu.blackbelt.judo.meta.expression.numeric;
 
-import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.DecimalExpression;
 
 /**
@@ -15,5 +14,5 @@ import hu.blackbelt.judo.meta.expression.DecimalExpression;
  * @model
  * @generated
  */
-public interface DecimalAttribute extends DecimalExpression, AttributeSelector {
+public interface DecimalAttribute extends DecimalExpression, NumericAttribute {
 } // DecimalAttribute

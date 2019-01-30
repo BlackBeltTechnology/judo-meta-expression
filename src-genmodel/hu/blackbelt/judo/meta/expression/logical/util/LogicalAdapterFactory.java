@@ -6,7 +6,6 @@ import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.logical.*;
 
@@ -106,10 +105,6 @@ public class LogicalAdapterFactory extends AdapterFactoryImpl {
 				return createUndefinedNavigationComparisonAdapter();
 			}
 			@Override
-			public Adapter caseLogicalVariableReference(LogicalVariableReference object) {
-				return createLogicalVariableReferenceAdapter();
-			}
-			@Override
 			public Adapter caseContainsExpression(ContainsExpression object) {
 				return createContainsExpressionAdapter();
 			}
@@ -148,10 +143,6 @@ public class LogicalAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseAttributeSelector(AttributeSelector object) {
 				return createAttributeSelectorAdapter();
-			}
-			@Override
-			public Adapter caseVariableReference(VariableReference object) {
-				return createVariableReferenceAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -282,20 +273,6 @@ public class LogicalAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createUndefinedNavigationComparisonAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.logical.LogicalVariableReference
-	 * @generated
-	 */
-	public Adapter createLogicalVariableReferenceAdapter() {
 		return null;
 	}
 
@@ -436,20 +413,6 @@ public class LogicalAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeSelectorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.VariableReference <em>Variable Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.VariableReference
-	 * @generated
-	 */
-	public Adapter createVariableReferenceAdapter() {
 		return null;
 	}
 

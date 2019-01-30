@@ -12,6 +12,10 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
 import hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl;
@@ -42,10 +46,15 @@ import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 import hu.blackbelt.judo.meta.expression.operator.OperatorFactory;
 import hu.blackbelt.judo.meta.expression.operator.OperatorPackage;
 import hu.blackbelt.judo.meta.expression.operator.StringComparator;
+import hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator;
 
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -134,6 +143,13 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 	private EEnum objectComparatorEEnum = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum timestampDurationOperatorEEnum = null;
+
+	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -189,6 +205,8 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theOperatorPackage.createPackageContents();
@@ -201,6 +219,8 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 		theEnumerationPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theOperatorPackage.initializePackageContents();
@@ -213,6 +233,8 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 		theEnumerationPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theOperatorPackage.freeze();
@@ -318,6 +340,15 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EEnum getTimestampDurationOperator() {
+		return timestampDurationOperatorEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public OperatorFactory getOperatorFactory() {
 		return (OperatorFactory)getEFactoryInstance();
 	}
@@ -351,6 +382,7 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 		integerAggregatorEEnum = createEEnum(INTEGER_AGGREGATOR);
 		decimalAggregatorEEnum = createEEnum(DECIMAL_AGGREGATOR);
 		objectComparatorEEnum = createEEnum(OBJECT_COMPARATOR);
+		timestampDurationOperatorEEnum = createEEnum(TIMESTAMP_DURATION_OPERATOR);
 	}
 
 	/**
@@ -435,6 +467,10 @@ public class OperatorPackageImpl extends EPackageImpl implements OperatorPackage
 		initEEnum(objectComparatorEEnum, ObjectComparator.class, "ObjectComparator");
 		addEEnumLiteral(objectComparatorEEnum, ObjectComparator.EQUAL);
 		addEEnumLiteral(objectComparatorEEnum, ObjectComparator.NOT_EQUAL);
+
+		initEEnum(timestampDurationOperatorEEnum, TimestampDurationOperator.class, "TimestampDurationOperator");
+		addEEnumLiteral(timestampDurationOperatorEEnum, TimestampDurationOperator.ADD);
+		addEEnumLiteral(timestampDurationOperatorEEnum, TimestampDurationOperator.SUBSTRACT);
 	}
 
 } //OperatorPackageImpl

@@ -6,7 +6,9 @@ import hu.blackbelt.judo.meta.expression.AggregatedExpression;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Base;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
+import hu.blackbelt.judo.meta.expression.CustomExpression;
 import hu.blackbelt.judo.meta.expression.DataExpression;
+import hu.blackbelt.judo.meta.expression.DateExpression;
 import hu.blackbelt.judo.meta.expression.DecimalExpression;
 import hu.blackbelt.judo.meta.expression.ElementName;
 import hu.blackbelt.judo.meta.expression.EnumerationExpression;
@@ -16,6 +18,8 @@ import hu.blackbelt.judo.meta.expression.ExpressionPackage;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.Lambda;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.MeasuredExpression;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
@@ -25,6 +29,8 @@ import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.SwitchCase;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
+import hu.blackbelt.judo.meta.expression.TimestampExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.collection.CollectionPackage;
@@ -34,6 +40,10 @@ import hu.blackbelt.judo.meta.expression.collection.impl.CollectionPackageImpl;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
@@ -58,6 +68,10 @@ import hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl;
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -232,6 +246,48 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	private EClass referenceSelectorEClass = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass customExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass measuredExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dateExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass timestampExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass typeNameEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass measureNameEClass = null;
+
+	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -287,6 +343,8 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theExpressionPackage.createPackageContents();
@@ -299,6 +357,8 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		theEnumerationPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theExpressionPackage.initializePackageContents();
@@ -311,6 +371,8 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		theEnumerationPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theExpressionPackage.freeze();
@@ -614,6 +676,69 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getCustomExpression() {
+		return customExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getMeasuredExpression() {
+		return measuredExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getMeasuredExpression_Measure() {
+		return (EReference)measuredExpressionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDateExpression() {
+		return dateExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getTimestampExpression() {
+		return timestampExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getTypeName() {
+		return typeNameEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getMeasureName() {
+		return measureNameEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ExpressionFactory getExpressionFactory() {
 		return (ExpressionFactory)getEFactoryInstance();
 	}
@@ -690,6 +815,19 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		referenceExpressionEClass = createEClass(REFERENCE_EXPRESSION);
 
 		referenceSelectorEClass = createEClass(REFERENCE_SELECTOR);
+
+		customExpressionEClass = createEClass(CUSTOM_EXPRESSION);
+
+		measuredExpressionEClass = createEClass(MEASURED_EXPRESSION);
+		createEReference(measuredExpressionEClass, MEASURED_EXPRESSION__MEASURE);
+
+		dateExpressionEClass = createEClass(DATE_EXPRESSION);
+
+		timestampExpressionEClass = createEClass(TIMESTAMP_EXPRESSION);
+
+		typeNameEClass = createEClass(TYPE_NAME);
+
+		measureNameEClass = createEClass(MEASURE_NAME);
 	}
 
 	/**
@@ -725,6 +863,8 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		EnumerationPackage theEnumerationPackage = (EnumerationPackage)EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI);
 		ObjectPackage theObjectPackage = (ObjectPackage)EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI);
 		CollectionPackage theCollectionPackage = (CollectionPackage)EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI);
+		CustomPackage theCustomPackage = (CustomPackage)EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI);
+		TemporalPackage theTemporalPackage = (TemporalPackage)EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI);
 
 		// Add subpackages
 		getESubpackages().add(theConstantPackage);
@@ -736,6 +876,8 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		getESubpackages().add(theEnumerationPackage);
 		getESubpackages().add(theObjectPackage);
 		getESubpackages().add(theCollectionPackage);
+		getESubpackages().add(theCustomPackage);
+		getESubpackages().add(theTemporalPackage);
 
 		// Create type parameters
 
@@ -758,11 +900,15 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		aggregatedExpressionEClass.getESuperTypes().add(this.getExpression());
 		referenceExpressionEClass.getESuperTypes().add(this.getExpression());
 		referenceSelectorEClass.getESuperTypes().add(this.getNavigationExpression());
+		customExpressionEClass.getESuperTypes().add(this.getDataExpression());
+		timestampExpressionEClass.getESuperTypes().add(this.getDataExpression());
+		typeNameEClass.getESuperTypes().add(this.getElementName());
+		measureNameEClass.getESuperTypes().add(this.getElementName());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(elementNameEClass, ElementName.class, "ElementName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(elementNameEClass, ElementName.class, "ElementName", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getElementName_Name(), ecorePackage.getEString(), "name", null, 1, 1, ElementName.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getElementName_Namespace(), ecorePackage.getEString(), "namespace", null, 1, 1, ElementName.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -813,6 +959,19 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		initEClass(referenceExpressionEClass, ReferenceExpression.class, "ReferenceExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(referenceSelectorEClass, ReferenceSelector.class, "ReferenceSelector", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(customExpressionEClass, CustomExpression.class, "CustomExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(measuredExpressionEClass, MeasuredExpression.class, "MeasuredExpression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getMeasuredExpression_Measure(), this.getMeasureName(), null, "measure", null, 0, 1, MeasuredExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dateExpressionEClass, DateExpression.class, "DateExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(timestampExpressionEClass, TimestampExpression.class, "TimestampExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(typeNameEClass, TypeName.class, "TypeName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(measureNameEClass, MeasureName.class, "MeasureName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

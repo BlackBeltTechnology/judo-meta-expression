@@ -31,15 +31,6 @@ public interface StringFactory extends EFactory {
 	StringAttribute createStringAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Variable Reference</em>'.
-	 * @generated
-	 */
-	StringVariableReference createStringVariableReference();
-
-	/**
 	 * Returns a new object of class '<em>Concatenate</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

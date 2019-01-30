@@ -10,7 +10,6 @@ import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.string.*;
 
@@ -83,16 +82,6 @@ public class StringSwitch<T> extends Switch<T> {
 				if (result == null) result = caseAttributeSelector(stringAttribute);
 				if (result == null) result = caseDataExpression(stringAttribute);
 				if (result == null) result = caseExpression(stringAttribute);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case StringPackage.STRING_VARIABLE_REFERENCE: {
-				StringVariableReference stringVariableReference = (StringVariableReference)theEObject;
-				T result = caseStringVariableReference(stringVariableReference);
-				if (result == null) result = caseStringExpression(stringVariableReference);
-				if (result == null) result = caseVariableReference(stringVariableReference);
-				if (result == null) result = caseDataExpression(stringVariableReference);
-				if (result == null) result = caseExpression(stringVariableReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -206,21 +195,6 @@ public class StringSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseStringAttribute(StringAttribute object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStringVariableReference(StringVariableReference object) {
 		return null;
 	}
 
@@ -431,21 +405,6 @@ public class StringSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseAttributeSelector(AttributeSelector object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseVariableReference(VariableReference object) {
 		return null;
 	}
 

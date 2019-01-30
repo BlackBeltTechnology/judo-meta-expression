@@ -72,27 +72,6 @@ public class VariableSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case VariablePackage.LOGICAL_VARIABLE: {
-				LogicalVariable logicalVariable = (LogicalVariable)theEObject;
-				T result = caseLogicalVariable(logicalVariable);
-				if (result == null) result = caseVariable(logicalVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case VariablePackage.STRING_VARIABLE: {
-				StringVariable stringVariable = (StringVariable)theEObject;
-				T result = caseStringVariable(stringVariable);
-				if (result == null) result = caseVariable(stringVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case VariablePackage.ENUMERATION_VARIABLE: {
-				EnumerationVariable enumerationVariable = (EnumerationVariable)theEObject;
-				T result = caseEnumerationVariable(enumerationVariable);
-				if (result == null) result = caseVariable(enumerationVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case VariablePackage.OBJECT_VARIABLE: {
 				ObjectVariable objectVariable = (ObjectVariable)theEObject;
 				T result = caseObjectVariable(objectVariable);
@@ -104,20 +83,6 @@ public class VariableSwitch<T> extends Switch<T> {
 				CollectionVariable collectionVariable = (CollectionVariable)theEObject;
 				T result = caseCollectionVariable(collectionVariable);
 				if (result == null) result = caseVariable(collectionVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case VariablePackage.INTEGER_VARIABLE: {
-				IntegerVariable integerVariable = (IntegerVariable)theEObject;
-				T result = caseIntegerVariable(integerVariable);
-				if (result == null) result = caseVariable(integerVariable);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case VariablePackage.DECIMAL_VARIABLE: {
-				DecimalVariable decimalVariable = (DecimalVariable)theEObject;
-				T result = caseDecimalVariable(decimalVariable);
-				if (result == null) result = caseVariable(decimalVariable);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -137,51 +102,6 @@ public class VariableSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseVariable(Variable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Logical Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Logical Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLogicalVariable(LogicalVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>String Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>String Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStringVariable(StringVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enumeration Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enumeration Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEnumerationVariable(EnumerationVariable object) {
 		return null;
 	}
 
@@ -212,36 +132,6 @@ public class VariableSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseCollectionVariable(CollectionVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Integer Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Integer Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIntegerVariable(IntegerVariable object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Decimal Variable</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Decimal Variable</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDecimalVariable(DecimalVariable object) {
 		return null;
 	}
 

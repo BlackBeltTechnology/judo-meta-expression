@@ -12,6 +12,10 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 
 import hu.blackbelt.judo.meta.expression.enumeration.impl.EnumerationPackageImpl;
@@ -38,13 +42,12 @@ import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
-import hu.blackbelt.judo.meta.expression.variable.DecimalVariable;
-import hu.blackbelt.judo.meta.expression.variable.EnumerationVariable;
-import hu.blackbelt.judo.meta.expression.variable.IntegerVariable;
-import hu.blackbelt.judo.meta.expression.variable.LogicalVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
-import hu.blackbelt.judo.meta.expression.variable.StringVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import hu.blackbelt.judo.meta.expression.variable.VariableFactory;
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
@@ -52,7 +55,6 @@ import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
@@ -75,27 +77,6 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass logicalVariableEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass stringVariableEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass enumerationVariableEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass objectVariableEClass = null;
 
 	/**
@@ -104,20 +85,6 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 	 * @generated
 	 */
 	private EClass collectionVariableEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass integerVariableEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass decimalVariableEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -175,6 +142,8 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 		EnumerationPackageImpl theEnumerationPackage = (EnumerationPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) instanceof EnumerationPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(EnumerationPackage.eNS_URI) : EnumerationPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theVariablePackage.createPackageContents();
@@ -187,6 +156,8 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 		theEnumerationPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theVariablePackage.initializePackageContents();
@@ -199,6 +170,8 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 		theEnumerationPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theVariablePackage.freeze();
@@ -232,42 +205,6 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getLogicalVariable() {
-		return logicalVariableEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getStringVariable() {
-		return stringVariableEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getEnumerationVariable() {
-		return enumerationVariableEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getEnumerationVariable_ElementName() {
-		return (EReference)enumerationVariableEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getObjectVariable() {
 		return objectVariableEClass;
 	}
@@ -279,24 +216,6 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 	 */
 	public EClass getCollectionVariable() {
 		return collectionVariableEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getIntegerVariable() {
-		return integerVariableEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDecimalVariable() {
-		return decimalVariableEClass;
 	}
 
 	/**
@@ -330,20 +249,9 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 		variableEClass = createEClass(VARIABLE);
 		createEAttribute(variableEClass, VARIABLE__NAME);
 
-		logicalVariableEClass = createEClass(LOGICAL_VARIABLE);
-
-		stringVariableEClass = createEClass(STRING_VARIABLE);
-
-		enumerationVariableEClass = createEClass(ENUMERATION_VARIABLE);
-		createEReference(enumerationVariableEClass, ENUMERATION_VARIABLE__ELEMENT_NAME);
-
 		objectVariableEClass = createEClass(OBJECT_VARIABLE);
 
 		collectionVariableEClass = createEClass(COLLECTION_VARIABLE);
-
-		integerVariableEClass = createEClass(INTEGER_VARIABLE);
-
-		decimalVariableEClass = createEClass(DECIMAL_VARIABLE);
 	}
 
 	/**
@@ -369,40 +277,21 @@ public class VariablePackageImpl extends EPackageImpl implements VariablePackage
 		setNsPrefix(eNS_PREFIX);
 		setNsURI(eNS_URI);
 
-		// Obtain other dependent packages
-		ExpressionPackage theExpressionPackage = (ExpressionPackage)EPackage.Registry.INSTANCE.getEPackage(ExpressionPackage.eNS_URI);
-
 		// Create type parameters
 
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
-		logicalVariableEClass.getESuperTypes().add(this.getVariable());
-		stringVariableEClass.getESuperTypes().add(this.getVariable());
-		enumerationVariableEClass.getESuperTypes().add(this.getVariable());
 		objectVariableEClass.getESuperTypes().add(this.getVariable());
 		collectionVariableEClass.getESuperTypes().add(this.getVariable());
-		integerVariableEClass.getESuperTypes().add(this.getVariable());
-		decimalVariableEClass.getESuperTypes().add(this.getVariable());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(variableEClass, Variable.class, "Variable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getVariable_Name(), ecorePackage.getEString(), "name", null, 0, 1, Variable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(logicalVariableEClass, LogicalVariable.class, "LogicalVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(stringVariableEClass, StringVariable.class, "StringVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(enumerationVariableEClass, EnumerationVariable.class, "EnumerationVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEnumerationVariable_ElementName(), theExpressionPackage.getElementName(), null, "elementName", null, 1, 1, EnumerationVariable.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(objectVariableEClass, ObjectVariable.class, "ObjectVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(collectionVariableEClass, CollectionVariable.class, "CollectionVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(integerVariableEClass, IntegerVariable.class, "IntegerVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(decimalVariableEClass, DecimalVariable.class, "DecimalVariable", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 	}
 
 } //VariablePackageImpl

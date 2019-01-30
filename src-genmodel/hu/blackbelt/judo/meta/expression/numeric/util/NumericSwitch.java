@@ -10,7 +10,6 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
-import hu.blackbelt.judo.meta.expression.VariableReference;
 
 import hu.blackbelt.judo.meta.expression.numeric.*;
 
@@ -131,8 +130,9 @@ public class NumericSwitch<T> extends Switch<T> {
 				IntegerAttribute integerAttribute = (IntegerAttribute)theEObject;
 				T result = caseIntegerAttribute(integerAttribute);
 				if (result == null) result = caseIntegerExpression(integerAttribute);
-				if (result == null) result = caseAttributeSelector(integerAttribute);
+				if (result == null) result = caseNumericAttribute(integerAttribute);
 				if (result == null) result = caseNumericExpression(integerAttribute);
+				if (result == null) result = caseAttributeSelector(integerAttribute);
 				if (result == null) result = caseDataExpression(integerAttribute);
 				if (result == null) result = caseExpression(integerAttribute);
 				if (result == null) result = defaultCase(theEObject);
@@ -142,8 +142,9 @@ public class NumericSwitch<T> extends Switch<T> {
 				DecimalAttribute decimalAttribute = (DecimalAttribute)theEObject;
 				T result = caseDecimalAttribute(decimalAttribute);
 				if (result == null) result = caseDecimalExpression(decimalAttribute);
-				if (result == null) result = caseAttributeSelector(decimalAttribute);
+				if (result == null) result = caseNumericAttribute(decimalAttribute);
 				if (result == null) result = caseNumericExpression(decimalAttribute);
+				if (result == null) result = caseAttributeSelector(decimalAttribute);
 				if (result == null) result = caseDataExpression(decimalAttribute);
 				if (result == null) result = caseExpression(decimalAttribute);
 				if (result == null) result = defaultCase(theEObject);
@@ -157,28 +158,6 @@ public class NumericSwitch<T> extends Switch<T> {
 				if (result == null) result = caseNumericExpression(integerAggregatedExpression);
 				if (result == null) result = caseDataExpression(integerAggregatedExpression);
 				if (result == null) result = caseExpression(integerAggregatedExpression);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case NumericPackage.INTEGER_VARIABLE_REFERENCE: {
-				IntegerVariableReference integerVariableReference = (IntegerVariableReference)theEObject;
-				T result = caseIntegerVariableReference(integerVariableReference);
-				if (result == null) result = caseIntegerExpression(integerVariableReference);
-				if (result == null) result = caseVariableReference(integerVariableReference);
-				if (result == null) result = caseNumericExpression(integerVariableReference);
-				if (result == null) result = caseDataExpression(integerVariableReference);
-				if (result == null) result = caseExpression(integerVariableReference);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case NumericPackage.DECIMAL_VARIABLE_REFERENCE: {
-				DecimalVariableReference decimalVariableReference = (DecimalVariableReference)theEObject;
-				T result = caseDecimalVariableReference(decimalVariableReference);
-				if (result == null) result = caseDecimalExpression(decimalVariableReference);
-				if (result == null) result = caseVariableReference(decimalVariableReference);
-				if (result == null) result = caseNumericExpression(decimalVariableReference);
-				if (result == null) result = caseDataExpression(decimalVariableReference);
-				if (result == null) result = caseExpression(decimalVariableReference);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -222,6 +201,16 @@ public class NumericSwitch<T> extends Switch<T> {
 				if (result == null) result = caseNumericExpression(decimalSwitchExpression);
 				if (result == null) result = caseDataExpression(decimalSwitchExpression);
 				if (result == null) result = caseExpression(decimalSwitchExpression);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case NumericPackage.NUMERIC_ATTRIBUTE: {
+				NumericAttribute numericAttribute = (NumericAttribute)theEObject;
+				T result = caseNumericAttribute(numericAttribute);
+				if (result == null) result = caseAttributeSelector(numericAttribute);
+				if (result == null) result = caseNumericExpression(numericAttribute);
+				if (result == null) result = caseDataExpression(numericAttribute);
+				if (result == null) result = caseExpression(numericAttribute);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -350,36 +339,6 @@ public class NumericSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Integer Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Integer Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseIntegerVariableReference(IntegerVariableReference object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Decimal Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Decimal Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDecimalVariableReference(DecimalVariableReference object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Decimal Aggregated Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -436,6 +395,21 @@ public class NumericSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDecimalSwitchExpression(DecimalSwitchExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseNumericAttribute(NumericAttribute object) {
 		return null;
 	}
 
@@ -541,21 +515,6 @@ public class NumericSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseAttributeSelector(AttributeSelector object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Variable Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseVariableReference(VariableReference object) {
 		return null;
 	}
 

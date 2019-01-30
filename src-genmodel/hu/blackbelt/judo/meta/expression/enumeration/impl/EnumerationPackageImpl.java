@@ -12,11 +12,14 @@ import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 
 import hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
+
+import hu.blackbelt.judo.meta.expression.custom.impl.CustomPackageImpl;
+
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationAttribute;
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationFactory;
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage;
 import hu.blackbelt.judo.meta.expression.enumeration.EnumerationSwitchExpression;
-import hu.blackbelt.judo.meta.expression.enumeration.EnumerationVariableReference;
 
 import hu.blackbelt.judo.meta.expression.impl.ExpressionPackageImpl;
 
@@ -39,6 +42,10 @@ import hu.blackbelt.judo.meta.expression.operator.impl.OperatorPackageImpl;
 import hu.blackbelt.judo.meta.expression.string.StringPackage;
 
 import hu.blackbelt.judo.meta.expression.string.impl.StringPackageImpl;
+
+import hu.blackbelt.judo.meta.expression.temporal.TemporalPackage;
+
+import hu.blackbelt.judo.meta.expression.temporal.impl.TemporalPackageImpl;
 
 import hu.blackbelt.judo.meta.expression.variable.VariablePackage;
 
@@ -63,13 +70,6 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 	 * @generated
 	 */
 	private EClass enumerationAttributeEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass enumerationVariableReferenceEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -134,6 +134,8 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 		StringPackageImpl theStringPackage = (StringPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(StringPackage.eNS_URI) instanceof StringPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(StringPackage.eNS_URI) : StringPackage.eINSTANCE);
 		ObjectPackageImpl theObjectPackage = (ObjectPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) instanceof ObjectPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ObjectPackage.eNS_URI) : ObjectPackage.eINSTANCE);
 		CollectionPackageImpl theCollectionPackage = (CollectionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) instanceof CollectionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CollectionPackage.eNS_URI) : CollectionPackage.eINSTANCE);
+		CustomPackageImpl theCustomPackage = (CustomPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) instanceof CustomPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CustomPackage.eNS_URI) : CustomPackage.eINSTANCE);
+		TemporalPackageImpl theTemporalPackage = (TemporalPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) instanceof TemporalPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(TemporalPackage.eNS_URI) : TemporalPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theEnumerationPackage.createPackageContents();
@@ -146,6 +148,8 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 		theStringPackage.createPackageContents();
 		theObjectPackage.createPackageContents();
 		theCollectionPackage.createPackageContents();
+		theCustomPackage.createPackageContents();
+		theTemporalPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theEnumerationPackage.initializePackageContents();
@@ -158,6 +162,8 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 		theStringPackage.initializePackageContents();
 		theObjectPackage.initializePackageContents();
 		theCollectionPackage.initializePackageContents();
+		theCustomPackage.initializePackageContents();
+		theTemporalPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theEnumerationPackage.freeze();
@@ -182,26 +188,17 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getEnumerationVariableReference() {
-		return enumerationVariableReferenceEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getEnumerationVariableReference_Variable() {
-		return (EReference)enumerationVariableReferenceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getEnumerationSwitchExpression() {
 		return enumerationSwitchExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumerationSwitchExpression_ElementName() {
+		return (EReference)enumerationSwitchExpressionEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -234,10 +231,8 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 		// Create classes and their features
 		enumerationAttributeEClass = createEClass(ENUMERATION_ATTRIBUTE);
 
-		enumerationVariableReferenceEClass = createEClass(ENUMERATION_VARIABLE_REFERENCE);
-		createEReference(enumerationVariableReferenceEClass, ENUMERATION_VARIABLE_REFERENCE__VARIABLE);
-
 		enumerationSwitchExpressionEClass = createEClass(ENUMERATION_SWITCH_EXPRESSION);
+		createEReference(enumerationSwitchExpressionEClass, ENUMERATION_SWITCH_EXPRESSION__ELEMENT_NAME);
 	}
 
 	/**
@@ -265,7 +260,6 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 
 		// Obtain other dependent packages
 		ExpressionPackage theExpressionPackage = (ExpressionPackage)EPackage.Registry.INSTANCE.getEPackage(ExpressionPackage.eNS_URI);
-		VariablePackage theVariablePackage = (VariablePackage)EPackage.Registry.INSTANCE.getEPackage(VariablePackage.eNS_URI);
 
 		// Create type parameters
 
@@ -274,18 +268,14 @@ public class EnumerationPackageImpl extends EPackageImpl implements EnumerationP
 		// Add supertypes to classes
 		enumerationAttributeEClass.getESuperTypes().add(theExpressionPackage.getEnumerationExpression());
 		enumerationAttributeEClass.getESuperTypes().add(theExpressionPackage.getAttributeSelector());
-		enumerationVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getEnumerationExpression());
-		enumerationVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
 		enumerationSwitchExpressionEClass.getESuperTypes().add(theExpressionPackage.getSwitchExpression());
 		enumerationSwitchExpressionEClass.getESuperTypes().add(theExpressionPackage.getEnumerationExpression());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(enumerationAttributeEClass, EnumerationAttribute.class, "EnumerationAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(enumerationVariableReferenceEClass, EnumerationVariableReference.class, "EnumerationVariableReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEnumerationVariableReference_Variable(), theVariablePackage.getEnumerationVariable(), null, "variable", null, 1, 1, EnumerationVariableReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(enumerationSwitchExpressionEClass, EnumerationSwitchExpression.class, "EnumerationSwitchExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumerationSwitchExpression_ElementName(), theExpressionPackage.getTypeName(), null, "elementName", null, 1, 1, EnumerationSwitchExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //EnumerationPackageImpl

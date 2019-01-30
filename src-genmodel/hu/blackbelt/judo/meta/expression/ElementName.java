@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * </ul>
  *
  * @see hu.blackbelt.judo.meta.expression.ExpressionPackage#getElementName()
- * @model
+ * @model abstract="true"
  * @generated
  */
 public interface ElementName extends EObject {

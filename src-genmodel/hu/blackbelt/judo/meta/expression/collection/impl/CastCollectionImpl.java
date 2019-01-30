@@ -3,7 +3,7 @@
 package hu.blackbelt.judo.meta.expression.collection.impl;
 
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.collection.CollectionPackage;
@@ -65,7 +65,7 @@ public class CastCollectionImpl extends MinimalEObjectImpl.Container implements 
 	 * @generated
 	 * @ordered
 	 */
-	protected ElementName elementName;
+	protected TypeName elementName;
 
 	/**
 	 * The cached value of the '{@link #getCollectionExpression() <em>Collection Expression</em>}' containment reference.
@@ -122,10 +122,10 @@ public class CastCollectionImpl extends MinimalEObjectImpl.Container implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName getElementName() {
+	public TypeName getElementName() {
 		if (elementName != null && elementName.eIsProxy()) {
 			InternalEObject oldElementName = (InternalEObject)elementName;
-			elementName = (ElementName)eResolveProxy(oldElementName);
+			elementName = (TypeName)eResolveProxy(oldElementName);
 			if (elementName != oldElementName) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CollectionPackage.CAST_COLLECTION__ELEMENT_NAME, oldElementName, elementName));
@@ -139,7 +139,7 @@ public class CastCollectionImpl extends MinimalEObjectImpl.Container implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName basicGetElementName() {
+	public TypeName basicGetElementName() {
 		return elementName;
 	}
 
@@ -148,8 +148,8 @@ public class CastCollectionImpl extends MinimalEObjectImpl.Container implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElementName(ElementName newElementName) {
-		ElementName oldElementName = elementName;
+	public void setElementName(TypeName newElementName) {
+		TypeName oldElementName = elementName;
 		elementName = newElementName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CollectionPackage.CAST_COLLECTION__ELEMENT_NAME, oldElementName, elementName));
@@ -243,7 +243,7 @@ public class CastCollectionImpl extends MinimalEObjectImpl.Container implements 
 				setName((String)newValue);
 				return;
 			case CollectionPackage.CAST_COLLECTION__ELEMENT_NAME:
-				setElementName((ElementName)newValue);
+				setElementName((TypeName)newValue);
 				return;
 			case CollectionPackage.CAST_COLLECTION__COLLECTION_EXPRESSION:
 				setCollectionExpression((CollectionExpression)newValue);
@@ -264,7 +264,7 @@ public class CastCollectionImpl extends MinimalEObjectImpl.Container implements 
 				setName(NAME_EDEFAULT);
 				return;
 			case CollectionPackage.CAST_COLLECTION__ELEMENT_NAME:
-				setElementName((ElementName)null);
+				setElementName((TypeName)null);
 				return;
 			case CollectionPackage.CAST_COLLECTION__COLLECTION_EXPRESSION:
 				setCollectionExpression((CollectionExpression)null);

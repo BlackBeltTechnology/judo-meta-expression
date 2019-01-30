@@ -72,32 +72,12 @@ public class VariableAdapterFactory extends AdapterFactoryImpl {
 				return createVariableAdapter();
 			}
 			@Override
-			public Adapter caseLogicalVariable(LogicalVariable object) {
-				return createLogicalVariableAdapter();
-			}
-			@Override
-			public Adapter caseStringVariable(StringVariable object) {
-				return createStringVariableAdapter();
-			}
-			@Override
-			public Adapter caseEnumerationVariable(EnumerationVariable object) {
-				return createEnumerationVariableAdapter();
-			}
-			@Override
 			public Adapter caseObjectVariable(ObjectVariable object) {
 				return createObjectVariableAdapter();
 			}
 			@Override
 			public Adapter caseCollectionVariable(CollectionVariable object) {
 				return createCollectionVariableAdapter();
-			}
-			@Override
-			public Adapter caseIntegerVariable(IntegerVariable object) {
-				return createIntegerVariableAdapter();
-			}
-			@Override
-			public Adapter caseDecimalVariable(DecimalVariable object) {
-				return createDecimalVariableAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -134,48 +114,6 @@ public class VariableAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.variable.LogicalVariable <em>Logical Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.variable.LogicalVariable
-	 * @generated
-	 */
-	public Adapter createLogicalVariableAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.variable.StringVariable <em>String Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.variable.StringVariable
-	 * @generated
-	 */
-	public Adapter createStringVariableAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.variable.EnumerationVariable <em>Enumeration Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.variable.EnumerationVariable
-	 * @generated
-	 */
-	public Adapter createEnumerationVariableAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.variable.ObjectVariable <em>Object Variable</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -200,34 +138,6 @@ public class VariableAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createCollectionVariableAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.variable.IntegerVariable <em>Integer Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.variable.IntegerVariable
-	 * @generated
-	 */
-	public Adapter createIntegerVariableAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.variable.DecimalVariable <em>Decimal Variable</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.variable.DecimalVariable
-	 * @generated
-	 */
-	public Adapter createDecimalVariableAdapter() {
 		return null;
 	}
 

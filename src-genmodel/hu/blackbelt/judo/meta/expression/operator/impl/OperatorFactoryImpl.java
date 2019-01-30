@@ -90,6 +90,8 @@ public class OperatorFactoryImpl extends EFactoryImpl implements OperatorFactory
 				return createDecimalAggregatorFromString(eDataType, initialValue);
 			case OperatorPackage.OBJECT_COMPARATOR:
 				return createObjectComparatorFromString(eDataType, initialValue);
+			case OperatorPackage.TIMESTAMP_DURATION_OPERATOR:
+				return createTimestampDurationOperatorFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -123,6 +125,8 @@ public class OperatorFactoryImpl extends EFactoryImpl implements OperatorFactory
 				return convertDecimalAggregatorToString(eDataType, instanceValue);
 			case OperatorPackage.OBJECT_COMPARATOR:
 				return convertObjectComparatorToString(eDataType, instanceValue);
+			case OperatorPackage.TIMESTAMP_DURATION_OPERATOR:
+				return convertTimestampDurationOperatorToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -506,6 +510,44 @@ public class OperatorFactoryImpl extends EFactoryImpl implements OperatorFactory
 	 */
 	public String convertObjectComparatorToString(EDataType eDataType, Object instanceValue) {
 		return convertObjectComparator((ObjectComparator)instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TimestampDurationOperator createTimestampDurationOperator(String literal) {
+		TimestampDurationOperator result = TimestampDurationOperator.get(literal);
+		if (result == null) throw new IllegalArgumentException("The value '" + literal + "' is not a valid enumerator of '" + OperatorPackage.Literals.TIMESTAMP_DURATION_OPERATOR.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TimestampDurationOperator createTimestampDurationOperatorFromString(EDataType eDataType, String initialValue) {
+		return createTimestampDurationOperator(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertTimestampDurationOperator(TimestampDurationOperator instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertTimestampDurationOperatorToString(EDataType eDataType, Object instanceValue) {
+		return convertTimestampDurationOperator((TimestampDurationOperator)instanceValue);
 	}
 
 	/**

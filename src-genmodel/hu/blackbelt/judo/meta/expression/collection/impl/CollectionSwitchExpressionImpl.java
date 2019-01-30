@@ -2,7 +2,7 @@
  */
 package hu.blackbelt.judo.meta.expression.collection.impl;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.collection.CollectionPackage;
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
@@ -38,7 +38,7 @@ public class CollectionSwitchExpressionImpl extends SwitchExpressionImpl impleme
 	 * @generated
 	 * @ordered
 	 */
-	protected ElementName elementName;
+	protected TypeName elementName;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -64,10 +64,10 @@ public class CollectionSwitchExpressionImpl extends SwitchExpressionImpl impleme
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName getElementName() {
+	public TypeName getElementName() {
 		if (elementName != null && elementName.eIsProxy()) {
 			InternalEObject oldElementName = (InternalEObject)elementName;
-			elementName = (ElementName)eResolveProxy(oldElementName);
+			elementName = (TypeName)eResolveProxy(oldElementName);
 			if (elementName != oldElementName) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CollectionPackage.COLLECTION_SWITCH_EXPRESSION__ELEMENT_NAME, oldElementName, elementName));
@@ -81,7 +81,7 @@ public class CollectionSwitchExpressionImpl extends SwitchExpressionImpl impleme
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ElementName basicGetElementName() {
+	public TypeName basicGetElementName() {
 		return elementName;
 	}
 
@@ -90,8 +90,8 @@ public class CollectionSwitchExpressionImpl extends SwitchExpressionImpl impleme
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setElementName(ElementName newElementName) {
-		ElementName oldElementName = elementName;
+	public void setElementName(TypeName newElementName) {
+		TypeName oldElementName = elementName;
 		elementName = newElementName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CollectionPackage.COLLECTION_SWITCH_EXPRESSION__ELEMENT_NAME, oldElementName, elementName));
@@ -121,7 +121,7 @@ public class CollectionSwitchExpressionImpl extends SwitchExpressionImpl impleme
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CollectionPackage.COLLECTION_SWITCH_EXPRESSION__ELEMENT_NAME:
-				setElementName((ElementName)newValue);
+				setElementName((TypeName)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -136,7 +136,7 @@ public class CollectionSwitchExpressionImpl extends SwitchExpressionImpl impleme
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case CollectionPackage.COLLECTION_SWITCH_EXPRESSION__ELEMENT_NAME:
-				setElementName((ElementName)null);
+				setElementName((TypeName)null);
 				return;
 		}
 		super.eUnset(featureID);
