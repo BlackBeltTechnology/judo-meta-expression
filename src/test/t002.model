@@ -198,7 +198,7 @@
   </n:DecimalAritmeticExpression>
   <l:DecimalComparison xmi:id="_bez44CLmEemiuM_tO8e5iw">
     <left xsi:type="const:MeasuredDecimal" xmi:id="_3O5UoCLmEemiuM_tO8e5iw" value="9" unitName="mg"/>
-    <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" measure="_7VLCACSdEemLpvUY7MQgng" value="2" unitName="kg"/>
+    <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" value="2" unitName="kg"/>
   </l:DecimalComparison>
   <t:TimestampAdditionExpression xmi:id="_n93ogCMQEemiuM_tO8e5iw">
     <timestamp xsi:type="const:Timestamp" xmi:id="_pw0z4CMQEemiuM_tO8e5iw" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>

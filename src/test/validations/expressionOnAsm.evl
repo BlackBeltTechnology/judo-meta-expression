@@ -1,6 +1,4 @@
-import "../operations/expression-asm.eol";
-import "../operations/expression-asm-measure.eol";
-import "../operations/expression-asm-temporal.eol";
+import "../operations/_importAsm.eol";
 import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {

@@ -5,6 +5,6 @@
   <const:String xmi:id="_FCZQMh5GEemwg4NgOjaKeA" value="Sample text"/>
   <const:Boolean xmi:id="_FCZQMx5GEemwg4NgOjaKeA" value="true"/>
   <const:Literal xmi:id="_FCZQNB5GEemwg4NgOjaKeA" value="RED"/>
-  <const:MeasuredDecimal xmi:id="_FCZQNR5GEemwg4NgOjaKeA" value="10" measure="_FCZQNh5GEemwg4NgOjaKeA" unitName="kilogram"/>
-  <expr:MeasureName xmi:id="_FCZQNh5GEemwg4NgOjaKeA" name="Mass" namespace="Template::measures"/>
+  <const:MeasuredDecimal xmi:id="_FCZQNR5GEemwg4NgOjaKeA" measure="_FCZQNh5GEemwg4NgOjaKeA" value="10" unitName="kilogram"/>
+  <expr:MeasureName xmi:id="_FCZQNh5GEemwg4NgOjaKeA" name="Mass" namespace="northwind::measures"/>
 </xmi:XMI>

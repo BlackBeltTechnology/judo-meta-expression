@@ -34,7 +34,13 @@ operation EXPR!MeasuredDecimal isMeasured() : Boolean {
 
 @cached
 operation EXPR!MeasureName getMeasure() : JUDOPSM!Measure {
-    return self.getNamespace().elements.selectOne(m | m.name = self.name);
+    var ns = self.getNamespace();
+    if (ns.isDefined()) {
+        return ns.elements.selectOne(m | m.name = self.name);
+    } else {
+        return null;
+    }
+    
 }
 
 @cached
@@ -114,7 +120,12 @@ operation EXPR!NumericAttribute getMeasure() : JUDOPSM!Measure {
 @cached
 operation EXPR!MeasuredDecimal getUnit() {
     if (self.measure.isDefined()) {
-        return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+        var m = self.measure.getMeasure();
+        if (m.isDefined()) {
+            return m.units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+        } else {
+            return null;
+        }
     } else {
         var units = JUDOPSM!Unit.all.select(u | u.name = self.unitName or u.symbol = self.unitName);
         if (units.size() == 1) {

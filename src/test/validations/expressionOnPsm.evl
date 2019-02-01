@@ -1,6 +1,4 @@
-import "../operations/expression-psm.eol";
-import "../operations/expression-psm-measure.eol";
-import "../operations/expression-psm-temporal.eol";
+import "../operations/_importPsm.eol";
 import "../../main/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
