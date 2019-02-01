@@ -44,3 +44,15 @@ operation getStandaloneExpressions() : Collection {
 operation EXPR!Expression isStandalone() : Boolean {
     return getStandaloneExpressions().contains(self);
 }
+
+@cached
+operation EXPR!Expression getExpressionTree() : Map {
+    var input = self.getInputExpression();
+    if (input.isDefined()) {
+        var tree = input.getExpressionTree();
+        tree.put('continue', Map{'expression'=self, 'lambda'=self.getLambdaExpressions()});
+        return tree;
+    } else {
+        return Map{'expression'=self, 'lambda'=self.getLambdaExpressions()};
+    }
+}
