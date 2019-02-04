@@ -6,8 +6,8 @@
 
     <groupId>hu.blackbelt.judo.meta</groupId>
     <artifactId>judo-meta-expression</artifactId>
-    <packaging>eclipse-plugin</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>JUDO expression metamodel</name>
     <description>Judo Architecture Specific Metamodel</description>
@@ -52,8 +52,8 @@
 			<url>http://download.eclipse.org/releases/2018-12/</url>
 		</repository>
   </repositories>
-
-	<properties>
+ 
+<properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
@@ -75,29 +75,35 @@
 				<extensions>true</extensions>
 			</plugin>
 			
-			<!-- 
+            <!-- Clean generated plugin sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
 					<filesets combine.children="append">
-						<fileset>
-							<directory>${basedir}/src-genmodel/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-					</filesets>
+                        <fileset>
+                            <directory>${basedir}/plugin</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <excludes>
+                                <exclude>pom.xml</exclude>
+                                <exclude>.gitignore</exclude>
+                            </excludes>
+                        </fileset>
+
+                    </filesets>
 				</configuration>
 			</plugin>
-            -->
+
+            <!-- generate plugin source from .genmodel -->
             <plugin>
                 <groupId>org.eclipse.tycho.extras</groupId>
                 <artifactId>tycho-eclipserun-plugin</artifactId>
                 <version>${tycho-version}</version>
                 <configuration>
                     <!-- linebreaks not permitted in this arg line -->
-                    <appArgLine>-data target/workspace -application org.eclipse.emf.codegen.ecore.Generator -projects ${basedir} -model ${basedir}/model/expression.genmodel target/generated-sources/emf</appArgLine>
+                    <appArgLine>-data target/workspace -application org.eclipse.emf.codegen.ecore.Generator -projects ${basedir} -model ${basedir}/model/expression.genmodel plugin</appArgLine>
                     <dependencies>
                         <dependency>
                             <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
@@ -123,6 +129,72 @@
                 </executions>
             </plugin>
 
+            <!-- Copy models to plugin -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-models</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/plugin/model</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>model</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Compile generated plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>set-version-generated-plugin</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <workingDirectory>${basedir}/plugin</workingDirectory>
+                            <arguments>
+                                <argument>versions:set</argument>
+                                <argument>-DnewVersion=${project.version}</argument>
+                                <argument>tycho-versions:update-eclipse-metadata</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>compile-generated-plugin</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>mvn</executable>
+                            <workingDirectory>${basedir}/plugin</workingDirectory>
+                            <arguments>
+                                <argument>clean</argument>
+                                <argument>install</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Add generated sources to compilation -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -136,7 +208,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/target/generated-sources/emf/src-genmodel</source>
+                                <source>${basedir}/plugin/src-genmodel</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -165,7 +237,7 @@
                 </executions>
             </plugin>
 
-<!-- 
+            <!-- Creating Judo bundle -->
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
@@ -191,7 +263,6 @@
                     </instructions>
                 </configuration>
             </plugin>
--->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
