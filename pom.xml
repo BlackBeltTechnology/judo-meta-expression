@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>hu.blackbelt.judo.meta</groupId>
-    <artifactId>judo-meta-expression</artifactId>
-    <packaging>bundle</packaging>
+    <artifactId>judo-meta-expression-parent</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.1-SNAPSHOT</version>
 
     <name>JUDO expression metamodel</name>
@@ -45,26 +45,35 @@
         </developer>
     </developers>
 
- <repositories>
-		<repository>
-			<id>proton</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/2018-12/</url>
-		</repository>
-  </repositories>
+     <repositories>
+            <repository>
+                <id>proton</id>
+                <layout>p2</layout>
+                <url>http://download.eclipse.org/releases/2018-12/</url>
+            </repository>
+      </repositories>
+
+    <modules>
+        <module>generator</module>
+        <module>model</module>
+        <module>runtime</module>
+    </modules>
  
 <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
-        <epsilon.maven.plugin.version>1.1.2_feature__5_UpdateEpsilon_1_5_1-36</epsilon.maven.plugin.version>
+        <epsilon.maven.plugin.version>1.1.3</epsilon.maven.plugin.version>
 
         <src.dir>src/main</src.dir>
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<tycho-version>1.3.0</tycho-version>
-	</properties>
+		
+        <judo-targetplatform-version>1.0.0-SNAPSHOT</judo-targetplatform-version>
+		
+</properties>
 	  
     <build>
         <plugins>
@@ -74,209 +83,60 @@
 				<version>${tycho-version}</version>
 				<extensions>true</extensions>
 			</plugin>
-			
-            <!-- Clean generated plugin sources -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets combine.children="append">
-                        <fileset>
-                            <directory>${basedir}/plugin</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <excludes>
-                                <exclude>pom.xml</exclude>
-                                <exclude>.gitignore</exclude>
-                            </excludes>
-                        </fileset>
 
-                    </filesets>
-				</configuration>
-			</plugin>
 
-            <!-- generate plugin source from .genmodel -->
-            <plugin>
-                <groupId>org.eclipse.tycho.extras</groupId>
-                <artifactId>tycho-eclipserun-plugin</artifactId>
-                <version>${tycho-version}</version>
-                <configuration>
-                    <!-- linebreaks not permitted in this arg line -->
-                    <appArgLine>-data target/workspace -application org.eclipse.emf.codegen.ecore.Generator -projects ${basedir} -model ${basedir}/model/expression.genmodel plugin</appArgLine>
-                    <dependencies>
-                        <dependency>
-                            <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
-                            <type>eclipse-plugin</type>
-                        </dependency>
-                    </dependencies>
-                    
-                    <repositories>
-                        <repository>
-                            <id>proton</id>
-                            <layout>p2</layout>
-                            <url>http://download.eclipse.org/releases/2018-12</url>
-                        </repository>
-                    </repositories>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>eclipse-run</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                    </execution>
-                </executions>
-            </plugin>
+	      <plugin>
+		      <groupId>org.eclipse.tycho</groupId>
+		      <artifactId>target-platform-configuration</artifactId>
+	        <version>${tycho-version}</version>
+		      <configuration>
+	          <executionEnvironment>JavaSE-1.8</executionEnvironment>
+	          <target>
+	            <artifact>
+		            <groupId>hu.blackbelt.judo.eclipse</groupId>
+		            <artifactId>judo-eclipse-targetplatform</artifactId>
+                    <version>${judo-targetplatform-version}</version>
+	            </artifact>
+	          </target>
+		        <dependency-resolution>
+		          <extraRequirements>
+		              <requirement>
+		                <type>eclipse-plugin</type>
+		                <id>org.hamcrest.core</id>
+		                <versionRange>0.0.0</versionRange>
+		              </requirement>
+	            </extraRequirements>
+	          </dependency-resolution>
+		        <environments>
+		          <environment>
+		            <os>linux</os>
+		            <ws>gtk</ws>
+		            <arch>x86</arch>
+		          </environment>
+		          <environment>
+		            <os>linux</os>
+		            <ws>gtk</ws>
+		            <arch>x86_64</arch>
+		          </environment>
+		          <environment>
+		            <os>win32</os>
+		            <ws>win32</ws>
+		            <arch>x86</arch>
+		          </environment>
+		          <environment>
+		            <os>win32</os>
+		            <ws>win32</ws>
+		            <arch>x86_64</arch>
+		          </environment>
+		          <environment>
+		            <os>macosx</os>
+		            <ws>cocoa</ws>
+		            <arch>x86_64</arch>
+		          </environment>
+		        </environments>
+		      </configuration>
+	      </plugin>
 
-            <!-- Copy models to plugin -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>copy-models</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/plugin/model</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>model</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Compile generated plugin -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>set-version-generated-plugin</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <workingDirectory>${basedir}/plugin</workingDirectory>
-                            <arguments>
-                                <argument>versions:set</argument>
-                                <argument>-DnewVersion=${project.version}</argument>
-                                <argument>tycho-versions:update-eclipse-metadata</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>compile-generated-plugin</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>mvn</executable>
-                            <workingDirectory>${basedir}/plugin</workingDirectory>
-                            <arguments>
-                                <argument>clean</argument>
-                                <argument>install</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Add generated sources to compilation -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <id>add-model-gen-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/plugin/src-genmodel</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>attach-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>model/expression.ecore</file>
-                                    <type>ecore</type>
-                                    <classifier>expression</classifier>
-                                </artifact>
-                                <artifact>
-                                    <file>model/expression.genmodel</file>
-                                    <type>genmodel</type>
-                                    <classifier>expression</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Creating Judo bundle -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.3.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <obrRepository>NONE</obrRepository>
-                    <instructions>
-                        <Import-Package>
-                            !lombok, *
-                        </Import-Package>
-                        <Export-Package>
-                            meta/expression;version=${project.version},
-                            hu.blackbelt.judo.meta.expression;version=${project.version},
-                            hu.blackbelt.judo.meta.expression.*;version=${project.version}
-                        </Export-Package>
-                        <Include-Resource>
-                            {maven-resources},
-                            meta/expression/expression.ecore=model/expression.ecore,
-                            judo/expression/operations=src/main/operations,
-                            judo/expression/validations=src/main/validations
-                        </Include-Resource>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
-                <configuration>
-                    <additionalparam>${javadoc.opts}</additionalparam>
-                </configuration>
-            </plugin>
         </plugins>
 
         <pluginManagement>
@@ -295,6 +155,7 @@
                     <artifactId>epsilon-maven-plugin</artifactId>
                     <version>${epsilon.maven.plugin.version}</version>
                 </plugin>
+
 
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
@@ -411,6 +272,15 @@
             </plugins>
         </pluginManagement>
     </build>
+    <dependencyManagement>
+	    <dependencies>
+	        <dependency>
+	            <groupId>hu.blackbelt.judo.meta</groupId>
+	            <artifactId>judo-meta-expression-model</artifactId>
+  	            <version>1.0.1-SNAPSHOT</version>	            
+	        </dependency>
+	    </dependencies>    
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -461,34 +331,6 @@
 
 
     <profiles>
-        <profile>
-            <id>test-expressions</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>hu.blackbelt.epsilon</groupId>
-                        <artifactId>epsilon-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>epsilon-validate</id>
-                                <goals>
-                                    <goal>executeConfiguration</goal>
-                                </goals>
-                                <configuration>
-                                    <configurationArtifacts>
-                                        <configurationArtifact>src/test/**/*.xml</configurationArtifact>
-                                    </configurationArtifacts>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <profile>
             <id>release-github</id>
             <build>
