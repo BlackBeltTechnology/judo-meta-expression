@@ -13,6 +13,6 @@
     <artifactId>judo-meta-expression-model</artifactId>
     <packaging>eclipse-plugin</packaging>
   
-    <name>JUDO expression metamodel eclipse source generator</name>
-    <description>Judo Architecture Specific Metamodel Generator</description>
+    <name>JUDO expression metamodel eclipse model</name>
+    <description>Judo Architecture Specific Expression Metamodel</description>
 </project>

@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
   
     <name>JUDO expression metamodel eclipse source generator</name>
-    <description>Judo Architecture Specific Metamodel Generator</description>
+    <description>Judo Architecture Specific Expression Metamodel Source Generator</description>
 
 	  
     <build>
