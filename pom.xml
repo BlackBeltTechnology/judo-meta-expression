@@ -9,8 +9,8 @@
     <packaging>pom</packaging>
     <version>1.0.1-SNAPSHOT</version>
 
-    <name>JUDO expression metamodel</name>
-    <description>Judo Architecture Specific Metamodel</description>
+    <name>JUDO expression metamodel parent</name>
+    <description>Judo Architecture Specific Metamodel Parent</description>
 
     <url>http://github.com/BlackBeltTechnology/judo-meta-expression</url>
 
@@ -56,6 +56,7 @@
     <modules>
         <module>generator</module>
         <module>model</module>
+        <module>feature</module>
         <module>runtime</module>
     </modules>
  

@@ -33,12 +33,11 @@
                         </Import-Package>
                         <Export-Package>
                             meta/expression;version=${project.version},
-                            hu.blackbelt.judo.meta.expression;version=${project.version},
                             hu.blackbelt.judo.meta.expression.*;version=${project.version}
                         </Export-Package>
                         <Include-Resource>
                             {maven-resources},
-                            meta/expression/expression.ecore=../model/model/expression.ecore,
+                            meta/expression=../model/model,
                             judo/expression/operations=src/main/operations,
                             judo/expression/validations=src/main/validations
                         </Include-Resource>
