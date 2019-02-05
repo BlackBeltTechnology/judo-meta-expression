@@ -43,6 +43,12 @@ pre {
         e.toString().println("Fragment expression: ");
     }
     
+    for (e in EXPR!Expression.all.select(e | e.isLambdaExpression())) {
+        e.toString().println("Lambda expression: ");
+        e.getLambdaContainer().toString().println("  - container: ");
+        e.getBaseExpressions().collect(e | e.toString()).println("  - bases: ");
+    }
+    
     /*for (vr in EXPR!VariableReference.all) {
         vr.variable.name.println("Variable: ");
         vr.variable.toString().println(" -> ");
@@ -50,5 +56,5 @@ pre {
         expr.toString().println(" - expr: ");
         vr.getBaseExpression().toString().println(" - base: ");
     } */
-    displayAllExpressions();
+    //displayAllExpressions();
 }

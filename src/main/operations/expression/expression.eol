@@ -3,30 +3,11 @@ operation EXPR!SwitchCase getSwitchExpression() {
     return EXPR!SwitchExpression.all.selectOne(e | e.cases.contains(self));
 }
 
-@cached
-operation EXPR!Expression getVariableName() : String {
-    if (self.isKindOf(EXPR!Variable)) {
-        return self.name;
-    } else {
-        var operandVariable = self.getOperands().selectOne(o | o.getVariableName().isDefined());
-        if (operandVariable.isDefined()) {
-            return operandVariable.getVariableName();
-        }
-    }
-    return null;
-}
-
 // get operands of an expression
 @cached
 operation EXPR!Expression getOperands() : Collection {
     return Set{};
 }
-
-// get input (base) expressions 
-/*@cached
-operation EXPR!Expression getInputExpressions() : Collection {
-    return Set{};
-} */
 
 // get collection of lambda expressions where the given object/collection expression is used as input variable
 @cached
@@ -44,23 +25,15 @@ operation EXPR!Expression isFragment() : Boolean {
     return not EXPR!Expression.all.selectOne(e | e.getOperands().contains(self)).isDefined();
 }
 
-/*
 @cached
-operation EXPR!Expression getLambdaContainer() : EXPR!Expression {
-    return EXPR!Expression.all.selectOne(e | e.getLambdaExpressions().contains(self));
+operation EXPR!Expression isLambdaExpression() : Boolean {
+    return self.getLambdaContainer().isDefined();
 }
 
 @cached
-operation EXPR!Expression getLambdaBaseContainer() : EXPR!Expression {
-    var container = self.getLambdaContainer();
-    if (not container.isDefined()) {
-        return null;
-    } else if (container.isDefined() and not container.getLambdaContainer().isDefined()) {
-        return container;
-    } else {
-        return container.getLambdaBaseContainer();
-    }
-} */
+operation EXPR!Expression getLambdaContainer() : EXPR!ReferenceExpression {
+    return EXPR!ReferenceExpression.all.selectOne(e | e.getLambdaExpressions().contains(self));
+}
 
 @cached
 operation EXPR!Expression getBaseExpressions() : Collection {

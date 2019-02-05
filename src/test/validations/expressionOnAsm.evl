@@ -35,5 +35,10 @@ pre {
     for (e in EXPR!Expression.all.select(e | e.isFragment())) {
         e.toString().println("Fragment expression: ");
     }
-    displayAllExpressions();
+    
+    for (e in EXPR!Expression.all.select(e | e.isLambdaExpression())) {
+        e.toString().println("Lambda expression: ");
+    }
+    
+    //displayAllExpressions();
 }
