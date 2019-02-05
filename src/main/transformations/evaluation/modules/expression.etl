@@ -20,22 +20,22 @@ operation EVAL!WindowingNode getScope() : EVAL!NavigationNode {
     return navigationNodes.selectOne(n | n.windowing.contains(self));
 }
 
-@cached
+/*@cached
 operation EXPR!Expression getEvaluationTree() : EVAL!NavigationNode {
     return navigationNodes.selectOne(n | n.expression == self.getBaseExpression());
-}
+} */
 
 pre {
     var navigationNodes = new Set;
 }
 
 post {
-    for (e in getStandaloneExpressions()) {
+    /*for (e in getStandaloneExpressions()) {
         var tree = e.getEvaluationTree();
         if (tree.isDefined()) {
             tree.baseExpression = e.toString();
         }
-    }
+    }*/
 }
 
 rule ImmutableCollectionToNavigationNode 
@@ -63,9 +63,9 @@ rule AttributeSelectorToProjectionNode
     t.expression = s;
     t.description = s.toString();
     
-    var input = s.getInputExpression();
+    var input = s.getOperands().first();
     
-    if (input.isDefined()) {
+    if (input.size().isDefined()) {
         var ti = input.equivalent();
         if (ti.isKindOf(EVAL!NavigationNode)) {
             ti.projections.add(t);
@@ -80,6 +80,8 @@ rule AttributeSelectorToProjectionNode
         } else {
             input.toString().println("No equivalent in PROJECTION is defined for: ");
         }
+    } else {
+        throw "Invalid operands of expression: " + s.toString();
     }
 }
 
@@ -90,7 +92,7 @@ rule NavigationExpressionToNavigationNode
     t.expression = s;
     t.description = s.toString();
     
-    var input = s.getInputExpression();
+    var input = s.getOperands().first();
     
     if (input.isDefined()) {
         var ti = input.equivalent();
@@ -119,7 +121,7 @@ rule FilteringExpressionToFilteringNode
     t.expression = s;
     t.description = s.toString();
     
-    var input = s.getInputExpression();
+    var input = s.getOperands().first();
     
     if (input.isDefined()) {
         var ti = input.equivalent();
@@ -136,6 +138,8 @@ rule FilteringExpressionToFilteringNode
         } else {
             input.toString().println("No equivalent in FILTERING is defined for: ");
         }
+    } else {
+        throw "Invalid operands of expression: " + s.toString();
     }
 }
 
@@ -146,7 +150,7 @@ rule SortExpressionToOrderingNode
     t.expression = s;
     t.description = s.toString();
     
-    var input = s.getInputExpression();
+    var input = s.getOperands().first();
     
     if (input.isDefined()) {
         var ti = input.equivalent();
@@ -163,6 +167,8 @@ rule SortExpressionToOrderingNode
         } else {
             input.toString().println("No equivalent in ORDERING is defined for: ");
         }
+    } else {
+        throw "Invalid operands of expression: " + s.toString();
     }
 }
 
@@ -173,7 +179,7 @@ rule WindowingExpressionToWindowingNode
     t.expression = s;
     t.description = s.toString();
     
-    var input = s.getInputExpression();
+    var input = s.getOperands().first();
     
     if (input.isDefined()) {
         var ti = input.equivalent();
@@ -190,5 +196,7 @@ rule WindowingExpressionToWindowingNode
         } else {
             input.toString().println("No equivalent in WINDOWING is defined for: ");
         }
+    } else {
+        throw "Invalid operands of expression: " + s.toString();
     }
 }

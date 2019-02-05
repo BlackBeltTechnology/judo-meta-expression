@@ -16,36 +16,35 @@ operation EXPR!Expression getVariableName() : String {
     return null;
 }
 
+// get operands of an expression
 @cached
-operation EXPR!Expression getInputExpression() : Collection {
-    return null;
+operation EXPR!Expression getOperands() : Collection {
+    return Set{};
 }
 
+// get input (base) expressions 
+/*@cached
+operation EXPR!Expression getInputExpressions() : Collection {
+    return Set{};
+} */
+
+// get collection of lambda expressions where the given object/collection expression is used as input variable
 @cached
-operation EXPR!Expression getLambdaExpressions() : Collection {
+operation EXPR!ReferenceExpression getLambdaExpressions() : Collection {
     return Set{};
 }
 
 @cached
-operation EXPR!Expression getOperands() : Collection {
-    var operands = self.getLambdaExpressions().clone();
-    var inputExpression = self.getInputExpression();
-    if (inputExpression.isDefined()) {
-        operands.add(inputExpression);
-    }
-    return operands;
+operation EXPR!Expression isComplete() : Boolean {
+    return not EXPR!Expression.all.selectOne(e | e.getOperands().contains(self) or (e.isKindOf(EXPR!ReferenceExpression) and e.getLambdaExpressions().contains(self))).isDefined();
 }
 
 @cached
-operation getStandaloneExpressions() : Collection {
-    return EXPR!Expression.all.select(e | EXPR!Expression.all.excluding(e).selectOne(e2 | e2.getOperands().contains(e)).isUndefined());
+operation EXPR!Expression isFragment() : Boolean {
+    return not EXPR!Expression.all.selectOne(e | e.getOperands().contains(self)).isDefined();
 }
 
-@cached
-operation EXPR!Expression isStandalone() : Boolean {
-    return getStandaloneExpressions().contains(self);
-}
-
+/*
 @cached
 operation EXPR!Expression getLambdaContainer() : EXPR!Expression {
     return EXPR!Expression.all.selectOne(e | e.getLambdaExpressions().contains(self));
@@ -61,14 +60,14 @@ operation EXPR!Expression getLambdaBaseContainer() : EXPR!Expression {
     } else {
         return container.getLambdaBaseContainer();
     }
-}
+} */
 
 @cached
-operation EXPR!Expression getBaseExpression() : EXPR!Expression {
-    var input = self.getInputExpression();
-    if (input.isDefined()) {
-        return input.getBaseExpression();
+operation EXPR!Expression getBaseExpressions() : Collection {
+    var inputs = self.getOperands();
+    if (not inputs.isEmpty()) {
+        return inputs.collect(i | i.getBaseExpressions()).flatten();
     } else {
-        return self;
+        return Set{self};
     }
 }

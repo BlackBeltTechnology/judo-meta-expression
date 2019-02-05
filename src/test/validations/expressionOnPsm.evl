@@ -8,7 +8,7 @@ operation displayAllExpressions() {
         if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
-        expr.getBaseExpression().toString().println(" - base: ");
+        expr.getBaseExpressions().collect(e | e.toString()).println(" - bases: ");
         /*if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
         	var measure = expr.getMeasure();
         	if (measure.isDefined()) {
@@ -35,8 +35,12 @@ operation displayAllExpressions() {
 }
 
 pre {
-    for (e in getStandaloneExpressions()) {
-        e.toString().println("Standalone expression: ");
+    for (e in EXPR!Expression.all.select(e | e.isComplete())) {
+        e.toString().println("Complete expression: ");
+    }
+    
+    for (e in EXPR!Expression.all.select(e | e.isFragment())) {
+        e.toString().println("Fragment expression: ");
     }
     
     /*for (vr in EXPR!VariableReference.all) {
