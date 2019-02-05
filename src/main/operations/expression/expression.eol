@@ -36,6 +36,16 @@ operation EXPR!Expression getLambdaContainer() : EXPR!ReferenceExpression {
 }
 
 @cached
+operation EXPR!Expression getFragment() : EXPR!Expression {
+    var fragment = EXPR!Expression.all.selectOne(e | e.getOperands().contains(self));
+    if (fragment.isDefined()) {
+        return fragment.getFragment();
+    } else {
+        return self;
+    }
+}
+
+@cached
 operation EXPR!Expression getBaseExpressions() : Collection {
     var inputs = self.getOperands();
     if (not inputs.isEmpty()) {
@@ -43,4 +53,26 @@ operation EXPR!Expression getBaseExpressions() : Collection {
     } else {
         return Set{self};
     }
+}
+
+@cached
+operation EXPR!Expression getLambdaBasePath() : Collection {
+    if (not self.isLambdaExpression()) {
+        return Set{};
+    }
+    
+    //self.toString().println("LAMBDA: ");
+    var result = new Set;
+    
+    var containers = Set{self.getLambdaContainer()};
+    while (not containers.isEmpty()) {
+        var basePathEntries = containers.collect(e | e.getOperands()).flatten();
+        result.addAll(basePathEntries);
+        //basePathEntries.collect(e | e.toString()).println(" - base path entries: ");
+        //basePathEntries.collect(e | e.getFragment().toString()).println(" - fragments: ");
+        
+        containers = basePathEntries.collect(e | e.getFragment().getLambdaContainer()).select(e | e.isDefined());
+    }
+    
+    return result;
 }

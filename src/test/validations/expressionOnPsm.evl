@@ -47,6 +47,7 @@ pre {
         e.toString().println("Lambda expression: ");
         e.getLambdaContainer().toString().println("  - container: ");
         e.getBaseExpressions().collect(e | e.toString()).println("  - bases: ");
+        e.getLambdaBasePath().collect(e | e.toString()).println("  - base path: ");
     }
     
     /*for (vr in EXPR!VariableReference.all) {
