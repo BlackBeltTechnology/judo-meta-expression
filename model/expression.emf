@@ -1,0 +1,562 @@
+@namespace(uri="http://blackbelt.hu/judo/meta/expression", prefix="expr")
+package expression;
+
+abstract interface Expression {
+}
+
+abstract class ElementName {
+  attr String[1] name;
+  attr String[1] namespace;
+}
+
+abstract interface NumericExpression extends DataExpression {
+}
+
+abstract interface LogicalExpression extends DataExpression {
+}
+
+abstract interface StringExpression extends DataExpression {
+}
+
+abstract interface EnumerationExpression extends DataExpression {
+}
+
+abstract interface ObjectExpression extends ReferenceExpression {
+}
+
+abstract interface CollectionExpression extends ReferenceExpression {
+}
+
+abstract class AttributeSelector extends Expression {
+  val ObjectExpression[1] objectExpression;
+  attr String[1] attributeName;
+}
+
+abstract interface VariableReference {
+}
+
+abstract interface IntegerExpression extends NumericExpression {
+}
+
+abstract interface DecimalExpression extends NumericExpression {
+}
+
+abstract interface OrderedCollectionExpression extends CollectionExpression {
+}
+
+abstract interface DataExpression extends Expression {
+}
+
+abstract class NavigationExpression extends Expression {
+  attr String[1] referenceName;
+}
+
+abstract class SwitchExpression extends Expression {
+  val SwitchCase[+] cases;
+  val DataExpression defaultExpression;
+}
+
+class SwitchCase {
+  val LogicalExpression[1] condition;
+  val DataExpression[1] expression;
+}
+
+abstract class AggregatedExpression extends Expression {
+  val CollectionExpression[1] collectionExpression;
+}
+
+abstract interface ReferenceExpression extends Expression {
+}
+
+abstract class ReferenceSelector extends NavigationExpression {
+}
+
+abstract interface CustomExpression extends DataExpression {
+}
+
+abstract class MeasuredExpression {
+  ref MeasureName measure;
+}
+
+abstract interface DateExpression {
+}
+
+abstract interface TimestampExpression extends DataExpression {
+}
+
+class TypeName extends ElementName {
+}
+
+class MeasureName extends ElementName {
+}
+
+abstract interface WindowingExpression {
+}
+
+class FilteringExpression {
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/constant", prefix="const")
+package constant {
+  abstract class Constant {
+  }
+
+  abstract class Number extends Constant, NumericExpression {
+  }
+
+  class IntegerConstant extends Number, IntegerExpression {
+    attr EBigInteger[1] value;
+  }
+
+  class DecimalConstant extends Number, DecimalExpression {
+    attr EBigDecimal[1] value;
+  }
+
+  class BooleanConstant extends Constant, LogicalExpression {
+    attr boolean[1] value;
+  }
+
+  class StringConstant extends Constant, StringExpression {
+    attr String[1] value;
+  }
+
+  class Literal extends Constant, EnumerationExpression {
+    attr String[1] value;
+  }
+
+  class Instance extends Constant, ObjectExpression {
+    ref TypeName[1] elementName;
+  }
+
+  class CustomData extends Constant, CustomExpression {
+    attr String[1] value;
+  }
+
+  class MeasuredDecimal extends MeasuredExpression, DecimalConstant {
+    attr String[1] unitName;
+  }
+
+  class MeasuredInteger extends IntegerConstant, MeasuredExpression {
+    attr String[1] unitName;
+  }
+
+  class DateConstant extends Constant, DateExpression {
+    attr EDate[1] value;
+  }
+
+  class TimestampConstant extends Constant, TimestampExpression {
+    attr String[1] value;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/variable", prefix="var")
+package variable {
+  abstract class Variable {
+    attr String name;
+  }
+
+  abstract class ObjectVariable extends Variable {
+  }
+
+  abstract class CollectionVariable extends Variable {
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/operator", prefix="op")
+package operator {
+  enum StringComparator {
+    lessThan = 0;
+    greaterThan = 1;
+    lessOrEqual = 2;
+    greaterOrEqual = 3;
+    equal = 4;
+    notEqual = 5;
+    matches = 6;
+  }
+
+  enum LogicalOperator {
+    or = 0;
+    and = 1;
+    xor = 2;
+    implies = 3;
+  }
+
+  enum ObjectSelector {
+    head = 8;
+    tail = 9;
+  }
+
+  enum IntegerOperator {
+    add = 0;
+    substract = 1;
+    multiply = 2;
+    modulo = 4;
+    divide = 5;
+  }
+
+  enum DecimalOperator {
+    add = 0;
+    substract = 1;
+    multiply = 2;
+    divide = 3;
+  }
+
+  enum IntegerComparator {
+    lessThan = 0;
+    greaterThan = 1;
+    lessOrEqual = 2;
+    greaterOrEqual = 3;
+    equal = 4;
+    notEqual = 5;
+  }
+
+  enum DecimalComparator {
+    lessThan = 0;
+    greaterThan = 1;
+  }
+
+  enum IntegerAggregator {
+    min = 1;
+    max = 2;
+    sum = 4;
+  }
+
+  enum DecimalAggregator {
+    min = 1;
+    max = 2;
+    avg = 3;
+    sum = 4;
+  }
+
+  enum ObjectComparator {
+    equal = 4;
+    notEqual = 5;
+  }
+
+  enum TimestampDurationOperator {
+    add = 0;
+    substract = 1;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/numeric", prefix="n")
+package numeric {
+  class CountExpression extends IntegerExpression, AggregatedExpression {
+  }
+
+  class IntegerAritmeticExpression extends IntegerExpression {
+    val IntegerExpression[1] left;
+    val IntegerExpression[1] right;
+    attr operator.IntegerOperator[1] operator;
+  }
+
+  class DecimalAritmeticExpression extends DecimalExpression {
+    val NumericExpression left;
+    val NumericExpression right;
+    attr operator.DecimalOperator[1] operator;
+  }
+
+  class IntegerOppositeExpression extends IntegerExpression {
+    val IntegerExpression[1] expression;
+  }
+
+  class DecimalOppositeExpression extends DecimalExpression {
+    val DecimalExpression[1] expression;
+  }
+
+  class IntegerAttribute extends IntegerExpression, NumericAttribute {
+  }
+
+  class DecimalAttribute extends DecimalExpression, NumericAttribute {
+  }
+
+  class IntegerAggregatedExpression extends IntegerExpression, AggregatedExpression {
+    attr operator.IntegerAggregator[1] operator;
+    val IntegerExpression[1] expression;
+  }
+
+  class DecimalAggregatedExpression extends DecimalExpression, AggregatedExpression {
+    attr operator.DecimalAggregator[1] operator;
+    val NumericExpression[1] expression;
+  }
+
+  class RoundExpression extends IntegerExpression {
+    val DecimalExpression[1] expression;
+  }
+
+  class IntegerSwitchExpression extends SwitchExpression, IntegerExpression {
+  }
+
+  class DecimalSwitchExpression extends SwitchExpression, DecimalExpression {
+  }
+
+  abstract class NumericAttribute extends AttributeSelector, NumericExpression {
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/logical", prefix="l")
+package logical {
+  class StringComparison extends LogicalExpression {
+    val StringExpression[1] left;
+    val StringExpression[1] right;
+    attr operator.StringComparator[1] operator;
+  }
+
+  class EnumerationComparison extends LogicalExpression {
+    val EnumerationExpression[1] left;
+    val EnumerationExpression[1] right;
+    attr operator.IntegerComparator[1] operator;
+  }
+
+  class NegationExpression extends LogicalExpression {
+    val LogicalExpression[1] expression;
+  }
+
+  class KleeneExpression extends LogicalExpression {
+    val LogicalExpression[1] left;
+    val LogicalExpression[1] right;
+    attr operator.LogicalOperator[1] operator;
+  }
+
+  class InstanceOfExpression extends LogicalExpression {
+    val ObjectExpression[1] objectExpression;
+    ref TypeName[1] elementName;
+  }
+
+  class LogicalAttribute extends LogicalExpression, AttributeSelector {
+  }
+
+  class UndefinedAttributeComparison extends LogicalExpression {
+    val ObjectExpression[1] objectExpression;
+    attr String[1] attributeName;
+  }
+
+  class UndefinedNavigationComparison extends LogicalExpression {
+    val ObjectExpression[1] objectExression;
+  }
+
+  class ContainsExpression extends LogicalExpression {
+    val CollectionExpression[1] collectionExpression;
+    val ObjectExpression[1] objectExpression;
+  }
+
+  class IntegerComparison extends LogicalExpression {
+    val IntegerExpression[1] left;
+    val IntegerExpression[1] right;
+    attr operator.IntegerComparator[1] operator;
+  }
+
+  class DecimalComparison extends LogicalExpression {
+    val NumericExpression[1] left;
+    val NumericExpression[1] right;
+    attr operator.DecimalComparator[1] operator;
+  }
+
+  class ObjectComparison extends LogicalExpression {
+    val ObjectExpression[1] left;
+    val ObjectExpression[1] right;
+    attr operator.ObjectComparator[1] operator;
+  }
+
+  class MemberOfExpression extends LogicalExpression {
+    val CollectionExpression[1] collectionExpression;
+    val ObjectExpression[1] objectExpression;
+  }
+
+  class TypeOfExpression extends LogicalExpression {
+    val ObjectExpression[1] objectExpression;
+    ref TypeName[1] elementName;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/string", prefix="str")
+package string {
+  class StringAttribute extends StringExpression, AttributeSelector {
+  }
+
+  class Concatenate extends StringExpression {
+    val StringExpression[1] left;
+    val StringExpression[1] right;
+  }
+
+  class LowerCase extends StringExpression {
+    val StringExpression[1] expression;
+  }
+
+  class UpperCase extends StringExpression {
+    val StringExpression[1] expression;
+  }
+
+  class Length extends IntegerExpression {
+    val StringExpression[1] expression;
+  }
+
+  class SubString extends StringExpression {
+    val StringExpression[1] expression;
+    val IntegerExpression[1] position;
+    val IntegerExpression[1] length;
+  }
+
+  class Position extends IntegerExpression {
+    val StringExpression[1] container;
+    ref StringExpression[1] containment;
+  }
+
+  class Replace extends StringExpression {
+    val StringExpression expression;
+    val StringExpression[1] pattern;
+    val StringExpression[1] replacement;
+  }
+
+  class Trim extends StringExpression {
+    ref StringExpression[1] expression;
+  }
+
+  class StringSwitchExpression extends SwitchExpression, StringExpression {
+  }
+
+  class ConcatenateCollection extends StringExpression, AggregatedExpression {
+    val StringExpression[1] expression;
+    val StringExpression separator;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/enumeration", prefix="enum")
+package enumeration {
+  class EnumerationAttribute extends EnumerationExpression, AttributeSelector {
+  }
+
+  class EnumerationSwitchExpression extends SwitchExpression, EnumerationExpression {
+    ref TypeName[1] elementName;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/object", prefix="o")
+package object {
+  class ObjectNavigationExpression extends ObjectExpression, variable.ObjectVariable, ReferenceSelector {
+    val ObjectExpression[1] objectExpression;
+  }
+
+  class ObjectSelectorExpression extends ObjectExpression, WindowingExpression {
+    val OrderedCollectionExpression[1] collectionExpression;
+    attr operator.ObjectSelector[1] operator;
+  }
+
+  class ObjectFilterExpression extends ObjectExpression, FilteringExpression {
+    val ObjectExpression[1] objectExpression;
+    val LogicalExpression[1] condition;
+  }
+
+  class ObjectVariableReference extends ObjectExpression, VariableReference {
+    ref variable.ObjectVariable[1] variable;
+  }
+
+  class CastObject extends ObjectExpression, variable.ObjectVariable {
+    ref TypeName[1] elementName;
+    val ObjectExpression[1] objectExpression;
+  }
+
+  class ObjectSwitchExpression extends SwitchExpression, ObjectExpression {
+    ref TypeName[1] elementName;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/collection", prefix="c")
+package collection {
+  class ImmutableCollection extends CollectionExpression, variable.ObjectVariable {
+    ref TypeName[1] elementName;
+  }
+
+  class CollectionFilterExpression extends CollectionExpression, FilteringExpression {
+    val CollectionExpression[1] collectionExpression;
+    val LogicalExpression[1] condition;
+  }
+
+  class CollectionVariableReference extends CollectionExpression, VariableReference {
+    ref variable.CollectionVariable[1] variable;
+  }
+
+  class CollectionNavigationFromObjectExpression extends CollectionExpression, variable.ObjectVariable, ReferenceSelector {
+    val ObjectExpression[1] objectExpression;
+  }
+
+  class CollectionNavigationFromCollectionExpression extends CollectionExpression, NavigationExpression, variable.ObjectVariable {
+    val CollectionExpression[1] collectionExpression;
+  }
+
+  class SortExpression extends OrderedCollectionExpression {
+    val CollectionExpression[1] collectionExpression;
+    val OrderByItem[*] orderBy;
+  }
+
+  class SubCollectionExpression extends OrderedCollectionExpression, WindowingExpression {
+    ref OrderedCollectionExpression[1] collectionExpression;
+    ref IntegerExpression position;
+    ref IntegerExpression length;
+  }
+
+  class OrderByItem {
+    val DataExpression[1] expression;
+    attr boolean[1] descending;
+  }
+
+  class ObjectNavigationFromCollectionExpression extends CollectionExpression, NavigationExpression, variable.ObjectVariable {
+    val CollectionExpression[1] collectionExpression;
+  }
+
+  class CastCollection extends CollectionExpression, variable.ObjectVariable {
+    ref TypeName[1] elementName;
+    val CollectionExpression[1] collectionExpression;
+  }
+
+  class CollectionSwitchExpression extends SwitchExpression, ObjectExpression {
+    ref TypeName[1] elementName;
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/custom", prefix="cust")
+package custom {
+  class CustomAttribute extends CustomExpression, AttributeSelector {
+  }
+
+  class CustomSwitchExpression extends SwitchExpression, CustomExpression {
+  }
+
+}
+
+@namespace(uri="http://blackbelt.hu/judo/meta/expression/temporal", prefix="t")
+package temporal {
+  class DateAttribute extends DateExpression, AttributeSelector {
+  }
+
+  class TimestampAttribute extends TimestampExpression, AttributeSelector {
+  }
+
+  class DateSwitchExpression extends SwitchExpression, DateExpression {
+  }
+
+  class TimestampSwitchExpression extends SwitchExpression, TimestampExpression {
+  }
+
+  class TimestampAdditionExpression extends TimestampExpression {
+    val TimestampExpression[1] timestamp;
+    val NumericExpression[1] duration;
+    attr operator.TimestampDurationOperator[1] operator;
+  }
+
+  class TimestampDifferenceExpression extends NumericExpression {
+    val TimestampExpression[1] startTimestamp;
+    val TimestampExpression[1] endTimestamp;
+  }
+
+}
+

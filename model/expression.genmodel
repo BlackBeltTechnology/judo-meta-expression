@@ -40,7 +40,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchCase/expression"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//Lambda"/>
-    <genClasses image="false" ecoreClass="expression.ecore#//Base"/>
     <genClasses image="false" ecoreClass="expression.ecore#//AggregatedExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//AggregatedExpression/collectionExpression"/>
     </genClasses>
@@ -58,17 +57,17 @@
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//constant">
       <genClasses image="false" ecoreClass="expression.ecore#//constant/Constant"/>
       <genClasses image="false" ecoreClass="expression.ecore#//constant/Number"/>
-      <genClasses ecoreClass="expression.ecore#//constant/Integer">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Integer/value"/>
+      <genClasses ecoreClass="expression.ecore#//constant/IntegerConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/IntegerConstant/value"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//constant/Decimal">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Decimal/value"/>
+      <genClasses ecoreClass="expression.ecore#//constant/DecimalConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/DecimalConstant/value"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//constant/Boolean">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Boolean/value"/>
+      <genClasses ecoreClass="expression.ecore#//constant/BooleanConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/BooleanConstant/value"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//constant/String">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/String/value"/>
+      <genClasses ecoreClass="expression.ecore#//constant/StringConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/StringConstant/value"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/Literal">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Literal/value"/>
@@ -86,11 +85,11 @@
       <genClasses ecoreClass="expression.ecore#//constant/MeasuredInteger">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/MeasuredInteger/unitName"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//constant/Date">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Date/value"/>
+      <genClasses ecoreClass="expression.ecore#//constant/DateConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/DateConstant/value"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//constant/Timestamp">
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Timestamp/value"/>
+      <genClasses ecoreClass="expression.ecore#//constant/TimestampConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/TimestampConstant/value"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Variable" resource="XML" disposableProviderFactory="true"

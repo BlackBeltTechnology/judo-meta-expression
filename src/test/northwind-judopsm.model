@@ -297,7 +297,7 @@
                 </right>
               </left>
               <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_hU2q8CVyEemLpvUY7MQgng" operator="-">
-                <left xsi:type="const:Integer" xmi:id="_iqOicCVyEemLpvUY7MQgng" value="1"/>
+                <left xsi:type="const:IntegerConstant" xmi:id="_iqOicCVyEemLpvUY7MQgng" value="1"/>
                 <right xsi:type="n:DecimalAttribute" xmi:id="_jgMhICVyEemLpvUY7MQgng" attributeName="discount">
                   <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_km3OQCVyEemLpvUY7MQgng" variable="_RZYFsCVyEemLpvUY7MQgng"/>
                 </right>
@@ -337,7 +337,7 @@
                     <left xsi:type="n:DecimalAttribute" xmi:id="_zTP5ACYIEemLpvUY7MQgng" attributeName="discount">
                       <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_1s_XkCYIEemLpvUY7MQgng" variable="_sG18sCYIEemLpvUY7MQgng"/>
                     </left>
-                    <right xsi:type="const:Integer" xmi:id="_0o75kCYIEemLpvUY7MQgng" value="0"/>
+                    <right xsi:type="const:IntegerConstant" xmi:id="_0o75kCYIEemLpvUY7MQgng" value="0"/>
                   </condition>
                 </collectionExpression>
               </collectionExpression>
@@ -347,7 +347,7 @@
                     <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_DQ2lMCYJEemLpvUY7MQgng" variable="_rGKi0CYIEemLpvUY7MQgng"/>
                   </collectionExpression>
                 </left>
-                <right xsi:type="const:Integer" xmi:id="__nIFcCYIEemLpvUY7MQgng" value="1"/>
+                <right xsi:type="const:IntegerConstant" xmi:id="__nIFcCYIEemLpvUY7MQgng" value="1"/>
               </condition>
             </collectionExpression>
           </getterExpression>
@@ -566,13 +566,13 @@
                       <left xsi:type="str:StringAttribute" xmi:id="_m2-q8CYbEemLpvUY7MQgng" attributeName="lastName">
                         <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_pDNR8CYbEemLpvUY7MQgng" variable="_W6SkwCYbEemLpvUY7MQgng"/>
                       </left>
-                      <right xsi:type="const:String" xmi:id="_t_SKYCYbEemLpvUY7MQgng" value="Gipsz"/>
+                      <right xsi:type="const:StringConstant" xmi:id="_t_SKYCYbEemLpvUY7MQgng" value="Gipsz"/>
                     </left>
                     <right xsi:type="l:StringComparison" xmi:id="_lN4mMCYbEemLpvUY7MQgng" operator="==">
                       <left xsi:type="str:StringAttribute" xmi:id="_ncP7MCYbEemLpvUY7MQgng" attributeName="firstName">
                         <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_rZqzACYbEemLpvUY7MQgng" variable="_W6SkwCYbEemLpvUY7MQgng"/>
                       </left>
-                      <right xsi:type="const:String" xmi:id="_tWpdECYbEemLpvUY7MQgng" value="Jakab"/>
+                      <right xsi:type="const:StringConstant" xmi:id="_tWpdECYbEemLpvUY7MQgng" value="Jakab"/>
                     </right>
                   </condition>
                 </collectionExpression>

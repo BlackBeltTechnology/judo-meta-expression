@@ -8,28 +8,43 @@ operation displayAllExpressions() {
         if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
-        if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
+        expr.getBaseExpression().toString().println(" - base: ");
+        /*if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
         	var measure = expr.getMeasure();
         	if (measure.isDefined()) {
         		measure.name.println(" - measure: ");
         	} else {
         		"UNKNOWN".println(" - measure: ");
         	}
-        }
+        }*/
     }
-    for (attr in EXPR!AttributeSelector) {
+    /*for (attr in EXPR!AttributeSelector) {
        var type = attr.getAttributeType();
        attr.toString().println("Attribute: ");
        if (type.isDefined()) {
            attr.type().name.println(" - type: ");
            type.getName().println(" - DATA TYPE of attribute: ");
        }
-    }
+    }*/
+    
+    /*var expr = JUDOPSM!StaticNavigation.all.first().getterExpression;
+    expr.toString().println("EXPR: ");
+    
+    expr.getInputExpression().toString().println(" - input: ");
+    expr.getExpressionTree().toString().println(" - root: ");*/
 }
 
 pre {
     for (e in getStandaloneExpressions()) {
         e.toString().println("Standalone expression: ");
     }
+    
+    /*for (vr in EXPR!VariableReference.all) {
+        vr.variable.name.println("Variable: ");
+        vr.variable.toString().println(" -> ");
+        var expr = EXPR!Expression.all.selectOne(e | e.getInputExpression() == vr);
+        expr.toString().println(" - expr: ");
+        vr.getBaseExpression().toString().println(" - base: ");
+    } */
     displayAllExpressions();
 }

@@ -5,6 +5,8 @@
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <semanticResources>expression.genmodel</semanticResources>
     <semanticResources>../src/test/judoPSM.model</semanticResources>
+    <semanticResources>../target/t001-eval.model</semanticResources>
+    <semanticResources>../src/test/northwind-judopsm.model</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_pvoC0BjEEemJ9IMxFeLS3g">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_qXCoIRjEEemJ9IMxFeLS3g" name="expression class diagram" repPath="#_qW3pABjEEemJ9IMxFeLS3g">
@@ -222,24 +224,6 @@
           </children>
           <styles xmi:type="notation:ShapeStyle" xmi:id="_qtgAVRjEEemJ9IMxFeLS3g" fontName="Sans" fontHeight="8"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qtgAVhjEEemJ9IMxFeLS3g" x="1235" y="480"/>
-        </children>
-        <children xmi:type="notation:Node" xmi:id="_qtgAWxjEEemJ9IMxFeLS3g" type="2003" element="_qtCtURjEEemJ9IMxFeLS3g">
-          <children xmi:type="notation:Node" xmi:id="_qtgAXhjEEemJ9IMxFeLS3g" type="5007"/>
-          <children xmi:type="notation:Node" xmi:id="_qtgnYBjEEemJ9IMxFeLS3g" type="7004">
-            <styles xmi:type="notation:SortingStyle" xmi:id="_qtgnYRjEEemJ9IMxFeLS3g"/>
-            <styles xmi:type="notation:FilteringStyle" xmi:id="_qtgnYhjEEemJ9IMxFeLS3g"/>
-          </children>
-          <styles xmi:type="notation:ShapeStyle" xmi:id="_qtgAXBjEEemJ9IMxFeLS3g" fontName="Sans" fontHeight="8" italic="true"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qtgAXRjEEemJ9IMxFeLS3g" x="405"/>
-        </children>
-        <children xmi:type="notation:Node" xmi:id="_qtgnYxjEEemJ9IMxFeLS3g" type="2003" element="_qtDUYRjEEemJ9IMxFeLS3g">
-          <children xmi:type="notation:Node" xmi:id="_qtgnZhjEEemJ9IMxFeLS3g" type="5007"/>
-          <children xmi:type="notation:Node" xmi:id="_qtgnZxjEEemJ9IMxFeLS3g" type="7004">
-            <styles xmi:type="notation:SortingStyle" xmi:id="_qtgnaBjEEemJ9IMxFeLS3g"/>
-            <styles xmi:type="notation:FilteringStyle" xmi:id="_qtgnaRjEEemJ9IMxFeLS3g"/>
-          </children>
-          <styles xmi:type="notation:ShapeStyle" xmi:id="_qtgnZBjEEemJ9IMxFeLS3g" fontName="Sans" fontHeight="8" italic="true"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qtgnZRjEEemJ9IMxFeLS3g" x="585"/>
         </children>
         <children xmi:type="notation:Node" xmi:id="_qtgnahjEEemJ9IMxFeLS3g" type="2003" element="_qtD7cBjEEemJ9IMxFeLS3g">
           <children xmi:type="notation:Node" xmi:id="_qtgnbRjEEemJ9IMxFeLS3g" type="5007"/>
@@ -804,24 +788,6 @@
       <semanticElements xmi:type="ecore:EClass" href="expression.ecore#//SwitchCase"/>
       <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_qtCtUBjEEemJ9IMxFeLS3g" borderSize="1" borderSizeComputationExpression="1" backgroundStyle="Liquid" foregroundColor="255,252,216">
         <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@style"/>
-      </ownedStyle>
-      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
-    </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_qtCtURjEEemJ9IMxFeLS3g" name="Lambda" tooltipText="" width="12" height="10">
-      <target xmi:type="ecore:EClass" href="expression.ecore#//Lambda"/>
-      <semanticElements xmi:type="ecore:EClass" href="expression.ecore#//Lambda"/>
-      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_qtDUYBjEEemJ9IMxFeLS3g" iconPath="/org.eclipse.emf.ecoretools.design/icons/full/obj16/EClass_interface.gif" borderSize="1" borderSizeComputationExpression="1" borderColor="125,125,125" backgroundStyle="Liquid" foregroundColor="228,228,228">
-        <labelFormat>italic</labelFormat>
-        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@conditionnalStyles.0/@style"/>
-      </ownedStyle>
-      <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
-    </ownedDiagramElements>
-    <ownedDiagramElements xmi:type="diagram:DNodeList" xmi:id="_qtDUYRjEEemJ9IMxFeLS3g" name="Base" tooltipText="" width="12" height="10">
-      <target xmi:type="ecore:EClass" href="expression.ecore#//Base"/>
-      <semanticElements xmi:type="ecore:EClass" href="expression.ecore#//Base"/>
-      <ownedStyle xmi:type="diagram:FlatContainerStyle" xmi:id="_qtDUYhjEEemJ9IMxFeLS3g" iconPath="/org.eclipse.emf.ecoretools.design/icons/full/obj16/EClass_interface.gif" borderSize="1" borderSizeComputationExpression="1" borderColor="125,125,125" backgroundStyle="Liquid" foregroundColor="228,228,228">
-        <labelFormat>italic</labelFormat>
-        <description xmi:type="style:FlatContainerStyleDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']/@conditionnalStyles.0/@style"/>
       </ownedStyle>
       <actualMapping xmi:type="description_1:ContainerMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer/@containerMappings[name='EC%20EClass']"/>
     </ownedDiagramElements>

@@ -23,7 +23,7 @@
                             <left xsi:type="str:StringAttribute" xmi:id="_0wFW4OvSEeicoeazcHGCBw" attributeName="productName">
                               <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_14bfAOvSEeicoeazcHGCBw" variable="_tSwCoOvSEeicoeazcHGCBw"/>
                             </left>
-                            <right xsi:type="const:String" xmi:id="_35kQUOvSEeicoeazcHGCBw" value="Lenovo B51"/>
+                            <right xsi:type="const:StringConstant" xmi:id="_35kQUOvSEeicoeazcHGCBw" value="Lenovo B51"/>
                           </condition>
                         </collectionExpression>
                       </collectionExpression>
@@ -37,8 +37,8 @@
                 </left>
                 <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_WanzgO5zEeicoeazcHGCBw">
                   <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_AjuTQO8kEeicoeazcHGCBw" operator="/">
-                    <left xsi:type="const:Integer" xmi:id="_BTx3MO8kEeicoeazcHGCBw" value="2"/>
-                    <right xsi:type="const:Integer" xmi:id="_LNYZkO8kEeicoeazcHGCBw" value="1"/>
+                    <left xsi:type="const:IntegerConstant" xmi:id="_BTx3MO8kEeicoeazcHGCBw" value="2"/>
+                    <right xsi:type="const:IntegerConstant" xmi:id="_LNYZkO8kEeicoeazcHGCBw" value="1"/>
                   </left>
                   <right xsi:type="n:DecimalAggregatedExpression" xmi:id="_OkbBYO51EeicoeazcHGCBw" operator="sum">
                     <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_jZQiQO51EeicoeazcHGCBw" name="od" referenceName="orderDetails">
@@ -82,7 +82,7 @@
               </collectionExpression>
             </objectExpression>
           </left>
-          <right xsi:type="const:String" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
+          <right xsi:type="const:StringConstant" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
         </left>
         <right xsi:type="l:EnumerationComparison" xmi:id="_C8y3MOaDEeiefp-kRHrgiQ" operator="==">
           <left xsi:type="enum:EnumerationAttribute" xmi:id="_H62soOaDEeiefp-kRHrgiQ" attributeName="country">
@@ -104,9 +104,9 @@
   <l:KleeneExpression xmi:id="_qTYLkO8AEeicoeazcHGCBw" operator="and">
     <left xsi:type="l:DecimalComparison" xmi:id="_qzq4UO_IEeiRQOYQa7_v2A">
       <left xsi:type="n:RoundExpression" xmi:id="_2JLR0PJWEeiVnPNfsZPgMw">
-        <expression xsi:type="const:Decimal" xmi:id="_3FLAAPJWEeiVnPNfsZPgMw" value="-1.5"/>
+        <expression xsi:type="const:DecimalConstant" xmi:id="_3FLAAPJWEeiVnPNfsZPgMw" value="-1.5"/>
       </left>
-      <right xsi:type="const:Decimal" xmi:id="_wvc6QO_IEeiRQOYQa7_v2A" value="1.2"/>
+      <right xsi:type="const:DecimalConstant" xmi:id="_wvc6QO_IEeiRQOYQa7_v2A" value="1.2"/>
     </left>
     <right xsi:type="l:InstanceOfExpression" xmi:id="_sSoGgO8AEeicoeazcHGCBw" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
       <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5NI1IO8AEeicoeazcHGCBw">
@@ -118,8 +118,8 @@
   </l:KleeneExpression>
   <n:DecimalSwitchExpression xmi:id="_OuMfgPL2EeiVnPNfsZPgMw">
     <cases xmi:id="_QWFDUPL2EeiVnPNfsZPgMw">
-      <condition xsi:type="const:Boolean" xmi:id="_Z_ploPL2EeiVnPNfsZPgMw" value="true"/>
-      <expression xsi:type="const:Decimal" xmi:id="_NchsMPMKEeiVnPNfsZPgMw" value="1.2"/>
+      <condition xsi:type="const:BooleanConstant" xmi:id="_Z_ploPL2EeiVnPNfsZPgMw" value="true"/>
+      <expression xsi:type="const:DecimalConstant" xmi:id="_NchsMPMKEeiVnPNfsZPgMw" value="1.2"/>
     </cases>
     <cases xmi:id="_CreH8PMLEeiVnPNfsZPgMw">
       <condition xsi:type="l:IntegerComparison" xmi:id="_F2MXgPMLEeiVnPNfsZPgMw" operator=">">
@@ -131,11 +131,11 @@
             </condition>
           </collectionExpression>
         </left>
-        <right xsi:type="const:Integer" xmi:id="_Hok7IPMLEeiVnPNfsZPgMw" value="10"/>
+        <right xsi:type="const:IntegerConstant" xmi:id="_Hok7IPMLEeiVnPNfsZPgMw" value="10"/>
       </condition>
-      <expression xsi:type="const:Decimal" xmi:id="_2JtbEPMLEeiVnPNfsZPgMw" value="8.7"/>
+      <expression xsi:type="const:DecimalConstant" xmi:id="_2JtbEPMLEeiVnPNfsZPgMw" value="8.7"/>
     </cases>
-    <defaultExpression xsi:type="const:Integer" xmi:id="_T0XvIPL2EeiVnPNfsZPgMw" value="50"/>
+    <defaultExpression xsi:type="const:IntegerConstant" xmi:id="_T0XvIPL2EeiVnPNfsZPgMw" value="50"/>
   </n:DecimalSwitchExpression>
   <c:CollectionFilterExpression xmi:id="_GsJI8Pb5Eei6VpsqfFnFTg">
     <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_INUn0Pb5Eei6VpsqfFnFTg" name="cat" elementName="_LxfSIPb5Eei6VpsqfFnFTg"/>
@@ -151,13 +151,13 @@
           </condition>
         </collectionExpression>
       </left>
-      <right xsi:type="const:Integer" xmi:id="_QLhNcPb5Eei6VpsqfFnFTg" value="10"/>
+      <right xsi:type="const:IntegerConstant" xmi:id="_QLhNcPb5Eei6VpsqfFnFTg" value="10"/>
     </condition>
   </c:CollectionFilterExpression>
   <n:DecimalAritmeticExpression xmi:id="_GmGacB5NEemwg4NgOjaKeA">
     <left xsi:type="n:DecimalSwitchExpression" xmi:id="_D1bHsB7_EemlZKbj92vNQw">
       <cases xmi:id="_FKVsMB7_EemlZKbj92vNQw">
-        <condition xsi:type="const:Boolean" xmi:id="_JmQd4B7_EemlZKbj92vNQw" value="true"/>
+        <condition xsi:type="const:BooleanConstant" xmi:id="_JmQd4B7_EemlZKbj92vNQw" value="true"/>
         <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_nnA5gB-0EemlZKbj92vNQw">
           <left xsi:type="const:MeasuredDecimal" xmi:id="_o-CW0B-0EemlZKbj92vNQw" value="8" unitName="dkg"/>
           <right xsi:type="const:MeasuredDecimal" xmi:id="_r2vCQB-0EemlZKbj92vNQw" value="12" unitName="g"/>
@@ -179,8 +179,8 @@
   <n:DecimalAritmeticExpression xmi:id="_tknRoB-6EemlZKbj92vNQw" operator="*">
     <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_5VFc8B_kEemlZKbj92vNQw" operator="*">
       <left xsi:type="n:IntegerAritmeticExpression" xmi:id="_BsfMwB_lEemlZKbj92vNQw">
-        <left xsi:type="const:Integer" xmi:id="_CRBdMB_lEemlZKbj92vNQw" value="2"/>
-        <right xsi:type="const:Integer" xmi:id="_Cr7QgB_lEemlZKbj92vNQw" value="4"/>
+        <left xsi:type="const:IntegerConstant" xmi:id="_CRBdMB_lEemlZKbj92vNQw" value="2"/>
+        <right xsi:type="const:IntegerConstant" xmi:id="_Cr7QgB_lEemlZKbj92vNQw" value="4"/>
       </left>
       <right xsi:type="const:MeasuredDecimal" xmi:id="_FKjPEB_lEemlZKbj92vNQw" value="8" unitName="kg"/>
     </left>
@@ -192,7 +192,7 @@
   <n:DecimalAritmeticExpression xmi:id="_cBULcB_lEemlZKbj92vNQw" operator="/">
     <left xsi:type="const:MeasuredDecimal" xmi:id="_PUXtkCB7Eem84oR5A2vsXg" value="9" unitName="mm"/>
     <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_oTTs0CB6Eem84oR5A2vsXg" operator="/">
-      <left xsi:type="const:Decimal" xmi:id="_JUGhUCCIEem84oR5A2vsXg" value="1"/>
+      <left xsi:type="const:DecimalConstant" xmi:id="_JUGhUCCIEem84oR5A2vsXg" value="1"/>
       <right xsi:type="const:MeasuredDecimal" xmi:id="_rDShICB6Eem84oR5A2vsXg" value="45" unitName="cm"/>
     </right>
   </n:DecimalAritmeticExpression>
@@ -201,7 +201,7 @@
     <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" value="2" unitName="kg"/>
   </l:DecimalComparison>
   <t:TimestampAdditionExpression xmi:id="_n93ogCMQEemiuM_tO8e5iw">
-    <timestamp xsi:type="const:Timestamp" xmi:id="_pw0z4CMQEemiuM_tO8e5iw" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
+    <timestamp xsi:type="const:TimestampConstant" xmi:id="_pw0z4CMQEemiuM_tO8e5iw" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
     <duration xsi:type="const:MeasuredDecimal" xmi:id="_3aOzYCMREemiuM_tO8e5iw" value="102" unitName="s"/>
   </t:TimestampAdditionExpression>
   <t:TimestampAdditionExpression xmi:id="_D9HoACMZEemiuM_tO8e5iw" operator="-">
@@ -215,8 +215,8 @@
     <duration xsi:type="const:MeasuredDecimal" xmi:id="_GS2wUCMZEemiuM_tO8e5iw" value="3" unitName="day"/>
   </t:TimestampAdditionExpression>
   <t:TimestampDifferenceExpression xmi:id="_UiuaICSfEemLpvUY7MQgng">
-    <startTimestamp xsi:type="const:Timestamp" xmi:id="_V46J8CSfEemLpvUY7MQgng" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
-    <endTimestamp xsi:type="const:Timestamp" xmi:id="_WQtl8CSfEemLpvUY7MQgng" value="2019-01-30 15:57:08.123+01:00 [Europe/Budapest]"/>
+    <startTimestamp xsi:type="const:TimestampConstant" xmi:id="_V46J8CSfEemLpvUY7MQgng" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
+    <endTimestamp xsi:type="const:TimestampConstant" xmi:id="_WQtl8CSfEemLpvUY7MQgng" value="2019-01-30 15:57:08.123+01:00 [Europe/Budapest]"/>
   </t:TimestampDifferenceExpression>
   <expr:TypeName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
   <expr:TypeName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>

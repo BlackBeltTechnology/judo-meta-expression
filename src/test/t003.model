@@ -11,13 +11,13 @@
                 <left xsi:type="str:StringAttribute" xmi:id="_ziEskCSyEemLpvUY7MQgng" attributeName="lastName">
                   <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_1tWRUCSyEemLpvUY7MQgng" variable="_tdqTECSyEemLpvUY7MQgng"/>
                 </left>
-                <right xsi:type="const:String" xmi:id="_4QjN4CSyEemLpvUY7MQgng" value="Gipsz"/>
+                <right xsi:type="const:StringConstant" xmi:id="_4QjN4CSyEemLpvUY7MQgng" value="Gipsz"/>
               </left>
               <right xsi:type="l:StringComparison" xmi:id="_5j2o0CSyEemLpvUY7MQgng" operator="==">
                 <left xsi:type="str:StringAttribute" xmi:id="_6ghFYCSyEemLpvUY7MQgng" attributeName="firstName">
                   <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_774QICSyEemLpvUY7MQgng" variable="_tdqTECSyEemLpvUY7MQgng"/>
                 </left>
-                <right xsi:type="const:String" xmi:id="_-eZQMCSyEemLpvUY7MQgng" value="Jakab"/>
+                <right xsi:type="const:StringConstant" xmi:id="_-eZQMCSyEemLpvUY7MQgng" value="Jakab"/>
               </right>
             </condition>
           </collectionExpression>
@@ -91,7 +91,7 @@
         </right>
       </left>
       <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_Si84wCS1EemLpvUY7MQgng" operator="-">
-        <left xsi:type="const:Integer" xmi:id="_TpgRICS1EemLpvUY7MQgng" value="1"/>
+        <left xsi:type="const:IntegerConstant" xmi:id="_TpgRICS1EemLpvUY7MQgng" value="1"/>
         <right xsi:type="n:DecimalAttribute" xmi:id="_Uwz3cCS1EemLpvUY7MQgng" attributeName="discount">
           <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_WJAZcCS1EemLpvUY7MQgng" variable="_206EYCS0EemLpvUY7MQgng"/>
         </right>

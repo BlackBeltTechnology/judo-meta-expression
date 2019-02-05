@@ -52,8 +52,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
         eType="#//DataExpression" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Lambda" abstract="true" interface="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Base" abstract="true" interface="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="AggregatedExpression" abstract="true"
       eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression" lowerBound="1"
@@ -72,23 +70,26 @@
       interface="true" eSuperTypes="#//DataExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="TypeName" eSuperTypes="#//ElementName"/>
   <eClassifiers xsi:type="ecore:EClass" name="MeasureName" eSuperTypes="#//ElementName"/>
+  <eClassifiers xsi:type="ecore:EClass" name="WindowingExpression" abstract="true"
+      interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FilteringExpression"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
     <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//constant/Constant #//NumericExpression"/>
-    <eClassifiers xsi:type="ecore:EClass" name="Integer" eSuperTypes="#//constant/Number #//IntegerExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerConstant" eSuperTypes="#//constant/Number #//IntegerExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigInteger"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Decimal" eSuperTypes="#//constant/Number #//DecimalExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalConstant" eSuperTypes="#//constant/Number #//DecimalExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Boolean" eSuperTypes="#//constant/Constant #//LogicalExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanConstant" eSuperTypes="#//constant/Constant #//LogicalExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="String" eSuperTypes="#//constant/Constant #//StringExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="StringConstant" eSuperTypes="#//constant/Constant #//StringExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
@@ -104,19 +105,19 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimal" eSuperTypes="#//MeasuredExpression #//constant/Decimal">
+    <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimal" eSuperTypes="#//MeasuredExpression #//constant/DecimalConstant">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MeasuredInteger" eSuperTypes="#//constant/Integer #//MeasuredExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="MeasuredInteger" eSuperTypes="#//constant/IntegerConstant #//MeasuredExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Date" eSuperTypes="#//constant/Constant #//DateExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DateConstant" eSuperTypes="#//constant/Constant #//DateExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Timestamp" eSuperTypes="#//constant/Constant #//TimestampExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampConstant" eSuperTypes="#//constant/Constant #//TimestampExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
@@ -405,13 +406,13 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectSelectorExpression" eSuperTypes="#//ObjectExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectSelectorExpression" eSuperTypes="#//ObjectExpression #//WindowingExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//OrderedCollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/ObjectSelector"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression #//Lambda">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression #//FilteringExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
@@ -434,11 +435,11 @@
   </eSubpackages>
   <eSubpackages name="collection" nsURI="http://blackbelt.hu/judo/meta/expression/collection"
       nsPrefix="c">
-    <eClassifiers xsi:type="ecore:EClass" name="ImmutableCollection" eSuperTypes="#//CollectionExpression #//Base #//variable/ObjectVariable">
+    <eClassifiers xsi:type="ecore:EClass" name="ImmutableCollection" eSuperTypes="#//CollectionExpression #//variable/ObjectVariable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression #//Lambda">
+    <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression #//FilteringExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
@@ -458,13 +459,13 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SortExpression" eSuperTypes="#//OrderedCollectionExpression #//Lambda">
+    <eClassifiers xsi:type="ecore:EClass" name="SortExpression" eSuperTypes="#//OrderedCollectionExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
           eType="#//collection/OrderByItem" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SubCollectionExpression" eSuperTypes="#//OrderedCollectionExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="SubCollectionExpression" eSuperTypes="#//OrderedCollectionExpression #//WindowingExpression">
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//OrderedCollectionExpression"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="position" eType="#//IntegerExpression"/>

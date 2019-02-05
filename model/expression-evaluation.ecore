@@ -2,31 +2,26 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="evaluation" nsURI="http://blackbelt.hu/judo/meta/expression/evaluation"
     nsPrefix="eval">
-  <eClassifiers xsi:type="ecore:EClass" name="Start" eSuperTypes="#//Navigable">
+  <eClassifiers xsi:type="ecore:EClass" name="EvaluationNode">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//Base"/>
+        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/temporal#//Expression"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Step">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
-        eType="#//Navigable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
-        eType="#//Navigable"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="conditions" upperBound="-1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NavigationNode" eSuperTypes="#//EvaluationNode">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseExpression" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="projections" upperBound="-1"
+        eType="#//ProjectionNode" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="navigation" eType="#//NavigationNode"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filtering" upperBound="-1"
+        eType="#//FilteringNode" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="ordering" upperBound="-1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//collection/SortExpression"/>
+        eType="#//OrderingNode" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="windowing" upperBound="-1"
+        eType="#//WindowingNode" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Navigable" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//ElementName"
-        derived="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Multi" eSuperTypes="#//Navigable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//CollectionExpression"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Single" eSuperTypes="#//Navigable">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
-        eType="ecore:EClass http://blackbelt.hu/judo/meta/expression/collection#//ObjectExpression"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FilteringNode" eSuperTypes="#//EvaluationNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OrderingNode" eSuperTypes="#//EvaluationNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="WindowingNode" eSuperTypes="#//EvaluationNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ProjectionNode" eSuperTypes="#//EvaluationNode"/>
 </ecore:EPackage>
