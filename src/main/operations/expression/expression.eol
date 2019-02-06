@@ -47,11 +47,15 @@ operation EXPR!Expression getFragment() : EXPR!Expression {
 
 @cached
 operation EXPR!Expression getBaseExpressions() : Collection {
-    var inputs = self.getOperands();
-    if (not inputs.isEmpty()) {
-        return inputs.collect(i | i.getBaseExpressions()).flatten();
-    } else {
+    if (self.isKindOf(EXPR!AggregatedExpression)) {
         return Set{self};
+    } else {
+	    var inputs = self.getOperands();
+	    if (not inputs.isEmpty()) {
+	        return inputs.collect(i | i.getBaseExpressions()).flatten();
+	    } else {
+	        return Set{self};
+	    }
     }
 }
 
@@ -61,17 +65,32 @@ operation EXPR!Expression getLambdaBasePath() : Collection {
         return Set{};
     }
     
-    //self.toString().println("LAMBDA: ");
     var result = new Set;
     
     var containers = Set{self.getLambdaContainer()};
-    while (not containers.isEmpty()) {
-        var basePathEntries = containers.collect(e | e.getOperands()).flatten();
-        result.addAll(basePathEntries);
-        //basePathEntries.collect(e | e.toString()).println(" - base path entries: ");
-        //basePathEntries.collect(e | e.getFragment().toString()).println(" - fragments: ");
+    var basePathEntries = containers.collect(e | e.getOperands()).flatten();
+    for (bpe in basePathEntries) {
+        var navigationSources = Set{bpe};
         
-        containers = basePathEntries.collect(e | e.getFragment().getLambdaContainer()).select(e | e.isDefined());
+        while (not navigationSources.isEmpty()) {
+            var nextNavigationSources = new Set;
+            for (ns in navigationSources) {
+                if (ns.isKindOf(EXPR!ReferenceExpression)) {
+                    result.add(ns);
+                    if (ns.getOperands().isEmpty()) {
+                        var lambdaContainer = ns.getFragment().getLambdaContainer();
+                        if (lambdaContainer.isDefined()) {
+                            nextNavigationSources.add(lambdaContainer);
+                        }
+                    } else {
+                        nextNavigationSources.addAll(ns.getOperands());
+                    }
+                } else {
+                    result.add(ns);
+                }
+            }
+            navigationSources = nextNavigationSources;
+        }
     }
     
     return result;

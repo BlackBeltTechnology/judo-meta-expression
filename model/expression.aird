@@ -5,7 +5,6 @@
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <semanticResources>expression.genmodel</semanticResources>
     <semanticResources>../src/test/judoPSM.model</semanticResources>
-    <semanticResources>../target/t001-eval.model</semanticResources>
     <semanticResources>../src/test/northwind-judopsm.model</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" xmi:id="_pvoC0BjEEemJ9IMxFeLS3g">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>

@@ -15,8 +15,9 @@ context EXPR!TypeName {
     }
 }
 
-/*
 context EXPR!Expression {
+
+    // variable reference in lambda expression is referencing to variable visible from its scope
     constraint LambdaVariableIsValid {
         guard: self.isLambdaExpression()
         
@@ -24,4 +25,3 @@ context EXPR!Expression {
         message: "Invalid variable references: " + self.getBaseExpressions().select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable).excludingAll(self.getLambdaBasePath()).collect(e | e.toString()) + " in expression: " + self.toString()
     }
 }
-*/

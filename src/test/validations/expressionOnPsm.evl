@@ -8,30 +8,23 @@ operation displayAllExpressions() {
         if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType().isDefined()) {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
-        expr.getBaseExpressions().collect(e | e.toString()).println(" - bases: ");
-        /*if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
+        if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
         	var measure = expr.getMeasure();
         	if (measure.isDefined()) {
         		measure.name.println(" - measure: ");
         	} else {
         		"UNKNOWN".println(" - measure: ");
         	}
-        }*/
+        }
     }
-    /*for (attr in EXPR!AttributeSelector) {
+    for (attr in EXPR!AttributeSelector) {
        var type = attr.getAttributeType();
        attr.toString().println("Attribute: ");
        if (type.isDefined()) {
            attr.type().name.println(" - type: ");
            type.getName().println(" - DATA TYPE of attribute: ");
        }
-    }*/
-    
-    /*var expr = JUDOPSM!StaticNavigation.all.first().getterExpression;
-    expr.toString().println("EXPR: ");
-    
-    expr.getInputExpression().toString().println(" - input: ");
-    expr.getExpressionTree().toString().println(" - root: ");*/
+    }
 }
 
 pre {
@@ -43,19 +36,5 @@ pre {
         e.toString().println("Fragment expression: ");
     }
     
-    for (e in EXPR!Expression.all.select(e | e.isLambdaExpression())) {
-        e.toString().println("Lambda expression: ");
-        e.getLambdaContainer().toString().println("  - container: ");
-        e.getBaseExpressions().collect(e | e.toString()).println("  - bases: ");
-        e.getLambdaBasePath().collect(e | e.toString()).println("  - base path: ");
-    }
-    
-    /*for (vr in EXPR!VariableReference.all) {
-        vr.variable.name.println("Variable: ");
-        vr.variable.toString().println(" -> ");
-        var expr = EXPR!Expression.all.selectOne(e | e.getInputExpression() == vr);
-        expr.toString().println(" - expr: ");
-        vr.getBaseExpression().toString().println(" - base: ");
-    } */
-    //displayAllExpressions();
+    displayAllExpressions();
 }
