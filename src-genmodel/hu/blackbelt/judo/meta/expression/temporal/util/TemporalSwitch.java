@@ -79,6 +79,7 @@ public class TemporalSwitch<T> extends Switch<T> {
 				T result = caseDateAttribute(dateAttribute);
 				if (result == null) result = caseDateExpression(dateAttribute);
 				if (result == null) result = caseAttributeSelector(dateAttribute);
+				if (result == null) result = caseDataExpression(dateAttribute);
 				if (result == null) result = caseExpression(dateAttribute);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -98,6 +99,7 @@ public class TemporalSwitch<T> extends Switch<T> {
 				T result = caseDateSwitchExpression(dateSwitchExpression);
 				if (result == null) result = caseSwitchExpression(dateSwitchExpression);
 				if (result == null) result = caseDateExpression(dateSwitchExpression);
+				if (result == null) result = caseDataExpression(dateSwitchExpression);
 				if (result == null) result = caseExpression(dateSwitchExpression);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
@@ -225,21 +227,6 @@ public class TemporalSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Date Expression</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Date Expression</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDateExpression(DateExpression object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -255,21 +242,6 @@ public class TemporalSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Attribute Selector</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Attribute Selector</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseAttributeSelector(AttributeSelector object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Data Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -281,6 +253,36 @@ public class TemporalSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDataExpression(DataExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Date Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Date Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDateExpression(DateExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Attribute Selector</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Attribute Selector</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseAttributeSelector(AttributeSelector object) {
 		return null;
 	}
 

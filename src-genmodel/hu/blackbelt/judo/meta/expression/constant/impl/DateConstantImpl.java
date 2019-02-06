@@ -3,8 +3,9 @@
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
+import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 
-import java.lang.String;
+import java.util.Date;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -14,18 +15,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>String</b></em>'.
+ * An implementation of the model object '<em><b>Date Constant</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.StringImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.DateConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.expression.constant.String {
+public class DateConstantImpl extends ConstantImpl implements DateConstant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -34,7 +35,7 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String VALUE_EDEFAULT = null;
+	protected static final Date VALUE_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
@@ -44,14 +45,14 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	 * @generated
 	 * @ordered
 	 */
-	protected String value = VALUE_EDEFAULT;
+	protected Date value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected StringImpl() {
+	protected DateConstantImpl() {
 		super();
 	}
 
@@ -62,7 +63,7 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ConstantPackage.Literals.STRING;
+		return ConstantPackage.Literals.DATE_CONSTANT;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getValue() {
+	public Date getValue() {
 		return value;
 	}
 
@@ -79,11 +80,11 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(String newValue) {
-		String oldValue = value;
+	public void setValue(Date newValue) {
+		Date oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.STRING__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.DATE_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConstantPackage.STRING__VALUE:
+			case ConstantPackage.DATE_CONSTANT__VALUE:
 				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -108,8 +109,8 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.STRING__VALUE:
-				setValue((String)newValue);
+			case ConstantPackage.DATE_CONSTANT__VALUE:
+				setValue((Date)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -123,7 +124,7 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.STRING__VALUE:
+			case ConstantPackage.DATE_CONSTANT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -138,7 +139,7 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.STRING__VALUE:
+			case ConstantPackage.DATE_CONSTANT__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
@@ -160,4 +161,4 @@ public class StringImpl extends ConstantImpl implements hu.blackbelt.judo.meta.e
 		return result.toString();
 	}
 
-} //StringImpl
+} //DateConstantImpl

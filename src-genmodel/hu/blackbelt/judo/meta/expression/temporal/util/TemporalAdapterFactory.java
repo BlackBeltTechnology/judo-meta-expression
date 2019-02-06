@@ -100,20 +100,20 @@ public class TemporalAdapterFactory extends AdapterFactoryImpl {
 				return createTimestampDifferenceExpressionAdapter();
 			}
 			@Override
-			public Adapter caseDateExpression(DateExpression object) {
-				return createDateExpressionAdapter();
-			}
-			@Override
 			public Adapter caseExpression(Expression object) {
 				return createExpressionAdapter();
 			}
 			@Override
-			public Adapter caseAttributeSelector(AttributeSelector object) {
-				return createAttributeSelectorAdapter();
-			}
-			@Override
 			public Adapter caseDataExpression(DataExpression object) {
 				return createDataExpressionAdapter();
+			}
+			@Override
+			public Adapter caseDateExpression(DateExpression object) {
+				return createDateExpressionAdapter();
+			}
+			@Override
+			public Adapter caseAttributeSelector(AttributeSelector object) {
+				return createAttributeSelectorAdapter();
 			}
 			@Override
 			public Adapter caseTimestampExpression(TimestampExpression object) {
@@ -232,20 +232,6 @@ public class TemporalAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.DateExpression <em>Date Expression</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.DateExpression
-	 * @generated
-	 */
-	public Adapter createDateExpressionAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.Expression <em>Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -260,20 +246,6 @@ public class TemporalAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.AttributeSelector <em>Attribute Selector</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.AttributeSelector
-	 * @generated
-	 */
-	public Adapter createAttributeSelectorAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.DataExpression <em>Data Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -284,6 +256,34 @@ public class TemporalAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createDataExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.DateExpression <em>Date Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.DateExpression
+	 * @generated
+	 */
+	public Adapter createDateExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.AttributeSelector <em>Attribute Selector</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.AttributeSelector
+	 * @generated
+	 */
+	public Adapter createAttributeSelectorAdapter() {
 		return null;
 	}
 

@@ -10,23 +10,25 @@ import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.MeasuredExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TimestampExpression;
 
+import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 import hu.blackbelt.judo.meta.expression.constant.CustomData;
-import hu.blackbelt.judo.meta.expression.constant.Date;
-import hu.blackbelt.judo.meta.expression.constant.Decimal;
+import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.DecimalConstant;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-import hu.blackbelt.judo.meta.expression.constant.Timestamp;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
+import hu.blackbelt.judo.meta.expression.constant.TimestampConstant;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
@@ -106,47 +108,47 @@ public class ConstantSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConstantPackage.INTEGER: {
-				hu.blackbelt.judo.meta.expression.constant.Integer integer = (hu.blackbelt.judo.meta.expression.constant.Integer)theEObject;
-				T result = caseInteger(integer);
-				if (result == null) result = caseNumber(integer);
-				if (result == null) result = caseIntegerExpression(integer);
-				if (result == null) result = caseConstant(integer);
-				if (result == null) result = caseNumericExpression(integer);
-				if (result == null) result = caseDataExpression(integer);
-				if (result == null) result = caseExpression(integer);
+			case ConstantPackage.INTEGER_CONSTANT: {
+				IntegerConstant integerConstant = (IntegerConstant)theEObject;
+				T result = caseIntegerConstant(integerConstant);
+				if (result == null) result = caseNumber(integerConstant);
+				if (result == null) result = caseIntegerExpression(integerConstant);
+				if (result == null) result = caseConstant(integerConstant);
+				if (result == null) result = caseNumericExpression(integerConstant);
+				if (result == null) result = caseDataExpression(integerConstant);
+				if (result == null) result = caseExpression(integerConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConstantPackage.DECIMAL: {
-				Decimal decimal = (Decimal)theEObject;
-				T result = caseDecimal(decimal);
-				if (result == null) result = caseNumber(decimal);
-				if (result == null) result = caseDecimalExpression(decimal);
-				if (result == null) result = caseConstant(decimal);
-				if (result == null) result = caseNumericExpression(decimal);
-				if (result == null) result = caseDataExpression(decimal);
-				if (result == null) result = caseExpression(decimal);
+			case ConstantPackage.DECIMAL_CONSTANT: {
+				DecimalConstant decimalConstant = (DecimalConstant)theEObject;
+				T result = caseDecimalConstant(decimalConstant);
+				if (result == null) result = caseNumber(decimalConstant);
+				if (result == null) result = caseDecimalExpression(decimalConstant);
+				if (result == null) result = caseConstant(decimalConstant);
+				if (result == null) result = caseNumericExpression(decimalConstant);
+				if (result == null) result = caseDataExpression(decimalConstant);
+				if (result == null) result = caseExpression(decimalConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConstantPackage.BOOLEAN: {
-				hu.blackbelt.judo.meta.expression.constant.Boolean boolean_ = (hu.blackbelt.judo.meta.expression.constant.Boolean)theEObject;
-				T result = caseBoolean(boolean_);
-				if (result == null) result = caseConstant(boolean_);
-				if (result == null) result = caseLogicalExpression(boolean_);
-				if (result == null) result = caseDataExpression(boolean_);
-				if (result == null) result = caseExpression(boolean_);
+			case ConstantPackage.BOOLEAN_CONSTANT: {
+				BooleanConstant booleanConstant = (BooleanConstant)theEObject;
+				T result = caseBooleanConstant(booleanConstant);
+				if (result == null) result = caseConstant(booleanConstant);
+				if (result == null) result = caseLogicalExpression(booleanConstant);
+				if (result == null) result = caseDataExpression(booleanConstant);
+				if (result == null) result = caseExpression(booleanConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConstantPackage.STRING: {
-				hu.blackbelt.judo.meta.expression.constant.String string = (hu.blackbelt.judo.meta.expression.constant.String)theEObject;
-				T result = caseString(string);
-				if (result == null) result = caseConstant(string);
-				if (result == null) result = caseStringExpression(string);
-				if (result == null) result = caseDataExpression(string);
-				if (result == null) result = caseExpression(string);
+			case ConstantPackage.STRING_CONSTANT: {
+				StringConstant stringConstant = (StringConstant)theEObject;
+				T result = caseStringConstant(stringConstant);
+				if (result == null) result = caseConstant(stringConstant);
+				if (result == null) result = caseStringExpression(stringConstant);
+				if (result == null) result = caseDataExpression(stringConstant);
+				if (result == null) result = caseExpression(stringConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -183,8 +185,7 @@ public class ConstantSwitch<T> extends Switch<T> {
 			case ConstantPackage.MEASURED_DECIMAL: {
 				MeasuredDecimal measuredDecimal = (MeasuredDecimal)theEObject;
 				T result = caseMeasuredDecimal(measuredDecimal);
-				if (result == null) result = caseMeasuredExpression(measuredDecimal);
-				if (result == null) result = caseDecimal(measuredDecimal);
+				if (result == null) result = caseDecimalConstant(measuredDecimal);
 				if (result == null) result = caseNumber(measuredDecimal);
 				if (result == null) result = caseDecimalExpression(measuredDecimal);
 				if (result == null) result = caseConstant(measuredDecimal);
@@ -197,8 +198,7 @@ public class ConstantSwitch<T> extends Switch<T> {
 			case ConstantPackage.MEASURED_INTEGER: {
 				MeasuredInteger measuredInteger = (MeasuredInteger)theEObject;
 				T result = caseMeasuredInteger(measuredInteger);
-				if (result == null) result = caseInteger(measuredInteger);
-				if (result == null) result = caseMeasuredExpression(measuredInteger);
+				if (result == null) result = caseIntegerConstant(measuredInteger);
 				if (result == null) result = caseNumber(measuredInteger);
 				if (result == null) result = caseIntegerExpression(measuredInteger);
 				if (result == null) result = caseConstant(measuredInteger);
@@ -208,21 +208,23 @@ public class ConstantSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConstantPackage.DATE: {
-				Date date = (Date)theEObject;
-				T result = caseDate(date);
-				if (result == null) result = caseConstant(date);
-				if (result == null) result = caseDateExpression(date);
+			case ConstantPackage.DATE_CONSTANT: {
+				DateConstant dateConstant = (DateConstant)theEObject;
+				T result = caseDateConstant(dateConstant);
+				if (result == null) result = caseConstant(dateConstant);
+				if (result == null) result = caseDateExpression(dateConstant);
+				if (result == null) result = caseDataExpression(dateConstant);
+				if (result == null) result = caseExpression(dateConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConstantPackage.TIMESTAMP: {
-				Timestamp timestamp = (Timestamp)theEObject;
-				T result = caseTimestamp(timestamp);
-				if (result == null) result = caseConstant(timestamp);
-				if (result == null) result = caseTimestampExpression(timestamp);
-				if (result == null) result = caseDataExpression(timestamp);
-				if (result == null) result = caseExpression(timestamp);
+			case ConstantPackage.TIMESTAMP_CONSTANT: {
+				TimestampConstant timestampConstant = (TimestampConstant)theEObject;
+				T result = caseTimestampConstant(timestampConstant);
+				if (result == null) result = caseConstant(timestampConstant);
+				if (result == null) result = caseTimestampExpression(timestampConstant);
+				if (result == null) result = caseDataExpression(timestampConstant);
+				if (result == null) result = caseExpression(timestampConstant);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -261,62 +263,62 @@ public class ConstantSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Integer</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Integer Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Integer</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Integer Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInteger(hu.blackbelt.judo.meta.expression.constant.Integer object) {
+	public T caseIntegerConstant(IntegerConstant object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Decimal</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Decimal Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Decimal</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Decimal Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDecimal(Decimal object) {
+	public T caseDecimalConstant(DecimalConstant object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Boolean</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Boolean Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Boolean</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Boolean Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseBoolean(hu.blackbelt.judo.meta.expression.constant.Boolean object) {
+	public T caseBooleanConstant(BooleanConstant object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>String</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>String Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>String</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>String Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseString(hu.blackbelt.judo.meta.expression.constant.String object) {
+	public T caseStringConstant(StringConstant object) {
 		return null;
 	}
 
@@ -396,32 +398,32 @@ public class ConstantSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Date</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Date Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Date</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Date Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDate(Date object) {
+	public T caseDateConstant(DateConstant object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Timestamp</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Timestamp Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Timestamp</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Timestamp Constant</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseTimestamp(Timestamp object) {
+	public T caseTimestampConstant(TimestampConstant object) {
 		return null;
 	}
 
@@ -587,21 +589,6 @@ public class ConstantSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseCustomExpression(CustomExpression object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Measured Expression</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Measured Expression</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMeasuredExpression(MeasuredExpression object) {
 		return null;
 	}
 

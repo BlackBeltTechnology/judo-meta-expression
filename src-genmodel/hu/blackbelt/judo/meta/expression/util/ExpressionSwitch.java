@@ -193,18 +193,6 @@ public class ExpressionSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ExpressionPackage.LAMBDA: {
-				Lambda lambda = (Lambda)theEObject;
-				T result = caseLambda(lambda);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case ExpressionPackage.BASE: {
-				Base base = (Base)theEObject;
-				T result = caseBase(base);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case ExpressionPackage.AGGREGATED_EXPRESSION: {
 				AggregatedExpression aggregatedExpression = (AggregatedExpression)theEObject;
 				T result = caseAggregatedExpression(aggregatedExpression);
@@ -235,15 +223,11 @@ public class ExpressionSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ExpressionPackage.MEASURED_EXPRESSION: {
-				MeasuredExpression measuredExpression = (MeasuredExpression)theEObject;
-				T result = caseMeasuredExpression(measuredExpression);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case ExpressionPackage.DATE_EXPRESSION: {
 				DateExpression dateExpression = (DateExpression)theEObject;
 				T result = caseDateExpression(dateExpression);
+				if (result == null) result = caseDataExpression(dateExpression);
+				if (result == null) result = caseExpression(dateExpression);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -266,6 +250,20 @@ public class ExpressionSwitch<T> extends Switch<T> {
 				MeasureName measureName = (MeasureName)theEObject;
 				T result = caseMeasureName(measureName);
 				if (result == null) result = caseElementName(measureName);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ExpressionPackage.WINDOWING_EXPRESSION: {
+				WindowingExpression windowingExpression = (WindowingExpression)theEObject;
+				T result = caseWindowingExpression(windowingExpression);
+				if (result == null) result = caseExpression(windowingExpression);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ExpressionPackage.FILTERING_EXPRESSION: {
+				FilteringExpression filteringExpression = (FilteringExpression)theEObject;
+				T result = caseFilteringExpression(filteringExpression);
+				if (result == null) result = caseExpression(filteringExpression);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -529,36 +527,6 @@ public class ExpressionSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Lambda</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Lambda</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseLambda(Lambda object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Base</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Base</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseBase(Base object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Aggregated Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -619,21 +587,6 @@ public class ExpressionSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Measured Expression</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Measured Expression</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMeasuredExpression(MeasuredExpression object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Date Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -690,6 +643,36 @@ public class ExpressionSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseMeasureName(MeasureName object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Windowing Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Windowing Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseWindowingExpression(WindowingExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Filtering Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Filtering Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFilteringExpression(FilteringExpression object) {
 		return null;
 	}
 

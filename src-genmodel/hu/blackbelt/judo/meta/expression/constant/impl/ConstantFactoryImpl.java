@@ -2,16 +2,19 @@
  */
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
+import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.constant.ConstantFactory;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 import hu.blackbelt.judo.meta.expression.constant.CustomData;
-import hu.blackbelt.judo.meta.expression.constant.Date;
-import hu.blackbelt.judo.meta.expression.constant.Decimal;
+import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.DecimalConstant;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-import hu.blackbelt.judo.meta.expression.constant.Timestamp;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
+import hu.blackbelt.judo.meta.expression.constant.TimestampConstant;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -65,17 +68,17 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case ConstantPackage.INTEGER: return createInteger();
-			case ConstantPackage.DECIMAL: return createDecimal();
-			case ConstantPackage.BOOLEAN: return createBoolean();
-			case ConstantPackage.STRING: return createString();
+			case ConstantPackage.INTEGER_CONSTANT: return createIntegerConstant();
+			case ConstantPackage.DECIMAL_CONSTANT: return createDecimalConstant();
+			case ConstantPackage.BOOLEAN_CONSTANT: return createBooleanConstant();
+			case ConstantPackage.STRING_CONSTANT: return createStringConstant();
 			case ConstantPackage.LITERAL: return createLiteral();
 			case ConstantPackage.INSTANCE: return createInstance();
 			case ConstantPackage.CUSTOM_DATA: return createCustomData();
 			case ConstantPackage.MEASURED_DECIMAL: return createMeasuredDecimal();
 			case ConstantPackage.MEASURED_INTEGER: return createMeasuredInteger();
-			case ConstantPackage.DATE: return createDate();
-			case ConstantPackage.TIMESTAMP: return createTimestamp();
+			case ConstantPackage.DATE_CONSTANT: return createDateConstant();
+			case ConstantPackage.TIMESTAMP_CONSTANT: return createTimestampConstant();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -86,9 +89,9 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public hu.blackbelt.judo.meta.expression.constant.Integer createInteger() {
-		IntegerImpl integer = new IntegerImpl();
-		return integer;
+	public IntegerConstant createIntegerConstant() {
+		IntegerConstantImpl integerConstant = new IntegerConstantImpl();
+		return integerConstant;
 	}
 
 	/**
@@ -96,9 +99,9 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Decimal createDecimal() {
-		DecimalImpl decimal = new DecimalImpl();
-		return decimal;
+	public DecimalConstant createDecimalConstant() {
+		DecimalConstantImpl decimalConstant = new DecimalConstantImpl();
+		return decimalConstant;
 	}
 
 	/**
@@ -106,9 +109,9 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public hu.blackbelt.judo.meta.expression.constant.Boolean createBoolean() {
-		BooleanImpl boolean_ = new BooleanImpl();
-		return boolean_;
+	public BooleanConstant createBooleanConstant() {
+		BooleanConstantImpl booleanConstant = new BooleanConstantImpl();
+		return booleanConstant;
 	}
 
 	/**
@@ -116,9 +119,9 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public hu.blackbelt.judo.meta.expression.constant.String createString() {
-		StringImpl string = new StringImpl();
-		return string;
+	public StringConstant createStringConstant() {
+		StringConstantImpl stringConstant = new StringConstantImpl();
+		return stringConstant;
 	}
 
 	/**
@@ -176,9 +179,9 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Date createDate() {
-		DateImpl date = new DateImpl();
-		return date;
+	public DateConstant createDateConstant() {
+		DateConstantImpl dateConstant = new DateConstantImpl();
+		return dateConstant;
 	}
 
 	/**
@@ -186,9 +189,9 @@ public class ConstantFactoryImpl extends EFactoryImpl implements ConstantFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Timestamp createTimestamp() {
-		TimestampImpl timestamp = new TimestampImpl();
-		return timestamp;
+	public TimestampConstant createTimestampConstant() {
+		TimestampConstantImpl timestampConstant = new TimestampConstantImpl();
+		return timestampConstant;
 	}
 
 	/**

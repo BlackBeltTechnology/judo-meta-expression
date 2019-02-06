@@ -3,7 +3,6 @@
 package hu.blackbelt.judo.meta.expression.collection;
 
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.Lambda;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
 
 import org.eclipse.emf.common.util.EList;
@@ -25,7 +24,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface SortExpression extends OrderedCollectionExpression, Lambda {
+public interface SortExpression extends OrderedCollectionExpression {
 	/**
 	 * Returns the value of the '<em><b>Collection Expression</b></em>' containment reference.
 	 * <!-- begin-user-doc -->

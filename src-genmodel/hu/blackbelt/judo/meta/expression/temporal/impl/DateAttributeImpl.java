@@ -3,7 +3,6 @@
 package hu.blackbelt.judo.meta.expression.temporal.impl;
 
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
-import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.ExpressionPackage;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 
@@ -236,11 +235,6 @@ public class DateAttributeImpl extends MinimalEObjectImpl.Container implements D
 	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == Expression.class) {
-			switch (derivedFeatureID) {
-				default: return -1;
-			}
-		}
 		if (baseClass == AttributeSelector.class) {
 			switch (derivedFeatureID) {
 				case TemporalPackage.DATE_ATTRIBUTE__OBJECT_EXPRESSION: return ExpressionPackage.ATTRIBUTE_SELECTOR__OBJECT_EXPRESSION;
@@ -258,11 +252,6 @@ public class DateAttributeImpl extends MinimalEObjectImpl.Container implements D
 	 */
 	@Override
 	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == Expression.class) {
-			switch (baseFeatureID) {
-				default: return -1;
-			}
-		}
 		if (baseClass == AttributeSelector.class) {
 			switch (baseFeatureID) {
 				case ExpressionPackage.ATTRIBUTE_SELECTOR__OBJECT_EXPRESSION: return TemporalPackage.DATE_ATTRIBUTE__OBJECT_EXPRESSION;

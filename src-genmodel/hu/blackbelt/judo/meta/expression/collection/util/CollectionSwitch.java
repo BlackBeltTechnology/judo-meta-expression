@@ -2,10 +2,9 @@
  */
 package hu.blackbelt.judo.meta.expression.collection.util;
 
-import hu.blackbelt.judo.meta.expression.Base;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.Lambda;
+import hu.blackbelt.judo.meta.expression.FilteringExpression;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
@@ -13,6 +12,7 @@ import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
 import hu.blackbelt.judo.meta.expression.VariableReference;
+import hu.blackbelt.judo.meta.expression.WindowingExpression;
 
 import hu.blackbelt.judo.meta.expression.collection.*;
 
@@ -85,7 +85,6 @@ public class CollectionSwitch<T> extends Switch<T> {
 				ImmutableCollection immutableCollection = (ImmutableCollection)theEObject;
 				T result = caseImmutableCollection(immutableCollection);
 				if (result == null) result = caseCollectionExpression(immutableCollection);
-				if (result == null) result = caseBase(immutableCollection);
 				if (result == null) result = caseObjectVariable(immutableCollection);
 				if (result == null) result = caseReferenceExpression(immutableCollection);
 				if (result == null) result = caseVariable(immutableCollection);
@@ -97,7 +96,7 @@ public class CollectionSwitch<T> extends Switch<T> {
 				CollectionFilterExpression collectionFilterExpression = (CollectionFilterExpression)theEObject;
 				T result = caseCollectionFilterExpression(collectionFilterExpression);
 				if (result == null) result = caseCollectionExpression(collectionFilterExpression);
-				if (result == null) result = caseLambda(collectionFilterExpression);
+				if (result == null) result = caseFilteringExpression(collectionFilterExpression);
 				if (result == null) result = caseReferenceExpression(collectionFilterExpression);
 				if (result == null) result = caseExpression(collectionFilterExpression);
 				if (result == null) result = defaultCase(theEObject);
@@ -142,7 +141,6 @@ public class CollectionSwitch<T> extends Switch<T> {
 				SortExpression sortExpression = (SortExpression)theEObject;
 				T result = caseSortExpression(sortExpression);
 				if (result == null) result = caseOrderedCollectionExpression(sortExpression);
-				if (result == null) result = caseLambda(sortExpression);
 				if (result == null) result = caseCollectionExpression(sortExpression);
 				if (result == null) result = caseReferenceExpression(sortExpression);
 				if (result == null) result = caseExpression(sortExpression);
@@ -153,6 +151,7 @@ public class CollectionSwitch<T> extends Switch<T> {
 				SubCollectionExpression subCollectionExpression = (SubCollectionExpression)theEObject;
 				T result = caseSubCollectionExpression(subCollectionExpression);
 				if (result == null) result = caseOrderedCollectionExpression(subCollectionExpression);
+				if (result == null) result = caseWindowingExpression(subCollectionExpression);
 				if (result == null) result = caseCollectionExpression(subCollectionExpression);
 				if (result == null) result = caseReferenceExpression(subCollectionExpression);
 				if (result == null) result = caseExpression(subCollectionExpression);
@@ -413,21 +412,6 @@ public class CollectionSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Base</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Base</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseBase(Base object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Variable</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -458,17 +442,17 @@ public class CollectionSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Lambda</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Filtering Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Lambda</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Filtering Expression</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseLambda(Lambda object) {
+	public T caseFilteringExpression(FilteringExpression object) {
 		return null;
 	}
 
@@ -529,6 +513,21 @@ public class CollectionSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseOrderedCollectionExpression(OrderedCollectionExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Windowing Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Windowing Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseWindowingExpression(WindowingExpression object) {
 		return null;
 	}
 

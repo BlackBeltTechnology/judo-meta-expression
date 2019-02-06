@@ -4,7 +4,7 @@ package hu.blackbelt.judo.meta.expression.custom.util;
 
 import org.eclipse.emf.common.util.URI;
 
-import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
  * @see hu.blackbelt.judo.meta.expression.custom.util.CustomResourceFactoryImpl
  * @generated
  */
-public class CustomResourceImpl extends XMLResourceImpl {
+public class CustomResourceImpl extends XMIResourceImpl {
 	/**
 	 * Creates an instance of the resource.
 	 * <!-- begin-user-doc -->

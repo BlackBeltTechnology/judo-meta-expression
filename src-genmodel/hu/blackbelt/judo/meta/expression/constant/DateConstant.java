@@ -2,27 +2,27 @@
  */
 package hu.blackbelt.judo.meta.expression.constant;
 
-import hu.blackbelt.judo.meta.expression.IntegerExpression;
+import hu.blackbelt.judo.meta.expression.DateExpression;
 
-import java.math.BigInteger;
+import java.util.Date;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Integer</b></em>'.
+ * A representation of the model object '<em><b>Date Constant</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.Integer#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.DateConstant#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getInteger()
+ * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDateConstant()
  * @model
  * @generated
  */
-public interface Integer extends hu.blackbelt.judo.meta.expression.constant.Number, IntegerExpression {
+public interface DateConstant extends Constant, DateExpression {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -32,21 +32,21 @@ public interface Integer extends hu.blackbelt.judo.meta.expression.constant.Numb
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
-	 * @see #setValue(BigInteger)
-	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getInteger_Value()
+	 * @see #setValue(Date)
+	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDateConstant_Value()
 	 * @model required="true"
 	 * @generated
 	 */
-	BigInteger getValue();
+	Date getValue();
 
 	/**
-	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.Integer#getValue <em>Value</em>}' attribute.
+	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.DateConstant#getValue <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Value</em>' attribute.
 	 * @see #getValue()
 	 * @generated
 	 */
-	void setValue(BigInteger value);
+	void setValue(Date value);
 
-} // Integer
+} // DateConstant

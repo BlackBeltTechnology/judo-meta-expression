@@ -10,23 +10,25 @@ import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.MeasuredExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TimestampExpression;
 
+import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 import hu.blackbelt.judo.meta.expression.constant.CustomData;
-import hu.blackbelt.judo.meta.expression.constant.Date;
-import hu.blackbelt.judo.meta.expression.constant.Decimal;
+import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.DecimalConstant;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-import hu.blackbelt.judo.meta.expression.constant.Timestamp;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
+import hu.blackbelt.judo.meta.expression.constant.TimestampConstant;
 
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
@@ -100,20 +102,20 @@ public class ConstantAdapterFactory extends AdapterFactoryImpl {
 				return createNumberAdapter();
 			}
 			@Override
-			public Adapter caseInteger(hu.blackbelt.judo.meta.expression.constant.Integer object) {
-				return createIntegerAdapter();
+			public Adapter caseIntegerConstant(IntegerConstant object) {
+				return createIntegerConstantAdapter();
 			}
 			@Override
-			public Adapter caseDecimal(Decimal object) {
-				return createDecimalAdapter();
+			public Adapter caseDecimalConstant(DecimalConstant object) {
+				return createDecimalConstantAdapter();
 			}
 			@Override
-			public Adapter caseBoolean(hu.blackbelt.judo.meta.expression.constant.Boolean object) {
-				return createBooleanAdapter();
+			public Adapter caseBooleanConstant(BooleanConstant object) {
+				return createBooleanConstantAdapter();
 			}
 			@Override
-			public Adapter caseString(hu.blackbelt.judo.meta.expression.constant.String object) {
-				return createStringAdapter();
+			public Adapter caseStringConstant(StringConstant object) {
+				return createStringConstantAdapter();
 			}
 			@Override
 			public Adapter caseLiteral(Literal object) {
@@ -136,12 +138,12 @@ public class ConstantAdapterFactory extends AdapterFactoryImpl {
 				return createMeasuredIntegerAdapter();
 			}
 			@Override
-			public Adapter caseDate(Date object) {
-				return createDateAdapter();
+			public Adapter caseDateConstant(DateConstant object) {
+				return createDateConstantAdapter();
 			}
 			@Override
-			public Adapter caseTimestamp(Timestamp object) {
-				return createTimestampAdapter();
+			public Adapter caseTimestampConstant(TimestampConstant object) {
+				return createTimestampConstantAdapter();
 			}
 			@Override
 			public Adapter caseExpression(Expression object) {
@@ -186,10 +188,6 @@ public class ConstantAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseCustomExpression(CustomExpression object) {
 				return createCustomExpressionAdapter();
-			}
-			@Override
-			public Adapter caseMeasuredExpression(MeasuredExpression object) {
-				return createMeasuredExpressionAdapter();
 			}
 			@Override
 			public Adapter caseDateExpression(DateExpression object) {
@@ -248,58 +246,58 @@ public class ConstantAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.Integer <em>Integer</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.IntegerConstant <em>Integer Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Integer
+	 * @see hu.blackbelt.judo.meta.expression.constant.IntegerConstant
 	 * @generated
 	 */
-	public Adapter createIntegerAdapter() {
+	public Adapter createIntegerConstantAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.Decimal <em>Decimal</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.DecimalConstant <em>Decimal Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Decimal
+	 * @see hu.blackbelt.judo.meta.expression.constant.DecimalConstant
 	 * @generated
 	 */
-	public Adapter createDecimalAdapter() {
+	public Adapter createDecimalConstantAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.Boolean <em>Boolean</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.BooleanConstant <em>Boolean Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Boolean
+	 * @see hu.blackbelt.judo.meta.expression.constant.BooleanConstant
 	 * @generated
 	 */
-	public Adapter createBooleanAdapter() {
+	public Adapter createBooleanConstantAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.String <em>String</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.StringConstant <em>String Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.constant.String
+	 * @see hu.blackbelt.judo.meta.expression.constant.StringConstant
 	 * @generated
 	 */
-	public Adapter createStringAdapter() {
+	public Adapter createStringConstantAdapter() {
 		return null;
 	}
 
@@ -374,30 +372,30 @@ public class ConstantAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.Date <em>Date</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.DateConstant <em>Date Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Date
+	 * @see hu.blackbelt.judo.meta.expression.constant.DateConstant
 	 * @generated
 	 */
-	public Adapter createDateAdapter() {
+	public Adapter createDateConstantAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.Timestamp <em>Timestamp</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.constant.TimestampConstant <em>Timestamp Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Timestamp
+	 * @see hu.blackbelt.judo.meta.expression.constant.TimestampConstant
 	 * @generated
 	 */
-	public Adapter createTimestampAdapter() {
+	public Adapter createTimestampConstantAdapter() {
 		return null;
 	}
 
@@ -552,20 +550,6 @@ public class ConstantAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createCustomExpressionAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.MeasuredExpression <em>Measured Expression</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.MeasuredExpression
-	 * @generated
-	 */
-	public Adapter createMeasuredExpressionAdapter() {
 		return null;
 	}
 

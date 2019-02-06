@@ -4,6 +4,7 @@ package hu.blackbelt.judo.meta.expression.object;
 
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
+import hu.blackbelt.judo.meta.expression.WindowingExpression;
 
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 
@@ -24,7 +25,7 @@ import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
  * @model
  * @generated
  */
-public interface ObjectSelectorExpression extends ObjectExpression {
+public interface ObjectSelectorExpression extends ObjectExpression, WindowingExpression {
 	/**
 	 * Returns the value of the '<em><b>Collection Expression</b></em>' containment reference.
 	 * <!-- begin-user-doc -->

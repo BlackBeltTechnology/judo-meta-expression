@@ -74,11 +74,7 @@ abstract class ReferenceSelector extends NavigationExpression {
 abstract interface CustomExpression extends DataExpression {
 }
 
-abstract class MeasuredExpression {
-  ref MeasureName measure;
-}
-
-abstract interface DateExpression {
+abstract interface DateExpression extends DataExpression {
 }
 
 abstract interface TimestampExpression extends DataExpression {
@@ -90,10 +86,10 @@ class TypeName extends ElementName {
 class MeasureName extends ElementName {
 }
 
-abstract interface WindowingExpression {
+abstract interface WindowingExpression extends Expression {
 }
 
-class FilteringExpression {
+abstract interface FilteringExpression extends Expression {
 }
 
 @namespace(uri="http://blackbelt.hu/judo/meta/expression/constant", prefix="const")
@@ -132,12 +128,14 @@ package constant {
     attr String[1] value;
   }
 
-  class MeasuredDecimal extends MeasuredExpression, DecimalConstant {
+  class MeasuredDecimal extends DecimalConstant {
     attr String[1] unitName;
+    ref MeasureName measure;
   }
 
-  class MeasuredInteger extends IntegerConstant, MeasuredExpression {
+  class MeasuredInteger extends IntegerConstant {
     attr String[1] unitName;
+    ref MeasureName measure;
   }
 
   class DateConstant extends Constant, DateExpression {

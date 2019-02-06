@@ -8,17 +8,20 @@ import hu.blackbelt.judo.meta.expression.collection.CollectionPackage;
 
 import hu.blackbelt.judo.meta.expression.collection.impl.CollectionPackageImpl;
 
+import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.ConstantFactory;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 import hu.blackbelt.judo.meta.expression.constant.CustomData;
-import hu.blackbelt.judo.meta.expression.constant.Date;
-import hu.blackbelt.judo.meta.expression.constant.Decimal;
+import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.DecimalConstant;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-import hu.blackbelt.judo.meta.expression.constant.Timestamp;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
+import hu.blackbelt.judo.meta.expression.constant.TimestampConstant;
 
 import hu.blackbelt.judo.meta.expression.custom.CustomPackage;
 
@@ -91,28 +94,28 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass integerEClass = null;
+	private EClass integerConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass decimalEClass = null;
+	private EClass decimalConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass booleanEClass = null;
+	private EClass booleanConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass stringEClass = null;
+	private EClass stringConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -154,14 +157,14 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dateEClass = null;
+	private EClass dateConstantEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass timestampEClass = null;
+	private EClass timestampConstantEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -282,8 +285,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getInteger() {
-		return integerEClass;
+	public EClass getIntegerConstant() {
+		return integerConstantEClass;
 	}
 
 	/**
@@ -291,8 +294,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInteger_Value() {
-		return (EAttribute)integerEClass.getEStructuralFeatures().get(0);
+	public EAttribute getIntegerConstant_Value() {
+		return (EAttribute)integerConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -300,8 +303,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDecimal() {
-		return decimalEClass;
+	public EClass getDecimalConstant() {
+		return decimalConstantEClass;
 	}
 
 	/**
@@ -309,8 +312,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDecimal_Value() {
-		return (EAttribute)decimalEClass.getEStructuralFeatures().get(0);
+	public EAttribute getDecimalConstant_Value() {
+		return (EAttribute)decimalConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -318,8 +321,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getBoolean() {
-		return booleanEClass;
+	public EClass getBooleanConstant() {
+		return booleanConstantEClass;
 	}
 
 	/**
@@ -327,8 +330,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getBoolean_Value() {
-		return (EAttribute)booleanEClass.getEStructuralFeatures().get(0);
+	public EAttribute getBooleanConstant_Value() {
+		return (EAttribute)booleanConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -336,8 +339,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getString() {
-		return stringEClass;
+	public EClass getStringConstant() {
+		return stringConstantEClass;
 	}
 
 	/**
@@ -345,8 +348,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getString_Value() {
-		return (EAttribute)stringEClass.getEStructuralFeatures().get(0);
+	public EAttribute getStringConstant_Value() {
+		return (EAttribute)stringConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -426,6 +429,15 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getMeasuredDecimal_Measure() {
+		return (EReference)measuredDecimalEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getMeasuredInteger() {
 		return measuredIntegerEClass;
 	}
@@ -444,8 +456,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDate() {
-		return dateEClass;
+	public EReference getMeasuredInteger_Measure() {
+		return (EReference)measuredIntegerEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -453,8 +465,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDate_Value() {
-		return (EAttribute)dateEClass.getEStructuralFeatures().get(0);
+	public EClass getDateConstant() {
+		return dateConstantEClass;
 	}
 
 	/**
@@ -462,8 +474,8 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getTimestamp() {
-		return timestampEClass;
+	public EAttribute getDateConstant_Value() {
+		return (EAttribute)dateConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -471,8 +483,17 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getTimestamp_Value() {
-		return (EAttribute)timestampEClass.getEStructuralFeatures().get(0);
+	public EClass getTimestampConstant() {
+		return timestampConstantEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTimestampConstant_Value() {
+		return (EAttribute)timestampConstantEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -507,17 +528,17 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 
 		numberEClass = createEClass(NUMBER);
 
-		integerEClass = createEClass(INTEGER);
-		createEAttribute(integerEClass, INTEGER__VALUE);
+		integerConstantEClass = createEClass(INTEGER_CONSTANT);
+		createEAttribute(integerConstantEClass, INTEGER_CONSTANT__VALUE);
 
-		decimalEClass = createEClass(DECIMAL);
-		createEAttribute(decimalEClass, DECIMAL__VALUE);
+		decimalConstantEClass = createEClass(DECIMAL_CONSTANT);
+		createEAttribute(decimalConstantEClass, DECIMAL_CONSTANT__VALUE);
 
-		booleanEClass = createEClass(BOOLEAN);
-		createEAttribute(booleanEClass, BOOLEAN__VALUE);
+		booleanConstantEClass = createEClass(BOOLEAN_CONSTANT);
+		createEAttribute(booleanConstantEClass, BOOLEAN_CONSTANT__VALUE);
 
-		stringEClass = createEClass(STRING);
-		createEAttribute(stringEClass, STRING__VALUE);
+		stringConstantEClass = createEClass(STRING_CONSTANT);
+		createEAttribute(stringConstantEClass, STRING_CONSTANT__VALUE);
 
 		literalEClass = createEClass(LITERAL);
 		createEAttribute(literalEClass, LITERAL__VALUE);
@@ -530,15 +551,17 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 
 		measuredDecimalEClass = createEClass(MEASURED_DECIMAL);
 		createEAttribute(measuredDecimalEClass, MEASURED_DECIMAL__UNIT_NAME);
+		createEReference(measuredDecimalEClass, MEASURED_DECIMAL__MEASURE);
 
 		measuredIntegerEClass = createEClass(MEASURED_INTEGER);
 		createEAttribute(measuredIntegerEClass, MEASURED_INTEGER__UNIT_NAME);
+		createEReference(measuredIntegerEClass, MEASURED_INTEGER__MEASURE);
 
-		dateEClass = createEClass(DATE);
-		createEAttribute(dateEClass, DATE__VALUE);
+		dateConstantEClass = createEClass(DATE_CONSTANT);
+		createEAttribute(dateConstantEClass, DATE_CONSTANT__VALUE);
 
-		timestampEClass = createEClass(TIMESTAMP);
-		createEAttribute(timestampEClass, TIMESTAMP__VALUE);
+		timestampConstantEClass = createEClass(TIMESTAMP_CONSTANT);
+		createEAttribute(timestampConstantEClass, TIMESTAMP_CONSTANT__VALUE);
 	}
 
 	/**
@@ -574,45 +597,43 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 		// Add supertypes to classes
 		numberEClass.getESuperTypes().add(this.getConstant());
 		numberEClass.getESuperTypes().add(theExpressionPackage.getNumericExpression());
-		integerEClass.getESuperTypes().add(this.getNumber());
-		integerEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
-		decimalEClass.getESuperTypes().add(this.getNumber());
-		decimalEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
-		booleanEClass.getESuperTypes().add(this.getConstant());
-		booleanEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
-		stringEClass.getESuperTypes().add(this.getConstant());
-		stringEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
+		integerConstantEClass.getESuperTypes().add(this.getNumber());
+		integerConstantEClass.getESuperTypes().add(theExpressionPackage.getIntegerExpression());
+		decimalConstantEClass.getESuperTypes().add(this.getNumber());
+		decimalConstantEClass.getESuperTypes().add(theExpressionPackage.getDecimalExpression());
+		booleanConstantEClass.getESuperTypes().add(this.getConstant());
+		booleanConstantEClass.getESuperTypes().add(theExpressionPackage.getLogicalExpression());
+		stringConstantEClass.getESuperTypes().add(this.getConstant());
+		stringConstantEClass.getESuperTypes().add(theExpressionPackage.getStringExpression());
 		literalEClass.getESuperTypes().add(this.getConstant());
 		literalEClass.getESuperTypes().add(theExpressionPackage.getEnumerationExpression());
 		instanceEClass.getESuperTypes().add(this.getConstant());
 		instanceEClass.getESuperTypes().add(theExpressionPackage.getObjectExpression());
 		customDataEClass.getESuperTypes().add(this.getConstant());
 		customDataEClass.getESuperTypes().add(theExpressionPackage.getCustomExpression());
-		measuredDecimalEClass.getESuperTypes().add(theExpressionPackage.getMeasuredExpression());
-		measuredDecimalEClass.getESuperTypes().add(this.getDecimal());
-		measuredIntegerEClass.getESuperTypes().add(this.getInteger());
-		measuredIntegerEClass.getESuperTypes().add(theExpressionPackage.getMeasuredExpression());
-		dateEClass.getESuperTypes().add(this.getConstant());
-		dateEClass.getESuperTypes().add(theExpressionPackage.getDateExpression());
-		timestampEClass.getESuperTypes().add(this.getConstant());
-		timestampEClass.getESuperTypes().add(theExpressionPackage.getTimestampExpression());
+		measuredDecimalEClass.getESuperTypes().add(this.getDecimalConstant());
+		measuredIntegerEClass.getESuperTypes().add(this.getIntegerConstant());
+		dateConstantEClass.getESuperTypes().add(this.getConstant());
+		dateConstantEClass.getESuperTypes().add(theExpressionPackage.getDateExpression());
+		timestampConstantEClass.getESuperTypes().add(this.getConstant());
+		timestampConstantEClass.getESuperTypes().add(theExpressionPackage.getTimestampExpression());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(constantEClass, Constant.class, "Constant", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(numberEClass, hu.blackbelt.judo.meta.expression.constant.Number.class, "Number", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(integerEClass, hu.blackbelt.judo.meta.expression.constant.Integer.class, "Integer", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInteger_Value(), ecorePackage.getEBigInteger(), "value", null, 1, 1, hu.blackbelt.judo.meta.expression.constant.Integer.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(integerConstantEClass, IntegerConstant.class, "IntegerConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getIntegerConstant_Value(), ecorePackage.getEBigInteger(), "value", null, 1, 1, IntegerConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(decimalEClass, Decimal.class, "Decimal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDecimal_Value(), ecorePackage.getEBigDecimal(), "value", null, 1, 1, Decimal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(decimalConstantEClass, DecimalConstant.class, "DecimalConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDecimalConstant_Value(), ecorePackage.getEBigDecimal(), "value", null, 1, 1, DecimalConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(booleanEClass, hu.blackbelt.judo.meta.expression.constant.Boolean.class, "Boolean", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBoolean_Value(), ecorePackage.getEBoolean(), "value", null, 1, 1, hu.blackbelt.judo.meta.expression.constant.Boolean.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(booleanConstantEClass, BooleanConstant.class, "BooleanConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getBooleanConstant_Value(), ecorePackage.getEBoolean(), "value", null, 1, 1, BooleanConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(stringEClass, hu.blackbelt.judo.meta.expression.constant.String.class, "String", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getString_Value(), ecorePackage.getEString(), "value", null, 1, 1, hu.blackbelt.judo.meta.expression.constant.String.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(stringConstantEClass, StringConstant.class, "StringConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getStringConstant_Value(), ecorePackage.getEString(), "value", null, 1, 1, StringConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(literalEClass, Literal.class, "Literal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLiteral_Value(), ecorePackage.getEString(), "value", null, 1, 1, Literal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -625,15 +646,17 @@ public class ConstantPackageImpl extends EPackageImpl implements ConstantPackage
 
 		initEClass(measuredDecimalEClass, MeasuredDecimal.class, "MeasuredDecimal", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMeasuredDecimal_UnitName(), ecorePackage.getEString(), "unitName", null, 1, 1, MeasuredDecimal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMeasuredDecimal_Measure(), theExpressionPackage.getMeasureName(), null, "measure", null, 0, 1, MeasuredDecimal.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(measuredIntegerEClass, MeasuredInteger.class, "MeasuredInteger", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getMeasuredInteger_UnitName(), ecorePackage.getEString(), "unitName", null, 1, 1, MeasuredInteger.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMeasuredInteger_Measure(), theExpressionPackage.getMeasureName(), null, "measure", null, 0, 1, MeasuredInteger.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dateEClass, Date.class, "Date", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDate_Value(), ecorePackage.getEDate(), "value", null, 1, 1, Date.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(dateConstantEClass, DateConstant.class, "DateConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDateConstant_Value(), ecorePackage.getEDate(), "value", null, 1, 1, DateConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(timestampEClass, Timestamp.class, "Timestamp", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getTimestamp_Value(), ecorePackage.getEString(), "value", null, 1, 1, Timestamp.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(timestampConstantEClass, TimestampConstant.class, "TimestampConstant", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getTimestampConstant_Value(), ecorePackage.getEString(), "value", null, 1, 1, TimestampConstant.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //ConstantPackageImpl

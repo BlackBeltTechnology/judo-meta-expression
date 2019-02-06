@@ -22,40 +22,40 @@ public interface ConstantFactory extends EFactory {
 	ConstantFactory eINSTANCE = hu.blackbelt.judo.meta.expression.constant.impl.ConstantFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Integer</em>'.
+	 * Returns a new object of class '<em>Integer Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Integer</em>'.
+	 * @return a new object of class '<em>Integer Constant</em>'.
 	 * @generated
 	 */
-	Integer createInteger();
+	IntegerConstant createIntegerConstant();
 
 	/**
-	 * Returns a new object of class '<em>Decimal</em>'.
+	 * Returns a new object of class '<em>Decimal Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Decimal</em>'.
+	 * @return a new object of class '<em>Decimal Constant</em>'.
 	 * @generated
 	 */
-	Decimal createDecimal();
+	DecimalConstant createDecimalConstant();
 
 	/**
-	 * Returns a new object of class '<em>Boolean</em>'.
+	 * Returns a new object of class '<em>Boolean Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Boolean</em>'.
+	 * @return a new object of class '<em>Boolean Constant</em>'.
 	 * @generated
 	 */
-	Boolean createBoolean();
+	BooleanConstant createBooleanConstant();
 
 	/**
-	 * Returns a new object of class '<em>String</em>'.
+	 * Returns a new object of class '<em>String Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>String</em>'.
+	 * @return a new object of class '<em>String Constant</em>'.
 	 * @generated
 	 */
-	String createString();
+	StringConstant createStringConstant();
 
 	/**
 	 * Returns a new object of class '<em>Literal</em>'.
@@ -103,22 +103,22 @@ public interface ConstantFactory extends EFactory {
 	MeasuredInteger createMeasuredInteger();
 
 	/**
-	 * Returns a new object of class '<em>Date</em>'.
+	 * Returns a new object of class '<em>Date Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Date</em>'.
+	 * @return a new object of class '<em>Date Constant</em>'.
 	 * @generated
 	 */
-	Date createDate();
+	DateConstant createDateConstant();
 
 	/**
-	 * Returns a new object of class '<em>Timestamp</em>'.
+	 * Returns a new object of class '<em>Timestamp Constant</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Timestamp</em>'.
+	 * @return a new object of class '<em>Timestamp Constant</em>'.
 	 * @generated
 	 */
-	Timestamp createTimestamp();
+	TimestampConstant createTimestampConstant();
 
 	/**
 	 * Returns the package supported by this factory.

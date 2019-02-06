@@ -8,21 +8,21 @@ import java.math.BigDecimal;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Decimal</b></em>'.
+ * A representation of the model object '<em><b>Decimal Constant</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.Decimal#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.DecimalConstant#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDecimal()
+ * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDecimalConstant()
  * @model
  * @generated
  */
-public interface Decimal extends hu.blackbelt.judo.meta.expression.constant.Number, DecimalExpression {
+public interface DecimalConstant extends hu.blackbelt.judo.meta.expression.constant.Number, DecimalExpression {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -33,14 +33,14 @@ public interface Decimal extends hu.blackbelt.judo.meta.expression.constant.Numb
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
 	 * @see #setValue(BigDecimal)
-	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDecimal_Value()
+	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDecimalConstant_Value()
 	 * @model required="true"
 	 * @generated
 	 */
 	BigDecimal getValue();
 
 	/**
-	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.Decimal#getValue <em>Value</em>}' attribute.
+	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.DecimalConstant#getValue <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Value</em>' attribute.
@@ -49,4 +49,4 @@ public interface Decimal extends hu.blackbelt.judo.meta.expression.constant.Numb
 	 */
 	void setValue(BigDecimal value);
 
-} // Decimal
+} // DecimalConstant

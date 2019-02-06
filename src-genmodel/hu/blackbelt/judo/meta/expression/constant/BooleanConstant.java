@@ -6,21 +6,21 @@ import hu.blackbelt.judo.meta.expression.LogicalExpression;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Boolean</b></em>'.
+ * A representation of the model object '<em><b>Boolean Constant</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.Boolean#isValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.BooleanConstant#isValue <em>Value</em>}</li>
  * </ul>
  *
- * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getBoolean()
+ * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getBooleanConstant()
  * @model
  * @generated
  */
-public interface Boolean extends Constant, LogicalExpression {
+public interface BooleanConstant extends Constant, LogicalExpression {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -31,14 +31,14 @@ public interface Boolean extends Constant, LogicalExpression {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
 	 * @see #setValue(boolean)
-	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getBoolean_Value()
+	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getBooleanConstant_Value()
 	 * @model required="true"
 	 * @generated
 	 */
 	boolean isValue();
 
 	/**
-	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.Boolean#isValue <em>Value</em>}' attribute.
+	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.BooleanConstant#isValue <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Value</em>' attribute.
@@ -47,4 +47,4 @@ public interface Boolean extends Constant, LogicalExpression {
 	 */
 	void setValue(boolean value);
 
-} // Boolean
+} // BooleanConstant

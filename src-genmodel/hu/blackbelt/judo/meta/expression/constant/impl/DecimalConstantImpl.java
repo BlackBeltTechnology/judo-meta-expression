@@ -3,8 +3,9 @@
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
+import hu.blackbelt.judo.meta.expression.constant.DecimalConstant;
 
-import java.lang.Boolean;
+import java.math.BigDecimal;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -14,44 +15,44 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Boolean</b></em>'.
+ * An implementation of the model object '<em><b>Decimal Constant</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.BooleanImpl#isValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.DecimalConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.expression.constant.Boolean {
+public class DecimalConstantImpl extends NumberImpl implements DecimalConstant {
 	/**
-	 * The default value of the '{@link #isValue() <em>Value</em>}' attribute.
+	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #isValue()
+	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean VALUE_EDEFAULT = false;
+	protected static final BigDecimal VALUE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #isValue() <em>Value</em>}' attribute.
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #isValue()
+	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean value = VALUE_EDEFAULT;
+	protected BigDecimal value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected BooleanImpl() {
+	protected DecimalConstantImpl() {
 		super();
 	}
 
@@ -62,7 +63,7 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ConstantPackage.Literals.BOOLEAN;
+		return ConstantPackage.Literals.DECIMAL_CONSTANT;
 	}
 
 	/**
@@ -70,7 +71,7 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isValue() {
+	public BigDecimal getValue() {
 		return value;
 	}
 
@@ -79,11 +80,11 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(boolean newValue) {
-		boolean oldValue = value;
+	public void setValue(BigDecimal newValue) {
+		BigDecimal oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.BOOLEAN__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.DECIMAL_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
@@ -94,8 +95,8 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConstantPackage.BOOLEAN__VALUE:
-				return isValue();
+			case ConstantPackage.DECIMAL_CONSTANT__VALUE:
+				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -108,8 +109,8 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.BOOLEAN__VALUE:
-				setValue((Boolean)newValue);
+			case ConstantPackage.DECIMAL_CONSTANT__VALUE:
+				setValue((BigDecimal)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -123,7 +124,7 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.BOOLEAN__VALUE:
+			case ConstantPackage.DECIMAL_CONSTANT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -138,8 +139,8 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.BOOLEAN__VALUE:
-				return value != VALUE_EDEFAULT;
+			case ConstantPackage.DECIMAL_CONSTANT__VALUE:
+				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -160,4 +161,4 @@ public class BooleanImpl extends ConstantImpl implements hu.blackbelt.judo.meta.
 		return result.toString();
 	}
 
-} //BooleanImpl
+} //DecimalConstantImpl

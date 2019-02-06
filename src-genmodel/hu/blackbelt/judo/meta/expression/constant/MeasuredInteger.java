@@ -2,9 +2,7 @@
  */
 package hu.blackbelt.judo.meta.expression.constant;
 
-import hu.blackbelt.judo.meta.expression.MeasuredExpression;
-
-import java.lang.String;
+import hu.blackbelt.judo.meta.expression.MeasureName;
 
 /**
  * <!-- begin-user-doc -->
@@ -16,13 +14,14 @@ import java.lang.String;
  * </p>
  * <ul>
  *   <li>{@link hu.blackbelt.judo.meta.expression.constant.MeasuredInteger#getUnitName <em>Unit Name</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.MeasuredInteger#getMeasure <em>Measure</em>}</li>
  * </ul>
  *
  * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getMeasuredInteger()
  * @model
  * @generated
  */
-public interface MeasuredInteger extends hu.blackbelt.judo.meta.expression.constant.Integer, MeasuredExpression {
+public interface MeasuredInteger extends IntegerConstant {
 	/**
 	 * Returns the value of the '<em><b>Unit Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -48,5 +47,31 @@ public interface MeasuredInteger extends hu.blackbelt.judo.meta.expression.const
 	 * @generated
 	 */
 	void setUnitName(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Measure</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Measure</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Measure</em>' reference.
+	 * @see #setMeasure(MeasureName)
+	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getMeasuredInteger_Measure()
+	 * @model
+	 * @generated
+	 */
+	MeasureName getMeasure();
+
+	/**
+	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.MeasuredInteger#getMeasure <em>Measure</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Measure</em>' reference.
+	 * @see #getMeasure()
+	 * @generated
+	 */
+	void setMeasure(MeasureName value);
 
 } // MeasuredInteger

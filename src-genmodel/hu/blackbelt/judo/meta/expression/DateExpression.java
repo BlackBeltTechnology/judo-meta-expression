@@ -2,7 +2,6 @@
  */
 package hu.blackbelt.judo.meta.expression;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,5 +13,5 @@ import org.eclipse.emf.ecore.EObject;
  * @model interface="true" abstract="true"
  * @generated
  */
-public interface DateExpression extends EObject {
+public interface DateExpression extends DataExpression {
 } // DateExpression

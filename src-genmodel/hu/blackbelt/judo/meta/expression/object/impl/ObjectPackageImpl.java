@@ -429,8 +429,9 @@ public class ObjectPackageImpl extends EPackageImpl implements ObjectPackage {
 		objectNavigationExpressionEClass.getESuperTypes().add(theVariablePackage.getObjectVariable());
 		objectNavigationExpressionEClass.getESuperTypes().add(theExpressionPackage.getReferenceSelector());
 		objectSelectorExpressionEClass.getESuperTypes().add(theExpressionPackage.getObjectExpression());
+		objectSelectorExpressionEClass.getESuperTypes().add(theExpressionPackage.getWindowingExpression());
 		objectFilterExpressionEClass.getESuperTypes().add(theExpressionPackage.getObjectExpression());
-		objectFilterExpressionEClass.getESuperTypes().add(theExpressionPackage.getLambda());
+		objectFilterExpressionEClass.getESuperTypes().add(theExpressionPackage.getFilteringExpression());
 		objectVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getObjectExpression());
 		objectVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
 		castObjectEClass.getESuperTypes().add(theExpressionPackage.getObjectExpression());

@@ -2,7 +2,7 @@
  */
 package hu.blackbelt.judo.meta.expression.object;
 
-import hu.blackbelt.judo.meta.expression.Lambda;
+import hu.blackbelt.judo.meta.expression.FilteringExpression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 
@@ -23,7 +23,7 @@ import hu.blackbelt.judo.meta.expression.ObjectExpression;
  * @model
  * @generated
  */
-public interface ObjectFilterExpression extends ObjectExpression, Lambda {
+public interface ObjectFilterExpression extends ObjectExpression, FilteringExpression {
 	/**
 	 * Returns the value of the '<em><b>Object Expression</b></em>' containment reference.
 	 * <!-- begin-user-doc -->

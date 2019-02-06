@@ -3,13 +3,14 @@
 package hu.blackbelt.judo.meta.expression.object.util;
 
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.Lambda;
+import hu.blackbelt.judo.meta.expression.FilteringExpression;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
 import hu.blackbelt.judo.meta.expression.VariableReference;
+import hu.blackbelt.judo.meta.expression.WindowingExpression;
 
 import hu.blackbelt.judo.meta.expression.object.*;
 
@@ -95,6 +96,7 @@ public class ObjectSwitch<T> extends Switch<T> {
 				ObjectSelectorExpression objectSelectorExpression = (ObjectSelectorExpression)theEObject;
 				T result = caseObjectSelectorExpression(objectSelectorExpression);
 				if (result == null) result = caseObjectExpression(objectSelectorExpression);
+				if (result == null) result = caseWindowingExpression(objectSelectorExpression);
 				if (result == null) result = caseReferenceExpression(objectSelectorExpression);
 				if (result == null) result = caseExpression(objectSelectorExpression);
 				if (result == null) result = defaultCase(theEObject);
@@ -104,7 +106,7 @@ public class ObjectSwitch<T> extends Switch<T> {
 				ObjectFilterExpression objectFilterExpression = (ObjectFilterExpression)theEObject;
 				T result = caseObjectFilterExpression(objectFilterExpression);
 				if (result == null) result = caseObjectExpression(objectFilterExpression);
-				if (result == null) result = caseLambda(objectFilterExpression);
+				if (result == null) result = caseFilteringExpression(objectFilterExpression);
 				if (result == null) result = caseReferenceExpression(objectFilterExpression);
 				if (result == null) result = caseExpression(objectFilterExpression);
 				if (result == null) result = defaultCase(theEObject);
@@ -341,17 +343,32 @@ public class ObjectSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Lambda</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Windowing Expression</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Lambda</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Windowing Expression</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseLambda(Lambda object) {
+	public T caseWindowingExpression(WindowingExpression object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Filtering Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Filtering Expression</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFilteringExpression(FilteringExpression object) {
 		return null;
 	}
 

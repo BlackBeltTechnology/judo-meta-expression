@@ -3,6 +3,7 @@
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
 
 import java.math.BigInteger;
 
@@ -14,18 +15,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Integer</b></em>'.
+ * An implementation of the model object '<em><b>Integer Constant</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.IntegerImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.IntegerConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.expression.constant.Integer {
+public class IntegerConstantImpl extends NumberImpl implements IntegerConstant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -51,7 +52,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected IntegerImpl() {
+	protected IntegerConstantImpl() {
 		super();
 	}
 
@@ -62,7 +63,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ConstantPackage.Literals.INTEGER;
+		return ConstantPackage.Literals.INTEGER_CONSTANT;
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 		BigInteger oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.INTEGER__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.INTEGER_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
@@ -94,7 +95,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConstantPackage.INTEGER__VALUE:
+			case ConstantPackage.INTEGER_CONSTANT__VALUE:
 				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -108,7 +109,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.INTEGER__VALUE:
+			case ConstantPackage.INTEGER_CONSTANT__VALUE:
 				setValue((BigInteger)newValue);
 				return;
 		}
@@ -123,7 +124,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.INTEGER__VALUE:
+			case ConstantPackage.INTEGER_CONSTANT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -138,7 +139,7 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.INTEGER__VALUE:
+			case ConstantPackage.INTEGER_CONSTANT__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
@@ -160,4 +161,4 @@ public class IntegerImpl extends NumberImpl implements hu.blackbelt.judo.meta.ex
 		return result.toString();
 	}
 
-} //IntegerImpl
+} //IntegerConstantImpl

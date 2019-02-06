@@ -3,9 +3,7 @@
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
-import hu.blackbelt.judo.meta.expression.constant.Decimal;
-
-import java.math.BigDecimal;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -15,18 +13,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Decimal</b></em>'.
+ * An implementation of the model object '<em><b>String Constant</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.DecimalImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.StringConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class DecimalImpl extends NumberImpl implements Decimal {
+public class StringConstantImpl extends ConstantImpl implements StringConstant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -35,7 +33,7 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	 * @generated
 	 * @ordered
 	 */
-	protected static final BigDecimal VALUE_EDEFAULT = null;
+	protected static final String VALUE_EDEFAULT = null;
 
 	/**
 	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
@@ -45,14 +43,14 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	 * @generated
 	 * @ordered
 	 */
-	protected BigDecimal value = VALUE_EDEFAULT;
+	protected String value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DecimalImpl() {
+	protected StringConstantImpl() {
 		super();
 	}
 
@@ -63,7 +61,7 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ConstantPackage.Literals.DECIMAL;
+		return ConstantPackage.Literals.STRING_CONSTANT;
 	}
 
 	/**
@@ -71,7 +69,7 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public BigDecimal getValue() {
+	public String getValue() {
 		return value;
 	}
 
@@ -80,11 +78,11 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(BigDecimal newValue) {
-		BigDecimal oldValue = value;
+	public void setValue(String newValue) {
+		String oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.DECIMAL__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.STRING_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
@@ -95,7 +93,7 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConstantPackage.DECIMAL__VALUE:
+			case ConstantPackage.STRING_CONSTANT__VALUE:
 				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -109,8 +107,8 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.DECIMAL__VALUE:
-				setValue((BigDecimal)newValue);
+			case ConstantPackage.STRING_CONSTANT__VALUE:
+				setValue((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -124,7 +122,7 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.DECIMAL__VALUE:
+			case ConstantPackage.STRING_CONSTANT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -139,7 +137,7 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.DECIMAL__VALUE:
+			case ConstantPackage.STRING_CONSTANT__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
@@ -161,4 +159,4 @@ public class DecimalImpl extends NumberImpl implements Decimal {
 		return result.toString();
 	}
 
-} //DecimalImpl
+} //StringConstantImpl

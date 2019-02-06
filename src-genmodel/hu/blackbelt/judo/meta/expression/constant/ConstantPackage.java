@@ -2,10 +2,6 @@
  */
 package hu.blackbelt.judo.meta.expression.constant;
 
-import hu.blackbelt.judo.meta.expression.ExpressionPackage;
-
-import java.lang.String;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -117,14 +113,14 @@ public interface ConstantPackage extends EPackage {
 	int NUMBER_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.IntegerImpl <em>Integer</em>}' class.
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.IntegerConstantImpl <em>Integer Constant</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.IntegerImpl
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getInteger()
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.IntegerConstantImpl
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getIntegerConstant()
 	 * @generated
 	 */
-	int INTEGER = 2;
+	int INTEGER_CONSTANT = 2;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -133,35 +129,35 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INTEGER__VALUE = NUMBER_FEATURE_COUNT + 0;
+	int INTEGER_CONSTANT__VALUE = NUMBER_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Integer</em>' class.
+	 * The number of structural features of the '<em>Integer Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INTEGER_FEATURE_COUNT = NUMBER_FEATURE_COUNT + 1;
+	int INTEGER_CONSTANT_FEATURE_COUNT = NUMBER_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Integer</em>' class.
+	 * The number of operations of the '<em>Integer Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INTEGER_OPERATION_COUNT = NUMBER_OPERATION_COUNT + 0;
+	int INTEGER_CONSTANT_OPERATION_COUNT = NUMBER_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DecimalImpl <em>Decimal</em>}' class.
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DecimalConstantImpl <em>Decimal Constant</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.DecimalImpl
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDecimal()
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.DecimalConstantImpl
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDecimalConstant()
 	 * @generated
 	 */
-	int DECIMAL = 3;
+	int DECIMAL_CONSTANT = 3;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -170,35 +166,35 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DECIMAL__VALUE = NUMBER_FEATURE_COUNT + 0;
+	int DECIMAL_CONSTANT__VALUE = NUMBER_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Decimal</em>' class.
+	 * The number of structural features of the '<em>Decimal Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DECIMAL_FEATURE_COUNT = NUMBER_FEATURE_COUNT + 1;
+	int DECIMAL_CONSTANT_FEATURE_COUNT = NUMBER_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Decimal</em>' class.
+	 * The number of operations of the '<em>Decimal Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int DECIMAL_OPERATION_COUNT = NUMBER_OPERATION_COUNT + 0;
+	int DECIMAL_CONSTANT_OPERATION_COUNT = NUMBER_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.BooleanImpl <em>Boolean</em>}' class.
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.BooleanConstantImpl <em>Boolean Constant</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.BooleanImpl
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getBoolean()
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.BooleanConstantImpl
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getBooleanConstant()
 	 * @generated
 	 */
-	int BOOLEAN = 4;
+	int BOOLEAN_CONSTANT = 4;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -207,35 +203,35 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN__VALUE = CONSTANT_FEATURE_COUNT + 0;
+	int BOOLEAN_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Boolean</em>' class.
+	 * The number of structural features of the '<em>Boolean Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
+	int BOOLEAN_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Boolean</em>' class.
+	 * The number of operations of the '<em>Boolean Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BOOLEAN_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
+	int BOOLEAN_CONSTANT_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.StringImpl <em>String</em>}' class.
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.StringConstantImpl <em>String Constant</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.StringImpl
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getString()
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.StringConstantImpl
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getStringConstant()
 	 * @generated
 	 */
-	int STRING = 5;
+	int STRING_CONSTANT = 5;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -244,25 +240,25 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STRING__VALUE = CONSTANT_FEATURE_COUNT + 0;
+	int STRING_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>String</em>' class.
+	 * The number of structural features of the '<em>String Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
+	int STRING_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>String</em>' class.
+	 * The number of operations of the '<em>String Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STRING_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
+	int STRING_CONSTANT_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.LiteralImpl <em>Literal</em>}' class.
@@ -386,22 +382,13 @@ public interface ConstantPackage extends EPackage {
 	int MEASURED_DECIMAL = 9;
 
 	/**
-	 * The feature id for the '<em><b>Measure</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MEASURED_DECIMAL__MEASURE = ExpressionPackage.MEASURED_EXPRESSION__MEASURE;
-
-	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_DECIMAL__VALUE = ExpressionPackage.MEASURED_EXPRESSION_FEATURE_COUNT + 0;
+	int MEASURED_DECIMAL__VALUE = DECIMAL_CONSTANT__VALUE;
 
 	/**
 	 * The feature id for the '<em><b>Unit Name</b></em>' attribute.
@@ -410,7 +397,16 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_DECIMAL__UNIT_NAME = ExpressionPackage.MEASURED_EXPRESSION_FEATURE_COUNT + 1;
+	int MEASURED_DECIMAL__UNIT_NAME = DECIMAL_CONSTANT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Measure</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURED_DECIMAL__MEASURE = DECIMAL_CONSTANT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Measured Decimal</em>' class.
@@ -419,7 +415,7 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_DECIMAL_FEATURE_COUNT = ExpressionPackage.MEASURED_EXPRESSION_FEATURE_COUNT + 2;
+	int MEASURED_DECIMAL_FEATURE_COUNT = DECIMAL_CONSTANT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Measured Decimal</em>' class.
@@ -428,7 +424,7 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_DECIMAL_OPERATION_COUNT = ExpressionPackage.MEASURED_EXPRESSION_OPERATION_COUNT + 0;
+	int MEASURED_DECIMAL_OPERATION_COUNT = DECIMAL_CONSTANT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.MeasuredIntegerImpl <em>Measured Integer</em>}' class.
@@ -447,16 +443,7 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_INTEGER__VALUE = INTEGER__VALUE;
-
-	/**
-	 * The feature id for the '<em><b>Measure</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int MEASURED_INTEGER__MEASURE = INTEGER_FEATURE_COUNT + 0;
+	int MEASURED_INTEGER__VALUE = INTEGER_CONSTANT__VALUE;
 
 	/**
 	 * The feature id for the '<em><b>Unit Name</b></em>' attribute.
@@ -465,7 +452,16 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_INTEGER__UNIT_NAME = INTEGER_FEATURE_COUNT + 1;
+	int MEASURED_INTEGER__UNIT_NAME = INTEGER_CONSTANT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Measure</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASURED_INTEGER__MEASURE = INTEGER_CONSTANT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of structural features of the '<em>Measured Integer</em>' class.
@@ -474,7 +470,7 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_INTEGER_FEATURE_COUNT = INTEGER_FEATURE_COUNT + 2;
+	int MEASURED_INTEGER_FEATURE_COUNT = INTEGER_CONSTANT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Measured Integer</em>' class.
@@ -483,54 +479,17 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MEASURED_INTEGER_OPERATION_COUNT = INTEGER_OPERATION_COUNT + 0;
+	int MEASURED_INTEGER_OPERATION_COUNT = INTEGER_CONSTANT_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DateImpl <em>Date</em>}' class.
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DateConstantImpl <em>Date Constant</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.DateImpl
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDate()
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.DateConstantImpl
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDateConstant()
 	 * @generated
 	 */
-	int DATE = 11;
-
-	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATE__VALUE = CONSTANT_FEATURE_COUNT + 0;
-
-	/**
-	 * The number of structural features of the '<em>Date</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATE_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
-
-	/**
-	 * The number of operations of the '<em>Date</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int DATE_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
-
-	/**
-	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.TimestampImpl <em>Timestamp</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.TimestampImpl
-	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getTimestamp()
-	 * @generated
-	 */
-	int TIMESTAMP = 12;
+	int DATE_CONSTANT = 11;
 
 	/**
 	 * The feature id for the '<em><b>Value</b></em>' attribute.
@@ -539,25 +498,62 @@ public interface ConstantPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int TIMESTAMP__VALUE = CONSTANT_FEATURE_COUNT + 0;
+	int DATE_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
 
 	/**
-	 * The number of structural features of the '<em>Timestamp</em>' class.
+	 * The number of structural features of the '<em>Date Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIMESTAMP_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
+	int DATE_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
 
 	/**
-	 * The number of operations of the '<em>Timestamp</em>' class.
+	 * The number of operations of the '<em>Date Constant</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int TIMESTAMP_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
+	int DATE_CONSTANT_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.TimestampConstantImpl <em>Timestamp Constant</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.TimestampConstantImpl
+	 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getTimestampConstant()
+	 * @generated
+	 */
+	int TIMESTAMP_CONSTANT = 12;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIMESTAMP_CONSTANT__VALUE = CONSTANT_FEATURE_COUNT + 0;
+
+	/**
+	 * The number of structural features of the '<em>Timestamp Constant</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIMESTAMP_CONSTANT_FEATURE_COUNT = CONSTANT_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of operations of the '<em>Timestamp Constant</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TIMESTAMP_CONSTANT_OPERATION_COUNT = CONSTANT_OPERATION_COUNT + 0;
 
 
 	/**
@@ -581,88 +577,88 @@ public interface ConstantPackage extends EPackage {
 	EClass getNumber();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.Integer <em>Integer</em>}'.
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.IntegerConstant <em>Integer Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Integer</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Integer
+	 * @return the meta object for class '<em>Integer Constant</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.IntegerConstant
 	 * @generated
 	 */
-	EClass getInteger();
+	EClass getIntegerConstant();
 
 	/**
-	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.Integer#getValue <em>Value</em>}'.
+	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.IntegerConstant#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Integer#getValue()
-	 * @see #getInteger()
+	 * @see hu.blackbelt.judo.meta.expression.constant.IntegerConstant#getValue()
+	 * @see #getIntegerConstant()
 	 * @generated
 	 */
-	EAttribute getInteger_Value();
+	EAttribute getIntegerConstant_Value();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.Decimal <em>Decimal</em>}'.
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.DecimalConstant <em>Decimal Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Decimal</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Decimal
+	 * @return the meta object for class '<em>Decimal Constant</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.DecimalConstant
 	 * @generated
 	 */
-	EClass getDecimal();
+	EClass getDecimalConstant();
 
 	/**
-	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.Decimal#getValue <em>Value</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Decimal#getValue()
-	 * @see #getDecimal()
-	 * @generated
-	 */
-	EAttribute getDecimal_Value();
-
-	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.Boolean <em>Boolean</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Boolean</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Boolean
-	 * @generated
-	 */
-	EClass getBoolean();
-
-	/**
-	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.Boolean#isValue <em>Value</em>}'.
+	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.DecimalConstant#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Boolean#isValue()
-	 * @see #getBoolean()
+	 * @see hu.blackbelt.judo.meta.expression.constant.DecimalConstant#getValue()
+	 * @see #getDecimalConstant()
 	 * @generated
 	 */
-	EAttribute getBoolean_Value();
+	EAttribute getDecimalConstant_Value();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.String <em>String</em>}'.
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.BooleanConstant <em>Boolean Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>String</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.String
+	 * @return the meta object for class '<em>Boolean Constant</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.BooleanConstant
 	 * @generated
 	 */
-	EClass getString();
+	EClass getBooleanConstant();
 
 	/**
-	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.String#getValue <em>Value</em>}'.
+	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.BooleanConstant#isValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.String#getValue()
-	 * @see #getString()
+	 * @see hu.blackbelt.judo.meta.expression.constant.BooleanConstant#isValue()
+	 * @see #getBooleanConstant()
 	 * @generated
 	 */
-	EAttribute getString_Value();
+	EAttribute getBooleanConstant_Value();
+
+	/**
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.StringConstant <em>String Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>String Constant</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.StringConstant
+	 * @generated
+	 */
+	EClass getStringConstant();
+
+	/**
+	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.StringConstant#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.StringConstant#getValue()
+	 * @see #getStringConstant()
+	 * @generated
+	 */
+	EAttribute getStringConstant_Value();
 
 	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.Literal <em>Literal</em>}'.
@@ -749,6 +745,17 @@ public interface ConstantPackage extends EPackage {
 	EAttribute getMeasuredDecimal_UnitName();
 
 	/**
+	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal#getMeasure <em>Measure</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Measure</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal#getMeasure()
+	 * @see #getMeasuredDecimal()
+	 * @generated
+	 */
+	EReference getMeasuredDecimal_Measure();
+
+	/**
 	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.MeasuredInteger <em>Measured Integer</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -770,46 +777,57 @@ public interface ConstantPackage extends EPackage {
 	EAttribute getMeasuredInteger_UnitName();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.Date <em>Date</em>}'.
+	 * Returns the meta object for the reference '{@link hu.blackbelt.judo.meta.expression.constant.MeasuredInteger#getMeasure <em>Measure</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Date</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Date
+	 * @return the meta object for the reference '<em>Measure</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.MeasuredInteger#getMeasure()
+	 * @see #getMeasuredInteger()
 	 * @generated
 	 */
-	EClass getDate();
+	EReference getMeasuredInteger_Measure();
 
 	/**
-	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.Date#getValue <em>Value</em>}'.
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.DateConstant <em>Date Constant</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Date Constant</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.DateConstant
+	 * @generated
+	 */
+	EClass getDateConstant();
+
+	/**
+	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.DateConstant#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Date#getValue()
-	 * @see #getDate()
+	 * @see hu.blackbelt.judo.meta.expression.constant.DateConstant#getValue()
+	 * @see #getDateConstant()
 	 * @generated
 	 */
-	EAttribute getDate_Value();
+	EAttribute getDateConstant_Value();
 
 	/**
-	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.Timestamp <em>Timestamp</em>}'.
+	 * Returns the meta object for class '{@link hu.blackbelt.judo.meta.expression.constant.TimestampConstant <em>Timestamp Constant</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Timestamp</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Timestamp
+	 * @return the meta object for class '<em>Timestamp Constant</em>'.
+	 * @see hu.blackbelt.judo.meta.expression.constant.TimestampConstant
 	 * @generated
 	 */
-	EClass getTimestamp();
+	EClass getTimestampConstant();
 
 	/**
-	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.Timestamp#getValue <em>Value</em>}'.
+	 * Returns the meta object for the attribute '{@link hu.blackbelt.judo.meta.expression.constant.TimestampConstant#getValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see hu.blackbelt.judo.meta.expression.constant.Timestamp#getValue()
-	 * @see #getTimestamp()
+	 * @see hu.blackbelt.judo.meta.expression.constant.TimestampConstant#getValue()
+	 * @see #getTimestampConstant()
 	 * @generated
 	 */
-	EAttribute getTimestamp_Value();
+	EAttribute getTimestampConstant_Value();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -855,14 +873,14 @@ public interface ConstantPackage extends EPackage {
 		EClass NUMBER = eINSTANCE.getNumber();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.IntegerImpl <em>Integer</em>}' class.
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.IntegerConstantImpl <em>Integer Constant</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.IntegerImpl
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getInteger()
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.IntegerConstantImpl
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getIntegerConstant()
 		 * @generated
 		 */
-		EClass INTEGER = eINSTANCE.getInteger();
+		EClass INTEGER_CONSTANT = eINSTANCE.getIntegerConstant();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -870,35 +888,17 @@ public interface ConstantPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute INTEGER__VALUE = eINSTANCE.getInteger_Value();
+		EAttribute INTEGER_CONSTANT__VALUE = eINSTANCE.getIntegerConstant_Value();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DecimalImpl <em>Decimal</em>}' class.
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DecimalConstantImpl <em>Decimal Constant</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.DecimalImpl
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDecimal()
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.DecimalConstantImpl
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDecimalConstant()
 		 * @generated
 		 */
-		EClass DECIMAL = eINSTANCE.getDecimal();
-
-		/**
-		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute DECIMAL__VALUE = eINSTANCE.getDecimal_Value();
-
-		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.BooleanImpl <em>Boolean</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.BooleanImpl
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getBoolean()
-		 * @generated
-		 */
-		EClass BOOLEAN = eINSTANCE.getBoolean();
+		EClass DECIMAL_CONSTANT = eINSTANCE.getDecimalConstant();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -906,17 +906,17 @@ public interface ConstantPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BOOLEAN__VALUE = eINSTANCE.getBoolean_Value();
+		EAttribute DECIMAL_CONSTANT__VALUE = eINSTANCE.getDecimalConstant_Value();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.StringImpl <em>String</em>}' class.
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.BooleanConstantImpl <em>Boolean Constant</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.StringImpl
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getString()
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.BooleanConstantImpl
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getBooleanConstant()
 		 * @generated
 		 */
-		EClass STRING = eINSTANCE.getString();
+		EClass BOOLEAN_CONSTANT = eINSTANCE.getBooleanConstant();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -924,7 +924,25 @@ public interface ConstantPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute STRING__VALUE = eINSTANCE.getString_Value();
+		EAttribute BOOLEAN_CONSTANT__VALUE = eINSTANCE.getBooleanConstant_Value();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.StringConstantImpl <em>String Constant</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.StringConstantImpl
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getStringConstant()
+		 * @generated
+		 */
+		EClass STRING_CONSTANT = eINSTANCE.getStringConstant();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STRING_CONSTANT__VALUE = eINSTANCE.getStringConstant_Value();
 
 		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.LiteralImpl <em>Literal</em>}' class.
@@ -999,6 +1017,14 @@ public interface ConstantPackage extends EPackage {
 		EAttribute MEASURED_DECIMAL__UNIT_NAME = eINSTANCE.getMeasuredDecimal_UnitName();
 
 		/**
+		 * The meta object literal for the '<em><b>Measure</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference MEASURED_DECIMAL__MEASURE = eINSTANCE.getMeasuredDecimal_Measure();
+
+		/**
 		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.MeasuredIntegerImpl <em>Measured Integer</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1017,14 +1043,22 @@ public interface ConstantPackage extends EPackage {
 		EAttribute MEASURED_INTEGER__UNIT_NAME = eINSTANCE.getMeasuredInteger_UnitName();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DateImpl <em>Date</em>}' class.
+		 * The meta object literal for the '<em><b>Measure</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.DateImpl
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDate()
 		 * @generated
 		 */
-		EClass DATE = eINSTANCE.getDate();
+		EReference MEASURED_INTEGER__MEASURE = eINSTANCE.getMeasuredInteger_Measure();
+
+		/**
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.DateConstantImpl <em>Date Constant</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.DateConstantImpl
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getDateConstant()
+		 * @generated
+		 */
+		EClass DATE_CONSTANT = eINSTANCE.getDateConstant();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -1032,17 +1066,17 @@ public interface ConstantPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute DATE__VALUE = eINSTANCE.getDate_Value();
+		EAttribute DATE_CONSTANT__VALUE = eINSTANCE.getDateConstant_Value();
 
 		/**
-		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.TimestampImpl <em>Timestamp</em>}' class.
+		 * The meta object literal for the '{@link hu.blackbelt.judo.meta.expression.constant.impl.TimestampConstantImpl <em>Timestamp Constant</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.TimestampImpl
-		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getTimestamp()
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.TimestampConstantImpl
+		 * @see hu.blackbelt.judo.meta.expression.constant.impl.ConstantPackageImpl#getTimestampConstant()
 		 * @generated
 		 */
-		EClass TIMESTAMP = eINSTANCE.getTimestamp();
+		EClass TIMESTAMP_CONSTANT = eINSTANCE.getTimestampConstant();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -1050,7 +1084,7 @@ public interface ConstantPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute TIMESTAMP__VALUE = eINSTANCE.getTimestamp_Value();
+		EAttribute TIMESTAMP_CONSTANT__VALUE = eINSTANCE.getTimestampConstant_Value();
 
 	}
 

@@ -2,25 +2,25 @@
  */
 package hu.blackbelt.judo.meta.expression.constant;
 
-import hu.blackbelt.judo.meta.expression.DateExpression;
+import hu.blackbelt.judo.meta.expression.TimestampExpression;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Date</b></em>'.
+ * A representation of the model object '<em><b>Timestamp Constant</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.Date#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.TimestampConstant#getValue <em>Value</em>}</li>
  * </ul>
  *
- * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDate()
+ * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getTimestampConstant()
  * @model
  * @generated
  */
-public interface Date extends Constant, DateExpression {
+public interface TimestampConstant extends Constant, TimestampExpression {
 	/**
 	 * Returns the value of the '<em><b>Value</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -30,21 +30,21 @@ public interface Date extends Constant, DateExpression {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Value</em>' attribute.
-	 * @see #setValue(java.util.Date)
-	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getDate_Value()
+	 * @see #setValue(String)
+	 * @see hu.blackbelt.judo.meta.expression.constant.ConstantPackage#getTimestampConstant_Value()
 	 * @model required="true"
 	 * @generated
 	 */
-	java.util.Date getValue();
+	String getValue();
 
 	/**
-	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.Date#getValue <em>Value</em>}' attribute.
+	 * Sets the value of the '{@link hu.blackbelt.judo.meta.expression.constant.TimestampConstant#getValue <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Value</em>' attribute.
 	 * @see #getValue()
 	 * @generated
 	 */
-	void setValue(java.util.Date value);
+	void setValue(String value);
 
-} // Date
+} // TimestampConstant

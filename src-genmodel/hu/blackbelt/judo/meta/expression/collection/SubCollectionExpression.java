@@ -4,6 +4,7 @@ package hu.blackbelt.judo.meta.expression.collection;
 
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
+import hu.blackbelt.judo.meta.expression.WindowingExpression;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,7 +24,7 @@ import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
  * @model
  * @generated
  */
-public interface SubCollectionExpression extends OrderedCollectionExpression {
+public interface SubCollectionExpression extends OrderedCollectionExpression, WindowingExpression {
 	/**
 	 * Returns the value of the '<em><b>Collection Expression</b></em>' reference.
 	 * <!-- begin-user-doc -->

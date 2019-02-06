@@ -4,7 +4,7 @@ package hu.blackbelt.judo.meta.expression.logical.util;
 
 import org.eclipse.emf.common.util.URI;
 
-import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
  * @see hu.blackbelt.judo.meta.expression.logical.util.LogicalResourceFactoryImpl
  * @generated
  */
-public class LogicalResourceImpl extends XMLResourceImpl {
+public class LogicalResourceImpl extends XMIResourceImpl {
 	/**
 	 * Creates an instance of the resource.
 	 * <!-- begin-user-doc -->

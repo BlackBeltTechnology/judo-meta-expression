@@ -4,8 +4,6 @@ package hu.blackbelt.judo.meta.expression.constant;
 
 import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 
-import java.lang.String;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Literal</b></em>'.

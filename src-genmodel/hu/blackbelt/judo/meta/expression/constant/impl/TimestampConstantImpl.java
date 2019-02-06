@@ -3,9 +3,7 @@
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
-import hu.blackbelt.judo.meta.expression.constant.Timestamp;
-
-import java.lang.String;
+import hu.blackbelt.judo.meta.expression.constant.TimestampConstant;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -15,18 +13,18 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Timestamp</b></em>'.
+ * An implementation of the model object '<em><b>Timestamp Constant</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.TimestampImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.TimestampConstantImpl#getValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class TimestampImpl extends ConstantImpl implements Timestamp {
+public class TimestampConstantImpl extends ConstantImpl implements TimestampConstant {
 	/**
 	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -52,7 +50,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected TimestampImpl() {
+	protected TimestampConstantImpl() {
 		super();
 	}
 
@@ -63,7 +61,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ConstantPackage.Literals.TIMESTAMP;
+		return ConstantPackage.Literals.TIMESTAMP_CONSTANT;
 	}
 
 	/**
@@ -84,7 +82,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 		String oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.TIMESTAMP__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.TIMESTAMP_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
@@ -95,7 +93,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConstantPackage.TIMESTAMP__VALUE:
+			case ConstantPackage.TIMESTAMP_CONSTANT__VALUE:
 				return getValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -109,7 +107,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.TIMESTAMP__VALUE:
+			case ConstantPackage.TIMESTAMP_CONSTANT__VALUE:
 				setValue((String)newValue);
 				return;
 		}
@@ -124,7 +122,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.TIMESTAMP__VALUE:
+			case ConstantPackage.TIMESTAMP_CONSTANT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -139,7 +137,7 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.TIMESTAMP__VALUE:
+			case ConstantPackage.TIMESTAMP_CONSTANT__VALUE:
 				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
 		}
 		return super.eIsSet(featureID);
@@ -161,4 +159,4 @@ public class TimestampImpl extends ConstantImpl implements Timestamp {
 		return result.toString();
 	}
 
-} //TimestampImpl
+} //TimestampConstantImpl

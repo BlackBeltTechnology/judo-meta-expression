@@ -3,7 +3,7 @@
 package hu.blackbelt.judo.meta.expression.collection;
 
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.Lambda;
+import hu.blackbelt.judo.meta.expression.FilteringExpression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
 
 /**
@@ -23,7 +23,7 @@ import hu.blackbelt.judo.meta.expression.LogicalExpression;
  * @model
  * @generated
  */
-public interface CollectionFilterExpression extends CollectionExpression, Lambda {
+public interface CollectionFilterExpression extends CollectionExpression, FilteringExpression {
 	/**
 	 * Returns the value of the '<em><b>Collection Expression</b></em>' containment reference.
 	 * <!-- begin-user-doc -->

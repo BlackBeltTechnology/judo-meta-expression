@@ -2,7 +2,6 @@
  */
 package hu.blackbelt.judo.meta.expression.collection;
 
-import hu.blackbelt.judo.meta.expression.Base;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 
@@ -24,7 +23,7 @@ import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
  * @model
  * @generated
  */
-public interface ImmutableCollection extends CollectionExpression, Base, ObjectVariable {
+public interface ImmutableCollection extends CollectionExpression, ObjectVariable {
 	/**
 	 * Returns the value of the '<em><b>Element Name</b></em>' reference.
 	 * <!-- begin-user-doc -->

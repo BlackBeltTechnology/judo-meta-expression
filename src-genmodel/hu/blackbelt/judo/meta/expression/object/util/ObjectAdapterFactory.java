@@ -3,13 +3,14 @@
 package hu.blackbelt.judo.meta.expression.object.util;
 
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.Lambda;
+import hu.blackbelt.judo.meta.expression.FilteringExpression;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
 import hu.blackbelt.judo.meta.expression.VariableReference;
+import hu.blackbelt.judo.meta.expression.WindowingExpression;
 
 import hu.blackbelt.judo.meta.expression.object.*;
 
@@ -132,8 +133,12 @@ public class ObjectAdapterFactory extends AdapterFactoryImpl {
 				return createReferenceSelectorAdapter();
 			}
 			@Override
-			public Adapter caseLambda(Lambda object) {
-				return createLambdaAdapter();
+			public Adapter caseWindowingExpression(WindowingExpression object) {
+				return createWindowingExpressionAdapter();
+			}
+			@Override
+			public Adapter caseFilteringExpression(FilteringExpression object) {
+				return createFilteringExpressionAdapter();
 			}
 			@Override
 			public Adapter caseVariableReference(VariableReference object) {
@@ -346,16 +351,30 @@ public class ObjectAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.Lambda <em>Lambda</em>}'.
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.WindowingExpression <em>Windowing Expression</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see hu.blackbelt.judo.meta.expression.Lambda
+	 * @see hu.blackbelt.judo.meta.expression.WindowingExpression
 	 * @generated
 	 */
-	public Adapter createLambdaAdapter() {
+	public Adapter createWindowingExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link hu.blackbelt.judo.meta.expression.FilteringExpression <em>Filtering Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see hu.blackbelt.judo.meta.expression.FilteringExpression
+	 * @generated
+	 */
+	public Adapter createFilteringExpressionAdapter() {
 		return null;
 	}
 

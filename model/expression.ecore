@@ -62,17 +62,16 @@
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceSelector" abstract="true" eSuperTypes="#//NavigationExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="CustomExpression" abstract="true" interface="true"
       eSuperTypes="#//DataExpression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="MeasuredExpression" abstract="true">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DateExpression" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DateExpression" abstract="true" interface="true"
+      eSuperTypes="#//DataExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="TimestampExpression" abstract="true"
       interface="true" eSuperTypes="#//DataExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="TypeName" eSuperTypes="#//ElementName"/>
   <eClassifiers xsi:type="ecore:EClass" name="MeasureName" eSuperTypes="#//ElementName"/>
   <eClassifiers xsi:type="ecore:EClass" name="WindowingExpression" abstract="true"
-      interface="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FilteringExpression"/>
+      interface="true" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FilteringExpression" abstract="true"
+      interface="true" eSuperTypes="#//Expression"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true"/>
@@ -105,13 +104,15 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimal" eSuperTypes="#//MeasuredExpression #//constant/DecimalConstant">
+    <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimal" eSuperTypes="#//constant/DecimalConstant">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MeasuredInteger" eSuperTypes="#//constant/IntegerConstant #//MeasuredExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="MeasuredInteger" eSuperTypes="#//constant/IntegerConstant">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DateConstant" eSuperTypes="#//constant/Constant #//DateExpression">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"

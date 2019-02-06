@@ -5,11 +5,11 @@
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
     operationReflection="true" importOrganizing="true">
   <foreignModel>expression.ecore</foreignModel>
-  <genPackages prefix="Expression" basePackage="hu.blackbelt.judo.meta" resource="XML"
+  <genPackages prefix="Expression" basePackage="hu.blackbelt.judo.meta" resource="XMI"
       disposableProviderFactory="true" dataTypeConverters="true" extensibleProviderFactory="true"
       ecorePackage="expression.ecore#/">
     <genClasses image="false" ecoreClass="expression.ecore#//Expression"/>
-    <genClasses ecoreClass="expression.ecore#//ElementName">
+    <genClasses image="false" ecoreClass="expression.ecore#//ElementName">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ElementName/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ElementName/namespace"/>
     </genClasses>
@@ -39,21 +39,19 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchCase/condition"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchCase/expression"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="expression.ecore#//Lambda"/>
     <genClasses image="false" ecoreClass="expression.ecore#//AggregatedExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//AggregatedExpression/collectionExpression"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector"/>
     <genClasses image="false" ecoreClass="expression.ecore#//CustomExpression"/>
-    <genClasses image="false" ecoreClass="expression.ecore#//MeasuredExpression">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//MeasuredExpression/measure"/>
-    </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//DateExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//TimestampExpression"/>
     <genClasses ecoreClass="expression.ecore#//TypeName"/>
     <genClasses ecoreClass="expression.ecore#//MeasureName"/>
-    <nestedGenPackages prefix="Constant" resource="XML" disposableProviderFactory="true"
+    <genClasses image="false" ecoreClass="expression.ecore#//WindowingExpression"/>
+    <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression"/>
+    <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//constant">
       <genClasses image="false" ecoreClass="expression.ecore#//constant/Constant"/>
       <genClasses image="false" ecoreClass="expression.ecore#//constant/Number"/>
@@ -81,9 +79,13 @@
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/MeasuredDecimal">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/MeasuredDecimal/unitName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//constant/MeasuredDecimal/measure"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/MeasuredInteger">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/MeasuredInteger/unitName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//constant/MeasuredInteger/measure"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/DateConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/DateConstant/value"/>
@@ -92,7 +94,7 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/TimestampConstant/value"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Variable" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Variable" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//variable">
       <genClasses image="false" ecoreClass="expression.ecore#//variable/Variable">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/Variable/name"/>
@@ -100,7 +102,7 @@
       <genClasses image="false" ecoreClass="expression.ecore#//variable/ObjectVariable"/>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/CollectionVariable"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Operator" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Operator" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//operator">
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/StringComparator">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/StringComparator/lessThan"/>
@@ -166,7 +168,7 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/TimestampDurationOperator/substract"/>
       </genEnums>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Numeric" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Numeric" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//numeric">
       <genClasses ecoreClass="expression.ecore#//numeric/CountExpression"/>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerAritmeticExpression">
@@ -202,7 +204,7 @@
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalSwitchExpression"/>
       <genClasses image="false" ecoreClass="expression.ecore#//numeric/NumericAttribute"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Logical" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Logical" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//logical">
       <genClasses ecoreClass="expression.ecore#//logical/StringComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/StringComparison/left"/>
@@ -264,7 +266,7 @@
             ecoreFeature="ecore:EReference expression.ecore#//logical/TypeOfExpression/elementName"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="String" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//string">
       <genClasses ecoreClass="expression.ecore#//string/StringAttribute"/>
       <genClasses ecoreClass="expression.ecore#//string/Concatenate">
@@ -305,7 +307,7 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/ConcatenateCollection/separator"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Enumeration" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//enumeration">
       <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationAttribute"/>
       <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationSwitchExpression">
@@ -313,7 +315,7 @@
             ecoreFeature="ecore:EReference expression.ecore#//enumeration/EnumerationSwitchExpression/elementName"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Object" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Object" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//object">
       <genClasses ecoreClass="expression.ecore#//object/ObjectNavigationExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ObjectNavigationExpression/objectExpression"/>
@@ -340,7 +342,7 @@
             ecoreFeature="ecore:EReference expression.ecore#//object/ObjectSwitchExpression/elementName"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Collection" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Collection" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//collection">
       <genClasses ecoreClass="expression.ecore#//collection/ImmutableCollection">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -389,12 +391,12 @@
             ecoreFeature="ecore:EReference expression.ecore#//collection/CollectionSwitchExpression/elementName"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Custom" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Custom" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//custom">
       <genClasses ecoreClass="expression.ecore#//custom/CustomAttribute"/>
       <genClasses ecoreClass="expression.ecore#//custom/CustomSwitchExpression"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Temporal" resource="XML" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Temporal" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" ecorePackage="expression.ecore#//temporal">
       <genClasses ecoreClass="expression.ecore#//temporal/DateAttribute"/>
       <genClasses ecoreClass="expression.ecore#//temporal/TimestampAttribute"/>

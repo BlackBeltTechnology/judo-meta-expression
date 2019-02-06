@@ -4,7 +4,6 @@ package hu.blackbelt.judo.meta.expression.impl;
 
 import hu.blackbelt.judo.meta.expression.AggregatedExpression;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
-import hu.blackbelt.judo.meta.expression.Base;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.CustomExpression;
 import hu.blackbelt.judo.meta.expression.DataExpression;
@@ -15,11 +14,10 @@ import hu.blackbelt.judo.meta.expression.EnumerationExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.ExpressionFactory;
 import hu.blackbelt.judo.meta.expression.ExpressionPackage;
+import hu.blackbelt.judo.meta.expression.FilteringExpression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
-import hu.blackbelt.judo.meta.expression.Lambda;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.MeasuredExpression;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
@@ -32,6 +30,7 @@ import hu.blackbelt.judo.meta.expression.SwitchExpression;
 import hu.blackbelt.judo.meta.expression.TimestampExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.VariableReference;
+import hu.blackbelt.judo.meta.expression.WindowingExpression;
 
 import hu.blackbelt.judo.meta.expression.collection.CollectionPackage;
 
@@ -215,20 +214,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass lambdaEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass baseEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass aggregatedExpressionEClass = null;
 
 	/**
@@ -257,13 +242,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass measuredExpressionEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	private EClass dateExpressionEClass = null;
 
 	/**
@@ -286,6 +264,20 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 * @generated
 	 */
 	private EClass measureNameEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass windowingExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass filteringExpressionEClass = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -622,24 +614,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getLambda() {
-		return lambdaEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getBase() {
-		return baseEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getAggregatedExpression() {
 		return aggregatedExpressionEClass;
 	}
@@ -685,24 +659,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getMeasuredExpression() {
-		return measuredExpressionEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getMeasuredExpression_Measure() {
-		return (EReference)measuredExpressionEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getDateExpression() {
 		return dateExpressionEClass;
 	}
@@ -732,6 +688,24 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 	 */
 	public EClass getMeasureName() {
 		return measureNameEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getWindowingExpression() {
+		return windowingExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getFilteringExpression() {
+		return filteringExpressionEClass;
 	}
 
 	/**
@@ -805,10 +779,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		createEReference(switchCaseEClass, SWITCH_CASE__CONDITION);
 		createEReference(switchCaseEClass, SWITCH_CASE__EXPRESSION);
 
-		lambdaEClass = createEClass(LAMBDA);
-
-		baseEClass = createEClass(BASE);
-
 		aggregatedExpressionEClass = createEClass(AGGREGATED_EXPRESSION);
 		createEReference(aggregatedExpressionEClass, AGGREGATED_EXPRESSION__COLLECTION_EXPRESSION);
 
@@ -818,9 +788,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 
 		customExpressionEClass = createEClass(CUSTOM_EXPRESSION);
 
-		measuredExpressionEClass = createEClass(MEASURED_EXPRESSION);
-		createEReference(measuredExpressionEClass, MEASURED_EXPRESSION__MEASURE);
-
 		dateExpressionEClass = createEClass(DATE_EXPRESSION);
 
 		timestampExpressionEClass = createEClass(TIMESTAMP_EXPRESSION);
@@ -828,6 +795,10 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		typeNameEClass = createEClass(TYPE_NAME);
 
 		measureNameEClass = createEClass(MEASURE_NAME);
+
+		windowingExpressionEClass = createEClass(WINDOWING_EXPRESSION);
+
+		filteringExpressionEClass = createEClass(FILTERING_EXPRESSION);
 	}
 
 	/**
@@ -901,9 +872,12 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		referenceExpressionEClass.getESuperTypes().add(this.getExpression());
 		referenceSelectorEClass.getESuperTypes().add(this.getNavigationExpression());
 		customExpressionEClass.getESuperTypes().add(this.getDataExpression());
+		dateExpressionEClass.getESuperTypes().add(this.getDataExpression());
 		timestampExpressionEClass.getESuperTypes().add(this.getDataExpression());
 		typeNameEClass.getESuperTypes().add(this.getElementName());
 		measureNameEClass.getESuperTypes().add(this.getElementName());
+		windowingExpressionEClass.getESuperTypes().add(this.getExpression());
+		filteringExpressionEClass.getESuperTypes().add(this.getExpression());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(expressionEClass, Expression.class, "Expression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -949,10 +923,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		initEReference(getSwitchCase_Condition(), this.getLogicalExpression(), null, "condition", null, 1, 1, SwitchCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSwitchCase_Expression(), this.getDataExpression(), null, "expression", null, 1, 1, SwitchCase.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(lambdaEClass, Lambda.class, "Lambda", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(baseEClass, Base.class, "Base", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
 		initEClass(aggregatedExpressionEClass, AggregatedExpression.class, "AggregatedExpression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getAggregatedExpression_CollectionExpression(), this.getCollectionExpression(), null, "collectionExpression", null, 1, 1, AggregatedExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -962,9 +932,6 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 
 		initEClass(customExpressionEClass, CustomExpression.class, "CustomExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(measuredExpressionEClass, MeasuredExpression.class, "MeasuredExpression", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMeasuredExpression_Measure(), this.getMeasureName(), null, "measure", null, 0, 1, MeasuredExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
 		initEClass(dateExpressionEClass, DateExpression.class, "DateExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(timestampExpressionEClass, TimestampExpression.class, "TimestampExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -972,6 +939,10 @@ public class ExpressionPackageImpl extends EPackageImpl implements ExpressionPac
 		initEClass(typeNameEClass, TypeName.class, "TypeName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(measureNameEClass, MeasureName.class, "MeasureName", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(windowingExpressionEClass, WindowingExpression.class, "WindowingExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(filteringExpressionEClass, FilteringExpression.class, "FilteringExpression", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);

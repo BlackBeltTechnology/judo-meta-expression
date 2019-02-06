@@ -4,7 +4,7 @@ package hu.blackbelt.judo.meta.expression.operator.util;
 
 import org.eclipse.emf.common.util.URI;
 
-import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -13,7 +13,7 @@ import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
  * @see hu.blackbelt.judo.meta.expression.operator.util.OperatorResourceFactoryImpl
  * @generated
  */
-public class OperatorResourceImpl extends XMLResourceImpl {
+public class OperatorResourceImpl extends XMIResourceImpl {
 	/**
 	 * Creates an instance of the resource.
 	 * <!-- begin-user-doc -->

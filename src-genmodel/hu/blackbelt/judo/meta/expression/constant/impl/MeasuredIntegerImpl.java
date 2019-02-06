@@ -2,14 +2,10 @@
  */
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
-import hu.blackbelt.judo.meta.expression.ExpressionPackage;
 import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.MeasuredExpression;
 
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-
-import java.lang.String;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -26,23 +22,13 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.MeasuredIntegerImpl#getMeasure <em>Measure</em>}</li>
  *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.MeasuredIntegerImpl#getUnitName <em>Unit Name</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.MeasuredIntegerImpl#getMeasure <em>Measure</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger {
-	/**
-	 * The cached value of the '{@link #getMeasure() <em>Measure</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getMeasure()
-	 * @generated
-	 * @ordered
-	 */
-	protected MeasureName measure;
-
+public class MeasuredIntegerImpl extends IntegerConstantImpl implements MeasuredInteger {
 	/**
 	 * The default value of the '{@link #getUnitName() <em>Unit Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -64,6 +50,16 @@ public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger 
 	protected String unitName = UNIT_NAME_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getMeasure() <em>Measure</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getMeasure()
+	 * @generated
+	 * @ordered
+	 */
+	protected MeasureName measure;
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -80,6 +76,27 @@ public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger 
 	@Override
 	protected EClass eStaticClass() {
 		return ConstantPackage.Literals.MEASURED_INTEGER;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getUnitName() {
+		return unitName;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setUnitName(String newUnitName) {
+		String oldUnitName = unitName;
+		unitName = newUnitName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.MEASURED_INTEGER__UNIT_NAME, oldUnitName, unitName));
 	}
 
 	/**
@@ -125,35 +142,14 @@ public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getUnitName() {
-		return unitName;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setUnitName(String newUnitName) {
-		String oldUnitName = unitName;
-		unitName = newUnitName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.MEASURED_INTEGER__UNIT_NAME, oldUnitName, unitName));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
+			case ConstantPackage.MEASURED_INTEGER__UNIT_NAME:
+				return getUnitName();
 			case ConstantPackage.MEASURED_INTEGER__MEASURE:
 				if (resolve) return getMeasure();
 				return basicGetMeasure();
-			case ConstantPackage.MEASURED_INTEGER__UNIT_NAME:
-				return getUnitName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -166,11 +162,11 @@ public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger 
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.MEASURED_INTEGER__MEASURE:
-				setMeasure((MeasureName)newValue);
-				return;
 			case ConstantPackage.MEASURED_INTEGER__UNIT_NAME:
 				setUnitName((String)newValue);
+				return;
+			case ConstantPackage.MEASURED_INTEGER__MEASURE:
+				setMeasure((MeasureName)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -184,11 +180,11 @@ public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger 
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.MEASURED_INTEGER__MEASURE:
-				setMeasure((MeasureName)null);
-				return;
 			case ConstantPackage.MEASURED_INTEGER__UNIT_NAME:
 				setUnitName(UNIT_NAME_EDEFAULT);
+				return;
+			case ConstantPackage.MEASURED_INTEGER__MEASURE:
+				setMeasure((MeasureName)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -202,44 +198,12 @@ public class MeasuredIntegerImpl extends IntegerImpl implements MeasuredInteger 
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.MEASURED_INTEGER__MEASURE:
-				return measure != null;
 			case ConstantPackage.MEASURED_INTEGER__UNIT_NAME:
 				return UNIT_NAME_EDEFAULT == null ? unitName != null : !UNIT_NAME_EDEFAULT.equals(unitName);
+			case ConstantPackage.MEASURED_INTEGER__MEASURE:
+				return measure != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == MeasuredExpression.class) {
-			switch (derivedFeatureID) {
-				case ConstantPackage.MEASURED_INTEGER__MEASURE: return ExpressionPackage.MEASURED_EXPRESSION__MEASURE;
-				default: return -1;
-			}
-		}
-		return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == MeasuredExpression.class) {
-			switch (baseFeatureID) {
-				case ExpressionPackage.MEASURED_EXPRESSION__MEASURE: return ConstantPackage.MEASURED_INTEGER__MEASURE;
-				default: return -1;
-			}
-		}
-		return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
 	}
 
 	/**

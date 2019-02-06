@@ -600,10 +600,9 @@ public class CollectionPackageImpl extends EPackageImpl implements CollectionPac
 
 		// Add supertypes to classes
 		immutableCollectionEClass.getESuperTypes().add(theExpressionPackage.getCollectionExpression());
-		immutableCollectionEClass.getESuperTypes().add(theExpressionPackage.getBase());
 		immutableCollectionEClass.getESuperTypes().add(theVariablePackage.getObjectVariable());
 		collectionFilterExpressionEClass.getESuperTypes().add(theExpressionPackage.getCollectionExpression());
-		collectionFilterExpressionEClass.getESuperTypes().add(theExpressionPackage.getLambda());
+		collectionFilterExpressionEClass.getESuperTypes().add(theExpressionPackage.getFilteringExpression());
 		collectionVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getCollectionExpression());
 		collectionVariableReferenceEClass.getESuperTypes().add(theExpressionPackage.getVariableReference());
 		collectionNavigationFromObjectExpressionEClass.getESuperTypes().add(theExpressionPackage.getCollectionExpression());
@@ -613,8 +612,8 @@ public class CollectionPackageImpl extends EPackageImpl implements CollectionPac
 		collectionNavigationFromCollectionExpressionEClass.getESuperTypes().add(theExpressionPackage.getNavigationExpression());
 		collectionNavigationFromCollectionExpressionEClass.getESuperTypes().add(theVariablePackage.getObjectVariable());
 		sortExpressionEClass.getESuperTypes().add(theExpressionPackage.getOrderedCollectionExpression());
-		sortExpressionEClass.getESuperTypes().add(theExpressionPackage.getLambda());
 		subCollectionExpressionEClass.getESuperTypes().add(theExpressionPackage.getOrderedCollectionExpression());
+		subCollectionExpressionEClass.getESuperTypes().add(theExpressionPackage.getWindowingExpression());
 		objectNavigationFromCollectionExpressionEClass.getESuperTypes().add(theExpressionPackage.getCollectionExpression());
 		objectNavigationFromCollectionExpressionEClass.getESuperTypes().add(theExpressionPackage.getNavigationExpression());
 		objectNavigationFromCollectionExpressionEClass.getESuperTypes().add(theVariablePackage.getObjectVariable());

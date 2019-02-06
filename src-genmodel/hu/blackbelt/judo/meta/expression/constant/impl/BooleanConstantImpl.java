@@ -2,8 +2,8 @@
  */
 package hu.blackbelt.judo.meta.expression.constant.impl;
 
+import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
-import hu.blackbelt.judo.meta.expression.constant.Date;
 
 import org.eclipse.emf.common.notify.Notification;
 
@@ -13,44 +13,44 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Date</b></em>'.
+ * An implementation of the model object '<em><b>Boolean Constant</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.DateImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link hu.blackbelt.judo.meta.expression.constant.impl.BooleanConstantImpl#isValue <em>Value</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class DateImpl extends ConstantImpl implements Date {
+public class BooleanConstantImpl extends ConstantImpl implements BooleanConstant {
 	/**
-	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * The default value of the '{@link #isValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getValue()
+	 * @see #isValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final java.util.Date VALUE_EDEFAULT = null;
+	protected static final boolean VALUE_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * The cached value of the '{@link #isValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getValue()
+	 * @see #isValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected java.util.Date value = VALUE_EDEFAULT;
+	protected boolean value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected DateImpl() {
+	protected BooleanConstantImpl() {
 		super();
 	}
 
@@ -61,7 +61,7 @@ public class DateImpl extends ConstantImpl implements Date {
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return ConstantPackage.Literals.DATE;
+		return ConstantPackage.Literals.BOOLEAN_CONSTANT;
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class DateImpl extends ConstantImpl implements Date {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public java.util.Date getValue() {
+	public boolean isValue() {
 		return value;
 	}
 
@@ -78,11 +78,11 @@ public class DateImpl extends ConstantImpl implements Date {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(java.util.Date newValue) {
-		java.util.Date oldValue = value;
+	public void setValue(boolean newValue) {
+		boolean oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.DATE__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, ConstantPackage.BOOLEAN_CONSTANT__VALUE, oldValue, value));
 	}
 
 	/**
@@ -93,8 +93,8 @@ public class DateImpl extends ConstantImpl implements Date {
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConstantPackage.DATE__VALUE:
-				return getValue();
+			case ConstantPackage.BOOLEAN_CONSTANT__VALUE:
+				return isValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -107,8 +107,8 @@ public class DateImpl extends ConstantImpl implements Date {
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConstantPackage.DATE__VALUE:
-				setValue((java.util.Date)newValue);
+			case ConstantPackage.BOOLEAN_CONSTANT__VALUE:
+				setValue((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -122,7 +122,7 @@ public class DateImpl extends ConstantImpl implements Date {
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.DATE__VALUE:
+			case ConstantPackage.BOOLEAN_CONSTANT__VALUE:
 				setValue(VALUE_EDEFAULT);
 				return;
 		}
@@ -137,8 +137,8 @@ public class DateImpl extends ConstantImpl implements Date {
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConstantPackage.DATE__VALUE:
-				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+			case ConstantPackage.BOOLEAN_CONSTANT__VALUE:
+				return value != VALUE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -159,4 +159,4 @@ public class DateImpl extends ConstantImpl implements Date {
 		return result.toString();
 	}
 
-} //DateImpl
+} //BooleanConstantImpl

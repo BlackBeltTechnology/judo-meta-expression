@@ -5,8 +5,6 @@ package hu.blackbelt.judo.meta.expression.constant.impl;
 import hu.blackbelt.judo.meta.expression.constant.ConstantPackage;
 import hu.blackbelt.judo.meta.expression.constant.Literal;
 
-import java.lang.String;
-
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;

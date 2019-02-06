@@ -2,7 +2,6 @@
  */
 package hu.blackbelt.judo.meta.expression.collection.impl;
 
-import hu.blackbelt.judo.meta.expression.Base;
 import hu.blackbelt.judo.meta.expression.TypeName;
 
 import hu.blackbelt.judo.meta.expression.collection.CollectionPackage;
@@ -219,11 +218,6 @@ public class ImmutableCollectionImpl extends MinimalEObjectImpl.Container implem
 	 */
 	@Override
 	public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-		if (baseClass == Base.class) {
-			switch (derivedFeatureID) {
-				default: return -1;
-			}
-		}
 		if (baseClass == Variable.class) {
 			switch (derivedFeatureID) {
 				case CollectionPackage.IMMUTABLE_COLLECTION__NAME: return VariablePackage.VARIABLE__NAME;
@@ -245,11 +239,6 @@ public class ImmutableCollectionImpl extends MinimalEObjectImpl.Container implem
 	 */
 	@Override
 	public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-		if (baseClass == Base.class) {
-			switch (baseFeatureID) {
-				default: return -1;
-			}
-		}
 		if (baseClass == Variable.class) {
 			switch (baseFeatureID) {
 				case VariablePackage.VARIABLE__NAME: return CollectionPackage.IMMUTABLE_COLLECTION__NAME;
