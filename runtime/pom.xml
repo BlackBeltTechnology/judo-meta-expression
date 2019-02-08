@@ -101,13 +101,13 @@
                             <tag>${project.version}</tag>
                             <fileSets>
                                 <fileSet>
-                                    <directory>../model/target</directory>
+                                    <directory>${project.parent.basedir}/model/target</directory>
                                     <includes>
                                         <include>*.jar</include>
                                     </includes>
                                 </fileSet>
                                 <fileSet>
-                                    <directory>target</directory>
+                                    <directory>${project.parent.basedir}/runtime/target</directory>
                                     <includes>
                                         <include>*.jar</include>
                                     </includes>
