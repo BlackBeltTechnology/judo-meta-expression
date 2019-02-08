@@ -1,4 +1,23 @@
 @cached
+operation EXPR!Expression getVariableName() {
+    if (self.isKindOf(EXPR!VariableReference)) {
+        return self.variable.name;
+    } else if (self.isKindOf(EXPR!Variable)) {
+        return self.name;
+    } else if (self.isKindOf(EXPR!ReferenceExpression)) {
+        var input = self.getOperands().first();
+        if (input.isDefined()) {
+            return input.getVariableName();
+        }
+    } else if (self.isKindOf(EXPR!AggregatedExpression)) {
+        return self.collectionExpression.getVariableName();
+    } else {
+        throw "Invalid type: " + self;
+    }
+    return null;
+}
+
+@cached
 operation EXPR!ObjectNavigationExpression toString() : String {
     return self.objectExpression.toString() + "->" + self.referenceName;
 }
@@ -39,38 +58,13 @@ operation EXPR!OrderByItem toString() : String {
 }
 
 @cached
-operation EXPR!IntegerVariableReference toString() : String {
-    return self.variable.name;
-}
-
-@cached
-operation EXPR!DecimalVariableReference toString() : String {
-    return self.variable.name;
-}
-
-@cached
-operation EXPR!LogicalVariableReference toString() : String {
-    return self.variable.name;
-}
-
-@cached
-operation EXPR!StringVariableReference toString() : String {
-    return self.variable.name;
-}
-
-@cached
-operation EXPR!EnumerationVariableReference toString() : String {
-    return self.variable.name;
-}
-
-@cached
 operation EXPR!ObjectVariableReference toString() : String {
-    return self.variable.name;
+    return self.getVariableName();
 }
 
 @cached
 operation EXPR!CollectionVariableReference toString() : String {
-    return self.variable.name;
+    return self.getVariableName();
 }
 
 @cached
@@ -90,12 +84,28 @@ operation EXPR!AttributeSelector toString() {
 
 @cached
 operation EXPR!IntegerAttribute toString() {
-    return self.objectExpression.toString() + "." + self.attributeName;
+    if (self.isMeasured()) {
+        var unit = "";
+        if (self.getUnit().isDefined()) {
+            unit = " [" + self.getUnit().toString() + "]";
+        }
+        return self.objectExpression.toString() + "." + self.attributeName + unit;
+    } else {
+        return self.objectExpression.toString() + "." + self.attributeName;
+    }
 }
 
 @cached
 operation EXPR!DecimalAttribute toString() {
-    return self.objectExpression.toString() + "." + self.attributeName;
+    if (self.isMeasured()) {
+        var unit = "";
+        if (self.getUnit().isDefined()) {
+            unit = " [" + self.getUnit().toString() + "]";
+        }
+        return self.objectExpression.toString() + "." + self.attributeName + unit;
+    } else {
+        return self.objectExpression.toString() + "." + self.attributeName;
+    }
 }
 
 @cached
@@ -129,22 +139,22 @@ operation EXPR!CollectionFilterExpression toString() : String {
 }
 
 @cached
-operation EXPR!Integer toString() : String {
+operation EXPR!IntegerConstant toString() : String {
     return self.value.toString();
 }
 
 @cached
-operation EXPR!Decimal toString() : String {
+operation EXPR!DecimalConstant toString() : String {
     return self.value.toString();
 }
 
 @cached
-operation EXPR!Boolean toString() : String {
+operation EXPR!BooleanConstant toString() : String {
     return self.value.toString();
 }
 
 @cached
-operation EXPR!String toString() : String {
+operation EXPR!StringConstant toString() : String {
     return "'" + self.value + "'";
 }
 
@@ -165,7 +175,7 @@ operation EXPR!RoundExpression toString() : String {
 
 @cached
 operation EXPR!DecimalAritmeticExpression toString() : String {
-    return self.left.toString() + " " + self.operator + " " + self.right.toString();
+    return "(" + self.left.toString() + " " + self.operator + " " + self.right.toString() + ")";
 }
 
 @cached
@@ -304,34 +314,7 @@ operation EXPR!SwitchCase toString() : String {
 }
 
 @cached
-operation EXPR!IntegerSwitchExpression toString() : String {
-    var defaultExpr = "";
-    if (self.defaultExpression.isDefined()) {
-        defaultExpr = " default " + self.defaultExpression.toString();
-    }
-    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + defaultExpr + ")";
-}
-
-@cached
-operation EXPR!DecimalSwitchExpression toString() : String {
-    var defaultExpr = "";
-    if (self.defaultExpression.isDefined()) {
-        defaultExpr = " default " + self.defaultExpression.toString();
-    }
-    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + defaultExpr + ")";
-}
-
-@cached
-operation EXPR!StringSwitchExpression toString() : String {
-    var defaultExpr = "";
-    if (self.defaultExpression.isDefined()) {
-        defaultExpr = " default " + self.defaultExpression.toString();
-    }
-    return "(case" + self.cases.collect(c | c.toString()).concat(" ") + defaultExpr + ")";
-}
-
-@cached
-operation EXPR!EnumerationSwitchExpression toString() : String {
+operation EXPR!SwitchExpression toString() : String {
     var defaultExpr = "";
     if (self.defaultExpression.isDefined()) {
         defaultExpr = " default " + self.defaultExpression.toString();
@@ -361,7 +344,7 @@ operation EXPR!Instance toString() : String {
 
 @cached
 operation EXPR!CustomData toString() : String {
-    return "custom";
+    return self.value.toString();
 }
 
 @cached
@@ -370,6 +353,41 @@ operation EXPR!CustomAttribute toString() {
 }
 
 @cached
-operation EXPR!CustomVariableReference toString() : String {
-    return self.variable.name;
+operation EXPR!MeasuredDecimal toString() {
+    return self.value.toString() + " [" + self.unitName + "]";
+}
+
+@cached
+operation EXPR!MeasuredInteger toString() {
+    return self.value.toString() + " [" + self.unitName + "]";
+}
+
+@cached
+operation EXPR!DateAttribute toString() {
+    return self.objectExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!TimestampAttribute toString() {
+    return self.objectExpression.toString() + "." + self.attributeName;
+}
+
+@cached
+operation EXPR!DateConstant toString() : String {
+    return self.value.toString();
+}
+
+@cached
+operation EXPR!TimestampConstant toString() : String {
+    return self.value.toString();
+}
+
+@cached
+operation EXPR!TimestampAdditionExpression toString() : String {
+    return "(" + self.timestamp.toString() + " " + self.operator + " " + self.duration.toString() + ")";
+}
+
+@cached
+operation EXPR!TimestampDifferenceExpression toString() : String {
+    return "(" + self.endTimestamp.toString() + " - " + self.startTimestamp.toString() + ")";
 }

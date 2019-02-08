@@ -1,0 +1,171 @@
+@cached
+operation EXPR!NumericAttribute isMeasured() : Boolean {
+    var a = self.objectExpression.getObjectType().getAttribute(self.attributeName);
+    var p = self.objectExpression.getObjectType().getProperty(self.attributeName);
+    
+    var annotations = null;
+    if (a.isDefined()) {
+	    annotations = a.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+    } else if (p.isDefined()) {
+        annotations = p.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+    }
+    
+    if (annotations.isDefined()) {
+        var measure = annotations.details.selectOne(d | d.key = "measure");
+        if (measure.isDefined() and measure.value.isDefined()) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+@cached
+operation EXPR!NumericAttribute getUnit() {
+    var a = self.objectExpression.getObjectType().getAttribute(self.attributeName);
+    var p = self.objectExpression.getObjectType().getProperty(self.attributeName);
+    
+    var annotations = null;
+    if (a.isDefined()) {
+        annotations = a.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+    } else if (p.isDefined()) {
+        annotations = p.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+    }
+    
+    if (annotations.isDefined()) {
+        var unit = annotations.details.selectOne(d | d.key = "unit");
+        if (unit.isDefined() and unit.value.isDefined()) {
+            var m = self.getMeasure();
+            if (m.isDefined()) {
+                return m.units.selectOne(u | u.name = unit or u.symbol = unit);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!MeasureName getMeasure() : MEASURES!Measure {
+    return MEASURES!Measure.all.selectOne(m | m.name = self.name and m.namespace = self.namespace);
+}
+
+@cached
+operation EXPR!MeasuredInteger isMeasured() : Boolean {
+    return true;
+}
+
+@cached
+operation EXPR!MeasuredDecimal isMeasured() : Boolean {
+    return true;
+}
+
+operation MEASURES!Measure getUnit(name : String) : MEASURES!Unit {
+    return self.units.selectOne(u | u.name = name or u.symbol = name);
+}
+
+@cached
+operation MEASURES!Unit toString() : String {
+    if (self.symbol.isDefined()) {
+        return self.symbol;
+    } else {
+        return self.name;
+    }
+}
+
+@cached
+operation MEASURES!Unit getMeasure() : MEASURES!Measure {
+    return MEASURES!Measure.all.selectOne(m | m.units.contains(self));
+}
+
+@cached
+operation getDimensions() : Map {
+    var dimensions = new Map;
+    for (m in MEASURES!Measure.all) {
+        dimensions.put(m.getBaseMeasures(), m);
+    }
+    return dimensions;
+}
+
+@cached
+operation MEASURES!DerivedMeasure getBaseMeasures() : Map {
+    var baseMeasures = new Map;
+    for (t in self.terms) {
+        baseMeasures.put(t.baseMeasure, t.exponent);
+    }
+    return baseMeasures;
+}
+
+@cached
+operation MEASURES!BaseMeasure getBaseMeasures() : Map {    
+    return Map{self = 1};
+}
+
+@cached
+operation EXPR!NumericAttribute getMeasure() : MEASURES!Measure {
+    var a = self.objectExpression.getObjectType().getAttribute(self.attributeName);
+    var p = self.objectExpression.getObjectType().getProperty(self.attributeName);
+    
+    var annotations = null;
+    if (a.isDefined()) {
+        annotations = a.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+    } else if (p.isDefined()) {
+        annotations = p.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
+    }
+    
+    if (annotations.isDefined()) {
+        var measure = annotations.details.selectOne(d | d.key = "measure");
+        if (measure.isDefined() and measure.value.isDefined()) {
+            var parts = measure.value.split("\\s*\\::\\s*");
+            var measureName = parts.removeAt(parts.size() - 1);
+            var measureNamespace = parts.concat("::");
+            var m = MEASURES!Measure.all.selectOne(m | m.name = measureName and m.namespace = measureNamespace);
+            return m;
+        } else {
+            return null;
+        }
+    } else {
+        return null;
+    }
+}
+
+@cached
+operation EXPR!MeasuredDecimal getUnit() {
+    if (self.measure.isDefined()) {
+        return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+    } else {
+        var units = MEASURES!Unit.all.select(u | u.name = self.unitName or u.symbol = self.unitName);
+        if (units.size() == 1) {
+            return units.get(0);
+        } else {
+            units.collect(u | u.getMeasure().name + ": " + u.name + " [" + u.symbol + "]").concat(", ").println("Multiple units found with name " + self.unitName + ": ");
+            return null;
+        }
+    }
+}
+
+@cached
+operation EXPR!MeasuredInteger getUnit() {
+    if (self.measure.isDefined()) {
+        return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+    } else {
+        var units = MEASURES!Unit.all.select(u | u.name = self.unitName or u.symbol = self.unitName);
+        if (units.size() == 1) {
+            return units.get(0);
+        } else {
+            units.collect(u | u.getMeasure().name + ": " + u.name + " [" + u.symbol + "]").concat(", ").println("Multiple units found with name " + self.unitName + ": ");
+            return null;
+        }
+    }
+}
+
+@cached
+operation getDurationMeasure() : MEASURES!Measure {
+    return MEASURES!Measure.all.selectOne(m | m.units.selectOne(u | u.isValidDurationUnit()).isDefined());
+}

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns="http://epsilon.blackbelt.hu/maven/plugin/v1/xml/ns/definition">
     <metaModels>
-        <metaModel>../model/model/expression.ecore</metaModel>
+        <metaModel>model/model/expression.ecore</metaModel>
         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:1.0.0-develop-9</metaModel>
         <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:1.0.0-develop-9</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-measure:ecore:measure:1.0.0-develop-8</metaModel>
     </metaModels>
     <models>
         <model>
-            <artifact>src/test/t002.model</artifact>
+            <artifact>runtime/src/test/t002.model</artifact>
             <name>TEST</name>
             <aliases>
                 <alias>EXPR</alias>
@@ -28,7 +29,7 @@
             </metaModelUris>
         </model>
         <model>
-            <artifact>src/test/northwind-asm.model</artifact>
+            <artifact>runtime/src/test/northwind-asm.model</artifact>
             <name>NW</name>
             <aliases>
                 <alias>ASM</alias>
@@ -51,10 +52,27 @@
                 <param>http://www.eclipse.org/emf/2002/Ecore</param>
             </metaModelUris>
         </model>
+        <model>
+            <artifact>runtime/src/test/measure.model</artifact>
+            <name>NW_MEASURES</name>
+            <aliases>
+                <alias>MEASURES</alias>
+            </aliases>
+            <storeOnDisposal>false</storeOnDisposal>
+            <metaModelUris>
+                <param>http://blackbelt.hu/judo/meta/measure</param>
+            </metaModelUris>
+        </model>
     </models>
     <eolPrograms>
         <Evl>
             <source>src/test/validations/expressionOnAsm.evl</source>
+            <parameters>
+                <parameter>
+                    <name>extendedMetadataURI</name>
+                    <value>http://blackbelt.hu/judo/meta/ExtendedMetadata</value>
+                </parameter>
+            </parameters>
             <!--expectedErrors/-->
             <!--expectedWarnings/-->
         </Evl>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="northwind" nsURI="http://blackbelt.hu/judo/meta/asm/northwind" nsPrefix="rtNorthwind">
-  <eSubpackages name="dataTypes" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/dataTypes" nsPrefix="rtNorthwindDataTypes">
+  <eSubpackages name="measures" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/measures" nsPrefix="rtNorthwindMeasures"/>
+  <eSubpackages name="types" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/types" nsPrefix="rtNorthwindTypes">
     <eClassifiers xsi:type="ecore:EEnum" name="Countries">
       <eLiterals name="HU" literal="HU"/>
       <eLiterals name="AT" value="1" literal="AT"/>
@@ -13,6 +14,7 @@
       <eLiterals name="MR" value="2" literal="MR"/>
       <eLiterals name="DR" value="3" literal="DR"/>
     </eClassifiers>
+    <eSubpackages name="measured" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/types/measured" nsPrefix="rtNorthwindTypesMeasured"/>
   </eSubpackages>
   <eSubpackages name="entities" nsURI="http://blackbelt.hu/judo/meta/asm/northwind/entities" nsPrefix="rtNorthwindEntities">
     <eClassifiers xsi:type="ecore:EClass" name="Category">
@@ -66,6 +68,13 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="discounted">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JBoolean"/>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="weight">
+        <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details key="measure" value="Template::measures::Mass"/>
+          <details key="unit" value="kilogram"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="category" eType="//entities/Category" eOpposite="//entities/Category/products"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="supplier" eType="//entities/Supplier" eOpposite="//entities/Supplier/suppliedProducts"/>
@@ -230,7 +239,7 @@
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="//dataTypes/Titles"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="title" eType="//types/Titles"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Employee">
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
@@ -396,7 +405,7 @@
       </eAnnotations>
       <eSuperTypes href="#//entities/Address"/>
       <eSuperTypes href="http://blackbelt.hu/judo/asm/base#//Identifiable"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="country" eType="//dataTypes/Countries"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="country" eType="//types/Countries"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="PaymentList">
       <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
