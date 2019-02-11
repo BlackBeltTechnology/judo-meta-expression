@@ -12,18 +12,18 @@
     <name>JUDO expression metamodel parent</name>
     <description>Judo Architecture Specific Metamodel Parent</description>
     
-    <url>http://github.com/BlackBeltTechnology/judo-meta-expression</url>
+    <url>http://github.com/${project-repositoryId}</url>
     
     <issueManagement>
-        <url>https://github.com/BlackBeltTechnology/judo-meta-expression/issues</url>
+        <url>https://github.com/${project-repositoryId}/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
     
     <scm>
-        <connection>scm:git:git@github.com:BlackBeltTechnology/judo-meta-expression.git</connection>
-        <developerConnection>scm:git:ssh://${git.username}@github.com:BlackBeltTechnology/judo-meta-expression.git
+        <connection>scm:git:git@github.com:${project-repositoryId}.git</connection>
+        <developerConnection>scm:git:ssh://${git.username}@github.com:${project-repositoryId}.git
         </developerConnection>
-        <url>http://github.com/BlackBeltTechnology/judo-meta-expression</url>
+        <url>http://github.com/${project-repositoryId}</url>
     </scm>
     
     <developers>
@@ -62,6 +62,7 @@
     </modules>
     
     <properties>
+        <project-repositoryId>BlackBeltTechnology/judo-meta-expression</project-repositoryId>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
