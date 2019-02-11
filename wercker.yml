@@ -24,7 +24,7 @@ build:
     - wercker/maven:
       goals: clean deploy
       settings: .maven.xml
-      profiles: release-github,release-blackbelt
+      profiles: release-github,release-blackbelt,release-p2-blackbelt
       cache_repo: true
 
 #  after-steps:
@@ -117,7 +117,7 @@ release:
     - wercker/maven:
       goals: clean deploy
       settings: .maven.xml
-      profiles: release-blackbelt,release-github
+      profiles: release-blackbelt,release-github,release-p2-blackbelt
       cache_repo: true
 
     - script:
