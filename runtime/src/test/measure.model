@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measure="http://blackbelt.hu/judo/meta/measure">
+  <measure:BaseMeasure namespace="Template::measures" name="Mass">
+    <units name="milligram" symbol="mg" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="gram" symbol="g" rateDividend="0.001" rateDivisor="1.0"/>
+    <units name="dekagram" symbol="dkg" rateDividend="0.01" rateDivisor="1.0"/>
+    <units name="kilogram" symbol="kg" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="quintal" symbol="q" rateDividend="100.0" rateDivisor="1.0"/>
+    <units name="tonne" symbol="t" rateDividend="1000.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="Time">
+    <units xsi:type="measure:DurationUnit" name="millisecond" symbol="ms" rateDividend="0.001" rateDivisor="1.0"/>
+    <units xsi:type="measure:DurationUnit" name="second" symbol="s" rateDividend="1.0" rateDivisor="1.0" type="second"/>
+    <units xsi:type="measure:DurationUnit" name="minute" symbol="min" rateDividend="60.0" rateDivisor="1.0" type="minute"/>
+    <units xsi:type="measure:DurationUnit" name="hour" symbol="h" rateDividend="3600.0" rateDivisor="1.0" type="hour"/>
+    <units xsi:type="measure:DurationUnit" name="day" symbol="" rateDividend="86400.0" rateDivisor="1.0" type="day"/>
+    <units xsi:type="measure:DurationUnit" name="week" symbol="" rateDividend="604800.0" rateDivisor="1.0" type="week"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="MonthBasedTime">
+    <units xsi:type="measure:DurationUnit" name="month" rateDividend="1.0" rateDivisor="1.0"/>
+    <units xsi:type="measure:DurationUnit" name="year" rateDividend="12.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="Length">
+    <units name="nanometre" symbol="nm" rateDividend="1.0E-9" rateDivisor="1.0"/>
+    <units name="micrometre" symbol="μm" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="millimetre" symbol="mm" rateDividend="0.001" rateDivisor="1.0"/>
+    <units name="centimetre" symbol="cm" rateDividend="0.01" rateDivisor="1.0"/>
+    <units name="decimetre" symbol="dm" rateDividend="0.1" rateDivisor="1.0"/>
+    <units name="metre" symbol="m" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="kilometre" symbol="km" rateDividend="1000.0" rateDivisor="1.0"/>
+    <units name="inch" symbol="&quot;" rateDividend="0.0254" rateDivisor="1.0"/>
+    <units name="foot" symbol="ft" rateDividend="0.3048" rateDivisor="1.0"/>
+    <units name="mile" symbol="mi" rateDividend="1609.344" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="Temperature">
+    <units name="celsius" symbol="°C" rateDividend="1.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="ElectricCurrent">
+    <units name="milliampere" symbol="mA" rateDividend="0.001" rateDivisor="1.0"/>
+    <units name="ampere" symbol="A" rateDividend="1.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="ThermodynamicTemperature">
+    <units name="kelvin" symbol="K" rateDividend="1.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="AmountOfSubstance">
+    <units name="mol" symbol="mol" rateDividend="1.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:BaseMeasure namespace="Template::measures" name="LuminousIntensity">
+    <units name="candela" symbol="cd" rateDividend="1.0" rateDivisor="1.0"/>
+  </measure:BaseMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Area">
+    <units name="squareMillimetre" symbol="mm²" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="squareCentimetre" symbol="cm²" rateDividend="0.00010" rateDivisor="1.0"/>
+    <units name="squareDecimetre" symbol="dm²" rateDividend="0.01" rateDivisor="1.0"/>
+    <units name="squareMetre" symbol="m²" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="hectare" symbol="ha" rateDividend="10000.0" rateDivisor="1.0"/>
+    <units name="squareKilometre" symbol="km²" rateDividend="1000000.0" rateDivisor="1.0"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Volume">
+    <units name="cubicMillimetre" symbol="mm³" rateDividend="1.0E-9" rateDivisor="1.0"/>
+    <units name="cubicCentimetre" symbol="cm³" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="cubicDecimetre" symbol="dm³" rateDividend="0.001" rateDivisor="1.0"/>
+    <units name="cubicMetre" symbol="m³" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="millilitre" symbol="ml" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="centilitre" symbol="cl" rateDividend="0.000010" rateDivisor="1.0"/>
+    <units name="decilitre" symbol="dl" rateDividend="0.00010" rateDivisor="1.0"/>
+    <units name="litre" symbol="l" rateDividend="0.001" rateDivisor="1.0"/>
+    <units name="hectolitre" symbol="hl" rateDividend="0.1" rateDivisor="1.0"/>
+    <terms exponent="3" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Velocity">
+    <units name="kilometrePerHour" symbol="km/h" rateDividend="1.0" rateDivisor="3.6"/>
+    <units name="metrePerSecond" symbol="m/s" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="-1" baseMeasure="/1"/>
+    <terms exponent="1" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Acceleration">
+    <units name="metrePerSecondSquared" symbol="m/s²" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+    <terms exponent="1" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Momentum">
+    <units name="kilogramMetrePerSecond" symbol="kg*m/s" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-1" baseMeasure="/1"/>
+    <terms exponent="1" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Force">
+    <units name="newton" symbol="N" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+    <terms exponent="1" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Work">
+    <units name="joule" symbol="J" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="kilojoule" symbol="kJ" rateDividend="1000.0" rateDivisor="1.0"/>
+    <units name="megajoule" symbol="MJ" rateDividend="1000000.0" rateDivisor="1.0"/>
+    <units name="watthour" rateDividend="3600.0" rateDivisor="1.0"/>
+    <units name="kilowatthour" symbol="kWh" rateDividend="3600000.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Power">
+    <units name="watt" symbol="W" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="kilowatt" symbol="kW" rateDividend="1000.0" rateDivisor="1.0"/>
+    <units name="megawatt" symbol="MW" rateDividend="1000000.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-3" baseMeasure="/1"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Frequency">
+    <units name="hertz" symbol="Hz" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="kilohertz" symbol="kHz" rateDividend="1000.0" rateDivisor="1.0"/>
+    <units name="megahertz" symbol="Mhz" rateDividend="1000000.0" rateDivisor="1.0"/>
+    <units name="gigahertz" symbol="Ghz" rateDividend="1.0E+9" rateDivisor="1.0"/>
+    <terms exponent="-1" baseMeasure="/1"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Pressure">
+    <units name="pascal" symbol="Pa" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="hectopascal" symbol="hPa" rateDividend="100.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+    <terms exponent="-1" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Density">
+    <units name="kilogramPerCubicMetre" symbol="kg/m³" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="gramPerCubicCentimetre" symbol="g/cm³" rateDividend="1000.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-3" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="ElectricCharge">
+    <units name="coulomb" symbol="C" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/5"/>
+    <terms exponent="1" baseMeasure="/1"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="ElectricPotential">
+    <units name="volt" symbol="V" rateDividend="1.0" rateDivisor="1.0"/>
+    <units name="kilovolt" symbol="kV" rateDividend="1000.0" rateDivisor="1.0"/>
+    <terms exponent="-1" baseMeasure="/5"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-3" baseMeasure="/1"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Capacitance">
+    <units name="pikofarad" symbol="pF" rateDividend="1.0E-12" rateDivisor="1.0"/>
+    <units name="nanofarad" symbol="nF" rateDividend="1.0E-9" rateDivisor="1.0"/>
+    <units name="microfarad" symbol="μF" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="farad" symbol="F" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="2" baseMeasure="/5"/>
+    <terms exponent="-1" baseMeasure="/0"/>
+    <terms exponent="4" baseMeasure="/1"/>
+    <terms exponent="-2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="ElectricalResistance">
+    <units name="microohm" symbol="μΩ" rateDividend="0.0000010" rateDivisor="1.0"/>
+    <units name="milliohm" symbol="mΩ" rateDividend="0.001" rateDivisor="1.0"/>
+    <units name="ohm" symbol="Ω" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="-2" baseMeasure="/5"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-3" baseMeasure="/1"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="ElectricalConductance">
+    <units name="siemens" symbol="S" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="2" baseMeasure="/5"/>
+    <terms exponent="-1" baseMeasure="/0"/>
+    <terms exponent="3" baseMeasure="/1"/>
+    <terms exponent="-2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="MagneticFlux">
+    <units name="weber" symbol="Wb" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="-1" baseMeasure="/5"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="MagneticFluxDensity">
+    <units name="tesla" symbol="T" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="-1" baseMeasure="/5"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Inductance">
+    <units name="henry" symbol="H" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="-2" baseMeasure="/5"/>
+    <terms exponent="1" baseMeasure="/0"/>
+    <terms exponent="-2" baseMeasure="/1"/>
+    <terms exponent="2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+  <measure:DerivedMeasure namespace="Template::measures" name="Illuminance">
+    <units name="lux" symbol="lx" rateDividend="1.0" rateDivisor="1.0"/>
+    <terms exponent="1" baseMeasure="/8"/>
+    <terms exponent="-2" baseMeasure="/3"/>
+  </measure:DerivedMeasure>
+</xmi:XMI>
