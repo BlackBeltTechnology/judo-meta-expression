@@ -47,9 +47,9 @@
     
     <repositories>
         <repository>
-            <id>proton</id>
+            <id>eclipse</id>
             <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/2018-12/</url>
+            <url>${eclipse-p2-base}</url>
         </repository>
     </repositories>
     
@@ -73,9 +73,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <tycho-version>1.3.0</tycho-version>
-        
-        <judo-targetplatform-version>1.0.0.TEST_9</judo-targetplatform-version>
-        
+        <eclipse-p2-base>http://download.eclipse.org/releases/2018-12</eclipse-p2-base>
     </properties>
     
     <build>
@@ -95,29 +93,11 @@
                 <extensions>true</extensions>
             </plugin>
             
-            
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho-version}</version>
                 <configuration>
-                    <executionEnvironment>JavaSE-1.8</executionEnvironment>
-                    <target>
-                        <artifact>
-                            <groupId>hu.blackbelt.judo.eclipse</groupId>
-                            <artifactId>hu.blackbelt.judo.eclipse.epp.targetplatform</artifactId>
-                            <version>${judo-targetplatform-version}</version>
-                        </artifact>
-                    </target>
-                    <dependency-resolution>
-                        <extraRequirements>
-                            <requirement>
-                                <type>eclipse-plugin</type>
-                                <id>org.hamcrest.core</id>
-                                <versionRange>0.0.0</versionRange>
-                            </requirement>
-                        </extraRequirements>
-                    </dependency-resolution>
                     <environments>
                         <environment>
                             <os>linux</os>
