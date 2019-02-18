@@ -11,7 +11,7 @@
            <relativePath>..</relativePath>
     </parent>
     <artifactId>judo-meta-expression-generator</artifactId>
-    <packaging>pom</packaging>
+    <packaging>eclipse-plugin</packaging>
   
     <name>JUDO expression metamodel eclipse source generator</name>
     <description>Judo Architecture Specific Expression Metamodel Source Generator</description>
@@ -70,6 +70,13 @@
                         <phase>generate-sources</phase>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.fornax.toolsupport</groupId>
+                <artifactId>fornax-oaw-m2-plugin</artifactId>
+                <configuration>
+                    <workflowDescriptor>src/workflows/GenerateBuilder.mwe2</workflowDescriptor>
+                </configuration>
             </plugin>
         </plugins>
     </build>
