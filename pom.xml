@@ -104,6 +104,7 @@
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho-version}</version>
                 <configuration>
+                    <pomDependencies>consider</pomDependencies>
                     <environments>
                         <environment>
                             <os>linux</os>
@@ -336,10 +337,25 @@
     </dependencyManagement>
     
     <dependencies>
+        <!-- As described in https://stackoverflow.com/questions/27046544/building-a-p2-repository-by-resolving-tycho-features-from-a-maven-repository -->
         <dependency>
             <groupId>hu.blackbelt.eclipse</groupId>
             <artifactId>emfbuildergenerator-core</artifactId>
             <version>${emf-builder-generator-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.eclipse</groupId>
+            <artifactId>emfbuildergenerator-core</artifactId>
+            <version>${emf-builder-generator-version}</version>
+            <classifier>p2metadata</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.eclipse</groupId>
+            <artifactId>emfbuildergenerator-core</artifactId>
+            <version>${emf-builder-generator-version}</version>
+            <classifier>p2artifacts</classifier>
+            <type>xml</type>
         </dependency>
 
         <dependency>
