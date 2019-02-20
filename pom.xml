@@ -74,7 +74,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <tycho-version>1.3.0</tycho-version>
         <eclipse-p2-base>http://download.eclipse.org/releases/2018-12</eclipse-p2-base>
-        <emf-builder-generator-version>0.0.1-SNAPSHOT</emf-builder-generator-version>
+        <emf-builder-generator-version>0.0.1.develop_54</emf-builder-generator-version>
     </properties>
     
     <build>
