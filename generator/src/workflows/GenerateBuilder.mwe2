@@ -1,4 +1,4 @@
-module EcoreBuilder
+module GeneratorBuilder
 
 Workflow {
  component = hu.blackbelt.emfbuildergenerator.EMFBuilderGenerator {
