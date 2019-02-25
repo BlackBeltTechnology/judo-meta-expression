@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-<parent>
-    <groupId>hu.blackbelt.judo.meta</groupId>
-    <artifactId>judo-meta-expression-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
-    <relativePath>..</relativePath>
-</parent>
-
+    
+    <parent>
+        <groupId>hu.blackbelt.judo.meta</groupId>
+        <artifactId>judo-meta-expression-parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    
     <artifactId>judo-meta-expression-runtime</artifactId>
     <packaging>bundle</packaging>
-
+    
     <name>JUDO expression metamodel runtime</name>
     <description>Judo Architecture Specific Metamodel runtime</description>
-
+    
     <build>
         <plugins>
             <!-- Creating Judo bundle -->
@@ -52,7 +52,7 @@
             <artifactId>judo-meta-expression-model</artifactId>
         </dependency>
     </dependencies>
-
+    
     <profiles>
         <profile>
             <id>test-expressions</id>
