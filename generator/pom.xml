@@ -27,7 +27,7 @@
                 <configuration>
                     <filesets combine.children="append">
                         <fileset>
-                            <directory>${basedir}/../model/gen-src</directory>
+                            <directory>${basedir}/../model/src-genmodel</directory>
                             <includes>
                                 <include>**/*</include>
                             </includes>
