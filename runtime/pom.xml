@@ -63,18 +63,43 @@
             </activation>
             <build>
                 <plugins>
+
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>copy-test-resources</id>
+                                <phase>generate-test-resources</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target/test</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>${basedir}/src/test</directory>
+                                            <filtering>true</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
                     <plugin>
                         <groupId>hu.blackbelt.epsilon</groupId>
                         <artifactId>epsilon-maven-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>epsilon-validate</id>
+                                <phase>test-compile</phase>
                                 <goals>
                                     <goal>executeConfiguration</goal>
                                 </goals>
                                 <configuration>
                                     <configurationArtifacts>
-                                        <configurationArtifact>src/test/**/*.xml</configurationArtifact>
+                                        <configurationArtifact>target/test/*.xml</configurationArtifact>
                                     </configurationArtifacts>
                                 </configuration>
                             </execution>

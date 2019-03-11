@@ -1,72 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration xmlns="http://epsilon.blackbelt.hu/maven/plugin/v1/xml/ns/definition">
     <metaModels>
-        <metaModel>model/model/expression.ecore</metaModel>
-        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:1.0.0-develop-9</metaModel>
-        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:1.0.0-develop-9</metaModel>
-        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-measure:ecore:measure:1.0.0-develop-8</metaModel>
+        <metaModel>${basedir}/../model/model/expression.ecore</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:${judo-meta-asm-version}</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:base:${judo-meta-asm-version}</metaModel>
+        <metaModel>mvn:hu.blackbelt.judo.meta:judo-meta-measure:ecore:measure:${judo-meta-asm-version}</metaModel>
     </metaModels>
-    <models>
-        <model>
-            <artifact>runtime/src/test/t003.model</artifact>
+    <emfModels>
+        <emfModel>
+            <emf>${basedir}/src/test/t003.model</emf>
             <name>TEST</name>
             <aliases>
                 <alias>EXPR</alias>
             </aliases>
             <storeOnDisposal>false</storeOnDisposal>
-            <metaModelUris>
-                <param>http://blackbelt.hu/judo/meta/expression</param>
-                <param>http://blackbelt.hu/judo/meta/expression/constant</param>
-                <param>http://blackbelt.hu/judo/meta/expression/variable</param>
-                <param>http://blackbelt.hu/judo/meta/expression/operator</param>
-                <param>http://blackbelt.hu/judo/meta/expression/numeric</param>
-                <param>http://blackbelt.hu/judo/meta/expression/logical</param>
-                <param>http://blackbelt.hu/judo/meta/expression/string</param>
-                <param>http://blackbelt.hu/judo/meta/expression/enumeration</param>
-                <param>http://blackbelt.hu/judo/meta/expression/object</param>
-                <param>http://blackbelt.hu/judo/meta/expression/collection</param>
-                <param>http://blackbelt.hu/judo/meta/expression/custom</param>
-            </metaModelUris>
-        </model>
-        <model>
-            <artifact>runtime/src/test/northwind-asm.model</artifact>
+        </emfModel>
+        <emfModel>
+            <emf>${basedir}/src/test/northwind-asm.model</emf>
             <name>NW</name>
             <aliases>
                 <alias>ASM</alias>
             </aliases>
             <storeOnDisposal>false</storeOnDisposal>
-            <metaModelUris>
-                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-                <param>http://blackbelt.hu/judo/asm/types</param>
-                <param>http://blackbelt.hu/judo/asm/base</param>
-            </metaModelUris>
-        </model>
-        <model>
-            <artifact>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:1.0.0-develop-9</artifact>
+        </emfModel>
+        <emfModel>
+            <emf>mvn:hu.blackbelt.judo.meta:judo-meta-asm:ecore:types:1.0.0-develop-9</emf>
             <name>TYPES</name>
             <aliases>
                 <alias>ASM</alias>
             </aliases>
             <storeOnDisposal>false</storeOnDisposal>
-            <metaModelUris>
-                <param>http://www.eclipse.org/emf/2002/Ecore</param>
-            </metaModelUris>
-        </model>
-        <model>
-            <artifact>runtime/src/test/measure.model</artifact>
+        </emfModel>
+        <emfModel>
+            <emf>${basedir}/src/test/measure.model</emf>
             <name>NW_MEASURES</name>
             <aliases>
                 <alias>MEASURES</alias>
             </aliases>
             <storeOnDisposal>false</storeOnDisposal>
-            <metaModelUris>
-                <param>http://blackbelt.hu/judo/meta/measure</param>
-            </metaModelUris>
-        </model>
-    </models>
+        </emfModel>
+    </emfModels>
     <eolPrograms>
         <Evl>
-            <source>src/test/validations/expressionOnAsm.evl</source>
+            <source>${basedir}/src/test/validations/expressionOnAsm.evl</source>
             <parameters>
                 <parameter>
                     <name>extendedMetadataURI</name>
@@ -77,4 +53,5 @@
             <!--expectedWarnings/-->
         </Evl>
     </eolPrograms>
+    <addEcorePackages>true</addEcorePackages>
 </configuration>
