@@ -54,8 +54,6 @@ operation JUDOPSM!Measure getUnit(name : String) : JUDOPSM!Unit {
 
 @cached
 operation JUDOPSM!MeasuredType getUnit() : JUDOPSM!Unit {
-    self.name.println("========== SELF: ");
-    self.storeUnit.name.println("========== STORE: ");
     return self.storeUnit;
 }
 
