@@ -40,8 +40,8 @@
                         <Include-Resource>
                             {maven-resources},
                             meta/expression=../model/model,
-                            judo/expression/operations=src/main/operations,
-                            judo/expression/validations=src/main/validations
+                            judo/expression/operations=src/main/operations/expression,
+                            judo/expression/validations=src/main/validations/expression
                         </Include-Resource>
                     </instructions>
                 </configuration>
