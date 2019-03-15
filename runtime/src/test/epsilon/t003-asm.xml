@@ -8,7 +8,7 @@
     </metaModels>
     <emfModels>
         <emfModel>
-            <emf>${basedir}/src/test/t003.model</emf>
+            <emf>${basedir}/src/test/epsilon/t003.model</emf>
             <name>TEST</name>
             <aliases>
                 <alias>EXPR</alias>
@@ -16,7 +16,7 @@
             <storeOnDisposal>false</storeOnDisposal>
         </emfModel>
         <emfModel>
-            <emf>${basedir}/src/test/northwind-asm.model</emf>
+            <emf>${basedir}/src/test/epsilon/northwind-asm.model</emf>
             <name>NW</name>
             <aliases>
                 <alias>ASM</alias>
@@ -32,7 +32,7 @@
             <storeOnDisposal>false</storeOnDisposal>
         </emfModel>
         <emfModel>
-            <emf>${basedir}/src/test/measure.model</emf>
+            <emf>${basedir}/src/test/epsilon/measure.model</emf>
             <name>NW_MEASURES</name>
             <aliases>
                 <alias>MEASURES</alias>
@@ -42,7 +42,7 @@
     </emfModels>
     <eolPrograms>
         <Evl>
-            <source>${basedir}/src/test/validations/expressionOnAsm.evl</source>
+            <source>${basedir}/src/test/epsilon/validations/expressionOnAsm.evl</source>
             <parameters>
                 <parameter>
                     <name>extendedMetadataURI</name>

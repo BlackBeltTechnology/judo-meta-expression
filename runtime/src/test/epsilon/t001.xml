@@ -7,7 +7,7 @@
     </metaModels>
     <emfModels>
         <emfModel>
-            <emf>${basedir}/src/test/northwind-judopsm.model</emf>
+            <emf>${basedir}/src/test/epsilon/northwind-judopsm.model</emf>
             <name>NW</name>
             <aliases>
                 <alias>JUDOPSM</alias>
@@ -27,12 +27,12 @@
     </emfModels>
     <eolPrograms>
         <Evl>
-            <source>${basedir}/src/test/validations/expressionOnPsm.evl</source>
+            <source>${basedir}/src/test/epsilon/validations/expressionOnPsm.evl</source>
             <expectedErrors/>
             <expectedWarnings/>
         </Evl>
         <Etl>
-            <source>${basedir}/src/test/transformations/expression2evaluationOnPsm.etl</source>
+            <source>${basedir}/src/test/epsilon/transformations/expression2evaluationOnPsm.etl</source>
         </Etl>
     </eolPrograms>
 </configuration>

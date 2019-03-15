@@ -40,8 +40,8 @@
                         <Include-Resource>
                             {maven-resources},
                             meta/expression=../model/model,
-                            judo/expression/operations=src/main/operations/expression,
-                            judo/expression/validations=src/main/validations/expression
+                            judo/expression/operations=src/main/epsilon/operations/expression,
+                            judo/expression/validations=src/main/epsilon/validations/expression
                         </Include-Resource>
                     </instructions>
                 </configuration>
@@ -75,10 +75,10 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${basedir}/target/test</outputDirectory>
+                                    <outputDirectory>${basedir}/target/test/epsilon</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>${basedir}/src/test</directory>
+                                            <directory>${basedir}/src/test/epsilon</directory>
                                             <filtering>true</filtering>
                                         </resource>
                                     </resources>
@@ -99,7 +99,7 @@
                                 </goals>
                                 <configuration>
                                     <configurationArtifacts>
-                                        <configurationArtifact>target/test/*.xml</configurationArtifact>
+                                        <configurationArtifact>target/test/epsilon/*.xml</configurationArtifact>
                                     </configurationArtifacts>
                                 </configuration>
                             </execution>

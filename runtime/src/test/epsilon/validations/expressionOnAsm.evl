@@ -1,5 +1,5 @@
-import "../operations/_importPsm.eol";
-import "../../main/validations/expression/_importExpression.evl";
+import "../operations/_importAsm.eol";
+import "../../../main/epsilon/validations/expression/_importExpression.evl";
 
 operation displayAllExpressions() {
     for (expr in EXPR!Expression) {
@@ -9,12 +9,12 @@ operation displayAllExpressions() {
             expr.getObjectType().getName().println(" - OBJECT TYPE of object expression: ");
         }
         if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured()) {
-        	var measure = expr.getMeasure();
-        	if (measure.isDefined()) {
-        		measure.name.println(" - measure: ");
-        	} else {
-        		"UNKNOWN".println(" - measure: ");
-        	}
+            var measure = expr.getMeasure();
+            if (measure.isDefined()) {
+                measure.name.println(" - measure: ");
+            } else {
+                "UNKNOWN".println(" - measure: ");
+            }
         }
     }
     for (attr in EXPR!AttributeSelector) {
