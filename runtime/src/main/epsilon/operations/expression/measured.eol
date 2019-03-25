@@ -160,10 +160,10 @@ operation getBaseMeasures(operator, leftBaseMeasures : Map, rightBaseMeasures : 
             if (leftBaseMeasures == rightBaseMeasures) {
                 return leftBaseMeasures;
             } else if (not leftBaseMeasures.isDefined() or not rightBaseMeasures.isDefined()) {
-                "Addition of scalar and measured values is not allowed".println();
+                log.warn("Addition of scalar and measured values is not allowed");
                 return null;
             } else {
-                "Additional operands must match".println();
+                log.warn("Additional operands must match");
                 return null;
             }
         case EXPR!IntegerOperator#multiply: continue;
@@ -202,7 +202,7 @@ operation getBaseMeasures(operator, leftBaseMeasures : Map, rightBaseMeasures : 
                     }
                 }
             }
-            
+
             return bases;
         default: throw "Unsupported operation";
     }
@@ -236,39 +236,39 @@ operation EXPR!RoundExpression getBaseMeasures() : Map {
 @cached
 operation EXPR!IntegerSwitchExpression getBaseMeasures() : Map {
     var baseMeasures;
-    
+
     for (c in self.cases) {
         var bm = c.expression.getBaseMeasures();
         if (baseMeasures.isDefined() and baseMeasures <> bm) {
-        	"Measure of switch cases are not matching".println();
+        	log.warn("Measure of switch cases are not matching");
             return null;
         }
         baseMeasures = bm;
     }
-    
+
     if (self.defaultExpression.isDefined() and self.defaultExpression.getBaseMeasures() <> baseMeasures) {
-    	"Measure of default switch case is not matching".println();
+    	log.warn("Measure of default switch case is not matching");
         return null;
     }
-    
+
     return baseMeasures;
 }
 
 @cached
 operation EXPR!DecimalSwitchExpression getBaseMeasures() : Map {
     var baseMeasures;
-    
+
     for (c in self.cases) {
         var bm = c.expression.getBaseMeasures();
         if (baseMeasures.isDefined() and baseMeasures <> bm) {
-        	"Measure of switch cases are not matching".println();
+        	log.warn("Measure of switch cases are not matching");
             return null;
         }
         baseMeasures = bm;
     }
-    
+
     if (self.defaultExpression.isDefined() and self.defaultExpression.getBaseMeasures() <> baseMeasures) {
-    	"Measure of default switch case is not matching".println();
+    	log.warn("Measure of default switch case is not matching");
         return null;
     }
     
