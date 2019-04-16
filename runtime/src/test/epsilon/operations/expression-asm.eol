@@ -43,6 +43,7 @@ operation ASM!EReference getTarget() : ASM!EClass {
     return self.eType;
 }
 
+// deprecated - moved to ASM
 @cached
 operation String getDataTypeByName() : ASM!EDataType {
     return ASM!EDataType.all.selectOne(t | t.name = self);
@@ -126,7 +127,7 @@ operation ASM!EDataType isEnumeration() : Boolean {
 }
 
 @cached
-operation JUDOPSM!Primitive isCustom() : Boolean {
+operation ASM!EDataType isCustom() : Boolean {
     return not self.isNumeric() and not self.isBoolean() and not self.isString() and not self.isEnumeration();
 }
 

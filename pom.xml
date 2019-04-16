@@ -74,14 +74,10 @@
 
         <eclipse-p2-base>http://download.eclipse.org/releases/2018-12</eclipse-p2-base>
 
-        <epsilon-runtime-version>1.2.0_develop-83</epsilon-runtime-version>
+        <epsilon-runtime-version>1.2.0_develop-84</epsilon-runtime-version>
         <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
 
         <emf-builder-generator-version>0.0.1.develop_54</emf-builder-generator-version>
-
-        <judo-meta-measure-version>1.0.0-develop-8</judo-meta-measure-version>
-        <judo-meta-psm-version>1.0.0-develop-179</judo-meta-psm-version>
-        <judo-meta-asm-version>1.0.0-develop-9</judo-meta-asm-version>
     </properties>
     
     <build>

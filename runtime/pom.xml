@@ -16,6 +16,12 @@
     
     <name>JUDO expression metamodel runtime</name>
     <description>Judo Architecture Specific Metamodel runtime</description>
+
+    <properties>
+        <judo-meta-asm-version>1.0.0-develop-36</judo-meta-asm-version>
+        <judo-meta-psm-version>1.0.1.develop_244</judo-meta-psm-version>
+        <judo-meta-measure-version>1.0.1.develop_23</judo-meta-measure-version>
+    </properties>
     
     <build>
         <plugins>
@@ -53,9 +59,61 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-expression-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-psm-runtime</artifactId>
+            <version>${judo-meta-psm-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-asm</artifactId>
+            <version>${judo-meta-asm-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-measure-runtime</artifactId>
+            <version>${judo-meta-measure-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.epsilon</groupId>
+            <artifactId>epsilon-runtime-execution</artifactId>
+            <version>${epsilon-runtime-version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.21</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.0</version>
+        </dependency>
     </dependencies>
     
-    <profiles>
+    <!--profiles>
         <profile>
             <id>test-expressions</id>
             <activation>
@@ -108,5 +166,5 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+    </profiles-->
 </project>
