@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.*;
+import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
@@ -43,7 +44,7 @@ abstract class ExecutionContextTest {
         // run the model / metadata loading
         executionContext.load();
 
-        // Transformation script
+        // Validation script
         executionContext.executeProgram(
                 evlExecutionContextBuilder()
                         .source(getEvlSource())
@@ -54,6 +55,17 @@ abstract class ExecutionContextTest {
                         .expectedErrors(getExpectedErrors())
                         .expectedWarnings(getExpectedWarnings())
                         .build());
+
+        // Transformation script
+        final String expr2eval = getExpressionToEvaluationEtlSource();
+        if (expr2eval != null) {
+//            executionContext.addModel();
+//
+//            executionContext.executeProgram(
+//                    etlExecutionContextBuilder()
+//                            .source(expr2eval)
+//                            .build());
+        }
 
         executionContext.commit();
         executionContext.close();
@@ -84,6 +96,8 @@ abstract class ExecutionContextTest {
     protected abstract Resource getExpressionResource() throws Exception;
 
     protected abstract String getEvlSource();
+
+    protected abstract String getExpressionToEvaluationEtlSource();
 
     protected List<String> getExpectedErrors() {
         return null;
