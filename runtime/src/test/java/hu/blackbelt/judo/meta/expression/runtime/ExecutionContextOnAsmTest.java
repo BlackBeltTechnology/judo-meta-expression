@@ -1,109 +1,71 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.math.BigInteger;
+import java.io.IOException;
 
-import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
-import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 
+abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
 
-class ExecutionContextOnAsmTest {
+    void setUp() throws Exception {
+        final Resource asm = getAsmResource();
+        final Resource measures = getMeasureResouce();
 
-    @Test
-    void testReflectiveCreated() throws Exception {
+        if (asm != null) {
+            modelContexts.add(wrappedEmfModelContextBuilder()
+                    .log(log)
+                    .name("NORTHWIND")
+                    .aliases(ImmutableList.of("ASM"))
+                    .resource(asm)
+                    .build());
+        }
 
-        final String createdSourceModelName = "urn:expression.judo-meta-expression";
+        if (measures != null) {
+            modelContexts.add(wrappedEmfModelContextBuilder()
+                    .log(log)
+                    .name("NORTHWIND_MEASURES")
+                    .aliases(ImmutableList.of("MEASURES"))
+                    .resource(measures)
+                    .build());
+        }
 
-        final ResourceSet executionResourceSet = createExpressionResourceSet();
-        final Resource expressionResource = executionResourceSet.createResource(
-                URI.createURI(createdSourceModelName));
+        modelContexts.add(wrappedEmfModelContextBuilder()
+                .log(log)
+                .name("TEST")
+                .aliases(ImmutableList.of("EXPR"))
+                .resource(getExpressionResource())
+                .build());
+    }
 
-        final ResourceSet measureModelResourceSet = MeasureModelLoader.createMeasureResourceSet();
-        final MeasureModel measureModel = MeasureModelLoader.loadMeasureModel(measureModelResourceSet,
-                URI.createURI(new File(srcDir(), "test/models/measure.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
-
+    protected Resource getAsmResource() throws Exception {
         final ResourceSet asmModelResourceSet = AsmModelLoader.createAsmResourceSet();
-        final AsmModel asmModel = AsmModelLoader.loadAsmModel(asmModelResourceSet,
+        AsmModelLoader.loadAsmModel(asmModelResourceSet,
                 URI.createURI(new File(srcDir(), "test/models/northwind-asm.model").getAbsolutePath()),
                 "test",
                 "1.0.0");
 
-        final Expression expression = newIntegerConstantBuilder().withValue(BigInteger.valueOf(10)).build();
-        expressionResource.getContents().add(expression);
-
-        Log log = new Slf4jLog();
-
-        // Execution context
-        ExecutionContext executionContext = executionContextBuilder()
-                .log(log)
-                .resourceSet(executionResourceSet)
-                .metaModels(ImmutableList.of())
-                .modelContexts(ImmutableList.of(
-                        wrappedEmfModelContextBuilder()
-                                .log(log)
-                                .name("ASM")
-                                .resource(asmModelResourceSet.getResources().get(0))
-                                .build(),
-                        wrappedEmfModelContextBuilder()
-                                .log(log)
-                                .name("MEASURES")
-                                .resource(measureModelResourceSet.getResources().get(0))
-                                .build(),
-                        wrappedEmfModelContextBuilder()
-                                .log(log)
-                                .name("EXPR")
-                                .resource(expressionResource)
-                                .build()))
-                .sourceDirectory(scriptDir())
-                .build();
-
-        // run the model / metadata loading
-        executionContext.load();
-
-        // Transformation script
-        executionContext.executeProgram(
-                evlExecutionContextBuilder()
-                        .source("epsilon/validations/expressionOnAsm.evl")
-                        .build());
-
-        executionContext.commit();
-        executionContext.close();
+        return asmModelResourceSet.getResources().get(0);
     }
 
-    public File scriptDir(){
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath+"../../src/test");
-        if(!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
+    protected Resource getMeasureResouce() throws IOException  {
+        final ResourceSet measureModelResourceSet = MeasureModelLoader.createMeasureResourceSet();
+        MeasureModelLoader.loadMeasureModel(measureModelResourceSet,
+                URI.createURI(new File(srcDir(), "test/models/measure.model").getAbsolutePath()),
+                "test",
+                "1.0.0");
+
+        return measureModelResourceSet.getResources().get(0);
     }
 
-    public File srcDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
+    @Override
+    protected String getEvlSource() {
+        return "epsilon/validations/expressionOnAsm.evl";
     }
 }
