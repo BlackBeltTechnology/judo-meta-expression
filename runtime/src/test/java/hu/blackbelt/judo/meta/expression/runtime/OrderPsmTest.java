@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-public class OrderPsmTest extends ExecutionContextOnPsmTest {
+class OrderPsmTest extends ExecutionContextOnPsmTest {
 
     @BeforeEach
     void setUp() throws Exception {

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
 
-public class MinimalPsmTest extends ExecutionContextOnPsmTest {
+class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
     @BeforeEach
     void setUp() throws Exception {

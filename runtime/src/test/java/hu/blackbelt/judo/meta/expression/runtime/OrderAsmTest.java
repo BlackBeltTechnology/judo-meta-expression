@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 @Disabled
-public class OrderAsmTest extends ExecutionContextOnAsmTest {
+class OrderAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
     void setUp() throws Exception {
