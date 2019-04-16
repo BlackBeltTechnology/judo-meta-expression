@@ -138,7 +138,11 @@ operation EXPR!NumericAttribute getMeasure() : MEASURES!Measure {
 @cached
 operation EXPR!MeasuredDecimal getUnit() {
     if (self.measure.isDefined()) {
-        return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+       if (self.measure.getMeasure().isDefined()) {
+           return self.measure.getMeasure().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+       } else {
+           return null;
+       }
     } else {
         var units = MEASURES!Unit.all.select(u | u.name = self.unitName or u.symbol = self.unitName);
         if (units.size() == 1) {
