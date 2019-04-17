@@ -8,6 +8,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIHandler;
+import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,11 +52,11 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         // Set our custom handler
         URIHandler uriHandler = new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath());
 
+        final File modelFile = new File(srcDir(), "test/models/northwind-asm.model");
         final ResourceSet asmModelResourceSet = AsmModelLoader.createAsmResourceSet(uriHandler, new AsmModelLoader.LocalAsmPackageRegistration());
+        asmModelResourceSet.setURIConverter(new ModelFileBasedUriConverter(modelFile));
         AsmModelLoader.loadAsmModel(asmModelResourceSet,
-                URI.createURI(new File(srcDir(), "test/models/northwind-asm.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
+                URI.createURI(modelFile.getAbsolutePath()),"test","1.0.0");
 
         return asmModelResourceSet.getResources().get(0);
     }
@@ -87,5 +88,44 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
             targetDir.mkdir();
         }
         return targetDir;
+    }
+
+    public static class ModelFileBasedUriConverter extends ExtensibleURIConverterImpl {
+
+        private final File baseFile;
+
+        public ModelFileBasedUriConverter(final File baseFile) {
+            this.baseFile = baseFile;
+        }
+
+        @Override
+        public URI normalize(URI uri) {
+            String fragment = uri.fragment();
+            String query = uri.query();
+            URI trimmedURI = uri.trimFragment().trimQuery();
+            URI result = getInternalURIMap().getURI(trimmedURI);
+            String scheme = result.scheme();
+            if (scheme == null) {
+                if (result.hasAbsolutePath()) {
+                    result = URI.createURI("file:" + result);
+                } else {
+                    result = URI.createFileURI(new File(baseFile, result.toString()).getAbsolutePath());
+                }
+            }
+
+            if (result == trimmedURI) {
+                return uri;
+            }
+
+            if (query != null) {
+                result = result.appendQuery(query);
+            }
+            if (fragment != null) {
+                result = result.appendFragment(fragment);
+            }
+
+
+            return normalize(result);
+        }
     }
 }
