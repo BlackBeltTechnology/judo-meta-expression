@@ -163,6 +163,8 @@ operation getBaseMeasures(operator, leftBaseMeasures : Map, rightBaseMeasures : 
                 log.warn("Addition of scalar and measured values is not allowed");
                 return null;
             } else {
+            	leftBaseMeasures.println(" ---> LEFT: ");
+            	rightBaseMeasures.println(" ---> RIGHT: ");
                 log.warn("Additional operands must match");
                 return null;
             }

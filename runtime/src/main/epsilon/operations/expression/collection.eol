@@ -12,7 +12,7 @@ operation EXPR!CollectionFilterExpression getObjectType() {
 operation EXPR!CollectionNavigationFromObjectExpression getReference() {
     var objectType = self.objectExpression.getObjectType();
     if (objectType.isDefined()) {
-        return objectType.getReferenceType(self.referenceName);
+        return objectType.getReference(self.referenceName);
     } else {
         return null;
     }
@@ -32,7 +32,7 @@ operation EXPR!CollectionNavigationFromObjectExpression getObjectType() {
 operation EXPR!CollectionNavigationFromCollectionExpression getReference() {
     var collectionType = self.collectionExpression.getObjectType();
     if (collectionType.isDefined()) {
-        return collectionType.getReferenceType(self.referenceName);
+        return collectionType.getReference(self.referenceName);
     } else {
         return null;
     }
@@ -42,7 +42,7 @@ operation EXPR!CollectionNavigationFromCollectionExpression getReference() {
 operation EXPR!ObjectNavigationFromCollectionExpression getReference() {
     var collectionType = self.collectionExpression.getObjectType();
     if (collectionType.isDefined()) {
-        return collectionType.getReferenceType(self.referenceName);
+        return collectionType.getReference(self.referenceName);
     } else {
         return null;
     }
@@ -114,33 +114,8 @@ operation EXPR!CastCollection getObjectType() {
 }
 
 @cached
-operation EXPR!CollectionFilterExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
 operation EXPR!CollectionFilterExpression getLambdaExpressions() : Collection {
     return Set{self.condition};
-}
-
-@cached
-operation EXPR!CollectionNavigationFromObjectExpression getOperands() : Collection {
-    return Set{self.objectExpression};
-}
-
-@cached
-operation EXPR!CollectionNavigationFromCollectionExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!ObjectNavigationFromCollectionExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
-operation EXPR!SortExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
 }
 
 @cached
@@ -153,16 +128,6 @@ operation EXPR!SortExpression getLambdaExpressions() : Collection {
 }
 
 @cached
-operation EXPR!SubCollectionExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}
-
-@cached
 operation EXPR!SubCollectionExpression getLambdaExpressions() : Collection {
     return Set{self.position, self.length};
-}
-
-@cached
-operation EXPR!CastCollection getOperands() : Collection {
-    return Set{self.collectionExpression};
 }

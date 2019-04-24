@@ -4,31 +4,6 @@ operation EXPR!CountExpression getLambdaExpressions() : Collection {
 }
 
 @cached
-operation EXPR!IntegerAritmeticExpression getOperands() : Collection {
-    return Set{self.left, self.right};
-}
-
-@cached
-operation EXPR!DecimalAritmeticExpression getOperands() : Collection {
-    return Set{self.left, self.right};
-}
-
-@cached
-operation EXPR!IntegerOppositeExpression getOperands() : Collection {
-    return Set{self.expression};
-}
-
-@cached
-operation EXPR!DecimalOppositeExpression getOperands() : Collection {
-    return Set{self.expression};
-}
-
-@cached
-operation EXPR!RoundExpression getOperands() : Collection {
-    return Set{self.expression};
-}
-
-@cached
 operation EXPR!IntegerAggregatedExpression getObjectType() {
     return self.collectionExpression.getObjectType();
 }
@@ -36,16 +11,6 @@ operation EXPR!IntegerAggregatedExpression getObjectType() {
 @cached
 operation EXPR!DecimalAggregatedExpression getObjectType() {
     return self.collectionExpression.getObjectType();
-}
-
-@cached
-operation EXPR!IntegerAggregatedExpression getOperands() : Collection {
-    return Set{self.expression};
-}
-
-@cached
-operation EXPR!DecimalAggregatedExpression getOperands() : Collection {
-    return Set{self.expression};
 }
 
 @cached

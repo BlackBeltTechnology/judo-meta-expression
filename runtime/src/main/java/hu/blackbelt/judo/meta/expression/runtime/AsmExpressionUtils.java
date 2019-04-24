@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -45,10 +44,10 @@ public class AsmExpressionUtils {
         return eClass.getEAllSuperTypes();
     }
 
-    public static boolean isCustom(final EDataType eDataType) {
-        // TODO - support registering custom data tp
-        return !AsmUtils.isNumeric(eDataType) && !AsmUtils.isBoolean(eDataType) && !AsmUtils.isString(eDataType) && !AsmUtils.isDate(eDataType) && !AsmUtils.isTimestamp(eDataType) && !AsmUtils.isEnumeration(eDataType);
-    }
+//    public static boolean isCustom(final EDataType eDataType) {
+//        // TODO - support registering custom data tp
+//        return !AsmUtils.isNumeric(eDataType) && !AsmUtils.isBoolean(eDataType) && !AsmUtils.isString(eDataType) && !AsmUtils.isDate(eDataType) && !AsmUtils.isTimestamp(eDataType) && !AsmUtils.isEnumeration(eDataType);
+//    }
 
     public static boolean contains(final EEnum eEnum, final String name) {
         return eEnum.getELiterals().stream().filter(l -> Objects.equals(name, l.getLiteral())).count() > 0;

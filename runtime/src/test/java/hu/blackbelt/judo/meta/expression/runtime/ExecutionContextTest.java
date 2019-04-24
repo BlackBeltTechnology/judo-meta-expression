@@ -1,11 +1,13 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import hu.blackbelt.judo.meta.expression.runtime.adapters.ModelAdapter;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
@@ -14,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.*;
-import static hu.blackbelt.epsilon.runtime.execution.contexts.EtlExecutionContext.etlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
@@ -22,6 +23,7 @@ import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.cr
 abstract class ExecutionContextTest {
 
     protected List<ModelContext> modelContexts = new ArrayList<>();
+    protected ModelAdapter modelAdapter;
 
     protected final Log log = new Slf4jLog();
 
@@ -39,6 +41,8 @@ abstract class ExecutionContextTest {
                 .metaModels(getMetaModels())
                 .modelContexts(modelContexts)
                 .sourceDirectory(scriptDir())
+                .injectContexts(ImmutableMap.of(
+                        "modelAdapter", modelAdapter))
                 .build();
 
         // run the model / metadata loading

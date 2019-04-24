@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
+import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -21,6 +22,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
     void setUp() throws Exception {
         final Resource asm = getAsmResource();
         final Resource measures = getMeasureResouce();
+        modelAdapter = new AsmModelAdapter(asm.getResourceSet());
 
         if (asm != null) {
             modelContexts.add(wrappedEmfModelContextBuilder()

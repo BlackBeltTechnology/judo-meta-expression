@@ -1,12 +1,11 @@
 @cached
 operation ASM!EDataType isDate() : Boolean {
-    return "EDate".getDataTypeByName() == self
-        or "JDate".getDataTypeByName() == self;
+    return modelAdapter.isDate(self);
 }
 
 @cached
 operation ASM!EDataType isTimestamp() : Boolean {
-    return "JTimestamp".getDataTypeByName() == self;
+    return modelAdapter.isTimestamp(self);
 }
 
 @cached

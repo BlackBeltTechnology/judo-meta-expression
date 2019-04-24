@@ -1,14 +1,4 @@
 @cached
-operation JUDOPSM!Primitive isDate() : Boolean {
-    return self.isKindOf(JUDOPSM!DateType);
-}
-
-@cached
-operation JUDOPSM!Primitive isTimestamp() : Boolean {
-    return self.isKindOf(JUDOPSM!TimestampType);
-}
-
-@cached
 operation JUDOPSM!Unit isValidDurationUnit() : Boolean {
     return false;
 }

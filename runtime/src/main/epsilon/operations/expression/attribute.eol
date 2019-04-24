@@ -8,13 +8,3 @@ operation EXPR!AttributeSelector getAttributeType() {
         return null;
     }
 }
-
-@cached
-operation EXPR!AttributeSelector getOperands() : Collection {
-    return Set{self.objectExpression};
-}
-
-@cached
-operation EXPR!AggregatedExpression getOperands() : Collection {
-    return Set{self.collectionExpression};
-}

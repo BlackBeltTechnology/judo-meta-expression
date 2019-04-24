@@ -1,11 +1,6 @@
 @cached
 operation EXPR!NumericAttribute isMeasured() : Boolean {
-    var attributeType = self.getAttributeType();
-    if (attributeType.isDefined()) {
-        return attributeType.isMeasured();
-    } else {
-        return false;
-    }
+    return modelAdapter.isMeasured(self.objectExpression.getObjectType().getAttribute(self.attributeName));
 }
 
 @cached
@@ -34,18 +29,7 @@ operation EXPR!MeasuredDecimal isMeasured() : Boolean {
 
 @cached
 operation EXPR!MeasureName getMeasure() : JUDOPSM!Measure {
-    var ns = self.getNamespace();
-    if (ns.isDefined()) {
-        return ns.elements.selectOne(m | m.name = self.name);
-    } else {
-        return null;
-    }
-    
-}
-
-@cached
-operation JUDOPSM!Primitive isMeasured() : Boolean {
-    return self.isKindOf(JUDOPSM!MeasuredType);
+    return modelAdapter.get(self).orElse(null);
 }
 
 operation JUDOPSM!Measure getUnit(name : String) : JUDOPSM!Unit {
@@ -54,16 +38,8 @@ operation JUDOPSM!Measure getUnit(name : String) : JUDOPSM!Unit {
 
 @cached
 operation JUDOPSM!MeasuredType getUnit() : JUDOPSM!Unit {
+    // TODO - rename usages to getStoreUnit()
     return self.storeUnit;
-}
-
-@cached
-operation JUDOPSM!Unit toString() : String {
-    if (self.symbol.isDefined()) {
-        return self.symbol;
-    } else {
-        return self.name;
-    }
 }
 
 @cached

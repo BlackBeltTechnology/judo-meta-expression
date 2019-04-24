@@ -1,25 +1,6 @@
 @cached
 operation EXPR!NumericAttribute isMeasured() : Boolean {
-    var a = self.objectExpression.getObjectType().getAttribute(self.attributeName);
-    var p = self.objectExpression.getObjectType().getProperty(self.attributeName);
-    
-    var annotations = null;
-    if (a.isDefined()) {
-	    annotations = a.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-    } else if (p.isDefined()) {
-        annotations = p.eAnnotations.selectOne(a | a.source = extendedMetadataURI);
-    }
-    
-    if (annotations.isDefined()) {
-        var measure = annotations.details.selectOne(d | d.key = "measure");
-        if (measure.isDefined() and measure.value.isDefined()) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
+    return modelAdapter.isMeasured(self.objectExpression.getObjectType().getAttribute(self.attributeName));
 }
 
 @cached

@@ -18,8 +18,8 @@
     <description>Judo Architecture Specific Metamodel runtime</description>
 
     <properties>
-        <judo-meta-asm-version>1.0.0-develop-36</judo-meta-asm-version>
-        <judo-meta-psm-version>1.0.1.develop_244</judo-meta-psm-version>
+        <judo-meta-asm-version>1.0.0-develop-43</judo-meta-asm-version>
+        <judo-meta-psm-version>1.0.1.develop_248</judo-meta-psm-version>
         <judo-meta-measure-version>1.0.1.develop_23</judo-meta-measure-version>
     </properties>
     
@@ -63,19 +63,22 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-runtime</artifactId>
             <version>${judo-meta-psm-version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-asm</artifactId>
             <version>${judo-meta-asm-version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-measure-runtime</artifactId>
             <version>${judo-meta-measure-version}</version>
-            <scope>test</scope>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -110,6 +113,18 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-junit</artifactId>
+            <version>2.0.0.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     

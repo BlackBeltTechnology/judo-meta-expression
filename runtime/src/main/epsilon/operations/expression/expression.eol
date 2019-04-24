@@ -3,12 +3,6 @@ operation EXPR!SwitchCase getSwitchExpression() {
     return EXPR!SwitchExpression.all.selectOne(e | e.cases.contains(self));
 }
 
-// get operands of an expression
-@cached
-operation EXPR!Expression getOperands() : Collection {
-    return Set{};
-}
-
 // get collection of lambda expressions where the given object/collection expression is used as input variable
 @cached
 operation EXPR!ReferenceExpression getLambdaExpressions() : Collection {

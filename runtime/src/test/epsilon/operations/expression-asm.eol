@@ -1,141 +1,90 @@
 @cached
-operation EXPR!ElementName getNamespace() : ASM!EPackage {
-    var ns : ASM!EPackage;
-        
-    for (nsName in self.namespace.split("\\s*\\::\\s*")) {
-        if (ns.isDefined()) {
-            ns = ns.eSubpackages.selectOne(p | p.name = nsName);
-        } else {
-            ns = ASM!EPackage.all.selectOne(p | p.name = nsName);
-        }
-    }
-    
-    return ns;
+operation EXPR!ElementName getNamespace() : ASM!EClassifier {
+    return modelAdapter.get(self).orElse(null);
 }
 
 @cached
 operation EXPR!ElementName get() : ASM!EClass {
-    return self.getNamespace().eClassifiers.selectOne(ne | ne.isKindOf(ASM!EClass) and ne.name = self.name);
+    return modelAdapter.get(self).orElse(null);
 }
 
 @cached
 operation EXPR!ElementName getObjectType() : ASM!EClass {
-    // not restricted to entity classes!
-    return self.getNamespace().eClassifiers.selectOne(et | et.isKindOf(ASM!EClass) and et.name = self.name);
+    return modelAdapter.get(self).orElse(null);
 }
 
 @cached
 operation EXPR!ElementName getEnumerationType() : ASM!EEnum {
-    return self.getNamespace().eClassifiers.selectOne(t | t.isKindOf(ASM!EEnum) and t.name = self.name);
+    return modelAdapter.get(self).orElse(null);
 }
 
-operation ASM!EClass getReferenceType(name: String) : ASM!EReference {
-    return  self.eAllReferences.selectOne(r | r.name = name);
+operation ASM!EClass getReference(name: String) : ASM!EReference {
+    return modelAdapter.getReference(self, name).orElse(null);
 }
 
 @cached
 operation ASM!EReference isCollection() : Boolean {
-    return self.upperBound > 1 or self.upperBound == -1;
+    return modelAdapter.isCollection(self);
 }
 
 @cached
 operation ASM!EReference getTarget() : ASM!EClass {
-    return self.eType;
-}
-
-// deprecated - moved to ASM
-@cached
-operation String getDataTypeByName() : ASM!EDataType {
-    return ASM!EDataType.all.selectOne(t | t.name = self);
+    return modelAdapter.getTarget(self);
 }
 
 operation ASM!EClass getAttribute(name: String) : ASM!EAttribute {
-    // TODO - check if no derived annotation is present
-    return self.eAllAttributes.selectOne(r | r.name = name);
+    return modelAdapter.getAttribute(self, name).orElse(null);
 }
 
+// deprecated
 operation ASM!EClass getProperty(name: String) : ASM!EAttribute {
-    // TODO - check if derived annotation is present
     return null;
 }
 
 operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
-    var attr = self.getAttribute(name);
-    if (attr.isDefined()) {
-        var type = attr.eAttributeType;
-        if (type.isKindOf(ASM!EEnum)) {
-            return type;
-        } else {
-            var dataType = attr.eAttributeType.name.getDataTypeByName();
-            return dataType;
-        }
-    } else {
-        return null;
-    }
+    return modelAdapter.getAttributeType(self, name).orElse(null);
 }
 
 @cached
 operation ASM!EClass getSuperTypes() : Collection {
-    return self.eAllSuperTypes;
+    return modelAdapter.getSuperTypes(self);
 }
 
 @cached
 operation ASM!EDataType isNumeric() : Boolean {
-    return self.isInteger() or self.isDecimal();
+    return modelAdapter.isNumeric(self);
 }
 
 @cached
 operation ASM!EDataType isInteger() : Boolean {
-    return "JInteger".getDataTypeByName() == self
-        or "JLong".getDataTypeByName() == self
-        or "JBigInteger".getDataTypeByName() == self
-        or "EFloat".getDataTypeByName() == self
-        or "EDouble".getDataTypeByName() == self
-        or "EFloatObject".getDataTypeByName() == self
-        or "EDoubleObject".getDataTypeByName() == self
-        or "EBigInteger".getDataTypeByName() == self;
+    return modelAdapter.isInteger(self);
 }
 
 @cached
 operation ASM!EDataType isDecimal() : Boolean {
-    return "JFloat".getDataTypeByName() == self
-        or "JDouble".getDataTypeByName() == self
-        or "JBigDecimal".getDataTypeByName() == self
-        or "EFloat".getDataTypeByName() == self
-        or "EDouble".getDataTypeByName() == self
-        or "EFloatObject".getDataTypeByName() == self
-        or "EDoubleObject".getDataTypeByName() == self
-        or "EBigDecimal".getDataTypeByName() == self;
+    return modelAdapter.isDecimal(self);
 }
 
 @cached
 operation ASM!EDataType isBoolean() : Boolean {
-    return "JBoolean".getDataTypeByName() == self
-        or "EBoolean".getDataTypeByName() == self
-        or "EBooleanObject".getDataTyoeByName() == self;
+    return modelAdapter.isBoolean(self);
 }
 
 @cached
 operation ASM!EDataType isString() : Boolean {
-    return "JString".getDataTypeByName() == self
-        or "EString".getDataTypeByName() == self;
+    return modelAdapter.isString(self);
 }
 
 @cached
 operation ASM!EDataType isEnumeration() : Boolean {
-    return self.isKindOf(ASM!EEnum);
+    return modelAdapter.isEnumeration(self);
 }
 
 @cached
 operation ASM!EDataType isCustom() : Boolean {
-    return not self.isNumeric() and not self.isBoolean() and not self.isString() and not self.isEnumeration();
+    return modelAdapter.isCustom(self);
 }
 
 operation ASM!EEnum contains(memberName : String) : Boolean {
     return self.eLiterals.selectOne(m | m.name = memberName).isDefined();
-}
-
-@cached
-operation ASM!ENamedElement getName() : String {
-    return self.name;
 }
