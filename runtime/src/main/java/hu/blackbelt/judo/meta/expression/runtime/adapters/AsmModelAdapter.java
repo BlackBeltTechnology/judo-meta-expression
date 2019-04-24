@@ -2,7 +2,9 @@ package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
 import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.measure.Measure;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
-public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference> {
+public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure> {
 
     private static final String NAMESPACE_SEPARATOR = ".";
 
@@ -44,14 +46,29 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public Optional<EClassifier> get(final ElementName elementName) {
-        final EPackage namespace = namespaceCache.get(elementName.getNamespace().replace("::", "."));
+    public Optional<EClassifier> get(final TypeName elementName) {
+        final EPackage namespace = namespaceCache.get(elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR));
         if (namespace != null) {
-            return namespace.getEClassifiers().stream().filter(e -> Objects.equals(e.getName(), elementName.getName())).findFirst();
+            return namespace.getEClassifiers().stream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
+                    .findFirst();
         } else {
             log.warn("Namespace not found: {}", elementName.getNamespace());
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional get(final MeasureName measureName) {
+        final Iterable<Notifier> contents = resourceSet::getAllContents;
+        return StreamSupport.stream(contents.spliterator(), false)
+                .filter(e -> e instanceof Measure).map(e -> (Measure) e)
+                .filter(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace().replace(".", NAMESPACE_SEPARATOR), measureName.getNamespace()))
+                .findFirst();
+    }
+
+    @Override
+    public boolean isObjectType(final EClassifier namespaceElement) {
+        return namespaceElement instanceof EClass;
     }
 
     @Override

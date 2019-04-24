@@ -2,7 +2,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -51,12 +51,12 @@ public class AsmEntityModelAdapterTest {
 
     @Test
     void testGet() {
-        final ElementName elementName = newTypeNameBuilder()
+        final TypeName typeName = newTypeNameBuilder()
                 .withNamespace("northwind.entities")
                 .withName("Order")
                 .build();
 
-        final Optional<? extends EClassifier> namespaceElement = modelAdapter.get(elementName);
+        final Optional<? extends EClassifier> namespaceElement = modelAdapter.get(typeName);
 
         assertThat(namespaceElement.isPresent(), is(Boolean.TRUE));
         assertThat(namespaceElement.get(), instanceOf(EClass.class));

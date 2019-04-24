@@ -1,11 +1,12 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 
 import java.util.Collection;
 import java.util.Optional;
 
-public interface ModelAdapter<NE, P, PTE, E, C, RTE> {
+public interface ModelAdapter<NE, P, PTE, E, C, RTE, M> {
 
     /**
      * Get a namespace element by element name.
@@ -13,7 +14,11 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE> {
      * @param elementName element name
      * @return namespace element
      */
-    Optional<? extends NE> get(ElementName elementName);
+    Optional<? extends NE> get(TypeName elementName);
+
+    Optional<? extends M> get(MeasureName measureName);
+
+    boolean isObjectType(NE namespaceElement);
 
     Optional<? extends RTE> getReference(C clazz, String referenceName);
 

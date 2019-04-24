@@ -218,10 +218,10 @@
     <startTimestamp xsi:type="const:TimestampConstant" xmi:id="_V46J8CSfEemLpvUY7MQgng" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
     <endTimestamp xsi:type="const:TimestampConstant" xmi:id="_WQtl8CSfEemLpvUY7MQgng" value="2019-01-30 15:57:08.123+01:00 [Europe/Budapest]"/>
   </t:TimestampDifferenceExpression>
-  <expr:TypeName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind::entities"/>
-  <expr:TypeName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind::entities"/>
-  <expr:TypeName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind::entities"/>
-  <expr:TypeName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind::entities"/>
-  <expr:TypeName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind::entities"/>
-  <expr:MeasureName xmi:id="_7VLCACSdEemLpvUY7MQgng" name="Mass" namespace="Template::measures"/>
+  <expr:TypeName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="northwind.entities"/>
+  <expr:MeasureName xmi:id="_7VLCACSdEemLpvUY7MQgng" name="Mass" namespace="Template.measures"/>
 </xmi:XMI>

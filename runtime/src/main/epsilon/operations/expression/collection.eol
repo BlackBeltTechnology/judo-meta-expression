@@ -1,6 +1,6 @@
 @cached
 operation EXPR!ImmutableCollection getObjectType() {
-    return self.elementName.getObjectType();
+    return self.elementName.get();
 }
 
 @cached
@@ -110,7 +110,7 @@ operation EXPR!SortExpression getObjectType() {
 
 @cached
 operation EXPR!CastCollection getObjectType() {
-    return self.elementName.getObjectType();
+    return self.elementName.get();
 }
 
 @cached

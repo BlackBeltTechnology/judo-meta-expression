@@ -1,10 +1,12 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
 import com.google.common.collect.Iterables;
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
+import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
@@ -25,7 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
-public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement> {
+public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure> {
 
     private static final String NAMESPACE_SEPARATOR = ".";
 
@@ -43,14 +45,33 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     }
 
     @Override
-    public Optional<NamespaceElement> get(final ElementName elementName) {
-        final Namespace namespace = namespaceCache.get(elementName.getNamespace().replace("::", "."));
+    public Optional<NamespaceElement> get(final TypeName elementName) {
+        final Namespace namespace = namespaceCache.get(elementName.getNamespace().replace("::", NAMESPACE_SEPARATOR));
         if (namespace != null) {
-            return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), elementName.getName())).findFirst();
+            return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
+                    .findFirst();
         } else {
             log.warn("Namespace not found: {}", elementName.getNamespace());
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<? extends Measure> get(final MeasureName measureName) {
+        final Namespace namespace = namespaceCache.get(measureName.getNamespace().replace("::", NAMESPACE_SEPARATOR));
+        if (namespace != null) {
+            return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), measureName.getName()) && e instanceof Measure)
+                    .map(m -> (Measure) m)
+                    .findFirst();
+        } else {
+            log.warn("Measure not found: {}", measureName.getNamespace());
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public boolean isObjectType(final NamespaceElement namespaceElement) {
+        return namespaceElement instanceof EntityType;
     }
 
     @Override

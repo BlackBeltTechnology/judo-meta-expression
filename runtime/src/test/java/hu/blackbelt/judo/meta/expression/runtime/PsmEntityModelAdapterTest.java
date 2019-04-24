@@ -1,6 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import hu.blackbelt.judo.meta.expression.ElementName;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.PsmEntityModelAdapter;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
@@ -53,12 +53,12 @@ public class PsmEntityModelAdapterTest {
 
     @Test
     void testGet() {
-        final ElementName elementName = newTypeNameBuilder()
+        final TypeName typeName = newTypeNameBuilder()
                 .withNamespace("northwind.entities")
                 .withName("Order")
                 .build();
 
-        final Optional<? extends NamespaceElement> namespaceElement = modelAdapter.get(elementName);
+        final Optional<? extends NamespaceElement> namespaceElement = modelAdapter.get(typeName);
 
         assertThat(namespaceElement.isPresent(), is(Boolean.TRUE));
         assertThat(namespaceElement.get(), instanceOf(EntityType.class));

@@ -103,9 +103,9 @@ operation EXPR!NumericAttribute getMeasure() : MEASURES!Measure {
     if (annotations.isDefined()) {
         var measure = annotations.details.selectOne(d | d.key = "measure");
         if (measure.isDefined() and measure.value.isDefined()) {
-            var parts = measure.value.split("\\s*\\::\\s*");
+            var parts = measure.value.split("\\s*\\.\\s*");
             var measureName = parts.removeAt(parts.size() - 1);
-            var measureNamespace = parts.concat("::");
+            var measureNamespace = parts.concat(".");
             var m = MEASURES!Measure.all.selectOne(m | m.name = measureName and m.namespace = measureNamespace);
             return m;
         } else {

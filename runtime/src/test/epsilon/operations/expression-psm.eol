@@ -1,40 +1,4 @@
 @cached
-operation EXPR!ElementName getNamespace() : JUDOPSM!NamespaceElement {
-    var namespaceElement = modelAdapter.get(self);
-    if (namespaceElement.isPresent()) {
-        return namespaceElement.get();
-    } else {
-        return null;
-    }
-}
-
-@cached
 operation EXPR!ElementName get() : JUDOPSM!NamespaceElement {
-    var namespaceElement = modelAdapter.get(self);
-    if (namespaceElement.isPresent()) {
-        return namespaceElement.get();
-    } else {
-        return null;
-    }
+    return modelAdapter.get(self).orElse(null);
 }
-
-@cached
-operation EXPR!ElementName getObjectType() : JUDOPSM!Type {
-    var namespaceElement = modelAdapter.get(self);
-    if (namespaceElement.isPresent()) {
-        return namespaceElement.get();
-    } else {
-        return null;
-    }
-}
-
-@cached
-operation EXPR!ElementName getEnumerationType() : JUDOPSM!EnumerationType {
-    var namespaceElement = modelAdapter.get(self);
-    if (namespaceElement.isPresent()) {
-        return namespaceElement.get();
-    } else {
-        return null;
-    }
-}
-

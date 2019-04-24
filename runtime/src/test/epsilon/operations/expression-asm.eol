@@ -1,20 +1,5 @@
 @cached
-operation EXPR!ElementName getNamespace() : ASM!EClassifier {
-    return modelAdapter.get(self).orElse(null);
-}
-
-@cached
-operation EXPR!ElementName get() : ASM!EClass {
-    return modelAdapter.get(self).orElse(null);
-}
-
-@cached
-operation EXPR!ElementName getObjectType() : ASM!EClass {
-    return modelAdapter.get(self).orElse(null);
-}
-
-@cached
-operation EXPR!ElementName getEnumerationType() : ASM!EEnum {
+operation EXPR!ElementName get() {
     return modelAdapter.get(self).orElse(null);
 }
 
