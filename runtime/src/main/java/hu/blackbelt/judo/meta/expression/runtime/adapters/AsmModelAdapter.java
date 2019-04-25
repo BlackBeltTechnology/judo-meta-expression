@@ -32,14 +32,16 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     private static final String NAMESPACE_SEPARATOR = ".";
 
-    private final ResourceSet resourceSet;
+    private final ResourceSet asmResourceSet;
+    private final ResourceSet measureResourceSet;
 
     private final Map<String, EPackage> namespaceCache = new ConcurrentHashMap<>();
 
-    public AsmModelAdapter(final ResourceSet resourceSet) {
-        this.resourceSet = resourceSet;
+    public AsmModelAdapter(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet) {
+        this.asmResourceSet = asmResourceSet;
+        this.measureResourceSet = measureResourceSet;
 
-        final Iterable<Notifier> contents = resourceSet::getAllContents;
+        final Iterable<Notifier> contents = asmResourceSet::getAllContents;
         StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> e instanceof EPackage).map(e -> (EPackage) e)
                 .filter(e -> e.getESuperPackage() == null)
@@ -60,7 +62,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional get(final MeasureName measureName) {
-        final Iterable<Notifier> contents = resourceSet::getAllContents;
+        final Iterable<Notifier> contents = measureResourceSet::getAllContents;
         return StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                 .filter(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace().replace(".", NAMESPACE_SEPARATOR), measureName.getNamespace()))

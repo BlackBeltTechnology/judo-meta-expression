@@ -22,7 +22,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
     void setUp() throws Exception {
         final Resource asm = getAsmResource();
         final Resource measures = getMeasureResouce();
-        modelAdapter = new AsmModelAdapter(asm.getResourceSet());
+        modelAdapter = new AsmModelAdapter(asm.getResourceSet(), measures.getResourceSet());
 
         if (asm != null) {
             modelContexts.add(wrappedEmfModelContextBuilder()

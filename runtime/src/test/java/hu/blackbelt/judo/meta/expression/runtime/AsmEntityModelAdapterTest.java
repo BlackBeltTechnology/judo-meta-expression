@@ -4,6 +4,8 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
@@ -25,6 +27,7 @@ public class AsmEntityModelAdapterTest {
 
     private ExpressionModel expressionModel;
     private AsmModel asmModel;
+    private MeasureModel measureModel;
     private AsmModelAdapter modelAdapter;
 
     @BeforeEach
@@ -39,7 +42,12 @@ public class AsmEntityModelAdapterTest {
                 "test",
                 "1.0.0");
 
-        modelAdapter = new AsmModelAdapter(asmModel.getResourceSet());
+        measureModel = MeasureModelLoader.loadMeasureModel(MeasureModelLoader.createMeasureResourceSet(),
+                URI.createURI(new File(srcDir(), "test/models/measure.model").getAbsolutePath()),
+                "test",
+                "1.0.0");
+
+        modelAdapter = new AsmModelAdapter(asmModel.getResourceSet(), measureModel.getResourceSet());
     }
 
     @AfterEach

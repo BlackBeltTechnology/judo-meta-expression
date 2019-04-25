@@ -64,7 +64,11 @@
         <genParameters ecoreParameter="expression.ecore#//TypeName/get/modelAdapter"/>
       </genOperations>
     </genClasses>
-    <genClasses ecoreClass="expression.ecore#//MeasureName"/>
+    <genClasses ecoreClass="expression.ecore#//MeasureName">
+      <genOperations ecoreOperation="expression.ecore#//MeasureName/get" body="return modelAdapter.get(this);">
+        <genParameters ecoreParameter="expression.ecore#//MeasureName/get/modelAdapter"/>
+      </genOperations>
+    </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//WindowingExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression"/>
     <genClasses ecoreClass="expression.ecore#//ModelAdapter"/>
