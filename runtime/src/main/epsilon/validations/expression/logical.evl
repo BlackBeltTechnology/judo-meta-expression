@@ -35,7 +35,7 @@ context EXPR!InstanceOfExpression {
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: self.elementName.get().getSuperTypes().contains(self.objectExpression.getObjectType())
+        check: self.elementName.get(modelAdapter).get().getSuperTypes().contains(self.objectExpression.getObjectType())
         message: "Element type (" + self.elementName.toString() + ") is not compatible with " + self.objectExpression.getObjectType().getName() 
     }
 }
@@ -49,7 +49,7 @@ context EXPR!TypeOfExpression {
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: self.elementName.get().getSuperTypes().contains(self.objectExpression.getObjectType())
+        check: self.elementName.get(modelAdapter).get().getSuperTypes().contains(self.objectExpression.getObjectType())
         message: "Element type (" + self.elementName.toString() + ") is not " + self.objectExpression.getObjectType().getName() 
     }
 }

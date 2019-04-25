@@ -2,7 +2,7 @@ context EXPR!TypeName {
     
     // object type with name defined by ElementName must exists in the namespace
     constraint ObjectTypeIsValid {
-        check: self.get().isDefined()
+        check: self.get(modelAdapter).isPresent()
         message: "Element named " + self.name + " not found in namespace " + self.namespace 
     }
 }

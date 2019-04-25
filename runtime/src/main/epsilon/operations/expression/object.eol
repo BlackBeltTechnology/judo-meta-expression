@@ -1,6 +1,6 @@
 @cached
 operation EXPR!Instance getObjectType() {
-    return self.elementName.get();
+    return self.elementName.get(modelAdapter).orElse(null);
 }
 
 @cached
@@ -50,7 +50,7 @@ operation EXPR!ObjectVariableReference getObjectType() {
 
 @cached
 operation EXPR!CastObject getObjectType() {
-    return self.elementName.get();
+    return self.elementName.get(modelAdapter).orElse(null);
 }
 
 @cached

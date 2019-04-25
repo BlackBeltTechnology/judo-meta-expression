@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.meta.expression.runtime.adapters;
+package hu.blackbelt.judo.meta.expression.adapters;
 
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;

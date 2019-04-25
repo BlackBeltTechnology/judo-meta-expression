@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: judo-meta-expression-model
 Export-Package: hu.blackbelt.judo.meta.expression,
+ hu.blackbelt.judo.meta.expression.adapters,
  hu.blackbelt.judo.meta.expression.collection,
  hu.blackbelt.judo.meta.expression.collection.impl,
  hu.blackbelt.judo.meta.expression.collection.util,

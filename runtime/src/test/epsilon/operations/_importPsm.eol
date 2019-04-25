@@ -4,6 +4,5 @@ import "data/_importData.eol";
 import "derived/_importDerived.eol";
 import "measure/_importMeasure.eol";
 
-import "expression-psm.eol";
 import "expression-psm-measure.eol";
 import "expression-psm-temporal.eol";

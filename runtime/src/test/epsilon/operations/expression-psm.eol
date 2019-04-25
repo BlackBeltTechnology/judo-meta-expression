@@ -1,4 +1,0 @@
-@cached
-operation EXPR!ElementName get() : JUDOPSM!NamespaceElement {
-    return modelAdapter.get(self).orElse(null);
-}

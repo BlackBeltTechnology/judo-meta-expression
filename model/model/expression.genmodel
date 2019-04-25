@@ -59,10 +59,15 @@
     <genClasses image="false" ecoreClass="expression.ecore#//CustomExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//DateExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//TimestampExpression"/>
-    <genClasses ecoreClass="expression.ecore#//TypeName"/>
+    <genClasses ecoreClass="expression.ecore#//TypeName">
+      <genOperations ecoreOperation="expression.ecore#//TypeName/get" body="return modelAdapter.get(this);">
+        <genParameters ecoreParameter="expression.ecore#//TypeName/get/modelAdapter"/>
+      </genOperations>
+    </genClasses>
     <genClasses ecoreClass="expression.ecore#//MeasureName"/>
     <genClasses image="false" ecoreClass="expression.ecore#//WindowingExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression"/>
+    <genClasses ecoreClass="expression.ecore#//ModelAdapter"/>
     <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-constant" ecorePackage="expression.ecore#//constant">
