@@ -61,6 +61,16 @@ operation ASM!EDataType isEnumeration() : Boolean {
 }
 
 @cached
+operation ASM!EDataType isDate() : Boolean {
+    return modelAdapter.isDate(self);
+}
+
+@cached
+operation ASM!EDataType isTimestamp() : Boolean {
+    return modelAdapter.isTimestamp(self);
+}
+
+@cached
 operation ASM!EDataType isCustom() : Boolean {
     return modelAdapter.isCustom(self);
 }

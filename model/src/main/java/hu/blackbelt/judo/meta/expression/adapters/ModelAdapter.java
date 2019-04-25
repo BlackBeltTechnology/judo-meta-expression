@@ -6,7 +6,7 @@ import hu.blackbelt.judo.meta.expression.TypeName;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface ModelAdapter<NE, P, PTE, E, C, RTE, M> {
+public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
 
     /**
      * Get a namespace element by element name.
@@ -65,4 +65,8 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M> {
     boolean isMeasured(PTE primitiveTypedElement);
 
     boolean contains(E enumeration, String memberName);
+
+    Optional<M> getDurationMeasure();
+
+    boolean isSupportingAddition(U unit);
 }

@@ -5,7 +5,10 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.measure.DurationType;
+import hu.blackbelt.judo.meta.measure.DurationUnit;
 import hu.blackbelt.judo.meta.measure.Measure;
+import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EAnnotation;
@@ -18,8 +21,10 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,12 +33,14 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
-public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure> {
+public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = ".";
 
     private final ResourceSet asmResourceSet;
     private final ResourceSet measureResourceSet;
+
+    private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
 
     private final Map<String, EPackage> namespaceCache = new ConcurrentHashMap<>();
 
@@ -53,7 +60,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         final EPackage namespace = namespaceCache.get(elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR));
         if (namespace != null) {
             return namespace.getEClassifiers().stream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
-                    .findFirst();
+                    .findAny();
         } else {
             log.warn("Namespace not found: {}", elementName.getNamespace());
             return Optional.empty();
@@ -66,7 +73,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                 .filter(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace().replace(".", NAMESPACE_SEPARATOR), measureName.getNamespace()))
-                .findFirst();
+                .findAny();
     }
 
     @Override
@@ -76,7 +83,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<? extends EReference> getReference(final EClass clazz, final String referenceName) {
-        return clazz.getEAllReferences().stream().filter(r -> Objects.equals(r.getName(), referenceName)).findFirst();
+        return clazz.getEAllReferences().stream().filter(r -> Objects.equals(r.getName(), referenceName)).findAny();
     }
 
     @Override
@@ -91,7 +98,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<? extends EAttribute> getAttribute(final EClass clazz, final String attributeName) {
-        return clazz.getEAllAttributes().stream().filter(r -> Objects.equals(r.getName(), attributeName)).findFirst();
+        return clazz.getEAllAttributes().stream().filter(r -> Objects.equals(r.getName(), attributeName)).findAny();
     }
 
     @Override
@@ -174,6 +181,24 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     @Override
     public boolean contains(EEnum enumeration, String memberName) {
         return enumeration.getELiterals().stream().filter(l -> Objects.equals(l.getLiteral(), memberName)).findAny().isPresent();
+    }
+
+    @Override
+    public Optional<Measure> getDurationMeasure() {
+        final Iterable<Notifier> contents = measureResourceSet::getAllContents;
+        return StreamSupport.stream(contents.spliterator(), false)
+                .filter(e -> e instanceof Measure).map(e -> (Measure) e)
+                .filter(m -> m.getUnits().stream().anyMatch(u -> isSupportingAddition(u)))
+                .findAny();
+    }
+
+    @Override
+    public boolean isSupportingAddition(final Unit unit) {
+        if (unit instanceof DurationUnit) {
+            return (unit instanceof DurationUnit) && DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getType());
+        } else {
+            return false;
+        }
     }
 
     private void initNamespace(final Iterable<EPackage> path, final EPackage namespace) {

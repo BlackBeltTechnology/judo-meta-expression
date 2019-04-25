@@ -7,8 +7,11 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
+import hu.blackbelt.judo.meta.psm.measure.DurationType;
+import hu.blackbelt.judo.meta.psm.measure.DurationUnit;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
+import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
@@ -18,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,11 +33,13 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
-public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure> {
+public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = ".";
 
     private final ResourceSet resourceSet;
+
+    private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
 
     private final Map<String, Namespace> namespaceCache = new ConcurrentHashMap<>();
 
@@ -50,7 +57,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         final Namespace namespace = namespaceCache.get(elementName.getNamespace().replace("::", NAMESPACE_SEPARATOR));
         if (namespace != null) {
             return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
-                    .findFirst();
+                    .findAny();
         } else {
             log.warn("Namespace not found: {}", elementName.getNamespace());
             return Optional.empty();
@@ -63,7 +70,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         if (namespace != null) {
             return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), measureName.getName()) && e instanceof Measure)
                     .map(m -> (Measure) m)
-                    .findFirst();
+                    .findAny();
         } else {
             log.warn("Measure not found: {}", measureName.getNamespace());
             return Optional.empty();
@@ -163,6 +170,24 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     @Override
     public boolean contains(EnumerationType enumeration, String memberName) {
         return enumeration.contains(memberName);
+    }
+
+    @Override
+    public Optional<Measure> getDurationMeasure() {
+        final Iterable<Notifier> contents = resourceSet::getAllContents;
+        return StreamSupport.stream(contents.spliterator(), false)
+                .filter(e -> e instanceof Measure).map(e -> (Measure) e)
+                .filter(m -> m.getUnits().stream().anyMatch(u -> isSupportingAddition(u)))
+                .findAny();
+    }
+
+    @Override
+    public boolean isSupportingAddition(final Unit unit) {
+        if (unit instanceof DurationUnit) {
+            return (unit instanceof DurationUnit) && DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getUnitType());
+        } else {
+            return false;
+        }
     }
 
     private void initNamespace(final Iterable<Namespace> path, final Namespace namespace) {

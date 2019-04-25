@@ -10,5 +10,11 @@ operation EXPR!TimestampDifferenceExpression isMeasured() : Boolean {
 
 @cached
 operation EXPR!TimestampDifferenceExpression getBaseMeasures() : Map {
-    return Map{getDurationMeasure()=1};
+    var m = modelAdapter.getDurationMeasure();
+    if (m.isPresent()) {
+        return Map{m.get()=1};
+    } else {
+        log.error("No base measure is defined for temporal expressions");
+        return Map{};
+    }
 }

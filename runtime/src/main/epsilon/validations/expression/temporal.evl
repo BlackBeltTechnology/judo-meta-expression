@@ -9,7 +9,7 @@ context EXPR!TimestampAdditionExpression {
     constraint DurationIsSystemUnit {
         guard: self.satisfiesAll("Resolved")
     
-        check: self.hasValidDurationUnit()
+        check: modelAdapter.isSupportingAddition(self.duration.getUnit())
         message: "Duration is not a valid temporal unit: " + self.duration.toString()
     }
 }

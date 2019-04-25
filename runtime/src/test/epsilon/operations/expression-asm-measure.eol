@@ -150,8 +150,3 @@ operation EXPR!MeasuredInteger getUnit() {
         }
     }
 }
-
-@cached
-operation getDurationMeasure() : MEASURES!Measure {
-    return MEASURES!Measure.all.selectOne(m | m.units.selectOne(u | u.isValidDurationUnit()).isDefined());
-}

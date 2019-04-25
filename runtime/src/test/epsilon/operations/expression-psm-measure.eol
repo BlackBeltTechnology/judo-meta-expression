@@ -127,8 +127,3 @@ operation EXPR!MeasuredInteger getUnit() {
         }
     }
 }
-
-@cached
-operation getDurationMeasure() : JUDOPSM!Measure {
-    return JUDOPSM!Measure.all.selectOne(m | m.units.selectOne(u | u.isValidDurationUnit()).isDefined());
-}
