@@ -4,11 +4,6 @@ operation EXPR!TimestampAdditionExpression getLambdaExpressions() : Collection {
 }
 
 @cached
-operation EXPR!TimestampDifferenceExpression isMeasured() : Boolean {
-    return true;
-}
-
-@cached
 operation EXPR!TimestampDifferenceExpression getBaseMeasures() : Map {
     var m = modelAdapter.getDurationMeasure();
     if (m.isPresent()) {

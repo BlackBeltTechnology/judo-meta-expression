@@ -3,7 +3,7 @@ context EXPR!EnumerationAttribute {
         guard: self.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isEnumeration()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not enumeration"
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not enumeration"
     }
 }
 

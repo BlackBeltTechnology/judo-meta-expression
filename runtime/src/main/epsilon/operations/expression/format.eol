@@ -64,7 +64,7 @@ operation EXPR!AttributeSelector toString() {
 
 @cached
 operation EXPR!IntegerAttribute toString() {
-    if (self.isMeasured()) {
+    if (self.isMeasured(modelAdapter)) {
         var unit = "";
         if (self.getUnit().isDefined()) {
             unit = " [" + self.getUnit().toString() + "]";
@@ -77,7 +77,7 @@ operation EXPR!IntegerAttribute toString() {
 
 @cached
 operation EXPR!DecimalAttribute toString() {
-    if (self.isMeasured()) {
+    if (self.isMeasured(modelAdapter)) {
         var unit = "";
         if (self.getUnit().isDefined()) {
             unit = " [" + self.getUnit().toString() + "]";

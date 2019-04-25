@@ -1,6 +1,6 @@
 @cached
 operation EXPR!AttributeSelector getAttributeType() {
-    var objectType = self.objectExpression.getObjectType();
+    var objectType = self.objectExpression.getObjectType(modelAdapter);
     
     if (objectType.isDefined()) {
         return objectType.getAttributeType(self.attributeName);

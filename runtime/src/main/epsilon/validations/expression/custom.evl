@@ -3,7 +3,7 @@ context EXPR!CustomAttribute {
         guard: self.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isCustom()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not custom (expression type)"
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not custom (expression type)"
     }
 }
 

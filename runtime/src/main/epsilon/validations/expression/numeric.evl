@@ -58,7 +58,7 @@ context EXPR!IntegerAttribute {
         guard: self.satisfiesAll("Resolved")
     
         check: self.getAttributeType().isInteger()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not integer"
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not integer"
     }
 }
 
@@ -67,7 +67,7 @@ context EXPR!DecimalAttribute {
         guard: self.satisfiesAll("Resolved")
     
         check: self.getAttributeType().isDecimal()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not decimal"
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not decimal"
     }
 }
 
@@ -75,15 +75,15 @@ context EXPR!IntegerAggregatedExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
     
     /*constraint AttributeTypeIsInteger {
         guard: self.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isInteger()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not integer"
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not integer"
     }*/
 }
 
@@ -91,22 +91,22 @@ context EXPR!DecimalAggregatedExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
 
     /*constraint AttributeTypeIsNumber {
         guard: self.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isNumeric()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not number"
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not number"
     }
     
     critique AttributeTypeIsDecimalOrOperationIsNotSupportedOnIntegers {
         guard: self.satisfiesAll("Resolved", "AttributeTypeIsNumber")
         
         check: not (self.getAttributeType().isInteger() and (self.operator == EXPR!DecimalAggregator#sum or self.operator == EXPR!DecimalAggregator#min or self.operator == EXPR!DecimalAggregator#max))
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is integer so integer aggregation is recommended in: " + self.toString()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is integer so integer aggregation is recommended in: " + self.toString()
     } */
 }
 

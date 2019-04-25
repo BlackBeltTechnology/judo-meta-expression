@@ -21,7 +21,11 @@
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NumericExpression" abstract="true" interface="true"
-      eSuperTypes="#//DataExpression"/>
+      eSuperTypes="#//DataExpression">
+    <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+      <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+    </eOperations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LogicalExpression" abstract="true" interface="true"
       eSuperTypes="#//DataExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="StringExpression" abstract="true" interface="true"
@@ -86,11 +90,21 @@
         <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
       </eAnnotations>
     </eOperations>
+    <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return getCollectionExpression().getObjectType(modelAdapter);"/>
+      </eAnnotations>
+      <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+    </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression" lowerBound="1"
         eType="#//CollectionExpression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceExpression" abstract="true"
-      interface="true" eSuperTypes="#//Expression"/>
+      interface="true" eSuperTypes="#//Expression">
+    <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+      <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+    </eOperations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReferenceSelector" abstract="true" eSuperTypes="#//NavigationExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="CustomExpression" abstract="true" interface="true"
       eSuperTypes="#//DataExpression"/>
@@ -101,7 +115,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="TypeName" eSuperTypes="#//ElementName">
     <eOperations name="get" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return modelAdapter.get(this);"/>
+        <details key="body" value="return modelAdapter.get(this).orElse(null);"/>
       </eAnnotations>
       <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
     </eOperations>
@@ -109,7 +123,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="MeasureName" eSuperTypes="#//ElementName">
     <eOperations name="get" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-        <details key="body" value="return modelAdapter.get(this);"/>
+        <details key="body" value="return modelAdapter.get(this).orElse(null);"/>
       </eAnnotations>
       <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
     </eOperations>
@@ -129,7 +143,14 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//constant/Constant #//NumericExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//constant/Constant #//NumericExpression">
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerConstant" eSuperTypes="#//constant/Number #//IntegerExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -181,6 +202,12 @@
           <details key="body" value="return &quot;INSTANCE{&quot; + String.valueOf(getElementName()) + &quot;}&quot;;"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getElementName().get(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
@@ -199,6 +226,12 @@
           <details key="body" value="return getValue() + &quot; [&quot; + getUnitName() + &quot;]&quot;;"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return true;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
@@ -208,6 +241,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return getValue() + &quot; [&quot; + getUnitName() + &quot;]&quot;;"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return true;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -237,9 +276,17 @@
     <eClassifiers xsi:type="ecore:EClass" name="Variable" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectVariable" abstract="true" eSuperTypes="#//variable/Variable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectVariable" abstract="true" eSuperTypes="#//variable/Variable">
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CollectionVariable" abstract="true"
-        eSuperTypes="#//variable/Variable"/>
+        eSuperTypes="#//variable/Variable">
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
@@ -309,7 +356,14 @@
   </eSubpackages>
   <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric"
       nsPrefix="n">
-    <eClassifiers xsi:type="ecore:EClass" name="CountExpression" eSuperTypes="#//IntegerExpression #//AggregatedExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CountExpression" eSuperTypes="#//IntegerExpression #//AggregatedExpression">
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerAritmeticExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -342,6 +396,12 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
@@ -350,6 +410,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//DecimalExpression" containment="true"/>
@@ -362,6 +428,12 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/IntegerAggregator"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
@@ -372,6 +444,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/DecimalAggregator"/>
@@ -384,13 +462,40 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//DecimalExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression"/>
-    <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression">
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="        if (getCases().stream().anyMatch(c -> ((NumericExpression)c.getExpression()).isMeasured(modelAdapter))) {&#xA;            return true;&#xA;        } else if (getDefaultExpression() != null) {&#xA;            return ((NumericExpression)getDefaultExpression()).isMeasured(modelAdapter);&#xA;        } else {&#xA;            return false;&#xA;        }"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression">
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="        if (getCases().stream().anyMatch(c -> ((NumericExpression)c.getExpression()).isMeasured(modelAdapter))) {&#xA;            return true;&#xA;        } else if (getDefaultExpression() != null) {&#xA;            return ((NumericExpression)getDefaultExpression()).isMeasured(modelAdapter);&#xA;        } else {&#xA;            return false;&#xA;        }"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NumericAttribute" abstract="true"
-        eSuperTypes="#//AttributeSelector #//NumericExpression"/>
+        eSuperTypes="#//AttributeSelector #//NumericExpression">
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return (boolean) modelAdapter.getAttribute(getObjectExpression().getObjectType(modelAdapter), getAttributeName()).map(a -> modelAdapter.isMeasured(a)).orElse(false);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical"
       nsPrefix="l">
@@ -668,6 +773,24 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getTarget(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="getReference" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getReference(getObjectExpression().getObjectType(modelAdapter), getReferenceName()).orElse(null);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="isCollection" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.isCollection(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
     </eClassifiers>
@@ -676,6 +799,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getCollectionExpression().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//OrderedCollectionExpression" containment="true"/>
@@ -688,6 +817,12 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getObjectExpression().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
@@ -699,6 +834,12 @@
           <details key="body" value="return getVariable() instanceof hu.blackbelt.judo.meta.expression.Expression ? org.eclipse.emf.common.util.ECollections.asEList((hu.blackbelt.judo.meta.expression.Expression) getVariable()) : org.eclipse.emf.common.util.ECollections.asEList();"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getVariable().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/ObjectVariable"/>
     </eClassifiers>
@@ -707,6 +848,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getElementName().get(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
@@ -731,6 +878,12 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList();"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getElementName().get(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
@@ -739,6 +892,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getCollectionExpression().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
@@ -750,6 +909,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return getVariable() instanceof hu.blackbelt.judo.meta.expression.Expression ? org.eclipse.emf.common.util.ECollections.asEList((hu.blackbelt.judo.meta.expression.Expression) getVariable()) : org.eclipse.emf.common.util.ECollections.asEList();"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getVariable().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
           eType="#//variable/CollectionVariable"/>
@@ -766,6 +931,24 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getReference" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getReference(getObjectExpression().getObjectType(modelAdapter), getReferenceName()).orElse(null);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getTarget(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="isCollection" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.isCollection(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
     </eClassifiers>
@@ -781,6 +964,24 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getReference" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getReference(getCollectionExpression().getObjectType(modelAdapter), getReferenceName()).orElse(null);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getTarget(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="isCollection" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.isCollection(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
@@ -789,6 +990,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getCollectionExpression().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
@@ -800,6 +1007,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getCollectionExpression().getObjectType(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//OrderedCollectionExpression"/>
@@ -824,6 +1037,24 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getReference" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getReference(getCollectionExpression().getObjectType(modelAdapter), getReferenceName()).orElse(null);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.getTarget(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="isCollection" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.isCollection(getReference(modelAdapter));"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
@@ -832,6 +1063,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getElementName().get(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
@@ -872,6 +1109,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getStartTimestamp(), getEndTimestamp());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return true;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="startTimestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>

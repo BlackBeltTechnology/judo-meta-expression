@@ -3,6 +3,6 @@ context EXPR!AttributeSelector {
         guard: self.objectExpression.satisfiesAll("Resolved")
         
         check: self.getAttributeType().isDefined()
-        message: "Attribute named " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
+        message: "Attribute named " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " not found"
     }
 }

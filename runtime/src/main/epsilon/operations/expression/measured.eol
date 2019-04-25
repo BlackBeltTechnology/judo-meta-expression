@@ -1,6 +1,18 @@
 @cached
+operation EXPR!IntegerAritmeticExpression isMeasured() : Boolean {
+	var baseMeasures = self.getBaseMeasures();
+	return baseMeasures.isDefined() and not baseMeasures.isEmpty();
+}
+
+@cached
+operation EXPR!DecimalAritmeticExpression isMeasured() : Boolean {
+    var baseMeasures = self.getBaseMeasures();
+	return baseMeasures.isDefined() and not baseMeasures.isEmpty();
+}
+
+@cached
 operation EXPR!NumericAttribute getBaseMeasures() : Map {
-	if (self.isMeasured()) {
+	if (self.isMeasured(modelAdapter)) {
 		var m = self.getMeasure();
 		if (m.isDefined()) {
 		    return m.getBaseMeasures();
@@ -43,90 +55,14 @@ operation EXPR!MeasuredInteger getBaseMeasures() : Map {
 }
 
 @cached
-operation EXPR!CountExpression isMeasured() : Boolean {
-    return false;
-}
-
-@cached
-operation EXPR!IntegerAritmeticExpression isMeasured() : Boolean {
-	var baseMeasures = self.getBaseMeasures();
-	return baseMeasures.isDefined() and not baseMeasures.isEmpty();
-}
-
-@cached
-operation EXPR!DecimalAritmeticExpression isMeasured() : Boolean {
-    var baseMeasures = self.getBaseMeasures();
-	return baseMeasures.isDefined() and not baseMeasures.isEmpty();
-}
-
-@cached
-operation EXPR!IntegerOppositeExpression isMeasured() : Boolean {
-    return self.expression.isMeasured();
-}
-
-@cached
-operation EXPR!DecimalOppositeExpression isMeasured() : Boolean {
-    return self.expression.isMeasured();
-}
-
-@cached
-operation EXPR!IntegerAggregatedExpression isMeasured() : Boolean {
-    return self.expression.isMeasured();
-}
-
-@cached
-operation EXPR!DecimalAggregatedExpression isMeasured() : Boolean {
-    return self.expression.isMeasured();
-}
-
-@cached
-operation EXPR!RoundExpression isMeasured() : Boolean {
-    return self.expression.isMeasured();
-}
-
-@cached
-operation EXPR!IntegerSwitchExpression isMeasured() : Boolean {
-    var foundMeasuredOperand = false;
-    if (self.defaultExpression.isDefined()) {
-        foundMeasuredOperand = foundMeasuredOperand or self.defaultExpression.isMeasured();
-    }
-    for (c in self.cases) {
-        foundMeasuredOperand = foundMeasuredOperand or c.expression.isMeasured();
-    }
-    return foundMeasuredOperand;
-}
-
-@cached
-operation EXPR!DecimalSwitchExpression isMeasured() : Boolean {
-    var foundMeasuredOperand = false;
-    if (self.defaultExpression.isDefined()) {
-        foundMeasuredOperand = foundMeasuredOperand or self.defaultExpression.isMeasured();
-    }
-    for (c in self.cases) {
-        foundMeasuredOperand = foundMeasuredOperand or c.expression.isMeasured();
-    }
-    return foundMeasuredOperand;
-}
-
-@cached
-operation EXPR!IntegerConstant isMeasured() : Boolean {
-    return false;
-}
-
-@cached
-operation EXPR!DecimalConstant isMeasured() : Boolean {
-    return false;
-}
-
-@cached
 operation EXPR!DecimalAritmeticExpression getBaseMeasures() : Map {
 	var leftBaseMeasures = Map{};
     var rightBaseMeasures = Map{};
     
-    if (self.left.isMeasured()) {
+    if (self.left.isMeasured(modelAdapter)) {
         leftBaseMeasures = self.left.getBaseMeasures();
     }
-    if (self.right.isMeasured()) {
+    if (self.right.isMeasured(modelAdapter)) {
         rightBaseMeasures = self.right.getBaseMeasures();
     }
     
@@ -138,10 +74,10 @@ operation EXPR!IntegerAritmeticExpression getBaseMeasures() : Map {
 	var leftBaseMeasures = Map{};
     var rightBaseMeasures = Map{};
     
-    if (self.left.isMeasured()) {
+    if (self.left.isMeasured(modelAdapter)) {
         leftBaseMeasures = self.left.getBaseMeasures();
     }
-    if (self.right.isMeasured()) {
+    if (self.right.isMeasured(modelAdapter)) {
         rightBaseMeasures = self.right.getBaseMeasures();
     }
     

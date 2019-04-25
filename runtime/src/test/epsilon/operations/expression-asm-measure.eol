@@ -1,12 +1,7 @@
 @cached
-operation EXPR!NumericAttribute isMeasured() : Boolean {
-    return modelAdapter.isMeasured(self.objectExpression.getObjectType().getAttribute(self.attributeName));
-}
-
-@cached
 operation EXPR!NumericAttribute getUnit() {
-    var a = self.objectExpression.getObjectType().getAttribute(self.attributeName);
-    var p = self.objectExpression.getObjectType().getProperty(self.attributeName);
+    var a = self.objectExpression.getObjectType(modelAdapter).getAttribute(self.attributeName);
+    var p = self.objectExpression.getObjectType(modelAdapter).getProperty(self.attributeName);
     
     var annotations = null;
     if (a.isDefined()) {
@@ -30,16 +25,6 @@ operation EXPR!NumericAttribute getUnit() {
     } else {
         return null;
     }
-}
-
-@cached
-operation EXPR!MeasuredInteger isMeasured() : Boolean {
-    return true;
-}
-
-@cached
-operation EXPR!MeasuredDecimal isMeasured() : Boolean {
-    return true;
 }
 
 operation MEASURES!Measure getUnit(name : String) : MEASURES!Unit {
@@ -85,8 +70,8 @@ operation MEASURES!BaseMeasure getBaseMeasures() : Map {
 
 @cached
 operation EXPR!NumericAttribute getMeasure() : MEASURES!Measure {
-    var a = self.objectExpression.getObjectType().getAttribute(self.attributeName);
-    var p = self.objectExpression.getObjectType().getProperty(self.attributeName);
+    var a = self.objectExpression.getObjectType(modelAdapter).getAttribute(self.attributeName);
+    var p = self.objectExpression.getObjectType(modelAdapter).getProperty(self.attributeName);
     
     var annotations = null;
     if (a.isDefined()) {
@@ -115,8 +100,8 @@ operation EXPR!NumericAttribute getMeasure() : MEASURES!Measure {
 operation EXPR!MeasuredDecimal getUnit() {
     if (self.measure.isDefined()) {
         var m = self.measure.get(modelAdapter);
-        if (m.isPresent()) {
-            return m.get().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+        if (m.isDefined()) {
+            return m.units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
         } else {
             return null;
         }
@@ -135,8 +120,8 @@ operation EXPR!MeasuredDecimal getUnit() {
 operation EXPR!MeasuredInteger getUnit() {
     if (self.measure.isDefined()) {
         var m = self.measure.get(modelAdapter);
-        if (m.isPresent()) {
-            return m.get().units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
+        if (m.isDefined()) {
+            return m.units.selectOne(u | u.name = self.unitName or u.symbol = self.unitName);
         } else {
             return null;
         }

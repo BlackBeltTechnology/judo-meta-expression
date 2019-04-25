@@ -4,16 +4,6 @@ operation EXPR!CountExpression getLambdaExpressions() : Collection {
 }
 
 @cached
-operation EXPR!IntegerAggregatedExpression getObjectType() {
-    return self.collectionExpression.getObjectType();
-}
-
-@cached
-operation EXPR!DecimalAggregatedExpression getObjectType() {
-    return self.collectionExpression.getObjectType();
-}
-
-@cached
 operation EXPR!IntegerSwitchExpression getOperands() : Collection {
     var operands = new Set;
     operands.addAll(self.cases.collect(c | c.condition));
