@@ -359,7 +359,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="CountExpression" eSuperTypes="#//IntegerExpression #//AggregatedExpression">
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return false;"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -369,6 +369,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
@@ -382,6 +388,12 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
         </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//NumericExpression"
           containment="true"/>
@@ -398,7 +410,7 @@
       </eOperations>
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -413,7 +425,7 @@
       </eOperations>
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -430,7 +442,7 @@
       </eOperations>
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -447,7 +459,7 @@
       </eOperations>
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -464,7 +476,7 @@
       </eOperations>
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getExpression().isMeasured(modelAdapter);"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -474,7 +486,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression">
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="        if (getCases().stream().anyMatch(c -> ((NumericExpression)c.getExpression()).isMeasured(modelAdapter))) {&#xA;            return true;&#xA;        } else if (getDefaultExpression() != null) {&#xA;            return ((NumericExpression)getDefaultExpression()).isMeasured(modelAdapter);&#xA;        } else {&#xA;            return false;&#xA;        }"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -482,7 +494,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression">
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="        if (getCases().stream().anyMatch(c -> ((NumericExpression)c.getExpression()).isMeasured(modelAdapter))) {&#xA;            return true;&#xA;        } else if (getDefaultExpression() != null) {&#xA;            return ((NumericExpression)getDefaultExpression()).isMeasured(modelAdapter);&#xA;        } else {&#xA;            return false;&#xA;        }"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
@@ -491,7 +503,7 @@
         eSuperTypes="#//AttributeSelector #//NumericExpression">
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return (boolean) modelAdapter.getAttribute(getObjectExpression().getObjectType(modelAdapter), getAttributeName()).map(a -> modelAdapter.isMeasured(a)).orElse(false);"/>
+          <details key="body" value="return modelAdapter.isMeasured(this);"/>
         </eAnnotations>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>

@@ -19,7 +19,7 @@ context EXPR!CollectionNavigationFromObjectExpression {
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: self.isCollection()
+        check: self.isCollection(modelAdapter)
         message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not collection"
     }
 }
@@ -35,7 +35,7 @@ context EXPR!CollectionNavigationFromCollectionExpression {
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: self.isCollection()
+        check: self.isCollection(modelAdapter)
         message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not collection"
     }
 }
@@ -51,7 +51,7 @@ context EXPR!ObjectNavigationFromCollectionExpression {
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: not self.isCollection()
+        check: not self.isCollection(modelAdapter)
         message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is collection"
     }
 }

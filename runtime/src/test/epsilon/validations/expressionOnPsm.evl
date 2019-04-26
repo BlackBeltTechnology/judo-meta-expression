@@ -9,7 +9,7 @@ operation displayAllExpressions() {
             expr.getObjectType(modelAdapter).getName().println(" - OBJECT TYPE of object expression: ");
         }
         if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured(modelAdapter)) {
-        	var measure = expr.getMeasure();
+        	var measure = modelAdapter.getMeasure(expr).orElse(null);
         	if (measure.isDefined()) {
         		measure.name.println(" - measure: ");
         	} else {

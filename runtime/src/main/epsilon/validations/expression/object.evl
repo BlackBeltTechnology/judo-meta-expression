@@ -9,7 +9,7 @@ context EXPR!ObjectNavigationExpression {
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: not self.isCollection()
+        check: not self.isCollection(modelAdapter)
         message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is collection"
     }
 }

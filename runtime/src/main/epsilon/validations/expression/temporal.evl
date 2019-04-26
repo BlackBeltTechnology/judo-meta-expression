@@ -9,7 +9,7 @@ context EXPR!TimestampAdditionExpression {
     constraint DurationIsSystemUnit {
         guard: self.satisfiesAll("Resolved")
     
-        check: modelAdapter.isSupportingAddition(self.duration.getUnit())
+        check: modelAdapter.isSupportingAddition(modelAdapter.getUnit(self.duration).orElse(null))
         message: "Duration is not a valid temporal unit: " + self.duration.toString()
     }
 }
@@ -94,7 +94,7 @@ context EXPR!TimestampDifferenceExpression {
     constraint Resolved {
         guard: self.startTimestamp.satisfiesAll("Resolved") and self.endTimestamp.satisfiesAll("Resolved")
     
-        check: self.getBaseMeasures().isDefined() and not self.getBaseMeasures().isEmpty() 
+        check: self.isDimensionDefined() 
         message: "Difference of timestamps is not duration"
     }
 }

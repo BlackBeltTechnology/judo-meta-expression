@@ -2,14 +2,3 @@
 operation EXPR!TimestampAdditionExpression getLambdaExpressions() : Collection {
     return Set{self.duration};
 }
-
-@cached
-operation EXPR!TimestampDifferenceExpression getBaseMeasures() : Map {
-    var m = modelAdapter.getDurationMeasure();
-    if (m.isPresent()) {
-        return Map{m.get()=1};
-    } else {
-        log.error("No base measure is defined for temporal expressions");
-        return Map{};
-    }
-}

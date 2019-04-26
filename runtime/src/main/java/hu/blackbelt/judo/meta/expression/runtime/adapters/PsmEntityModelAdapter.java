@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
 import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
@@ -168,6 +169,11 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     }
 
     @Override
+    public boolean isMeasured(NumericExpression numericExpression) {
+        return false;
+    }
+
+    @Override
     public boolean contains(EnumerationType enumeration, String memberName) {
         return enumeration.contains(memberName);
     }
@@ -188,6 +194,21 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         } else {
             return false;
         }
+    }
+
+    @Override
+    public Optional<Unit> getUnit(final NumericExpression numericExpression) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Measure> getMeasure(NumericExpression numericExpression) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Map<Measure, Integer>> getDimension(NumericExpression numericExpression) {
+        return Optional.empty();
     }
 
     private void initNamespace(final Iterable<Namespace> path, final Namespace namespace) {

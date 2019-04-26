@@ -1,12 +1,17 @@
 package hu.blackbelt.judo.meta.expression.adapters;
 
 import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
+
+    Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
     /**
      * Get a namespace element by element name.
@@ -64,9 +69,17 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
      */
     boolean isMeasured(PTE primitiveTypedElement);
 
+    boolean isMeasured(NumericExpression numericExpression);
+
     boolean contains(E enumeration, String memberName);
 
     Optional<M> getDurationMeasure();
 
     boolean isSupportingAddition(U unit);
+
+    Optional<M> getMeasure(NumericExpression numericExpression);
+
+    Optional<U> getUnit(NumericExpression numericExpression);
+
+    Optional<Map<M, Integer>> getDimension(NumericExpression numericExpression);
 }
