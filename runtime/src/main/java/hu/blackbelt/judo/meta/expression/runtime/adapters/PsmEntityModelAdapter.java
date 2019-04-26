@@ -1,13 +1,16 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
+import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.psm.measure.DurationType;
 import hu.blackbelt.judo.meta.psm.measure.DurationUnit;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
@@ -25,6 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +48,8 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     private final Map<String, Namespace> namespaceCache = new ConcurrentHashMap<>();
 
+    private MeasureAdapter<Measure, Unit> measureAdapter;
+
     public PsmEntityModelAdapter(final ResourceSet resourceSet) {
         this.resourceSet = resourceSet;
 
@@ -51,6 +57,16 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> e instanceof Model).map(e -> (Model) e)
                 .forEach(m -> initNamespace(Collections.emptyList(), m));
+
+        try {
+            final Iterable<Notifier> measureContents = resourceSet::getAllContents;
+            measureAdapter = new PsmEntityMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
+                    .filter(e -> e instanceof Measure).map(e -> (Measure) e)
+                    .collect(Collectors.toList()));
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Override
@@ -198,17 +214,17 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     @Override
     public Optional<Unit> getUnit(final NumericExpression numericExpression) {
-        return Optional.empty();
+        return measureAdapter.getUnit(numericExpression);
     }
 
     @Override
     public Optional<Measure> getMeasure(NumericExpression numericExpression) {
-        return Optional.empty();
+        return measureAdapter.getMeasure(numericExpression);
     }
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(NumericExpression numericExpression) {
-        return Optional.empty();
+        return measureAdapter.getDimension(numericExpression);
     }
 
     private void initNamespace(final Iterable<Namespace> path, final Namespace namespace) {
@@ -226,5 +242,96 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         final Iterable<Namespace> newPath = Iterables.concat(path, Collections.singleton(namespace));
         namespace.getPackages().parallelStream().forEach(p -> initNamespace(newPath, p));
+    }
+
+    private Optional<Unit> getUnit(final PrimitiveTypedElement primitiveTypedElement) {
+        if (primitiveTypedElement.getDataType().isMeasured()) {
+            return Optional.of(((MeasuredType)primitiveTypedElement.getDataType()).getStoreUnit());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private Optional<Unit> getUnitByNameOrSymbol(final Optional<MeasureName> measureName, final String nameOrSymbol) {
+        // TODO - log if unit not found
+
+        if (measureName.isPresent()) {
+            return get(measureName.get())
+                    .map(m -> m.getUnits().stream()
+                            .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
+                            .findAny().orElse(null));
+        } else {
+            // TODO - log if unit found in multiple measures
+            final Iterable<Notifier> contents = resourceSet::getAllContents;
+            return StreamSupport.stream(contents.spliterator(), false)
+                    .filter(e -> e instanceof Unit).map(e -> (Unit) e)
+                    .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
+                    .findAny();
+        }
+    }
+
+    class PsmEntityMeasureAdapter extends MeasureAdapter<Measure, Unit> {
+
+        PsmEntityMeasureAdapter(final Collection<Measure> measures) {
+            super(measures);
+        }
+
+        @Override
+        String getMeasureNamespace(final Measure measure) {
+            return namespaceCache.values().parallelStream()
+                    .filter(ns -> ns.getElements().contains(measure))
+                    .map(ns -> ns.getName())
+                    .findAny().get();
+        }
+
+        @Override
+        String getMeasureName(final Measure measure) {
+            return measure.getName();
+        }
+
+        @Override
+        Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+            if (measure instanceof DerivedMeasure) {
+                final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
+                final Map<Measure, Integer> base = new HashMap<>();
+                derivedMeasure.getTerms().forEach(t ->
+                        getBaseMeasures(getMeasure(t.getUnit())).forEach((m, exponent) -> {
+                            final int currentExponent = base.getOrDefault(getMeasure(t.getUnit()), 0);
+                            final int calculatedBaseExponent = exponent * t.getExponent();
+                            final int newExponent = currentExponent + calculatedBaseExponent;
+                            if (newExponent != 0) {
+                                base.put(m, newExponent);
+                            } else {
+                                base.remove(m);
+                            }
+                        })
+                );
+                return Collections.unmodifiableMap(base);
+            } else {
+                return ImmutableMap.of(measure, 1);
+            }
+        }
+
+        @Override
+        Collection<Unit> getUnits(final Measure measure) {
+            return measure.getUnits();
+        }
+
+        @Override
+        boolean isSupportingAddition(final Unit unit) {
+            return PsmEntityModelAdapter.this.isSupportingAddition(unit);
+        }
+
+        @Override
+        Optional<Unit> getUnitByNameOrSymbol(final Optional<MeasureName> measureName, final String nameOrSymbol) {
+            return PsmEntityModelAdapter.this.getUnitByNameOrSymbol(measureName, nameOrSymbol);
+        }
+
+        @Override
+        Optional<Unit> getUnit(final NumericAttribute numericAttribute) {
+
+            return getAttribute((EntityType) numericAttribute.getObjectExpression().getObjectType(PsmEntityModelAdapter.this), numericAttribute.getAttributeName())
+                    .map(a -> PsmEntityModelAdapter.this.getUnit(a)).get();
+        }
     }
 }

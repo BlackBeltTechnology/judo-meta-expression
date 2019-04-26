@@ -5,23 +5,9 @@ import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.SwitchExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.constant.Constant;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalAritmeticExpression;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalOppositeExpression;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerAggregatedExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerAritmeticExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerOppositeExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerSwitchExpression;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
-import hu.blackbelt.judo.meta.expression.numeric.RoundExpression;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.DurationType;
 import hu.blackbelt.judo.meta.measure.DurationUnit;
@@ -42,19 +28,16 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 
 @Slf4j
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
@@ -70,7 +53,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     private final Map<String, EPackage> namespaceCache = new ConcurrentHashMap<>();
 
-    private final Map<Map<Measure, Integer>, Measure> dimensions;
+    private MeasureAdapter<Measure, Unit> measureAdapter;
 
     public AsmModelAdapter(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet) {
         this.asmResourceSet = asmResourceSet;
@@ -83,25 +66,9 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .forEach(m -> initNamespace(Collections.emptyList(), m));
 
         final Iterable<Notifier> measureContents = measureResourceSet::getAllContents;
-        dimensions = StreamSupport.stream(measureContents.spliterator(), true)
+        measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .collect(Collectors.toMap(m -> getBaseMeasures(m), m -> m));
-    }
-
-    private static Optional<MeasureName> parseMeasureName(final String name) {
-        if (name == null) {
-            return Optional.empty();
-        } else {
-            final Matcher m = MEASURE_NAME_PATTERN.matcher(name);
-            if (m.matches()) {
-                return Optional.of(newMeasureNameBuilder()
-                        .withNamespace(m.group(1))
-                        .withName(m.group(2))
-                        .build());
-            } else {
-                throw new IllegalArgumentException("Invalid measure name " + name);
-            }
-        }
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -118,11 +85,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<Measure> get(final MeasureName measureName) {
-        final Iterable<Notifier> measureContents = measureResourceSet::getAllContents;
-        return StreamSupport.stream(measureContents.spliterator(), false)
-                .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .filter(m -> Objects.equals(m.getNamespace(), measureName.getNamespace()) && Objects.equals(m.getName(), measureName.getName()))
-                .findAny();
+        return measureAdapter.get(measureName);
     }
 
     @Override
@@ -217,51 +180,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public boolean isMeasured(final NumericExpression numericExpression) {
-        if (numericExpression instanceof MeasuredInteger) {
-            return true;
-        } else if (numericExpression instanceof MeasuredDecimal) {
-            return true;
-        } else if (numericExpression instanceof NumericAttribute) {
-            return getMeasure(numericExpression).isPresent();
-        } else if (numericExpression instanceof IntegerAritmeticExpression) {
-            final IntegerAritmeticExpression integerAritmeticExpression = (IntegerAritmeticExpression) numericExpression;
-            return getDimension(integerAritmeticExpression).map(d -> !d.isEmpty()).orElse(false);
-        } else if (numericExpression instanceof DecimalAritmeticExpression) {
-            final DecimalAritmeticExpression decimalAritmeticExpression = (DecimalAritmeticExpression) numericExpression;
-            return getDimension(decimalAritmeticExpression).map(d -> !d.isEmpty()).orElse(false);
-        } else if (numericExpression instanceof IntegerOppositeExpression) {
-            return isMeasured(((IntegerOppositeExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof DecimalOppositeExpression) {
-            return isMeasured(((DecimalOppositeExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerAggregatedExpression) {
-            return isMeasured(((IntegerAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof DecimalAggregatedExpression) {
-            return isMeasured(((DecimalAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof RoundExpression) {
-            return isMeasured(((RoundExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerSwitchExpression) {
-            final IntegerSwitchExpression integerSwitchExpression = (IntegerSwitchExpression) numericExpression;
-            if (integerSwitchExpression.getCases().stream().anyMatch(c -> isMeasured((NumericExpression) c.getExpression()))) {
-                return true;
-            } else if (integerSwitchExpression.getDefaultExpression() != null) {
-                return isMeasured((NumericExpression) integerSwitchExpression.getDefaultExpression());
-            } else {
-                return false;
-            }
-        } else if (numericExpression instanceof DecimalSwitchExpression) {
-            final DecimalSwitchExpression decimalSwitchExpression = (DecimalSwitchExpression) numericExpression;
-            if (decimalSwitchExpression.getCases().stream().anyMatch(c -> isMeasured((NumericExpression) c.getExpression()))) {
-                return true;
-            } else if (decimalSwitchExpression.getDefaultExpression() != null) {
-                return isMeasured((NumericExpression) decimalSwitchExpression.getDefaultExpression());
-            } else {
-                return false;
-            }
-        } else if (numericExpression instanceof TimestampDifferenceExpression) {
-            return true;
-        } else {
-            return false;
-        }
+        return measureAdapter.isMeasured(numericExpression);
     }
 
     @Override
@@ -271,11 +190,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<Measure> getDurationMeasure() {
-        final Iterable<Notifier> contents = measureResourceSet::getAllContents;
-        return StreamSupport.stream(contents.spliterator(), false)
-                .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .filter(m -> m.getUnits().stream().anyMatch(u -> isSupportingAddition(u)))
-                .findAny();
+        return measureAdapter.getDurationMeasure();
     }
 
     @Override
@@ -289,199 +204,17 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<Unit> getUnit(final NumericExpression numericExpression) {
-        if (numericExpression instanceof NumericAttribute) {
-            final NumericAttribute numericAttribute = (NumericAttribute) numericExpression;
-            // TODO - change getObjectType call
-            return getAttribute((EClass) numericAttribute.getObjectExpression().getObjectType(this), numericAttribute.getAttributeName())
-                    .map(a -> getUnit(a)).get();
-        } else if (numericExpression instanceof MeasuredDecimal) {
-            final MeasuredDecimal measuredDecimal = (MeasuredDecimal) numericExpression;
-            return getUnitByNameOrSymbol(Optional.ofNullable(measuredDecimal.getMeasure()), measuredDecimal.getUnitName());
-        } else if (numericExpression instanceof MeasuredInteger) {
-            final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
-            return getUnitByNameOrSymbol(Optional.ofNullable(measuredInteger.getMeasure()), measuredInteger.getUnitName());
-        } else {
-            return Optional.empty();
-        }
+        return measureAdapter.getUnit(numericExpression);
     }
 
     @Override
     public Optional<Measure> getMeasure(final NumericExpression numericExpression) {
-        return getDimension(numericExpression).map(bm -> dimensions.get(bm));
+        return measureAdapter.getMeasure(numericExpression);
     }
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(final NumericExpression numericExpression) {
-        if (numericExpression instanceof NumericAttribute) {
-            return getUnit(numericExpression)
-                    .map(u -> getMeasure(u))
-                    .map(m -> getBaseMeasures(m));
-        } else if (numericExpression instanceof MeasuredDecimal) {
-            // TODO - log if unit not found
-            return getUnit(numericExpression)
-                    .map(u -> getMeasure(u))
-                    .map(m -> getBaseMeasures(m));
-        } else if (numericExpression instanceof MeasuredInteger) {
-            // TODO - log if unit not found
-            return getUnit(numericExpression)
-                    .map(u -> getMeasure(u))
-                    .map(m -> getBaseMeasures(m));
-        } else if (numericExpression instanceof DecimalAritmeticExpression) {
-            return getDimensionOfDecimalAritmeticExpression((DecimalAritmeticExpression) numericExpression);
-        } else if (numericExpression instanceof IntegerAritmeticExpression) {
-            return getDimensionOfIntegerAritmeticExpression((IntegerAritmeticExpression) numericExpression);
-        } else if (numericExpression instanceof IntegerOppositeExpression) {
-            return getDimension(((IntegerOppositeExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof DecimalOppositeExpression) {
-            return getDimension(((DecimalOppositeExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerAggregatedExpression) {
-            return getDimension(((IntegerAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof DecimalAggregatedExpression) {
-            return getDimension(((DecimalAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof RoundExpression) {
-            return getDimension(((RoundExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerSwitchExpression) {
-            return getDimensionOfSwitchExpression((IntegerSwitchExpression) numericExpression);
-        } else if (numericExpression instanceof DecimalSwitchExpression) {
-            return getDimensionOfSwitchExpression((DecimalSwitchExpression) numericExpression);
-        } else if (numericExpression instanceof TimestampDifferenceExpression) {
-            final Optional<Measure> durationMeasure = getDurationMeasure();
-            if (durationMeasure.isPresent()) {
-                return Optional.of(ImmutableMap.of(durationMeasure.get(), 1));
-            } else {
-                log.error("No base measure is defined for temporal expressions");
-                return Optional.empty();
-            }
-        } else if (numericExpression instanceof Constant) {
-            return Optional.of(Collections.emptyMap());
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private Optional<Map<Measure, Integer>> getDimensionOfIntegerAritmeticExpression(final IntegerAritmeticExpression integerAritmeticExpression) {
-        final Optional<Map<Measure, Integer>> left = getDimension(integerAritmeticExpression.getLeft());
-        final Optional<Map<Measure, Integer>> right = getDimension(integerAritmeticExpression.getRight());
-
-        switch (integerAritmeticExpression.getOperator()) {
-            case ADD:
-            case SUBSTRACT:
-                if (Objects.equals(left, right)) {
-                    return left;
-                } else if (!left.isPresent() || !right.isPresent()) {
-                    log.warn("Addition of scalar and measured values is not allowed");
-                    return Optional.empty();
-                } else {
-                    log.warn("Additional operands must match");
-                    return Optional.empty();
-                }
-            case MULTIPLY:
-            case DIVIDE:
-                final Map<Measure, Integer> base = new HashMap<>();
-                if (left.isPresent()) {
-                    base.putAll(left.get());
-                }
-                if (right.isPresent()) {
-                    right.get().forEach((measure, exponent) -> {
-                        final int currentExponent = base.getOrDefault(measure, 0);
-                        final int newExponent;
-                        switch (integerAritmeticExpression.getOperator()) {
-                            case MULTIPLY:
-                                newExponent = currentExponent + exponent;
-                                break;
-                            case DIVIDE:
-                                newExponent = currentExponent - exponent;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unsupported operation");
-                        }
-                        if (newExponent != 0) {
-                            base.put(measure, newExponent);
-                        } else {
-                            base.remove(measure);
-                        }
-                    });
-                }
-                return Optional.of(base);
-            case MODULO:
-                return left;
-        }
-
-        throw new IllegalArgumentException("Unsupported operation");
-    }
-
-    private Optional<Map<Measure, Integer>> getDimensionOfDecimalAritmeticExpression(final DecimalAritmeticExpression decimalAritmeticExpression) {
-        final Optional<Map<Measure, Integer>> left = getDimension(decimalAritmeticExpression.getLeft());
-        final Optional<Map<Measure, Integer>> right = getDimension(decimalAritmeticExpression.getRight());
-
-        switch (decimalAritmeticExpression.getOperator()) {
-            case ADD:
-            case SUBSTRACT:
-                if (Objects.equals(left, right)) {
-                    return left;
-                } else if (!left.isPresent() || !right.isPresent()) {
-                    log.warn("Addition of scalar and measured values is not allowed");
-                    return Optional.empty();
-                } else {
-                    log.warn("Additional operands must match");
-                    return Optional.empty();
-                }
-            case MULTIPLY:
-            case DIVIDE:
-                final Map<Measure, Integer> base = new HashMap<>();
-                if (left.isPresent()) {
-                    base.putAll(left.get());
-                }
-                if (right.isPresent()) {
-                    right.get().forEach((measure, exponent) -> {
-                        final int currentExponent = base.getOrDefault(measure, 0);
-                        final int newExponent;
-                        switch (decimalAritmeticExpression.getOperator()) {
-                            case MULTIPLY:
-                                newExponent = currentExponent + exponent;
-                                break;
-                            case DIVIDE:
-                                newExponent = currentExponent - exponent;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unsupported operation");
-                        }
-                        if (newExponent != 0) {
-                            base.put(measure, newExponent);
-                        } else {
-                            base.remove(measure);
-                        }
-                    });
-                }
-                return Optional.of(base);
-        }
-
-        throw new IllegalArgumentException("Unsupported operation");
-    }
-
-    private Optional<Map<Measure, Integer>> getDimensionOfSwitchExpression(final SwitchExpression switchExpression) {
-        final Set<Measure> measures = new HashSet<>();
-
-        switchExpression.getCases().stream().map(c -> c.getExpression())
-                .forEach(e -> measures.add(getMeasure((NumericExpression) e).orElse(null)));
-
-        if (switchExpression.getDefaultExpression() != null) {
-            measures.add(getMeasure((NumericExpression) switchExpression.getDefaultExpression()).orElse(null));
-        }
-
-        if (measures.size() == 1) {
-            return Optional.ofNullable(getBaseMeasures(measures.iterator().next()));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private Measure getMeasure(final Unit unit) {
-        final Iterable<Notifier> measureContents = measureResourceSet::getAllContents;
-        return StreamSupport.stream(measureContents.spliterator(), true)
-                .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .filter(m -> m.getUnits().contains(unit))
-                .findAny().get();
+        return measureAdapter.getDimension(numericExpression);
     }
 
     private void initNamespace(final Iterable<EPackage> path, final EPackage namespace) {
@@ -515,7 +248,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     private Optional<Measure> getMeasure(final EAttribute attribute) {
-        return getUnit(attribute).map(u -> getMeasure(u));
+        return getUnit(attribute).map(u -> measureAdapter.getMeasure(u));
     }
 
     private Optional<Unit> getUnitByNameOrSymbol(final Optional<MeasureName> measureName, final String nameOrSymbol) {
@@ -536,12 +269,68 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         }
     }
 
-    private Map<Measure, Integer> getBaseMeasures(final Measure measure) {
-        if (measure instanceof DerivedMeasure) {
-            final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
-            return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
+    private static Optional<MeasureName> parseMeasureName(final String name) {
+        if (name == null) {
+            return Optional.empty();
         } else {
-            return ImmutableMap.of(measure, 1);
+            final Matcher m = MEASURE_NAME_PATTERN.matcher(name);
+            if (m.matches()) {
+                return Optional.of(newMeasureNameBuilder()
+                        .withNamespace(m.group(1))
+                        .withName(m.group(2))
+                        .build());
+            } else {
+                throw new IllegalArgumentException("Invalid measure name " + name);
+            }
+        }
+    }
+
+    class AsmMeasureAdapter extends MeasureAdapter<Measure, Unit> {
+
+        AsmMeasureAdapter(final Collection<Measure> measures) {
+            super(measures);
+        }
+
+        @Override
+        String getMeasureNamespace(final Measure measure) {
+            return measure.getNamespace();
+        }
+
+        @Override
+        String getMeasureName(final Measure measure) {
+            return measure.getName();
+        }
+
+        @Override
+        Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+            if (measure instanceof DerivedMeasure) {
+                final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
+                return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
+            } else {
+                return ImmutableMap.of(measure, 1);
+            }
+        }
+
+        @Override
+        Collection<Unit> getUnits(final Measure measure) {
+            return measure.getUnits();
+        }
+
+        @Override
+        boolean isSupportingAddition(final Unit unit) {
+            return AsmModelAdapter.this.isSupportingAddition(unit);
+        }
+
+        @Override
+        Optional<Unit> getUnitByNameOrSymbol(final Optional<MeasureName> measureName, final String nameOrSymbol) {
+            return AsmModelAdapter.this.getUnitByNameOrSymbol(measureName, nameOrSymbol);
+        }
+
+        @Override
+        Optional<Unit> getUnit(final NumericAttribute numericAttribute) {
+            // TODO - change getObjectType call
+            return getAttribute((EClass) numericAttribute.getObjectExpression().getObjectType(AsmModelAdapter.this), numericAttribute.getAttributeName())
+                    .map(a -> AsmModelAdapter.this.getUnit(a)).get();
         }
     }
 }

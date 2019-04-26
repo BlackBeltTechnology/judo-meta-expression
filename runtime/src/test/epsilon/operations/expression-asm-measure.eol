@@ -1,8 +1,0 @@
-@cached
-operation MEASURES!Unit toString() : String {
-    if (self.symbol.isDefined()) {
-        return self.symbol;
-    } else {
-        return self.name;
-    }
-}
