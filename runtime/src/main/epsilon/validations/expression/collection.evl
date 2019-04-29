@@ -94,7 +94,7 @@ context EXPR!CastCollection {
     constraint CastedTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType(modelAdapter).getSuperTypes().contains(self.collectionExpression.getObjectType(modelAdapter))
+        check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
         message: "Invalid casting type: " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
     }
 }

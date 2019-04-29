@@ -52,7 +52,7 @@ context EXPR!CastObject {
     constraint CastedTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType(modelAdapter).getSuperTypes().contains(self.objectExpression.getObjectType(modelAdapter))
+        check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
         message: "Invalid casting type: " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
     }
 }

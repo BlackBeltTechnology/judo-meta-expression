@@ -2,20 +2,10 @@ operation ASM!EClass getReference(name: String) : ASM!EReference {
     return modelAdapter.getReference(self, name).orElse(null);
 }
 
-@cached
-operation ASM!EReference getTarget() : ASM!EClass {
-    return modelAdapter.getTarget(self);
-}
-
 operation ASM!EClass getAttribute(name: String) : ASM!EAttribute {
     return modelAdapter.getAttribute(self, name).orElse(null);
 }
 
 operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
     return modelAdapter.getAttributeType(self, name).orElse(null);
-}
-
-@cached
-operation ASM!EClass getSuperTypes() : Collection {
-    return modelAdapter.getSuperTypes(self);
 }

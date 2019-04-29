@@ -30,7 +30,6 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
 
     boolean isCollection(NavigationExpression navigationExpression);
 
-    @Deprecated
     C getTarget(RTE reference);
 
     Optional<? extends PTE> getAttribute(C clazz, String attributeName);

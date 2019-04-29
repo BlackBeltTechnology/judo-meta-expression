@@ -35,7 +35,7 @@ context EXPR!InstanceOfExpression {
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: self.elementName.get(modelAdapter).getSuperTypes().contains(self.objectExpression.getObjectType(modelAdapter))
+        check: modelAdapter.getSuperTypes(self.elementName.get(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
         message: "Element type (" + self.elementName.toString() + ") is not compatible with " + self.objectExpression.getObjectType(modelAdapter).getName() 
     }
 }
@@ -49,7 +49,7 @@ context EXPR!TypeOfExpression {
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: self.elementName.get(modelAdapter).getSuperTypes().contains(self.objectExpression.getObjectType(modelAdapter))
+        check: modelAdapter.getSuperTypes(self.elementName.get(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
         message: "Element type (" + self.elementName.toString() + ") is not " + self.objectExpression.getObjectType(modelAdapter).getName() 
     }
 }
@@ -87,8 +87,8 @@ context EXPR!ContainsExpression {
         guard: self.satisfiesAll("Resolved")
         
         check: self.collectionExpression.getObjectType(modelAdapter) == self.objectExpression.getObjectType(modelAdapter)
-            or self.collectionExpression.getObjectType(modelAdapter).getSuperTypes().contains(self.objectExpression.getObjectType(modelAdapter))
-            or self.objectExpression.getObjectType(modelAdapter).getSuperTypes().contains(self.collectionExpression.getObjectType(modelAdapter))
+            or modelAdapter.getSuperTypes(self.collectionExpression.getObjectType(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
+            or modelAdapter.getSuperTypes(self.objectExpression.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
         message: "Types of collection and object are not compatible"  
     }
 }
