@@ -57,7 +57,7 @@ context EXPR!IntegerAttribute {
     constraint AttributeTypeIsInteger {
         guard: self.satisfiesAll("Resolved")
     
-        check: modelAdapter.isInteger(self.getAttributeType().get())
+        check: modelAdapter.isInteger(self.getAttributeType(modelAdapter).get())
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not integer"
     }
 }
@@ -66,7 +66,7 @@ context EXPR!DecimalAttribute {
     constraint AttributeTypeIsDecimal {
         guard: self.satisfiesAll("Resolved")
     
-        check: modelAdapter.isDecimal(self.getAttributeType().get())
+        check: modelAdapter.isDecimal(self.getAttributeType(modelAdapter).get())
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not decimal"
     }
 }
@@ -82,7 +82,7 @@ context EXPR!IntegerAggregatedExpression {
     /*constraint AttributeTypeIsInteger {
         guard: self.satisfiesAll("Resolved")
         
-        check: modelAdapter.isInteger(self.getAttributeType().get())
+        check: modelAdapter.isInteger(self.getAttributeType(modelAdapter).get())
         message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not integer"
     }*/
 }
@@ -98,14 +98,14 @@ context EXPR!DecimalAggregatedExpression {
     /*constraint AttributeTypeIsNumber {
         guard: self.satisfiesAll("Resolved")
         
-        check: modelAdapter.isNumeric(self.getAttributeType().get())
+        check: modelAdapter.isNumeric(self.getAttributeType(modelAdapter).get())
         message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not number"
     }
     
     critique AttributeTypeIsDecimalOrOperationIsNotSupportedOnIntegers {
         guard: self.satisfiesAll("Resolved", "AttributeTypeIsNumber")
         
-        check: not (modelAdapter.isInteger(self.getAttributeType().get()) and (self.operator == EXPR!DecimalAggregator#sum or self.operator == EXPR!DecimalAggregator#min or self.operator == EXPR!DecimalAggregator#max))
+        check: not (modelAdapter.isInteger(self.getAttributeType(modelAdapter).get()) and (self.operator == EXPR!DecimalAggregator#sum or self.operator == EXPR!DecimalAggregator#min or self.operator == EXPR!DecimalAggregator#max))
         message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is integer so integer aggregation is recommended in: " + self.toString()
     } */
 }

@@ -1,4 +1,3 @@
-import "attribute.eol";
 import "collection.eol";
 import "expression.eol";
 import "enumeration.eol";
