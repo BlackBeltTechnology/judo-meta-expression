@@ -3,22 +3,12 @@ operation ASM!EClass getReference(name: String) : ASM!EReference {
 }
 
 @cached
-operation ASM!EReference isCollection() : Boolean {
-    return modelAdapter.isCollection(self);
-}
-
-@cached
 operation ASM!EReference getTarget() : ASM!EClass {
     return modelAdapter.getTarget(self);
 }
 
 operation ASM!EClass getAttribute(name: String) : ASM!EAttribute {
     return modelAdapter.getAttribute(self, name).orElse(null);
-}
-
-// deprecated
-operation ASM!EClass getProperty(name: String) : ASM!EAttribute {
-    return null;
 }
 
 operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
@@ -28,51 +18,6 @@ operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
 @cached
 operation ASM!EClass getSuperTypes() : Collection {
     return modelAdapter.getSuperTypes(self);
-}
-
-@cached
-operation ASM!EDataType isNumeric() : Boolean {
-    return modelAdapter.isNumeric(self);
-}
-
-@cached
-operation ASM!EDataType isInteger() : Boolean {
-    return modelAdapter.isInteger(self);
-}
-
-@cached
-operation ASM!EDataType isDecimal() : Boolean {
-    return modelAdapter.isDecimal(self);
-}
-
-@cached
-operation ASM!EDataType isBoolean() : Boolean {
-    return modelAdapter.isBoolean(self);
-}
-
-@cached
-operation ASM!EDataType isString() : Boolean {
-    return modelAdapter.isString(self);
-}
-
-@cached
-operation ASM!EDataType isEnumeration() : Boolean {
-    return modelAdapter.isEnumeration(self);
-}
-
-@cached
-operation ASM!EDataType isDate() : Boolean {
-    return modelAdapter.isDate(self);
-}
-
-@cached
-operation ASM!EDataType isTimestamp() : Boolean {
-    return modelAdapter.isTimestamp(self);
-}
-
-@cached
-operation ASM!EDataType isCustom() : Boolean {
-    return modelAdapter.isCustom(self);
 }
 
 operation ASM!EEnum contains(memberName : String) : Boolean {

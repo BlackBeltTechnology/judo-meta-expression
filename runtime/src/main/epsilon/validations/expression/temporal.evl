@@ -27,7 +27,7 @@ context EXPR!TimestampAttribute {
     constraint AttributeTypeIsTimestamp {
         guard: self.satisfiesAll("Resolved")
     
-        check: self.getAttributeType().isTimestamp()
+        check: modelAdapter.isTimestamp(self.getAttributeType())
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not timestamp"
     }
 }

@@ -42,6 +42,12 @@
     <genClasses image="false" ecoreClass="expression.ecore#//DataExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//NavigationExpression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//NavigationExpression/referenceName"/>
+      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getObjectType">
+        <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getObjectType/modelAdapter"/>
+      </genOperations>
+      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getReference">
+        <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getReference/modelAdapter"/>
+      </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//SwitchExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/cases"/>
@@ -62,11 +68,7 @@
         <genParameters ecoreParameter="expression.ecore#//AggregatedExpression/getObjectType/modelAdapter"/>
       </genOperations>
     </genClasses>
-    <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression">
-      <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getObjectType">
-        <genParameters ecoreParameter="expression.ecore#//ReferenceExpression/getObjectType/modelAdapter"/>
-      </genOperations>
-    </genClasses>
+    <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector"/>
     <genClasses image="false" ecoreClass="expression.ecore#//CustomExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//DateExpression"/>
@@ -528,10 +530,6 @@
             body="return modelAdapter.getReference(getObjectExpression().getObjectType(modelAdapter), getReferenceName()).orElse(null);">
           <genParameters ecoreParameter="expression.ecore#//object/ObjectNavigationExpression/getReference/modelAdapter"/>
         </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//object/ObjectNavigationExpression/isCollection"
-            body="return modelAdapter.isCollection(getReference(modelAdapter));">
-          <genParameters ecoreParameter="expression.ecore#//object/ObjectNavigationExpression/isCollection/modelAdapter"/>
-        </genOperations>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/ObjectSelectorExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ObjectSelectorExpression/collectionExpression"/>
@@ -628,10 +626,6 @@
             body="return modelAdapter.getTarget(getReference(modelAdapter));">
           <genParameters ecoreParameter="expression.ecore#//collection/CollectionNavigationFromObjectExpression/getObjectType/modelAdapter"/>
         </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//collection/CollectionNavigationFromObjectExpression/isCollection"
-            body="return modelAdapter.isCollection(getReference(modelAdapter));">
-          <genParameters ecoreParameter="expression.ecore#//collection/CollectionNavigationFromObjectExpression/isCollection/modelAdapter"/>
-        </genOperations>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/CollectionNavigationFromCollectionExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/CollectionNavigationFromCollectionExpression/collectionExpression"/>
@@ -646,10 +640,6 @@
         <genOperations ecoreOperation="expression.ecore#//collection/CollectionNavigationFromCollectionExpression/getObjectType"
             body="return modelAdapter.getTarget(getReference(modelAdapter));">
           <genParameters ecoreParameter="expression.ecore#//collection/CollectionNavigationFromCollectionExpression/getObjectType/modelAdapter"/>
-        </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//collection/CollectionNavigationFromCollectionExpression/isCollection"
-            body="return modelAdapter.isCollection(getReference(modelAdapter));">
-          <genParameters ecoreParameter="expression.ecore#//collection/CollectionNavigationFromCollectionExpression/isCollection/modelAdapter"/>
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/SortExpression">
@@ -693,10 +683,6 @@
         <genOperations ecoreOperation="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/getObjectType"
             body="return modelAdapter.getTarget(getReference(modelAdapter));">
           <genParameters ecoreParameter="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/getObjectType/modelAdapter"/>
-        </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/isCollection"
-            body="return modelAdapter.isCollection(getReference(modelAdapter));">
-          <genParameters ecoreParameter="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/isCollection/modelAdapter"/>
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/CastCollection">

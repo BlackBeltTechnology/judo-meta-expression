@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime.adapters;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
@@ -105,8 +106,8 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     }
 
     @Override
-    public boolean isCollection(final ReferenceTypedElement reference) {
-        return reference.isCollection();
+    public boolean isCollection(final NavigationExpression navigationExpression) {
+        return ((ReferenceTypedElement) navigationExpression.getReference(this)).isCollection();
     }
 
     @Override
@@ -246,7 +247,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     private Optional<Unit> getUnit(final PrimitiveTypedElement primitiveTypedElement) {
         if (primitiveTypedElement.getDataType().isMeasured()) {
-            return Optional.of(((MeasuredType)primitiveTypedElement.getDataType()).getStoreUnit());
+            return Optional.of(((MeasuredType) primitiveTypedElement.getDataType()).getStoreUnit());
         } else {
             return Optional.empty();
         }

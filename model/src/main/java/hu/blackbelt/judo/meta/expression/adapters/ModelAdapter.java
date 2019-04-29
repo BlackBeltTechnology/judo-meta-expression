@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.adapters;
 
 import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 
@@ -27,8 +28,9 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
 
     Optional<? extends RTE> getReference(C clazz, String referenceName);
 
-    boolean isCollection(RTE reference);
+    boolean isCollection(NavigationExpression navigationExpression);
 
+    @Deprecated
     C getTarget(RTE reference);
 
     Optional<? extends PTE> getAttribute(C clazz, String attributeName);
