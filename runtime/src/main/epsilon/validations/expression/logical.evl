@@ -72,7 +72,7 @@ context EXPR!LogicalAttribute {
     constraint AttributeTypeIsBoolean {
         guard: self.satisfiesAll("Resolved")
         
-        check: modelAdapter.isBoolean(self.getAttributeType())
+        check: modelAdapter.isBoolean(self.getAttributeType().get())
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not boolean"
     }
 }

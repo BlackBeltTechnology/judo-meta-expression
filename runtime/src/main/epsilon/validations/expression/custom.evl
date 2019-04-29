@@ -2,7 +2,7 @@ context EXPR!CustomAttribute {
     constraint AttributeTypeIsCustom {
         guard: self.satisfiesAll("Resolved")
         
-        check: modelAdapter.isCustom(self.getAttributeType())
+        check: modelAdapter.isCustom(self.getAttributeType().get())
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not custom (expression type)"
     }
 }

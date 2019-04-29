@@ -2,7 +2,7 @@ context EXPR!StringAttribute {
     constraint AttributeTypeIsString {
         guard: self.satisfiesAll("Resolved")
         
-        check: modelAdapter.isString(self.getAttributeType())
+        check: modelAdapter.isString(self.getAttributeType().get())
         message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not string"
     }
 }

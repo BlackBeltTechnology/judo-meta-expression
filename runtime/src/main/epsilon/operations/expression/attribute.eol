@@ -3,7 +3,7 @@ operation EXPR!AttributeSelector getAttributeType() {
     var objectType = self.objectExpression.getObjectType(modelAdapter);
     
     if (objectType.isDefined()) {
-        return objectType.getAttributeType(self.attributeName);
+        return modelAdapter.getAttributeType(objectType, self.attributeName);
     } else {
         return null;
     }

@@ -1,6 +1,6 @@
 @cached
 operation EXPR!EnumerationAttribute getEnumeration() {
-    return self.getAttributeType();
+    return self.getAttributeType().get();
 }
 
 @cached
