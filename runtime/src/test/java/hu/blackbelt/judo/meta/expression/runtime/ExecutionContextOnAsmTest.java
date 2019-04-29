@@ -73,16 +73,6 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         return measureModelResourceSet.getResources().get(0);
     }
 
-    @Override
-    protected String getEvlSource() {
-        return "epsilon/validations/expressionOnAsm.evl";
-    }
-
-    @Override
-    protected String getExpressionToEvaluationEtlSource() {
-        return "epsilon/transformations/expression2evaluationOnAsm.etl";
-    }
-
     public File targetDir(){
         String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
         File targetDir = new File(relPath);

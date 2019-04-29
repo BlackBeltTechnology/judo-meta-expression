@@ -51,7 +51,7 @@ abstract class ExecutionContextTest {
         // Validation script
         executionContext.executeProgram(
                 evlExecutionContextBuilder()
-                        .source(getEvlSource())
+                        .source("validations/expression.evl")
                         .parameters(ImmutableList.of(programParameterBuilder()
                                 .name("extendedMetadataURI")
                                 .value(AsmUtils.extendedMetadataUri)
@@ -61,15 +61,15 @@ abstract class ExecutionContextTest {
                         .build());
 
         // Transformation script
-        final String expr2eval = getExpressionToEvaluationEtlSource();
-        if (expr2eval != null) {
+//        final String expr2eval = getExpressionToEvaluationEtlSource();
+//        if (expr2eval != null) {
 //            executionContext.addModel();
 //
 //            executionContext.executeProgram(
 //                    etlExecutionContextBuilder()
 //                            .source(expr2eval)
 //                            .build());
-        }
+//        }
 
         executionContext.commit();
         executionContext.close();
@@ -77,7 +77,7 @@ abstract class ExecutionContextTest {
 
     protected File scriptDir() {
         String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src/test");
+        File targetDir = new File(relPath + "../../src/main/epsilon");
         if (!targetDir.exists()) {
             targetDir.mkdir();
         }
@@ -98,10 +98,6 @@ abstract class ExecutionContextTest {
     }
 
     protected abstract Resource getExpressionResource() throws Exception;
-
-    protected abstract String getEvlSource();
-
-    protected abstract String getExpressionToEvaluationEtlSource();
 
     protected List<String> getExpectedErrors() {
         return null;

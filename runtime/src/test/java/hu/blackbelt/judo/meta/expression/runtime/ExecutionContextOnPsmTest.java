@@ -43,14 +43,4 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
 
         return psmModelResourceSet.getResources().get(0);
     }
-
-    @Override
-    protected String getEvlSource() {
-        return "epsilon/validations/expressionOnPsm.evl";
-    }
-
-    @Override
-    protected String getExpressionToEvaluationEtlSource() {
-        return "epsilon/transformations/expression2evaluationOnPsm.etl";
-    }
 }
