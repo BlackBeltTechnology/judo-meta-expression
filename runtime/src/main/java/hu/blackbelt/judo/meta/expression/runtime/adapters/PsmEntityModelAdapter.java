@@ -186,12 +186,12 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     }
 
     @Override
-    public boolean isMeasured(NumericExpression numericExpression) {
+    public boolean isMeasured(final NumericExpression numericExpression) {
         return false;
     }
 
     @Override
-    public boolean contains(EnumerationType enumeration, String memberName) {
+    public boolean contains(final EnumerationType enumeration, final String memberName) {
         return enumeration.contains(memberName);
     }
 

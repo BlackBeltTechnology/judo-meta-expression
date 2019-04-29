@@ -18,14 +18,14 @@ context EXPR!EnumerationComparison {
     constraint RightSideIsEnumerationContainingLeftSideElement {
     	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
     	
-        check: self.right.getEnumeration().contains(self.left.value)
+        check: modelAdapter.contains(self.right.getEnumeration(), self.left.value)
         message: "Enumeration " + self.right.getEnumeration().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
     }
     
     constraint LeftSideIsEnumerationContainingRightSideElement {
     	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
     	
-        check: self.left.getEnumeration().contains(self.right.value)
+        check: modelAdapter.contains(self.left.getEnumeration(), self.right.value)
         message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }
 }

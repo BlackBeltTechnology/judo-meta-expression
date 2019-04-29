@@ -187,7 +187,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public boolean contains(EEnum enumeration, String memberName) {
+    public boolean contains(final EEnum enumeration, final String memberName) {
         return enumeration.getELiterals().stream().filter(l -> Objects.equals(l.getLiteral(), memberName)).findAny().isPresent();
     }
 

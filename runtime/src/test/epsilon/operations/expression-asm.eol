@@ -19,7 +19,3 @@ operation ASM!EClass getAttributeType(name: String) : ASM!EClassifier {
 operation ASM!EClass getSuperTypes() : Collection {
     return modelAdapter.getSuperTypes(self);
 }
-
-operation ASM!EEnum contains(memberName : String) : Boolean {
-    return self.eLiterals.selectOne(m | m.name = memberName).isDefined();
-}
