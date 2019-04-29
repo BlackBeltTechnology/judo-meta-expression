@@ -9,24 +9,24 @@ context EXPR!EnumerationAttribute {
 
 context EXPR!EnumerationComparison {
     constraint BothSidesAreTheSameEnumerations {
-    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.getEnumeration().isDefined()
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration(modelAdapter).isDefined() and self.right.getEnumeration(modelAdapter).isDefined()
     	
-	    check: self.left.getEnumeration() == self.right.getEnumeration()
+	    check: self.left.getEnumeration(modelAdapter).get() == self.right.getEnumeration(modelAdapter).get()
 	    message: "Enumerations are not matching"
     }
     
     constraint RightSideIsEnumerationContainingLeftSideElement {
-    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.right.getEnumeration(modelAdapter).isDefined() and self.left.isTypeOf(EXPR!Literal)
     	
-        check: modelAdapter.contains(self.right.getEnumeration(), self.left.value)
-        message: "Enumeration " + self.right.getEnumeration().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
+        check: modelAdapter.contains(self.right.getEnumeration(modelAdapter).get(), self.left.value)
+        message: "Enumeration " + self.right.getEnumeration(modelAdapter).get().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
     }
     
     constraint LeftSideIsEnumerationContainingRightSideElement {
-    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration(modelAdapter).isDefined() and self.right.isTypeOf(EXPR!Literal)
     	
-        check: modelAdapter.contains(self.left.getEnumeration(), self.right.value)
-        message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
+        check: modelAdapter.contains(self.left.getEnumeration(modelAdapter).get(), self.right.value)
+        message: "Enumeration " + self.left.getEnumeration(modelAdapter).get().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }
 }
 
