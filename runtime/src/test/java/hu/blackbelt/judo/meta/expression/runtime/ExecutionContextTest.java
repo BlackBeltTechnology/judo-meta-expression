@@ -42,6 +42,7 @@ abstract class ExecutionContextTest {
                 .modelContexts(modelContexts)
                 .sourceDirectory(scriptDir())
                 .injectContexts(ImmutableMap.of(
+                        //"evaluator", new ExpressionEvaluator(getExpressionResource().getResourceSet()),
                         "modelAdapter", modelAdapter))
                 .build();
 

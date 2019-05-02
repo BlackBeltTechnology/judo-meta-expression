@@ -1,4 +1,0 @@
-@cached
-operation EXPR!TimestampAdditionExpression getLambdaExpressions() : Collection {
-    return Set{self.duration};
-}

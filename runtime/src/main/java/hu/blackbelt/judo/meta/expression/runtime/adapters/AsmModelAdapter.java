@@ -67,7 +67,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .forEach(m -> initNamespace(Collections.emptyList(), m));
 
         final Iterable<Notifier> measureContents = measureResourceSet::getAllContents;
-        measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
+        measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                 .collect(Collectors.toList()));
     }
@@ -232,7 +232,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         log.debug("Cached namespace: {}", key);
 
         final Iterable<EPackage> newPath = Iterables.concat(path, Collections.singleton(namespace));
-        namespace.getESubpackages().parallelStream().forEach(p -> initNamespace(newPath, p));
+        namespace.getESubpackages().stream().forEach(p -> initNamespace(newPath, p));
     }
 
     private Optional<Unit> getUnit(final EAttribute attribute) {

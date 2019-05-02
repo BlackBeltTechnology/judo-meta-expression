@@ -1,8 +1,1 @@
-import "collection.eol";
 import "expression.eol";
-import "format.eol";
-import "measured.eol";
-import "numeric.eol";
-import "object.eol";
-import "string.eol";
-import "temporal.eol";

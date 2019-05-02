@@ -1,4 +1,0 @@
-@cached
-operation EXPR!ObjectFilterExpression getLambdaExpressions() : Collection {
-    return Set{self.condition};
-}

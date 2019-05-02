@@ -44,7 +44,7 @@ public abstract class MeasureAdapter<M, U> {
     }
 
     public Optional<M> get(final MeasureName measureName) {
-        return measures.parallelStream()
+        return measures.stream()
                 .filter(m -> Objects.equals(getMeasureNamespace(m), measureName.getNamespace()) && Objects.equals(getMeasureName(m), measureName.getName()))
                 .findAny();
     }
@@ -98,7 +98,7 @@ public abstract class MeasureAdapter<M, U> {
     }
 
     public Optional<M> getDurationMeasure() {
-        return measures.parallelStream().filter(m -> getUnits(m).stream().anyMatch(u -> isSupportingAddition(u)))
+        return measures.stream().filter(m -> getUnits(m).stream().anyMatch(u -> isSupportingAddition(u)))
                 .findAny();
     }
 
@@ -169,7 +169,7 @@ public abstract class MeasureAdapter<M, U> {
     }
 
     M getMeasure(final U unit) {
-        return measures.parallelStream()
+        return measures.stream()
                 .filter(m -> getUnits(m).contains(unit))
                 .findAny().get();
     }

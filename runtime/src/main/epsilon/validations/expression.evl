@@ -18,13 +18,5 @@ operation displayAllExpressions() {
 }
 
 pre {
-    /*for (e in EXPR!Expression.all.select(e | e.isComplete())) {
-        e.toString().println("Complete expression: ");
-    }
-    
-    for (e in EXPR!Expression.all.select(e | e.isFragment())) {
-        e.toString().println("Fragment expression: ");
-    } */
-    
     displayAllExpressions();
 }

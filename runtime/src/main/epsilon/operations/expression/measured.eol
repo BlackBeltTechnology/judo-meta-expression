@@ -1,5 +1,0 @@
-@cached
-operation EXPR!NumericExpression isDimensionDefined() {
-    var dimension = modelAdapter.getDimension(self);
-    return dimension.isPresent() and not dimension.get().isEmpty();
-}

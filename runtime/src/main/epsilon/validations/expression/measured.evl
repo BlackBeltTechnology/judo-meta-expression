@@ -141,14 +141,14 @@ context EXPR!DecimalSwitchExpression {
     }
 }
 
-context EXPR!NumericExpression {
+/*context EXPR!NumericExpression {
     constraint MeasureOfCompleteExpressionIsDefined {
-        guard: self.satisfiesAll("Resolved") and self.isComplete() and modelAdapter.isMeasured(self)
+        guard: self.satisfiesAll("Resolved") and evaluator.isRoot(self) and modelAdapter.isMeasured(self)
         
         check: self.isDimensionDefined()
         message: "Measure is not defined for complete expression: " + self.toString()
     }
-}
+} */
 
 context EXPR!IntegerComparison {
     constraint Resolved {

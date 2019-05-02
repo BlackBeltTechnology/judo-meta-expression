@@ -9,8 +9,10 @@
       disposableProviderFactory="true" dataTypeConverters="true" extensibleProviderFactory="true"
       childCreationExtenders="true" fileExtensions="judo-meta-expression" ecorePackage="expression.ecore#/">
     <genClasses image="false" ecoreClass="expression.ecore#//Expression">
-      <genOperations ecoreOperation="expression.ecore#//Expression/toString" body="return &quot;UNRESOLVED&quot;;"/>
       <genOperations ecoreOperation="expression.ecore#//Expression/getOperands"/>
+      <genOperations ecoreOperation="expression.ecore#//Expression/getLambdaFunctions"
+          body="return org.eclipse.emf.common.util.ECollections.emptyEList();"/>
+      <genOperations ecoreOperation="expression.ecore#//Expression/getVariableName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ElementName">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ElementName/name"/>
@@ -56,16 +58,21 @@
       <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getReference">
         <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getReference/modelAdapter"/>
       </genOperations>
+      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getVariableName"
+          body="return getOperands().isEmpty() ? &quot;N/A&quot; : getOperands().get(0).getVariableName();"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//SwitchExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/cases"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/defaultExpression"/>
       <genOperations ecoreOperation="expression.ecore#//SwitchExpression/getOperands"
           body="        final org.eclipse.emf.common.util.EList result = org.eclipse.emf.common.util.ECollections.newBasicEList();&#xA;        result.addAll(getCases().stream().map(c -> c.getCondition()).collect(java.util.stream.Collectors.toList()));&#xA;        result.addAll(getCases().stream().map(c -> c.getExpression()).collect(java.util.stream.Collectors.toList()));&#xA;        if (getDefaultExpression() != null) {&#xA;            result.add(getDefaultExpression());&#xA;        }&#xA;        return result;"/>
+      <genOperations ecoreOperation="expression.ecore#//SwitchExpression/toString"
+          body="return &quot;(CASE &quot; + String.join(getCases().toString()) + (getDefaultExpression() != null ? getDefaultExpression() : &quot;&quot;);"/>
     </genClasses>
     <genClasses ecoreClass="expression.ecore#//SwitchCase">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchCase/condition"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchCase/expression"/>
+      <genOperations ecoreOperation="expression.ecore#//SwitchCase/toString" body="return &quot; WHEN &quot; + getCondition() + &quot; THEN &quot; + getExpression();"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//AggregatedExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//AggregatedExpression/collectionExpression"/>
@@ -75,6 +82,8 @@
           body="return getCollectionExpression().getObjectType(modelAdapter);">
         <genParameters ecoreParameter="expression.ecore#//AggregatedExpression/getObjectType/modelAdapter"/>
       </genOperations>
+      <genOperations ecoreOperation="expression.ecore#//AggregatedExpression/getVariableName"
+          body="return getCollectionExpression().getVariableName();"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector"/>
@@ -276,6 +285,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/CountExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/CountExpression/toString"
+            body="return &quot;COUNT(&quot; + getCollectionExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerAritmeticExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/IntegerAritmeticExpression/left"/>
@@ -287,6 +298,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/IntegerAritmeticExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerAritmeticExpression/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalAritmeticExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalAritmeticExpression/left"/>
@@ -298,6 +311,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/DecimalAritmeticExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAritmeticExpression/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerOppositeExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/IntegerOppositeExpression/expression"/>
@@ -307,6 +322,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/IntegerOppositeExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerOppositeExpression/toString"
+            body="return &quot;-&quot; + getExpression();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalOppositeExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalOppositeExpression/expression"/>
@@ -316,6 +333,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/DecimalOppositeExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalOppositeExpression/toString"
+            body="return &quot;-&quot; + getExpression();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerAttribute"/>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalAttribute"/>
@@ -328,6 +347,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/IntegerAggregatedExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerAggregatedExpression/toString"
+            body="return getOperator() + &quot;(&quot; + getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalAggregatedExpression">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/DecimalAggregatedExpression/operator"/>
@@ -338,6 +359,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/DecimalAggregatedExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/toString"
+            body="return getOperator() + &quot;(&quot; + getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/RoundExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/RoundExpression/expression"/>
@@ -347,6 +370,8 @@
             body="return modelAdapter.isMeasured(this);">
           <genParameters ecoreParameter="expression.ecore#//numeric/RoundExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//numeric/RoundExpression/toString"
+            body="return &quot;ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerSwitchExpression">
         <genOperations ecoreOperation="expression.ecore#//numeric/IntegerSwitchExpression/isMeasured"
@@ -376,6 +401,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/StringComparison/operator"/>
         <genOperations ecoreOperation="expression.ecore#//logical/StringComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/StringComparison/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/EnumerationComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/EnumerationComparison/left"/>
@@ -383,11 +410,15 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/EnumerationComparison/operator"/>
         <genOperations ecoreOperation="expression.ecore#//logical/EnumerationComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/EnumerationComparison/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/NegationExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/NegationExpression/expression"/>
         <genOperations ecoreOperation="expression.ecore#//logical/NegationExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/NegationExpression/toString"
+            body="return &quot;NOT &quot; + getExpression();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/KleeneExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/KleeneExpression/left"/>
@@ -395,6 +426,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/KleeneExpression/operator"/>
         <genOperations ecoreOperation="expression.ecore#//logical/KleeneExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/KleeneExpression/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/InstanceOfExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/InstanceOfExpression/objectExpression"/>
@@ -402,6 +435,8 @@
             ecoreFeature="ecore:EReference expression.ecore#//logical/InstanceOfExpression/elementName"/>
         <genOperations ecoreOperation="expression.ecore#//logical/InstanceOfExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/InstanceOfExpression/toString"
+            body="return &quot;(&quot; + getObjectExpression() + &quot; instanceOf &quot; + getElementName() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/LogicalAttribute"/>
       <genClasses ecoreClass="expression.ecore#//logical/UndefinedAttributeComparison">
@@ -409,17 +444,23 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/UndefinedAttributeComparison/attributeName"/>
         <genOperations ecoreOperation="expression.ecore#//logical/UndefinedAttributeComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedAttributeComparison/toString"
+            body="return &quot;(&quot; + getObjectExpression() + &quot;.&quot; + getAttributeName() + &quot; IS NULL)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/UndefinedNavigationComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedNavigationComparison/objectExpression"/>
         <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/toString"
+            body="return &quot;(&quot; + getObjectExpression() + &quot; IS NULL)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/ContainsExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ContainsExpression/collectionExpression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ContainsExpression/objectExpression"/>
         <genOperations ecoreOperation="expression.ecore#//logical/ContainsExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression(), getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/ContainsExpression/toString"
+            body="return &quot;(&quot; + getCollectionExpression() + &quot; contains &quot; + getObjectExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/IntegerComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/IntegerComparison/left"/>
@@ -427,6 +468,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/IntegerComparison/operator"/>
         <genOperations ecoreOperation="expression.ecore#//logical/IntegerComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/IntegerComparison/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/DecimalComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/DecimalComparison/left"/>
@@ -434,6 +477,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/DecimalComparison/operator"/>
         <genOperations ecoreOperation="expression.ecore#//logical/DecimalComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/DecimalComparison/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/ObjectComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ObjectComparison/left"/>
@@ -441,12 +486,16 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/ObjectComparison/operator"/>
         <genOperations ecoreOperation="expression.ecore#//logical/ObjectComparison/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/ObjectComparison/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/MemberOfExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/MemberOfExpression/collectionExpression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/MemberOfExpression/objectExpression"/>
         <genOperations ecoreOperation="expression.ecore#//logical/MemberOfExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression(), getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/MemberOfExpression/toString"
+            body="return &quot;(&quot; + getObjectExpression() + &quot; memberOf &quot; + getCollectionExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/TypeOfExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/TypeOfExpression/objectExpression"/>
@@ -454,6 +503,8 @@
             ecoreFeature="ecore:EReference expression.ecore#//logical/TypeOfExpression/elementName"/>
         <genOperations ecoreOperation="expression.ecore#//logical/TypeOfExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/TypeOfExpression/toString"
+            body="return &quot;(&quot; + getObjectExpression() + &quot; typeOf &quot; + getElementName() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
@@ -465,21 +516,29 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Concatenate/right"/>
         <genOperations ecoreOperation="expression.ecore#//string/Concatenate/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Concatenate/toString"
+            body="return &quot;CONCAT(&quot; + getLeft() + &quot;, &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/LowerCase">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/LowerCase/expression"/>
         <genOperations ecoreOperation="expression.ecore#//string/LowerCase/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/LowerCase/toString"
+            body="return &quot;LOWER(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/UpperCase">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/UpperCase/expression"/>
         <genOperations ecoreOperation="expression.ecore#//string/UpperCase/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/UpperCase/toString"
+            body="return &quot;UPPER(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/Length">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Length/expression"/>
         <genOperations ecoreOperation="expression.ecore#//string/Length/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Length/toString"
+            body="return &quot;LENGTH(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/SubString">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/SubString/expression"/>
@@ -487,6 +546,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/SubString/length"/>
         <genOperations ecoreOperation="expression.ecore#//string/SubString/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPosition(), getLength());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/SubString/toString"
+            body="return &quot;SUBSTRING(&quot; + getExpression() + &quot;, &quot; + getPosition() + &quot;, &quot; + getLength() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/Position">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Position/container"/>
@@ -494,6 +555,8 @@
             ecoreFeature="ecore:EReference expression.ecore#//string/Position/containment"/>
         <genOperations ecoreOperation="expression.ecore#//string/Position/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getContainer(), getContainment());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Position/toString"
+            body="return &quot;POSITION(&quot; + getContainer() + &quot;, &quot; + getContainment() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/Replace">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Replace/expression"/>
@@ -501,12 +564,15 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Replace/replacement"/>
         <genOperations ecoreOperation="expression.ecore#//string/Replace/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern(), getReplacement());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Replace/toString"
+            body="return &quot;REPLACE(&quot; + getExpression() + &quot;, &quot; + getPattern() + &quot;, &quot; + getReplacement() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/Trim">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//string/Trim/expression"/>
         <genOperations ecoreOperation="expression.ecore#//string/Trim/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Trim/toString" body="return &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/StringSwitchExpression"/>
       <genClasses ecoreClass="expression.ecore#//string/ConcatenateCollection">
@@ -514,6 +580,10 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/ConcatenateCollection/separator"/>
         <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getSeparator());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.newBasicEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/toString"
+            body="return &quot;CONCAT(&quot; + getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
@@ -561,6 +631,8 @@
             body="return getCollectionExpression().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//object/ObjectSelectorExpression/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/toString"
+            body="return &quot;(&quot; + getOperator() + &quot; &quot; + getCollectionExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/ObjectFilterExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ObjectFilterExpression/objectExpression"/>
@@ -571,6 +643,10 @@
             body="return getObjectExpression().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//object/ObjectFilterExpression/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectFilterExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.newBasicEList(getCondition());"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectFilterExpression/toString"
+            body="return getObjectExpression() + &quot;[&quot; + getVariableName() + &quot; | &quot; + getCondition() + &quot;]&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/ObjectVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -581,6 +657,10 @@
             body="return getVariable().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//object/ObjectVariableReference/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectVariableReference/toString"
+            body="return getVariable().getName();"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectVariableReference/getVariableName"
+            body="return toString();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/CastObject">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -592,6 +672,8 @@
             body="return getElementName().get(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//object/CastObject/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//object/CastObject/toString"
+            body="return getObjectExpression() + &quot;[as &quot; + getElementName() + &quot;]&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/ObjectSwitchExpression">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -622,6 +704,10 @@
             body="return getCollectionExpression().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//collection/CollectionFilterExpression/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//collection/CollectionFilterExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.newBasicEList(getCondition());"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/CollectionFilterExpression/toString"
+            body="return getCollectionExpression() + &quot;[&quot; + getVariableName() + &quot; | &quot; + getCondition() + &quot;]&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/CollectionVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -632,6 +718,10 @@
             body="return getVariable().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//collection/CollectionVariableReference/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//collection/CollectionVariableReference/toString"
+            body="return String.valueOf(getVariable().getName());"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/CollectionVariableReference/getVariableName"
+            body="return toString();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/CollectionNavigationFromObjectExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/CollectionNavigationFromObjectExpression/objectExpression"/>
@@ -672,6 +762,10 @@
             body="return getCollectionExpression().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//collection/SortExpression/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/toString"
+            body="return getCollectionExpression() + &quot; as &quot; + getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/SubCollectionExpression">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -690,6 +784,8 @@
       <genClasses ecoreClass="expression.ecore#//collection/OrderByItem">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/OrderByItem/expression"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//collection/OrderByItem/descending"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/OrderByItem/toString"
+            body="return getExpression() + (isDescending() ? &quot; DESC&quot; : &quot;&quot;);"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/ObjectNavigationFromCollectionExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/ObjectNavigationFromCollectionExpression/collectionExpression"/>
@@ -716,6 +812,8 @@
             body="return getElementName().get(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//collection/CastCollection/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//collection/CastCollection/toString"
+            body="return getCollectionExpression() + &quot;[as &quot; + getElementName() + &quot;]&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/CollectionSwitchExpression">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -741,6 +839,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampAdditionExpression/operator"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAdditionExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getDuration());"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAdditionExpression/toString"
+            body="return &quot;(&quot; + getTimestamp() + &quot; &quot; + getOperator() + &quot; &quot; + getDuration() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//temporal/TimestampDifferenceExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/startTimestamp"/>
@@ -751,6 +851,8 @@
             body="return true;">
           <genParameters ecoreParameter="expression.ecore#//temporal/TimestampDifferenceExpression/isMeasured/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/toString"
+            body="return &quot;(&quot; + getEndTimestamp() + &quot; - &quot; + getStartTimestamp() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>

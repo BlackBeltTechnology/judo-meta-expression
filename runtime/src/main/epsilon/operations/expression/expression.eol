@@ -1,17 +1,20 @@
+// Utility for EVLs: get switch expression of a given switch case.
 @cached
 operation EXPR!SwitchCase getSwitchExpression() {
     return EXPR!SwitchExpression.all.selectOne(e | e.cases.contains(self));
 }
 
-// get collection of lambda expressions where the given object/collection expression is used as input variable
+// Utility for EVLs: check if dimension is defined for a given numeric expression.
 @cached
-operation EXPR!ReferenceExpression getLambdaExpressions() : Collection {
-    return Set{};
+operation EXPR!NumericExpression isDimensionDefined() {
+    var dimension = modelAdapter.getDimension(self);
+    return dimension.isPresent() and not dimension.get().isEmpty();
 }
 
+/*
 @cached
 operation EXPR!Expression isComplete() : Boolean {
-    return not EXPR!Expression.all.selectOne(e | e.getOperands().contains(self) or (e.isKindOf(EXPR!ReferenceExpression) and e.getLambdaExpressions().contains(self))).isDefined();
+    return not EXPR!Expression.all.selectOne(e | e.getOperands().contains(self) or (e.isKindOf(EXPR!ReferenceExpression) and e.getLambdaFunctions().contains(self))).isDefined();
 }
 
 @cached
@@ -20,13 +23,13 @@ operation EXPR!Expression isFragment() : Boolean {
 }
 
 @cached
-operation EXPR!Expression isLambdaExpression() : Boolean {
+operation EXPR!Expression isLambdaFunction() : Boolean {
     return self.getLambdaContainer().isDefined();
 }
 
 @cached
 operation EXPR!Expression getLambdaContainer() : EXPR!ReferenceExpression {
-    return EXPR!ReferenceExpression.all.selectOne(e | e.getLambdaExpressions().contains(self));
+    return EXPR!ReferenceExpression.all.selectOne(e | e.getLambdaFunctions().contains(self));
 }
 
 @cached
@@ -55,7 +58,7 @@ operation EXPR!Expression getBaseExpressions() : Collection {
 
 @cached
 operation EXPR!Expression getLambdaBasePath() : Collection {
-    if (not self.isLambdaExpression()) {
+    if (not self.isLambdaFunction()) {
         return Set{};
     }
     
@@ -89,3 +92,4 @@ operation EXPR!Expression getLambdaBasePath() : Collection {
     
     return result;
 }
+*/

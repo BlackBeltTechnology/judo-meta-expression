@@ -61,7 +61,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         try {
             final Iterable<Notifier> measureContents = resourceSet::getAllContents;
-            measureAdapter = new PsmEntityMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
+            measureAdapter = new PsmEntityMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), false)
                     .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                     .collect(Collectors.toList()));
         } catch (RuntimeException ex) {
@@ -242,7 +242,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         log.debug("Cached namespace: {}", key);
 
         final Iterable<Namespace> newPath = Iterables.concat(path, Collections.singleton(namespace));
-        namespace.getPackages().parallelStream().forEach(p -> initNamespace(newPath, p));
+        namespace.getPackages().stream().forEach(p -> initNamespace(newPath, p));
     }
 
     private Optional<Unit> getUnit(final PrimitiveTypedElement primitiveTypedElement) {
@@ -279,7 +279,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         @Override
         String getMeasureNamespace(final Measure measure) {
-            return namespaceCache.values().parallelStream()
+            return namespaceCache.values().stream()
                     .filter(ns -> ns.getElements().contains(measure))
                     .map(ns -> ns.getName())
                     .findAny().get();
