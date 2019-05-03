@@ -3,11 +3,10 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.ecore.resource.ResourceSet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,20 +19,18 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 public class ExpressionEvaluator {
 
-    private ResourceSet resourceSet;
+    private final Collection<Expression> expressions = new ArrayList<>();
 
-    private Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
-    private Map<ReferenceExpression, Expression> navigationSources = new ConcurrentHashMap<>();
+    private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
+    private final Map<ReferenceExpression, Expression> sources = new ConcurrentHashMap<>();
+    private final Set<Expression> rootExpressions = new HashSet<>();
 
-    private Set<Expression> rootExpressions;
-
-    public ExpressionEvaluator(final ResourceSet resourceSet) {
-        this.resourceSet = resourceSet;
+    public void init(final Collection<Expression> expressions) {
+        this.expressions.addAll(expressions);
 
         getAllInstances(Expression.class).forEach(expression -> {
             final Optional<ReferenceExpression> lambdaContainer = getAllInstances(ReferenceExpression.class)
@@ -46,24 +43,31 @@ public class ExpressionEvaluator {
         });
 
         getAllInstances(ReferenceExpression.class).forEach(referenceExpression -> {
-            final Optional<Expression> navigationSource = getAllInstances(Expression.class)
+            // single sources are supported only (ie. filtering unions is unsupported)
+            final Optional<ReferenceExpression> source = getAllInstances(ReferenceExpression.class)
                     .filter(e -> referenceExpression.getOperands().contains(e))
                     .findAny();
 
-            if (navigationSource.isPresent()) {
-                navigationSources.put(referenceExpression, navigationSource.get());
+            if (source.isPresent()) {
+                sources.put(referenceExpression, source.get());
             }
         });
 
-        rootExpressions = getAllInstances(Expression.class)
+        rootExpressions.addAll(getAllInstances(Expression.class)
                 .filter(expression -> getAllInstances(Expression.class)
                         .anyMatch(e -> !(e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
     }
 
-    public <T> Stream<T> getAllInstances(final Class<T> clazz) {
-        final Iterable<Notifier> asmContents = resourceSet::getAllContents;
-        return StreamSupport.stream(asmContents.spliterator(), false)
+    public void cleanup() {
+        expressions.clear();
+        lambdaContainers.clear();
+        sources.clear();
+        rootExpressions.clear();
+    }
+
+    <T> Stream<T> getAllInstances(final Class<T> clazz) {
+        return expressions.stream()
                 .filter(e -> clazz.isAssignableFrom(e.getClass()))
                 .map(e -> (T) e);
     }
@@ -114,31 +118,36 @@ public class ExpressionEvaluator {
     }
 
     /**
-     * Get list of variables that are available in scope of a given (lambda) expression.
+     * Get list of variables that are available in scope of a given expression.
      *
      * @param expression expression
      * @return available variables
      */
     public Set<Variable> getVariablesOfScope(final Expression expression) {
         if (!isLambdaFunction(expression)) {
-            return Collections.emptySet();
-        }
+            return getExpressionTerms(expression).stream()
+                    .filter(e -> (e instanceof ImmutableSet) || (e instanceof Instance))
+                    .map(e -> (ObjectVariable)e)
+                    .collect(Collectors.toSet());
+        } else {
+            final Set<Variable> variables = new HashSet<>();
 
-        ObjectFilterExpression x;
-        final Set<Variable> variables = new HashSet<>();
+            Expression expr = lambdaContainers.get(expression);
 
-        //Expression expr = lambdaContainers.get(expression);
+            while (expr != null) {
+                if (expr instanceof Variable) {
+                    variables.add((Variable) expr);
+                }
 
-        /*while (expr instanceof Variable) {
-            variables.add((Expression) expr);
-            if (navigationSources.containsKey(expr)) {
-                final Variable navigationSourceExpr = navigationSources.get(expr);
-                //variables.add(navigationSourceExpr);
-
-                //variables.addAll(getVariablesOfScope(navigationSourceExpr));
+                if (sources.containsKey(expr)) {
+                    expr = sources.get(expr);
+                } else {
+                    variables.addAll(getVariablesOfScope(expr));
+                    expr = null;
+                }
             }
-        } */
 
-        return variables;
+            return variables;
+        }
     }
 }

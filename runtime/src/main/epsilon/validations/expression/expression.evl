@@ -7,17 +7,13 @@ context EXPR!TypeName {
     }
 }
 
-/*context EXPR!Expression {
+context EXPR!Expression {
 
     // variable reference in lambda expression is referencing to variable visible from its scope
     constraint LambdaVariableIsValid {
         guard: evaluator.isLambdaFunction(self)
         
-        //check: evaluator.getVariablesOfScope(self).containsAll(evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable))
-        check: not evaluator.getVariablesOfScope(self).isEmpty()
-        message: "Invalid variable references"
-        
-        //check: evaluator.getVariablesOfScope(self).containsAll(evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable))
-        //message: "Invalid variable references: " + evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable).excludingAll(evaluator.getVariablesOfScope(self)).collect(e | e.toString()) + " in expression: " + self.toString()
+        check: evaluator.getVariablesOfScope(self).containsAll(evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable))
+        message: "Invalid variable references: " + evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable).excludingAll(evaluator.getVariablesOfScope(self)) + " in expression: " + self
     }
-} */
+}

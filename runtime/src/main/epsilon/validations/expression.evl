@@ -18,5 +18,11 @@ operation displayAllExpressions() {
 }
 
 pre {
+    evaluator.init(EXPR!Expression.ALL);
+
     displayAllExpressions();
+}
+
+post {
+    evaluator.cleanup();
 }
