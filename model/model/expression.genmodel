@@ -12,7 +12,6 @@
       <genOperations ecoreOperation="expression.ecore#//Expression/getOperands"/>
       <genOperations ecoreOperation="expression.ecore#//Expression/getLambdaFunctions"
           body="return org.eclipse.emf.common.util.ECollections.emptyEList();"/>
-      <genOperations ecoreOperation="expression.ecore#//Expression/getVariableName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ElementName">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ElementName/name"/>
@@ -58,8 +57,7 @@
       <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getReference">
         <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getReference/modelAdapter"/>
       </genOperations>
-      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getVariableName"
-          body="return getOperands().isEmpty() ? &quot;N/A&quot; : getOperands().get(0).getVariableName();"/>
+      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getVariableName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//SwitchExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/cases"/>
@@ -203,11 +201,15 @@
         <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getVariableName"
+            body="return getName();"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/CollectionVariable">
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getVariableName"
+            body="return getName();"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operator" resource="XMI" disposableProviderFactory="true"
@@ -348,7 +350,7 @@
           <genParameters ecoreParameter="expression.ecore#//numeric/IntegerAggregatedExpression/isMeasured/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//numeric/IntegerAggregatedExpression/toString"
-            body="return getOperator() + &quot;(&quot; + getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
+            body="return getOperator() + &quot;(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalAggregatedExpression">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/DecimalAggregatedExpression/operator"/>
@@ -360,7 +362,7 @@
           <genParameters ecoreParameter="expression.ecore#//numeric/DecimalAggregatedExpression/isMeasured/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/toString"
-            body="return getOperator() + &quot;(&quot; + getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
+            body="return getOperator() + &quot;(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/RoundExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/RoundExpression/expression"/>
@@ -583,7 +585,7 @@
         <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.newBasicEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/toString"
-            body="return &quot;CONCAT(&quot; + getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
+            body="return &quot;CONCAT(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
@@ -646,7 +648,9 @@
         <genOperations ecoreOperation="expression.ecore#//object/ObjectFilterExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.newBasicEList(getCondition());"/>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectFilterExpression/toString"
-            body="return getObjectExpression() + &quot;[&quot; + getVariableName() + &quot; | &quot; + getCondition() + &quot;]&quot;;"/>
+            body="return getObjectExpression() + &quot;[&quot; + getObjectExpression().getVariableName() + &quot; | &quot; + getCondition() + &quot;]&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectFilterExpression/getVariableName"
+            body="return getObjectExpression().getVariableName();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/ObjectVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -707,7 +711,9 @@
         <genOperations ecoreOperation="expression.ecore#//collection/CollectionFilterExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.newBasicEList(getCondition());"/>
         <genOperations ecoreOperation="expression.ecore#//collection/CollectionFilterExpression/toString"
-            body="return getCollectionExpression() + &quot;[&quot; + getVariableName() + &quot; | &quot; + getCondition() + &quot;]&quot;;"/>
+            body="return getCollectionExpression() + &quot;[&quot; + getCollectionExpression().getVariableName() + &quot; | &quot; + getCondition() + &quot;]&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/CollectionFilterExpression/getVariableName"
+            body="return getCollectionExpression().getVariableName();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/CollectionVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -765,7 +771,9 @@
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/toString"
-            body="return getCollectionExpression() + &quot; as &quot; + getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());"/>
+            body="return getCollectionExpression() + &quot; as &quot; + getCollectionExpression().getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getVariableName"
+            body="return getCollectionExpression().getVariableName();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/SubCollectionExpression">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
