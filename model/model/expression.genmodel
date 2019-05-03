@@ -153,6 +153,8 @@
             body="return getElementName().get(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//constant/Instance/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//constant/Instance/getVariableName"
+            body="return &quot;self&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/CustomData">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/CustomData/value"/>
@@ -197,20 +199,18 @@
         fileExtensions="judo-meta-expression-variable" ecorePackage="expression.ecore#//variable">
       <genClasses image="false" ecoreClass="expression.ecore#//variable/Variable">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/Variable/name"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/Variable/getVariableName"
+            body="return getName();"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/ObjectVariable">
         <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/getObjectType/modelAdapter"/>
         </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getVariableName"
-            body="return getName();"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/CollectionVariable">
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/getObjectType/modelAdapter"/>
         </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getVariableName"
-            body="return getName();"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operator" resource="XMI" disposableProviderFactory="true"
