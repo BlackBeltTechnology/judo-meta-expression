@@ -3,7 +3,7 @@ context EXPR!MeasuredInteger {
         guard: self.satisfiesAll("Resolved")
         
         check: self.isDimensionDefined()
-        message: "Measure of integer constant is invalid: " + self.toString()
+        message: "Measure of integer constant is invalid: " + self
     }
 }
 
@@ -12,7 +12,7 @@ context EXPR!MeasuredDecimal {
         guard: self.satisfiesAll("Resolved")
         
         check: self.isDimensionDefined()
-        message: "Measure of decimal constant is invalid: " + self.toString()
+        message: "Measure of decimal constant is invalid: " + self
     }
 }
 
@@ -21,7 +21,7 @@ context EXPR!IntegerAttribute {
         guard: self.satisfiesAll("Resolved")
         
         check: not modelAdapter.isMeasured(self) or (self.isDimensionDefined())
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -30,7 +30,7 @@ context EXPR!DecimalAttribute {
         guard: self.satisfiesAll("Resolved")
         
         check: not modelAdapter.isMeasured(self) or (self.isDimensionDefined())
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -42,7 +42,7 @@ context EXPR!IntegerAritmeticExpression {
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
         
         check: modelAdapter.getDimension(self).isPresent()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
     
     // measured operation is valid
@@ -52,7 +52,7 @@ context EXPR!IntegerAritmeticExpression {
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	
         check: modelAdapter.getDimension(self).isPresent() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
-    	message: "Operation of measured expression is invalid: " + self.toString()
+    	message: "Operation of measured expression is invalid: " + self
    	}
 }
 
@@ -64,7 +64,7 @@ context EXPR!DecimalAritmeticExpression {
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
         
         check: modelAdapter.getDimension(self).isPresent()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
     
     // measured operation is valid
@@ -74,7 +74,7 @@ context EXPR!DecimalAritmeticExpression {
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	
         check: modelAdapter.getDimension(self).isPresent() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
-    	message: "Operation of measured expression is invalid: " + self.toString()
+    	message: "Operation of measured expression is invalid: " + self
    	}
 }
 
@@ -83,7 +83,7 @@ context EXPR!IntegerOppositeExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -92,7 +92,7 @@ context EXPR!DecimalOppositeExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -101,7 +101,7 @@ context EXPR!IntegerAggregatedExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -110,7 +110,7 @@ context EXPR!DecimalAggregatedExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -119,7 +119,7 @@ context EXPR!RoundExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -128,7 +128,7 @@ context EXPR!IntegerSwitchExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.cases.select(c | not c.expression.satisfiesAll("MeasureIsValid")).size() == 0 and (not self.defaultExpression.isDefined() or self.defaultExpression.satisfiesAll("MeasureIsValid"))
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -137,7 +137,7 @@ context EXPR!DecimalSwitchExpression {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.cases.select(c | not c.expression.satisfiesAll("MeasureIsValid")).size() == 0 and (not self.defaultExpression.isDefined() or self.defaultExpression.satisfiesAll("MeasureIsValid"))
         
         check: self.isDimensionDefined()
-        message: "Measure of expression is invalid: " + self.toString()
+        message: "Measure of expression is invalid: " + self
     }
 }
 
@@ -146,14 +146,14 @@ context EXPR!NumericExpression {
         guard: self.satisfiesAll("Resolved") and evaluator.isRoot(self) and modelAdapter.isMeasured(self)
         
         check: self.isDimensionDefined()
-        message: "Measure is not defined for complete expression: " + self.toString()
+        message: "Measure is not defined for complete expression: " + self
     }
 }
 
 context EXPR!IntegerComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     // both compared values must be measured
@@ -161,7 +161,7 @@ context EXPR!IntegerComparison {
         guard: self.satisfiesAll("Resolved") and (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right))
         
         check: modelAdapter.isMeasured(self.left) and modelAdapter.isMeasured(self.right)
-        message: "Both left and right sides must be measured: " + self.toString()
+        message: "Both left and right sides must be measured: " + self
     }
     
     // dimensions of compared measured values must match
@@ -169,14 +169,14 @@ context EXPR!IntegerComparison {
         guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
         
         check: modelAdapter.getDimension(self.left) == modelAdapter.getDimension(self.right)
-        message: "Dimensions of comparison are not matching: " + self.toString()
+        message: "Dimensions of comparison are not matching: " + self
     }
 }
 
 context EXPR!DecimalComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     // both compared values must be measured
@@ -184,7 +184,7 @@ context EXPR!DecimalComparison {
         guard: self.satisfiesAll("Resolved") and (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right))
         
         check: modelAdapter.isMeasured(self.left) and modelAdapter.isMeasured(self.right)
-        message: "Both left and right sides must be measured: " + self.toString()
+        message: "Both left and right sides must be measured: " + self
     }
     
     // dimensions of compared measured values must match
@@ -192,6 +192,6 @@ context EXPR!DecimalComparison {
         guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
         
         check: modelAdapter.getDimension(self.left) == modelAdapter.getDimension(self.right)
-        message: "Dimensions of comparison are not matching: " + self.toString()
+        message: "Dimensions of comparison are not matching: " + self
     }
 }

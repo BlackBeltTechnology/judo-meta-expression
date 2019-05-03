@@ -33,14 +33,14 @@ context EXPR!EnumerationComparison {
 context EXPR!EnumerationSwitchExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint TypeOfDefaultCaseIsEnumeration {
         guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
         
         check: self.defaultExpression.isKindOf(EXPR!EnumerationExpression)
-        message: "Type of default case expression is not enumeration: " + self.defaultExpression.toString()
+        message: "Type of default case expression is not enumeration: " + self.defaultExpression
     }
 }
 
@@ -49,6 +49,6 @@ context EXPR!SwitchCase {
         guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!EnumerationExpression)
         
         check: self.expression.isKindOf(EXPR!EnumerationExpression)
-        message: "Type of switch case expression is not enumeration: " + self.expression.toString()
+        message: "Type of switch case expression is not enumeration: " + self.expression
     }
 }

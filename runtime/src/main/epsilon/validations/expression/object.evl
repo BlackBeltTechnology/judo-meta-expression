@@ -19,7 +19,7 @@ context EXPR!ObjectSelectorExpression {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of object selector expression is not defined: " + self.toString()
+        message: "Type of object selector expression is not defined: " + self
     }
 }
 
@@ -28,7 +28,7 @@ context EXPR!ObjectFilterExpression {
         guard: self.objectExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of object filter expression is not defined: " + self.toString()
+        message: "Type of object filter expression is not defined: " + self
     }
 }
 
@@ -46,7 +46,7 @@ context EXPR!CastObject {
         guard: self.objectExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of cast object expression is not defined: " + self.toString()
+        message: "Type of cast object expression is not defined: " + self
     }
 
     constraint CastedTypeIsCompatible {

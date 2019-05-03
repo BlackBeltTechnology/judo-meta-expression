@@ -3,7 +3,7 @@ context EXPR!ImmutableCollection {
         guard: self.elementName.satisfiesAll("ObjectTypeIsValid")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of collection expression is not defined: " + self.toString()
+        message: "Type of collection expression is not defined: " + self
     }
 }
 
@@ -61,7 +61,7 @@ context EXPR!CollectionFilterExpression {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of collection expression is not defined: " + self.toString()
+        message: "Type of collection expression is not defined: " + self
     }
 }
 
@@ -70,7 +70,7 @@ context EXPR!SortExpression {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of sort collection expression is not defined: " + self.toString()
+        message: "Type of sort collection expression is not defined: " + self
     }
 }
 
@@ -79,7 +79,7 @@ context EXPR!SubCollectionExpression {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of subcollection expression is not defined: " + self.toString()
+        message: "Type of subcollection expression is not defined: " + self
     }
 }
 
@@ -88,7 +88,7 @@ context EXPR!CastCollection {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
         check: self.getObjectType(modelAdapter).isDefined()
-        message: "Type of cast collection expression is not defined: " + self.toString()
+        message: "Type of cast collection expression is not defined: " + self
     }
     
     constraint CastedTypeIsCompatible {

@@ -10,70 +10,70 @@ context EXPR!StringAttribute {
 context EXPR!Concatenate {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!LowerCase {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!UpperCase {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!Length {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!SubString {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!Position {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!Replace {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!Trim {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!StringSwitchExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 
     constraint TypeOfDefaultCaseIsString {
         guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
         
         check: self.defaultExpression.isKindOf(EXPR!StringExpression)
-        message: "Type of default case expression is not string: " + self.defaultExpression.toString()
+        message: "Type of default case expression is not string: " + self.defaultExpression
     }
 }
 
@@ -82,7 +82,7 @@ context EXPR!SwitchCase {
         guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!StringExpression)
         
         check: self.expression.isKindOf(EXPR!StringExpression)
-        message: "Type of switch case expression is not string: " + self.expression.toString()
+        message: "Type of switch case expression is not string: " + self.expression
     }
 }
 

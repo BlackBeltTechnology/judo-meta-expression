@@ -1,70 +1,70 @@
 context EXPR!StringComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!EnumerationComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!NegationExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!KleeneExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!InstanceOfExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
         check: modelAdapter.getSuperTypes(self.elementName.get(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
-        message: "Element type (" + self.elementName.toString() + ") is not compatible with " + self.objectExpression.getObjectType(modelAdapter).getName() 
+        message: "Element type (" + self.elementName + ") is not compatible with " + self.objectExpression.getObjectType(modelAdapter).getName() 
     }
 }
 
 context EXPR!TypeOfExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
         check: modelAdapter.getSuperTypes(self.elementName.get(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
-        message: "Element type (" + self.elementName.toString() + ") is not " + self.objectExpression.getObjectType(modelAdapter).getName() 
+        message: "Element type (" + self.elementName + ") is not " + self.objectExpression.getObjectType(modelAdapter).getName() 
     }
 }
 
 context EXPR!UndefinedAttributeComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!UndefinedNavigationComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
@@ -80,7 +80,7 @@ context EXPR!LogicalAttribute {
 context EXPR!ContainsExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint TypesAreCompatible {
@@ -96,14 +96,14 @@ context EXPR!ContainsExpression {
 context EXPR!IntegerComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!DecimalComparison {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     critique IntegerComparisonIsRecommended {
@@ -111,6 +111,6 @@ context EXPR!DecimalComparison {
         
         check: not (self.left.isKindOf(EXPR!IntegerExpression) 
             and self.right.isKindOf(EXPR!IntegerExpression))
-        message: "Both arguments are integer so integer comparison is recommended in: " + self.toString()
+        message: "Both arguments are integer so integer comparison is recommended in: " + self
     }
 }
