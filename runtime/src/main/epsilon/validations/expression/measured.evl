@@ -45,7 +45,7 @@ context EXPR!IntegerAritmeticExpression {
         message: "Measure of expression is invalid: " + self.toString()
     }
     
-    /*// measured operation is valid
+    // measured operation is valid
     constraint MeasureIsValid {
     	guard: self.satisfiesAll("Resolved") and not modelAdapter.isMeasured(self) and
                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
@@ -53,7 +53,7 @@ context EXPR!IntegerAritmeticExpression {
     	
         check: modelAdapter.getDimension(self).isPresent() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
     	message: "Operation of measured expression is invalid: " + self.toString()
-   	}*/
+   	}
 }
 
 context EXPR!DecimalAritmeticExpression {
@@ -67,7 +67,7 @@ context EXPR!DecimalAritmeticExpression {
         message: "Measure of expression is invalid: " + self.toString()
     }
     
-    /*// measured operation is valid
+    // measured operation is valid
     constraint MeasureIsValid {
     	guard: self.satisfiesAll("Resolved") and not modelAdapter.isMeasured(self) and
                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
@@ -75,7 +75,7 @@ context EXPR!DecimalAritmeticExpression {
     	
         check: modelAdapter.getDimension(self).isPresent() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
     	message: "Operation of measured expression is invalid: " + self.toString()
-   	} */
+   	}
 }
 
 context EXPR!IntegerOppositeExpression {
@@ -141,14 +141,14 @@ context EXPR!DecimalSwitchExpression {
     }
 }
 
-/*context EXPR!NumericExpression {
+context EXPR!NumericExpression {
     constraint MeasureOfCompleteExpressionIsDefined {
         guard: self.satisfiesAll("Resolved") and evaluator.isRoot(self) and modelAdapter.isMeasured(self)
         
         check: self.isDimensionDefined()
         message: "Measure is not defined for complete expression: " + self.toString()
     }
-} */
+}
 
 context EXPR!IntegerComparison {
     constraint Resolved {
