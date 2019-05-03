@@ -181,7 +181,7 @@ public abstract class MeasureAdapter<M, U> {
         switch (integerAritmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
-                if (Objects.equals(left, right)) {
+                if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
                     log.warn("Addition of scalar and measured values is not allowed");
@@ -232,7 +232,7 @@ public abstract class MeasureAdapter<M, U> {
         switch (decimalAritmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
-                if (Objects.equals(left, right)) {
+                if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
                     log.warn("Addition of scalar and measured values is not allowed");
