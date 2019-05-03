@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string" xmlns:t="http://blackbelt.hu/judo/meta/expression/temporal">
   <c:SortExpression xmi:id="_anHD0CSyEemLpvUY7MQgng">
-    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_f37dMCSyEemLpvUY7MQgng" name="o" referenceName="orders">
+    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_f37dMCSyEemLpvUY7MQgng" referenceName="orders" name="o">
       <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_h3p5QCSyEemLpvUY7MQgng">
         <collectionExpression xsi:type="c:SortExpression" xmi:id="_sUlLICSyEemLpvUY7MQgng">
           <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_tCmHsCSyEemLpvUY7MQgng">
@@ -37,18 +37,18 @@
     <objectExpression xsi:type="const:Instance" xmi:id="_SfBF4CSzEemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
   </t:TimestampAttribute>
   <str:StringAttribute xmi:id="_anHq4SSyEemLpvUY7MQgng" attributeName="companyName">
-    <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_WL1V4CSzEemLpvUY7MQgng" name="" referenceName="shipper">
+    <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_WL1V4CSzEemLpvUY7MQgng" referenceName="shipper" name="">
       <objectExpression xsi:type="const:Instance" xmi:id="_bzXmICSzEemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </objectExpression>
   </str:StringAttribute>
   <c:CollectionFilterExpression xmi:id="_anHq4iSyEemLpvUY7MQgng">
-    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_1LJtwCSzEemLpvUY7MQgng" referenceName="orderDetails">
+    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_1LJtwCSzEemLpvUY7MQgng" referenceName="orderDetails" name="od">
       <objectExpression xsi:type="const:Instance" xmi:id="_2R23ICSzEemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </collectionExpression>
     <condition xsi:type="l:UndefinedAttributeComparison" xmi:id="_5ALekCSzEemLpvUY7MQgng" attributeName="picture">
       <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_8ZinECSzEemLpvUY7MQgng" referenceName="category">
         <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_87CKkCSzEemLpvUY7MQgng" referenceName="product">
-          <objectExpression xsi:type="const:Instance" xmi:id="_GQrEQCS0EemLpvUY7MQgng" elementName="_EQiYgCS0EemLpvUY7MQgng"/>
+          <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_e3Uz4G2EEem-8fhXtH5KRA" variable="_1LJtwCSzEemLpvUY7MQgng"/>
         </objectExpression>
       </objectExpression>
     </condition>
@@ -78,7 +78,7 @@
     <objectExpression xsi:type="const:Instance" xmi:id="_u-mPcCS0EemLpvUY7MQgng" elementName="_EQiYgCS0EemLpvUY7MQgng"/>
   </n:DecimalAttribute>
   <n:DecimalAggregatedExpression xmi:id="_anIR8CSyEemLpvUY7MQgng" operator="sum">
-    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_206EYCS0EemLpvUY7MQgng" name="od" referenceName="orderDetails">
+    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_206EYCS0EemLpvUY7MQgng" referenceName="orderDetails" name="od">
       <objectExpression xsi:type="const:Instance" xmi:id="_6HkH8CS0EemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </collectionExpression>
     <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_APAAQCS1EemLpvUY7MQgng" operator="*">
@@ -99,7 +99,7 @@
     </expression>
   </n:DecimalAggregatedExpression>
   <n:DecimalAggregatedExpression xmi:id="_anIR8SSyEemLpvUY7MQgng" operator="sum">
-    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_ZefukCS1EemLpvUY7MQgng" name="od" referenceName="orderDetails">
+    <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_ZefukCS1EemLpvUY7MQgng" referenceName="orderDetails" name="od">
       <objectExpression xsi:type="const:Instance" xmi:id="_ZefukSS1EemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </collectionExpression>
     <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_Ze-PsCS1EemLpvUY7MQgng" operator="*">
@@ -116,7 +116,7 @@
       </right>
     </expression>
   </n:DecimalAggregatedExpression>
-  <expr:TypeName xmi:id="_qw0SUCSyEemLpvUY7MQgng" name="Employee" namespace="northwind::entities"/>
-  <expr:TypeName xmi:id="_kB3RkCSzEemLpvUY7MQgng" name="Order" namespace="northwind::entities"/>
-  <expr:TypeName xmi:id="_EQiYgCS0EemLpvUY7MQgng" name="OrderDetail" namespace="northwind::entities"/>
+  <expr:TypeName xmi:id="_qw0SUCSyEemLpvUY7MQgng" name="Employee" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_kB3RkCSzEemLpvUY7MQgng" name="Order" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_EQiYgCS0EemLpvUY7MQgng" name="OrderDetail" namespace="northwind.entities"/>
 </xmi:XMI>

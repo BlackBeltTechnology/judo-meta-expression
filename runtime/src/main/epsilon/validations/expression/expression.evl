@@ -1,16 +1,8 @@
 context EXPR!TypeName {
-
-    // namespace of ElementName must exists 
-    constraint NamespaceIsValid {
-        check: self.getNamespace().isDefined()
-        message: "Namespace is not defined: " + self.namespace
-    }
     
     // object type with name defined by ElementName must exists in the namespace
     constraint ObjectTypeIsValid {
-        guard: self.satisfiesAll("NamespaceIsValid")
-        
-        check: self.get().isDefined()
+        check: self.get(modelAdapter).isDefined()
         message: "Element named " + self.name + " not found in namespace " + self.namespace 
     }
 }
@@ -19,9 +11,9 @@ context EXPR!Expression {
 
     // variable reference in lambda expression is referencing to variable visible from its scope
     constraint LambdaVariableIsValid {
-        guard: self.isLambdaExpression()
+        guard: evaluator.isLambdaFunction(self)
         
-        check: self.getLambdaBasePath().containsAll(self.getBaseExpressions().select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable))
-        message: "Invalid variable references: " + self.getBaseExpressions().select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable).excludingAll(self.getLambdaBasePath()).collect(e | e.toString()) + " in expression: " + self.toString()
+        check: evaluator.getVariablesOfScope(self).containsAll(evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable))
+        message: "Invalid variable references: " + evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable).excludingAll(evaluator.getVariablesOfScope(self)) + " in expression: " + self
     }
 }

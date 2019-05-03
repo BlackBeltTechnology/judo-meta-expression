@@ -2,8 +2,8 @@ context EXPR!ImmutableCollection {
     constraint Resolved {
         guard: self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: self.getObjectType().isDefined()
-        message: "Type of collection expression is not defined: " + self.toString()
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of collection expression is not defined: " + self
     }
 }
 
@@ -11,16 +11,16 @@ context EXPR!CollectionNavigationFromObjectExpression {
     constraint Resolved {
         guard: self.objectExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " not found"
     }
     
     // target must be a collection
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: self.isCollection()
-        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType().getName() + " is not collection"
+        check: modelAdapter.isCollection(self)
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not collection"
     }
 }
 
@@ -28,15 +28,15 @@ context EXPR!CollectionNavigationFromCollectionExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
     
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: self.isCollection()
-        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not collection"
+        check: modelAdapter.isCollection(self)
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not collection"
     }
 }
 
@@ -44,15 +44,15 @@ context EXPR!ObjectNavigationFromCollectionExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
     
     constraint TargetIsCollection {
         guard: self.satisfiesAll("Resolved")
         
-        check: not self.isCollection()
-        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType().getName() + " is collection"
+        check: not modelAdapter.isCollection(self)
+        message: "Reference named " + self.referenceName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is collection"
     }
 }
 
@@ -60,8 +60,8 @@ context EXPR!CollectionFilterExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Type of collection expression is not defined: " + self.toString()
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of collection expression is not defined: " + self
     }
 }
 
@@ -69,8 +69,8 @@ context EXPR!SortExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Type of sort collection expression is not defined: " + self.toString()
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of sort collection expression is not defined: " + self
     }
 }
 
@@ -78,8 +78,8 @@ context EXPR!SubCollectionExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Type of subcollection expression is not defined: " + self.toString()
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of subcollection expression is not defined: " + self
     }
 }
 
@@ -87,15 +87,15 @@ context EXPR!CastCollection {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Type of cast collection expression is not defined: " + self.toString()
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of cast collection expression is not defined: " + self
     }
     
     constraint CastedTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().getSuperTypes().contains(self.collectionExpression.getObjectType())
-        message: "Invalid casting type: " + self.collectionExpression.getObjectType().getName() + " is not supertype of " + self.getObjectType().getName()
+        check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
+        message: "Invalid casting type: " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
     }
 }
 
@@ -103,7 +103,7 @@ context EXPR!CollectionVariableReference {
     constraint Resolved {
         guard: self.variable.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined() // TODO - check is variable is visible from the scope of reference
+        check: self.getObjectType(modelAdapter).isDefined() // TODO - check is variable is visible from the scope of reference
         message: "Type of variable " + self.variable.name + " is unknown"
     }
 }

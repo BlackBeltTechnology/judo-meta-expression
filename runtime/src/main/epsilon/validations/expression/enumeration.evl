@@ -2,45 +2,45 @@ context EXPR!EnumerationAttribute {
     constraint AttributeTypeIsEnumeration {
         guard: self.satisfiesAll("Resolved")
         
-        check: self.getAttributeType().isEnumeration()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not enumeration"
+        check: modelAdapter.isEnumeration(self.getAttributeType(modelAdapter).get())
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not enumeration"
     }
 }
 
 context EXPR!EnumerationComparison {
     constraint BothSidesAreTheSameEnumerations {
-    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.getEnumeration().isDefined()
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration(modelAdapter).isDefined() and self.right.getEnumeration(modelAdapter).isDefined()
     	
-	    check: self.left.getEnumeration() == self.right.getEnumeration()
+	    check: self.left.getEnumeration(modelAdapter).get() == self.right.getEnumeration(modelAdapter).get()
 	    message: "Enumerations are not matching"
     }
     
     constraint RightSideIsEnumerationContainingLeftSideElement {
-    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.right.getEnumeration().isDefined() and self.left.isTypeOf(EXPR!Literal)
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.right.getEnumeration(modelAdapter).isDefined() and self.left.isTypeOf(EXPR!Literal)
     	
-        check: self.right.getEnumeration().contains(self.left.value)
-        message: "Enumeration " + self.right.getEnumeration().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
+        check: modelAdapter.contains(self.right.getEnumeration(modelAdapter).get(), self.left.value)
+        message: "Enumeration " + self.right.getEnumeration(modelAdapter).get().getName() + " (right side) does not contain literal: " + self.left.value + " (left side)"
     }
     
     constraint LeftSideIsEnumerationContainingRightSideElement {
-    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration().isDefined() and self.right.isTypeOf(EXPR!Literal)
+    	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration(modelAdapter).isDefined() and self.right.isTypeOf(EXPR!Literal)
     	
-        check: self.left.getEnumeration().contains(self.right.value)
-        message: "Enumeration " + self.left.getEnumeration().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
+        check: modelAdapter.contains(self.left.getEnumeration(modelAdapter).get(), self.right.value)
+        message: "Enumeration " + self.left.getEnumeration(modelAdapter).get().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }
 }
 
 context EXPR!EnumerationSwitchExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint TypeOfDefaultCaseIsEnumeration {
         guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
         
         check: self.defaultExpression.isKindOf(EXPR!EnumerationExpression)
-        message: "Type of default case expression is not enumeration: " + self.defaultExpression.toString()
+        message: "Type of default case expression is not enumeration: " + self.defaultExpression
     }
 }
 
@@ -49,6 +49,6 @@ context EXPR!SwitchCase {
         guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!EnumerationExpression)
         
         check: self.expression.isKindOf(EXPR!EnumerationExpression)
-        message: "Type of switch case expression is not enumeration: " + self.expression.toString()
+        message: "Type of switch case expression is not enumeration: " + self.expression
     }
 }

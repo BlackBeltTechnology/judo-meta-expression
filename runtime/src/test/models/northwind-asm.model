@@ -397,23 +397,23 @@
     <eClassifiers xsi:type="ecore:EClass" name="ʘStatic" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="totalNumberOfOrders" lowerBound="1" volatile="true" unsettable="true" derived="true">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="getterExpression" value="0 // COUNT(northwind::entities::Order)"/>
+          <details key="getterExpression" value="0 // COUNT(northwind.entities.Order)"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JLong"/>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="ordersAssignedToEmployee" upperBound="-1" eType="//entities/Order" volatile="true" unsettable="true" derived="true">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="getterExpression" value="northwind::entities::Employee.orders"/>
+          <details key="getterExpression" value="northwind.entities.Employee.orders"/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="allProducts" upperBound="-1" eType="//entities/Product" volatile="true" unsettable="true" derived="true">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="getterExpression" value="northwind::entities::Product"/>
+          <details key="getterExpression" value="northwind.entities.Product"/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="allCategories" upperBound="-1" eType="//entities/Category" volatile="true" unsettable="true" derived="true">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="getterExpression" value="northwind::entities::Category"/>
+          <details key="getterExpression" value="northwind.entities.Category"/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
@@ -507,7 +507,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="weight">
         <eAnnotations source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
-          <details key="measure" value="northwind::measures::Mass"/>
+          <details key="measure" value="northwind.measures.Mass"/>
           <details key="unit" value="kilogram"/>
         </eAnnotations>
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>

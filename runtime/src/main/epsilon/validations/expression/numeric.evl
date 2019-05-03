@@ -1,28 +1,28 @@
 context EXPR!CountExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!RoundExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!IntegerAritmeticExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
 context EXPR!DecimalAritmeticExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     critique IntegerAritmeticExpressionIsRecommended {
@@ -31,7 +31,7 @@ context EXPR!DecimalAritmeticExpression {
         check: not (self.left.isKindOf(EXPR!IntegerExpression) 
             and self.right.isKindOf(EXPR!IntegerExpression)
             and (self.operator == EXPR!DecimalOperator#add or self.operator == EXPR!DecimalOperator#substract or self.operator == EXPR!DecimalOperator#multiply))
-        message: "Both arguments are integer so integer aritmetic expression is recommended in: " + self.toString()
+        message: "Both arguments are integer so integer aritmetic expression is recommended in: " + self
     }
 }
 
@@ -40,7 +40,7 @@ context EXPR!IntegerOppositeExpression {
         guard: self.expression.satisfiesAll("Resolved")
         
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
@@ -49,7 +49,7 @@ context EXPR!DecimalOppositeExpression {
         guard: self.expression.satisfiesAll("Resolved")
         
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
 }
 
@@ -57,8 +57,8 @@ context EXPR!IntegerAttribute {
     constraint AttributeTypeIsInteger {
         guard: self.satisfiesAll("Resolved")
     
-        check: self.getAttributeType().isInteger()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not integer"
+        check: modelAdapter.isInteger(self.getAttributeType(modelAdapter).get())
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not integer"
     }
 }
 
@@ -66,8 +66,8 @@ context EXPR!DecimalAttribute {
     constraint AttributeTypeIsDecimal {
         guard: self.satisfiesAll("Resolved")
     
-        check: self.getAttributeType().isDecimal()
-        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType().getName() + " is not decimal"
+        check: modelAdapter.isDecimal(self.getAttributeType(modelAdapter).get())
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not decimal"
     }
 }
 
@@ -75,66 +75,52 @@ context EXPR!IntegerAggregatedExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
-    
-    /*constraint AttributeTypeIsInteger {
-        guard: self.satisfiesAll("Resolved")
-        
-        check: self.getAttributeType().isInteger()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not integer"
-    }*/
 }
 
 context EXPR!DecimalAggregatedExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
         
-        check: self.getObjectType().isDefined()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " not found"
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
 
-    /*constraint AttributeTypeIsNumber {
+    critique AttributeTypeIsDecimalOrOperationIsNotSupportedOnIntegers {
         guard: self.satisfiesAll("Resolved")
         
-        check: self.getAttributeType().isNumeric()
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is not number"
+        check: not (self.expression.isKindOf(EXPR!IntegerExpression) and (self.operator == EXPR!DecimalAggregator#sum or self.operator == EXPR!DecimalAggregator#min or self.operator == EXPR!DecimalAggregator#max))
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is integer so integer aggregation is recommended in: " + self
     }
-    
-    critique AttributeTypeIsDecimalOrOperationIsNotSupportedOnIntegers {
-        guard: self.satisfiesAll("Resolved", "AttributeTypeIsNumber")
-        
-        check: not (self.getAttributeType().isInteger() and (self.operator == EXPR!DecimalAggregator#sum or self.operator == EXPR!DecimalAggregator#min or self.operator == EXPR!DecimalAggregator#max))
-        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType().getName() + " is integer so integer aggregation is recommended in: " + self.toString()
-    } */
 }
 
 context EXPR!IntegerSwitchExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint TypeOfDefaultCaseIsInteger {
         guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
         
         check: self.defaultExpression.isKindOf(EXPR!IntegerExpression)
-        message: "Type of default case expression is not integer: " + self.defaultExpression.toString()
+        message: "Type of default case expression is not integer: " + self.defaultExpression
     }
 }
 
 context EXPR!DecimalSwitchExpression {
     constraint Resolved {
         check: true
-        message: "Unsupported expression: " + self.toString()
+        message: "Unsupported expression: " + self
     }
     
     constraint TypeOfDefaultCaseIsNumeric {
         guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
         
         check: self.defaultExpression.isKindOf(EXPR!NumericExpression)
-        message: "Type of default case expression is not numeric: " + self.defaultExpression.toString()
+        message: "Type of default case expression is not numeric: " + self.defaultExpression
     }
 }
 
@@ -143,14 +129,14 @@ context EXPR!SwitchCase {
         guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!IntegerExpression)
         
         check: self.expression.isKindOf(EXPR!IntegerExpression)
-        message: "Type of switch case expression is not integer: " + self.expression.toString()
+        message: "Type of switch case expression is not integer: " + self.expression
     }
     
     constraint TypeOfSwitchCaseIsNumeric {
         guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!DecimalExpression)
         
         check: self.expression.isKindOf(EXPR!NumericExpression)
-        message: "Type of switch case expression is not numeric: " + self.expression.toString()
+        message: "Type of switch case expression is not numeric: " + self.expression
     }
 }
 

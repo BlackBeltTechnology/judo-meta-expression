@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.expression.runtime.adapters.PsmEntityModelAdapter;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -14,6 +15,7 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
 
     void setUp() throws Exception {
         final Resource psm = getPsmResource();
+        modelAdapter = new PsmEntityModelAdapter(psm.getResourceSet());
 
         if (psm != null) {
             modelContexts.add(wrappedEmfModelContextBuilder()
@@ -40,15 +42,5 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
                 "1.0.0");
 
         return psmModelResourceSet.getResources().get(0);
-    }
-
-    @Override
-    protected String getEvlSource() {
-        return "epsilon/validations/expressionOnPsm.evl";
-    }
-
-    @Override
-    protected String getExpressionToEvaluationEtlSource() {
-        return "epsilon/transformations/expression2evaluationOnPsm.etl";
     }
 }

@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
+import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -21,6 +22,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
     void setUp() throws Exception {
         final Resource asm = getAsmResource();
         final Resource measures = getMeasureResouce();
+        modelAdapter = new AsmModelAdapter(asm.getResourceSet(), measures.getResourceSet());
 
         if (asm != null) {
             modelContexts.add(wrappedEmfModelContextBuilder()
@@ -69,16 +71,6 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
                 "1.0.0");
 
         return measureModelResourceSet.getResources().get(0);
-    }
-
-    @Override
-    protected String getEvlSource() {
-        return "epsilon/validations/expressionOnAsm.evl";
-    }
-
-    @Override
-    protected String getExpressionToEvaluationEtlSource() {
-        return "epsilon/transformations/expression2evaluationOnAsm.etl";
     }
 
     public File targetDir(){
