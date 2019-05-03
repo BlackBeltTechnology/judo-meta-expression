@@ -51,13 +51,9 @@
     <genClasses image="false" ecoreClass="expression.ecore#//DataExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//NavigationExpression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//NavigationExpression/referenceName"/>
-      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getObjectType">
-        <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getObjectType/modelAdapter"/>
-      </genOperations>
       <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getReference">
         <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getReference/modelAdapter"/>
       </genOperations>
-      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getVariableName"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//SwitchExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/cases"/>
@@ -83,7 +79,12 @@
       <genOperations ecoreOperation="expression.ecore#//AggregatedExpression/getVariableName"
           body="return getCollectionExpression().getVariableName();"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression"/>
+    <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression">
+      <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getObjectType">
+        <genParameters ecoreParameter="expression.ecore#//ReferenceExpression/getObjectType/modelAdapter"/>
+      </genOperations>
+      <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getVariableName"/>
+    </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector"/>
     <genClasses image="false" ecoreClass="expression.ecore#//CustomExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//DateExpression"/>
