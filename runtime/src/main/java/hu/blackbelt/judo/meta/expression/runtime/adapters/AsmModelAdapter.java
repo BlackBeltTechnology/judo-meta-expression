@@ -175,11 +175,6 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public boolean isMeasured(final EAttribute attribute) {
-        return getMeasure(attribute).isPresent();
-    }
-
-    @Override
     public boolean isMeasured(final NumericExpression numericExpression) {
         return measureAdapter.isMeasured(numericExpression);
     }

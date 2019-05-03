@@ -181,11 +181,6 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     }
 
     @Override
-    public boolean isMeasured(final PrimitiveTypedElement primitiveTypedElement) {
-        return primitiveTypedElement.getDataType() instanceof MeasuredType;
-    }
-
-    @Override
     public boolean isMeasured(final NumericExpression numericExpression) {
         return false;
     }

@@ -62,14 +62,6 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
      */
     boolean isCustom(P primitive);
 
-    /**
-     * Check if a primitive typed element (attribute, derived data property) is measured.
-     *
-     * @param primitiveTypedElement pritimive typed element
-     * @return element is measured
-     */
-    boolean isMeasured(PTE primitiveTypedElement);
-
     boolean isMeasured(NumericExpression numericExpression);
 
     boolean contains(E enumeration, String memberName);
