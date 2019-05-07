@@ -8,13 +8,7 @@ import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,7 +20,7 @@ public class ExpressionEvaluator {
 
     private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
     private final Map<ReferenceExpression, Expression> sources = new ConcurrentHashMap<>();
-    private final Set<Expression> rootExpressions = new HashSet<>();
+    private final Map<Expression, EvaluationNode> rootExpressions = new HashMap<>();
 
     public void init(final Collection<Expression> expressions) {
         this.expressions.addAll(expressions);
@@ -52,10 +46,19 @@ public class ExpressionEvaluator {
             }
         });
 
-        rootExpressions.addAll(getAllInstances(Expression.class)
-                .filter(expression -> getAllInstances(Expression.class)
-                        .anyMatch(e -> !(e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
-                .collect(Collectors.toSet()));
+        rootExpressions.putAll(getAllInstances(Expression.class)
+                .filter(expression -> !getAllInstances(Expression.class)
+                        .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
+                .collect(Collectors.toMap(e -> e, e -> evaluate(e))));
+    }
+
+    private EvaluationNode evaluate(final Expression expression) {
+        log.info("Evaluating expression: {}", expression);
+
+        // TODO
+
+        return EvaluationNode.builder()
+                .build();
     }
 
     public void cleanup() {
@@ -76,7 +79,7 @@ public class ExpressionEvaluator {
     }
 
     public boolean isRoot(final Expression expression) {
-        return rootExpressions.contains(expression);
+        return rootExpressions.containsKey(expression);
     }
 
     /**

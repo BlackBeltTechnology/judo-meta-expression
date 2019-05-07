@@ -1,11 +1,12 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
+import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
+import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -22,6 +23,7 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 
 public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
@@ -43,13 +45,23 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 URI.createURI(createdSourceModelName));
 
         final TypeName orderType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Order").build();
-        final TypeName categoryType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Category").build();
+
+        final ObjectVariable order = newInstanceBuilder()
+                .withElementName(orderType)
+                .withName("self")
+                .build();
+
+        final TimestampAttribute shippedDate = newTimestampAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(order)
+                        .build())
+                .withAttributeName("shippedDate")
+                .build();
 
         final StringExpression shipperName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectNavigationExpressionBuilder()
-                        .withObjectExpression(newInstanceBuilder()
-                                .withElementName(orderType)
-                                .withName("self")
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(order)
                                 .build())
                         .withName("s")
                         .withReferenceName("shipper")
@@ -57,37 +69,9 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAttributeName("companyName")
                 .build();
 
-        final CollectionNavigationFromObjectExpression orderDetailsForTotalPrice = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newInstanceBuilder()
-                        .withElementName(orderType)
-                        .withName("self")
-                        .build())
-                .withReferenceName("orderDetails")
-                .withName("od")
-                .build();
-
-        final CollectionNavigationFromObjectExpression orderDetailsForItemCount = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newInstanceBuilder()
-                        .withElementName(orderType)
-                        .withName("self")
-                        .build())
-                .withReferenceName("orderDetails")
-                .withName("od")
-                .build();
-
-        final CollectionNavigationFromObjectExpression orderDetailsForCategoryName = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newInstanceBuilder()
-                        .withElementName(orderType)
-                        .withName("self")
-                        .build())
-                .withReferenceName("orderDetails")
-                .withName("od")
-                .build();
-
-        final CollectionNavigationFromObjectExpression orderDetailsForCategoryDescription = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newInstanceBuilder()
-                        .withElementName(orderType)
-                        .withName("self")
+        final CollectionVariable orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(order)
                         .build())
                 .withReferenceName("orderDetails")
                 .withName("od")
@@ -97,14 +81,14 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withLeft(newDecimalAritmeticExpressionBuilder()
                         .withLeft(newIntegerAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(orderDetailsForTotalPrice)
+                                        .withVariable(orderDetails)
                                         .build())
                                 .withAttributeName("quantity")
                                 .build())
                         .withOperator(DecimalOperator.MULTIPLY)
                         .withRight(newDecimalAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(orderDetailsForTotalPrice)
+                                        .withVariable(orderDetails)
                                         .build())
                                 .withAttributeName("unitPrice")
                                 .build())
@@ -117,7 +101,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .withOperator(DecimalOperator.SUBSTRACT)
                         .withRight(newDecimalAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(orderDetailsForTotalPrice)
+                                        .withVariable(orderDetails)
                                         .build())
                                 .withAttributeName("discount")
                                 .build())
@@ -125,18 +109,24 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .build();
 
         final DecimalAggregatedExpression totalPrice = newDecimalAggregatedExpressionBuilder()
-                .withCollectionExpression(orderDetailsForTotalPrice)
+                .withCollectionExpression(newCollectionVariableReferenceBuilder()
+                        .withVariable(orderDetails)
+                        .build())
                 .withOperator(DecimalAggregator.SUM)
                 .withExpression(price)
                 .build();
 
         final IntegerExpression itemCount = newCountExpressionBuilder()
-                .withCollectionExpression(orderDetailsForItemCount)
+                .withCollectionExpression(newCollectionVariableReferenceBuilder()
+                        .withVariable(orderDetails)
+                        .build())
                 .build();
 
-        final ObjectNavigationFromCollectionExpression categories = newObjectNavigationFromCollectionExpressionBuilder()
+        final CollectionVariable categories = newObjectNavigationFromCollectionExpressionBuilder()
                 .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
-                        .withCollectionExpression(orderDetailsForCategoryName)
+                        .withCollectionExpression(newCollectionVariableReferenceBuilder()
+                                .withVariable(orderDetails)
+                                .build())
                         .withReferenceName("product")
                         .withName("p")
                         .build())
@@ -145,22 +135,20 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .build();
 
         final StringExpression categoryName = newStringAttributeBuilder()
-                .withObjectExpression(newInstanceBuilder()
-                        .withElementName(categoryType)
-                        .withName("self")
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(categories)
                         .build())
                 .withAttributeName("categoryName")
                 .build();
 
         final StringExpression categoryDescription = newStringAttributeBuilder()
-                .withObjectExpression(newInstanceBuilder()
-                        .withElementName(categoryType)
-                        .withName("self")
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(categories)
                         .build())
                 .withAttributeName("description")
                 .build();
 
-        expressionResource.getContents().addAll(Arrays.asList(orderType, shipperName, totalPrice, itemCount, categories, categoryName, categoryDescription));
+        expressionResource.getContents().addAll(Arrays.asList(orderType, order, shippedDate, shipperName, orderDetails, totalPrice, itemCount, categories, categoryName, categoryDescription));
 
         return expressionResource;
     }
