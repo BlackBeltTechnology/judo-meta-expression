@@ -34,9 +34,14 @@ context EXPR!ObjectFilterExpression {
 
 context EXPR!ObjectVariableReference {
     constraint Resolved {
-        guard: self.variable.satisfiesAll("Resolved")
+        check: self.variable.type().isDefined()
+        message: "Variable is unknown: " + self
+    }
+
+    constraint TypeIsDefined {
+        guard: self.satisfiesAll("Resolved") and self.variable.satisfiesAll("Resolved")
         
-        check: self.getObjectType(modelAdapter).isDefined() // TODO - check is variable is visible from the scope of reference
+        check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of variable " + self.variable.name + " is unknown"
     }
 }
