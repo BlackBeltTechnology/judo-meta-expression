@@ -799,7 +799,7 @@
       <genClasses ecoreClass="expression.ecore#//collection/ObjectNavigationFromCollectionExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/ObjectNavigationFromCollectionExpression/collectionExpression"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/toString"
-            body="return getCollectionExpression().toString() + &quot;=>&quot; + getReferenceName();"/>
+            body="return getCollectionExpression().toString() + &quot;->&quot; + getReferenceName();"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ObjectNavigationFromCollectionExpression/getReference"
