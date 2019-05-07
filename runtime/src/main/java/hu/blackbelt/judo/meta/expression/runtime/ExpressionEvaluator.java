@@ -2,8 +2,13 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.VariableReference;
+import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
+import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +24,10 @@ public class ExpressionEvaluator {
     private final Collection<Expression> expressions = new ArrayList<>();
 
     private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
-    private final Map<ReferenceExpression, Expression> sources = new ConcurrentHashMap<>();
-
-    private final Map<Expression, EvaluationNode> leafExpressions = new HashMap<>();
+    private final Map<NavigationExpression, ReferenceExpression> navigationSources = new ConcurrentHashMap<>();
+    private final Map<Variable, Collection<VariableReference>> variableReferences = new ConcurrentHashMap<>();
+    private final Set<ReferenceExpression> roots = new HashSet<>();
+    private final Set<Expression> leaves = new HashSet<>();
 
     public void init(final Collection<Expression> expressions) {
         this.expressions.addAll(expressions);
@@ -36,21 +42,71 @@ public class ExpressionEvaluator {
             }
         });
 
-        getAllInstances(ReferenceExpression.class).forEach(referenceExpression -> {
+        getAllInstances(NavigationExpression.class).forEach(navigationExpression -> {
             // single sources are supported only (ie. filtering unions is unsupported)
-            final Optional<ReferenceExpression> source = getAllInstances(ReferenceExpression.class)
-                    .filter(e -> referenceExpression.getOperands().contains(e))
+            final Optional<ReferenceExpression> navigationSource = getAllInstances(ReferenceExpression.class)
+                    .filter(referenceExpression -> navigationExpression.getOperands().contains(referenceExpression))
                     .findAny();
 
-            if (source.isPresent()) {
-                sources.put(referenceExpression, source.get());
+            if (navigationSource.isPresent()) {
+                ReferenceExpression referenceExpression = navigationSource.get();
+
+                while (referenceExpression != null && referenceExpression instanceof VariableReference) {
+                    final ObjectVariable resolved;
+
+                    if (referenceExpression instanceof ObjectVariableReference) {
+                        resolved = ((ObjectVariableReference) referenceExpression).getVariable();
+                    } else if (referenceExpression instanceof CollectionVariableReference) {
+                        resolved = ((CollectionVariableReference) referenceExpression).getVariable();
+                    } else {
+                        throw new IllegalStateException("Unsupported variable reference");
+                    }
+
+                    if (resolved instanceof ReferenceExpression) {
+                        referenceExpression = (ReferenceExpression) resolved;
+                    } else {
+                        throw new IllegalStateException("Object variable is not a reference");
+                    }
+                }
+
+                navigationSources.put(navigationExpression, referenceExpression);
             }
         });
 
-        leafExpressions.putAll(getAllInstances(Expression.class)
+        getAllInstances(VariableReference.class).forEach(variableReference -> {
+            final Collection<VariableReference> references;
+            if (variableReference instanceof ObjectVariableReference) {
+                final ObjectVariable objectVariable = ((ObjectVariableReference) variableReference).getVariable();
+                if (variableReferences.containsKey(objectVariable)) {
+                    references = variableReferences.get(objectVariable);
+                } else {
+                    references = new ArrayList<>();
+                    variableReferences.put(objectVariable, references);
+                }
+            } else if (variableReference instanceof CollectionVariableReference) {
+                final CollectionVariable collectionVariable = ((CollectionVariableReference) variableReference).getVariable();
+                if (variableReferences.containsKey(collectionVariable)) {
+                    references = variableReferences.get(collectionVariable);
+                } else {
+                    references = new ArrayList<>();
+                    variableReferences.put(collectionVariable, references);
+                }
+            } else {
+                throw new IllegalStateException("Unsupported reference type");
+            }
+            references.add(variableReference);
+        });
+
+        roots.addAll(navigationSources.values().stream()
+                .filter(s -> !navigationSources.containsKey(s))
+                .collect(Collectors.toSet()));
+
+        leaves.addAll(getAllInstances(Expression.class)
                 .filter(expression -> !getAllInstances(Expression.class)
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
-                .collect(Collectors.toMap(e -> e, e -> evaluate(e))));
+                .collect(Collectors.toSet()));
+
+        roots.forEach(r -> evaluate(r));
     }
 
     private EvaluationNode evaluate(final Expression expression) {
@@ -65,8 +121,10 @@ public class ExpressionEvaluator {
     public void cleanup() {
         expressions.clear();
         lambdaContainers.clear();
-        sources.clear();
-        leafExpressions.clear();
+        navigationSources.clear();
+        leaves.clear();
+        roots.clear();
+        variableReferences.clear();
     }
 
     <T> Stream<T> getAllInstances(final Class<T> clazz) {
@@ -80,7 +138,7 @@ public class ExpressionEvaluator {
     }
 
     public boolean isLeaf(final Expression expression) {
-        return leafExpressions.containsKey(expression);
+        return leaves.contains(expression);
     }
 
     /**
@@ -130,7 +188,7 @@ public class ExpressionEvaluator {
         if (!isLambdaFunction(expression)) {
             return getExpressionTerms(expression).stream()
                     .filter(e -> (e instanceof ImmutableSet) || (e instanceof Instance))
-                    .map(e -> (ObjectVariable)e)
+                    .map(e -> (ObjectVariable) e)
                     .collect(Collectors.toSet());
         } else {
             final Set<Variable> variables = new HashSet<>();
@@ -142,8 +200,8 @@ public class ExpressionEvaluator {
                     variables.add((Variable) expr);
                 }
 
-                if (sources.containsKey(expr)) {
-                    expr = sources.get(expr);
+                if (navigationSources.containsKey(expr)) {
+                    expr = navigationSources.get(expr);
                 } else {
                     variables.addAll(getVariablesOfScope(expr));
                     expr = null;
