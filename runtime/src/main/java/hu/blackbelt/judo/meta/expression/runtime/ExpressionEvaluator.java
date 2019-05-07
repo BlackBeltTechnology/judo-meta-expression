@@ -20,7 +20,8 @@ public class ExpressionEvaluator {
 
     private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
     private final Map<ReferenceExpression, Expression> sources = new ConcurrentHashMap<>();
-    private final Map<Expression, EvaluationNode> rootExpressions = new HashMap<>();
+
+    private final Map<Expression, EvaluationNode> leafExpressions = new HashMap<>();
 
     public void init(final Collection<Expression> expressions) {
         this.expressions.addAll(expressions);
@@ -46,7 +47,7 @@ public class ExpressionEvaluator {
             }
         });
 
-        rootExpressions.putAll(getAllInstances(Expression.class)
+        leafExpressions.putAll(getAllInstances(Expression.class)
                 .filter(expression -> !getAllInstances(Expression.class)
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
                 .collect(Collectors.toMap(e -> e, e -> evaluate(e))));
@@ -65,7 +66,7 @@ public class ExpressionEvaluator {
         expressions.clear();
         lambdaContainers.clear();
         sources.clear();
-        rootExpressions.clear();
+        leafExpressions.clear();
     }
 
     <T> Stream<T> getAllInstances(final Class<T> clazz) {
@@ -78,8 +79,8 @@ public class ExpressionEvaluator {
         return lambdaContainers.containsKey(expression);
     }
 
-    public boolean isRoot(final Expression expression) {
-        return rootExpressions.containsKey(expression);
+    public boolean isLeaf(final Expression expression) {
+        return leafExpressions.containsKey(expression);
     }
 
     /**

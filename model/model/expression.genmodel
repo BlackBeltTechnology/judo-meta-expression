@@ -344,7 +344,7 @@
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerAggregatedExpression">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/IntegerAggregatedExpression/operator"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/IntegerAggregatedExpression/expression"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerAggregatedExpression/getOperands"
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerAggregatedExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/IntegerAggregatedExpression/isMeasured"
             body="return modelAdapter.isMeasured(this);">
@@ -356,7 +356,7 @@
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalAggregatedExpression">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/DecimalAggregatedExpression/operator"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalAggregatedExpression/expression"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/getOperands"
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/isMeasured"
             body="return modelAdapter.isMeasured(this);">

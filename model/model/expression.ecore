@@ -504,7 +504,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="IntegerAttribute" eSuperTypes="#//IntegerExpression #//numeric/NumericAttribute"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalAttribute" eSuperTypes="#//DecimalExpression #//numeric/NumericAttribute"/>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerAggregatedExpression" eSuperTypes="#//IntegerExpression #//AggregatedExpression">
-      <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
+      <eOperations name="getLambdaFunctions" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
@@ -526,7 +526,7 @@
           eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalAggregatedExpression" eSuperTypes="#//DecimalExpression #//AggregatedExpression">
-      <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
+      <eOperations name="getLambdaFunctions" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
