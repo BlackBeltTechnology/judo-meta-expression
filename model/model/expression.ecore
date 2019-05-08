@@ -39,7 +39,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ObjectExpression" abstract="true" eSuperTypes="#//ReferenceExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="CollectionExpression" abstract="true"
       eSuperTypes="#//ReferenceExpression"/>
-  <eClassifiers xsi:type="ecore:EClass" name="AttributeSelector" abstract="true" eSuperTypes="#//Expression">
+  <eClassifiers xsi:type="ecore:EClass" name="AttributeSelector" abstract="true" eSuperTypes="#//DataExpression">
     <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="body" value="return getObjectExpression() + &quot;.&quot; + getAttributeName();"/>
@@ -69,7 +69,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="OrderedCollectionExpression" abstract="true"
       interface="true" eSuperTypes="#//CollectionExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataExpression" abstract="true" interface="true"
-      eSuperTypes="#//Expression"/>
+      eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        transient="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NavigationExpression" abstract="true"
       eSuperTypes="#//Expression">
     <eOperations name="getReference" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
@@ -77,6 +80,8 @@
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="referenceName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        transient="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SwitchExpression" abstract="true" eSuperTypes="#//Expression">
     <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
@@ -164,14 +169,14 @@
       abstract="true" interface="true"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
-    <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true">
+    <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true" eSuperTypes="#//Expression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList();"/>
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//constant/Constant #//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="Number" abstract="true" eSuperTypes="#//NumericExpression #//constant/DataConstant">
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return false;"/>
@@ -197,7 +202,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="BooleanConstant" eSuperTypes="#//constant/Constant #//LogicalExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanConstant" eSuperTypes="#//LogicalExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.valueOf(isValue());"/>
@@ -206,7 +211,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="StringConstant" eSuperTypes="#//constant/Constant #//StringExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="StringConstant" eSuperTypes="#//StringExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.valueOf(getValue());"/>
@@ -215,7 +220,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Literal" eSuperTypes="#//constant/Constant #//EnumerationExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="Literal" eSuperTypes="#//EnumerationExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.valueOf(getValue());"/>
@@ -250,7 +255,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CustomData" eSuperTypes="#//constant/Constant #//CustomExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="CustomData" eSuperTypes="#//CustomExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.valueOf(getValue());"/>
@@ -291,7 +296,7 @@
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DateConstant" eSuperTypes="#//constant/Constant #//DateExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DateConstant" eSuperTypes="#//DateExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.valueOf(getValue());"/>
@@ -300,7 +305,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="TimestampConstant" eSuperTypes="#//constant/Constant #//TimestampExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampConstant" eSuperTypes="#//TimestampExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.valueOf(getValue());"/>
@@ -309,6 +314,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DataConstant" abstract="true" eSuperTypes="#//constant/Constant #//DataExpression"/>
   </eSubpackages>
   <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/expression/variable"
       nsPrefix="var">

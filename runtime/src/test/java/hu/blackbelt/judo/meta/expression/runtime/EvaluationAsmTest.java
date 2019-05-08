@@ -68,6 +68,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .withReferenceName("shipper")
                         .build())
                 .withAttributeName("companyName")
+                .withAlias("shipperName")
                 .build();
 
         final CollectionVariable orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
@@ -75,6 +76,17 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .withVariable(order)
                         .build())
                 .withReferenceName("orderDetails")
+                .withAlias("items")
+                .withName("od")
+                .build();
+
+        // TODO - add filter!
+        final CollectionVariable discountedOrderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(order)
+                        .build())
+                .withReferenceName("orderDetails")
+                .withAlias("discountedItems")
                 .withName("od")
                 .build();
 
@@ -107,6 +119,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                                 .withAttributeName("discount")
                                 .build())
                         .build())
+                .withAlias("price")
                 .build();
 
         final DecimalAggregatedExpression totalPrice = newDecimalAggregatedExpressionBuilder()
@@ -115,12 +128,14 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .build())
                 .withOperator(DecimalAggregator.SUM)
                 .withExpression(price)
+                .withAlias("totalPrice")
                 .build();
 
         final IntegerExpression itemCount = newCountExpressionBuilder()
                 .withCollectionExpression(newCollectionVariableReferenceBuilder()
-                        .withVariable(orderDetails)
+                        .withVariable(discountedOrderDetails)
                         .build())
+                .withAlias("numberOfItems")
                 .build();
 
         final CollectionVariable categories = newObjectNavigationFromCollectionExpressionBuilder()
@@ -161,9 +176,10 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .withValue(BigInteger.ONE)
                         .withUnitName("week")
                         .build())
+                .withAlias("completedDate")
                 .build();
 
-        expressionResource.getContents().addAll(Arrays.asList(orderType, order, orderDate, shipperName, orderDetails, totalPrice, itemCount, categories, categoryName, categoryDescription, completedDate));
+        expressionResource.getContents().addAll(Arrays.asList(orderType, order, orderDate, shipperName, orderDetails, discountedOrderDetails, totalPrice, itemCount, categories, categoryName, categoryDescription, completedDate));
 
         return expressionResource;
     }

@@ -1,8 +1,11 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
+import hu.blackbelt.judo.meta.expression.constant.Constant;
+import hu.blackbelt.judo.meta.expression.constant.DataConstant;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
@@ -26,7 +29,8 @@ public class ExpressionEvaluator {
     private final Map<Expression, Collection<Expression>> operandHolders = new ConcurrentHashMap<>();
     private final Map<VariableReference, Expression> variableReferenceSources = new ConcurrentHashMap<>();
     private final Map<Variable, Collection<VariableReference>> variableReferences = new ConcurrentHashMap<>();
-    private final Map<ReferenceExpression, EvaluationNode> roots = new HashMap<>();
+    private final Map<ReferenceExpression, EvaluationNode> roots = new ConcurrentHashMap<>();
+    private final Map<Expression, EvaluationNode> evaluationMap = new ConcurrentHashMap<>();
     private final Set<Expression> leaves = new HashSet<>();
 
     public void init(final Collection<Expression> expressions) {
@@ -74,16 +78,16 @@ public class ExpressionEvaluator {
         });
 
         getAllInstances(Expression.class).forEach(expression ->
-            expression.getOperands().forEach(operand -> {
-                final Collection<Expression> holders;
-                if (operandHolders.containsKey(operand)) {
-                    holders = operandHolders.get(operand);
-                } else {
-                    holders = new ArrayList<>();
-                    operandHolders.put(operand, holders);
-                }
-                holders.add(expression);
-            }));
+                expression.getOperands().forEach(operand -> {
+                    final Collection<Expression> holders;
+                    if (operandHolders.containsKey(operand)) {
+                        holders = operandHolders.get(operand);
+                    } else {
+                        holders = new ArrayList<>();
+                        operandHolders.put(operand, holders);
+                    }
+                    holders.add(expression);
+                }));
 
         getAllInstances(Expression.class).forEach(navigationExpression -> {
             variableReferenceSources.putAll(getAllInstances(VariableReference.class)
@@ -115,6 +119,11 @@ public class ExpressionEvaluator {
             references.add(variableReference);
         });
 
+        evaluationMap.putAll(getAllInstances(Constant.class)
+                .filter(c -> c instanceof DataConstant)
+                .map(c -> (DataConstant) c)
+                .collect(Collectors.toMap(c -> c, c -> EvaluationNode.builder().expression(c).terminals(ImmutableMap.of(c.getAlias() != null ? c.getAlias() : "", c)).navigations(Collections.emptyMap()).build())));
+
         leaves.addAll(getAllInstances(Expression.class)
                 .filter(expression -> !getAllInstances(Expression.class)
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
@@ -132,52 +141,90 @@ public class ExpressionEvaluator {
     private EvaluationNode evaluate(final Expression expression, final int level) {
         log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName());
 
-        final Collection<Expression> terminals = new ArrayList<>();
-        final Map<String, EvaluationNode> navigations = new TreeMap<>();
+        if (evaluationMap.containsKey(expression)) {
+            log.debug(pad(level) + "[---] already processed");
+            return evaluationMap.get(expression);
+        }
 
+        final Map<String, Expression> terminals = new TreeMap<>();
+        final Map<String, EvaluationNode> navigations = new TreeMap<>();
+        final Map<String, DataExpression> operations = new TreeMap<>();
+
+        boolean processed = false;
         if (expression instanceof AttributeSelector) {
-            log.debug(pad(level) + "[terminal] attribute selector: {}", expression);
-            terminals.add(expression);
+            final AttributeSelector attributeSelector = (AttributeSelector) expression;
+
+            log.debug(pad(level) + "[terminal] attribute selector: {} AS {}", expression, attributeSelector.getAlias());
+
+            terminals.put(attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName(), expression);
+            processed = true;
         } else if (expression instanceof AggregatedExpression) {
-            log.debug(pad(level) + "[aggregated] aggregated expression: {}, NOT SUPPORTED YET", expression);
-        } else if (variableReferences.containsKey(expression)) {
+//            log.debug(pad(level) + "[aggregated] aggregated expression: {}, NOT SUPPORTED YET", expression);
+            processed = false;
+        } else if (expression instanceof DataExpression) {
+            final DataExpression dataExpression = (DataExpression) expression;
+            log.debug(pad(level) + "[operation] data expression: {} AS {}", expression, dataExpression.getAlias());
+
+            final String alias = dataExpression.getAlias();
+            if (alias != null) {
+                operations.put(alias != null ? alias : "", dataExpression);
+            } else if (isLeaf(dataExpression)) {
+                log.warn("No alias is defined for operation: {}", dataExpression);
+            }
+
+            processed = true;
+        }
+
+        if (variableReferences.containsKey(expression)) {
             variableReferences.get(expression).forEach(r -> {
                 if (variableReferenceSources.containsKey(r)) {
                     final Expression variableReferenceSource = variableReferenceSources.get(r);
                     log.debug(pad(level) + "[variable] variable type: {}", variableReferenceSource.getClass().getSimpleName());
 
-                    evaluateContainer(terminals, navigations, variableReferenceSource, level);
+                    evaluateContainer(terminals, navigations, operations, variableReferenceSource, level);
                 } else {
                     log.debug(pad(level) + "[variable] variable NOT USED: {}", r);
                 }
             });
+            processed = true;
         } else if (operandHolders.containsKey(expression)) {
             operandHolders.get(expression).forEach(holder -> {
                 log.debug(pad(level) + "[expr] operand of: {}", holder);
 
-                evaluateContainer(terminals, navigations, holder, level);
+                evaluateContainer(terminals, navigations, operations, holder, level);
             });
-        } else {
-            log.error("Unsupported expression: {}", expression);
+            processed = true;
         }
 
-        log.debug(pad(level) + "-> terminals: {}, navigations: {}", terminals, navigations);
-        return EvaluationNode.builder()
+        if (!processed) {
+            log.warn(pad(level) + "! Unprocessed expression: {}", expression);
+        }
+
+
+        final EvaluationNode result = EvaluationNode.builder()
                 .expression(expression)
                 .terminals(terminals)
+                .operations(operations)
                 .navigations(navigations)
                 .build();
+        evaluationMap.put(expression, result);
+
+        log.debug(pad(level) + "-> {}", result);
+
+        return result;
     }
 
-    private void evaluateContainer(final Collection<Expression> terminals, final Map<String, EvaluationNode> navigations, final Expression expression, final int level) {
+    private void evaluateContainer(final Map<String, Expression> terminals, final Map<String, EvaluationNode> navigations, final Map<String, DataExpression> operations, final Expression expression, final int level) {
         final EvaluationNode evaluationNode = evaluate(expression, level + 1);
 
         if (expression instanceof NavigationExpression) {
             final NavigationExpression navigationExpression = (NavigationExpression) expression;
-            navigations.put(navigationExpression.getReferenceName(), evaluationNode);
+            log.debug(pad(level) + "[container] alias: {}", navigationExpression.getAlias());
+            navigations.put(navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName(), evaluationNode);
         } else {
-            terminals.addAll(evaluationNode.getTerminals());
+            terminals.putAll(evaluationNode.getTerminals());
             navigations.putAll(evaluationNode.getNavigations());
+            operations.putAll(evaluationNode.getOperations());
         }
     }
 
@@ -193,6 +240,7 @@ public class ExpressionEvaluator {
         leaves.clear();
         roots.clear();
         variableReferences.clear();
+        evaluationMap.clear();
     }
 
     <T> Stream<T> getAllInstances(final Class<T> clazz) {
