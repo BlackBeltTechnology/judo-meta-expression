@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
+import hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -51,11 +52,11 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withName("self")
                 .build();
 
-        final TimestampAttribute shippedDate = newTimestampAttributeBuilder()
+        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
                         .withVariable(order)
                         .build())
-                .withAttributeName("shippedDate")
+                .withAttributeName("orderDate")
                 .build();
 
         final StringExpression shipperName = newStringAttributeBuilder()
@@ -148,7 +149,21 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAttributeName("description")
                 .build();
 
-        expressionResource.getContents().addAll(Arrays.asList(orderType, order, shippedDate, shipperName, orderDetails, totalPrice, itemCount, categories, categoryName, categoryDescription));
+        final TimestampExpression completedDate = newTimestampAdditionExpressionBuilder()
+                .withTimestamp(newTimestampAttributeBuilder()
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(order)
+                                .build())
+                        .withAttributeName("shippedDate")
+                        .build())
+                .withOperator(TimestampDurationOperator.ADD)
+                .withDuration(newMeasuredIntegerBuilder()
+                        .withValue(BigInteger.ONE)
+                        .withUnitName("week")
+                        .build())
+                .build();
+
+        expressionResource.getContents().addAll(Arrays.asList(orderType, order, orderDate, shipperName, orderDetails, totalPrice, itemCount, categories, categoryName, categoryDescription, completedDate));
 
         return expressionResource;
     }
