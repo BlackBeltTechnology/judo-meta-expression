@@ -1,8 +1,10 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
+import hu.blackbelt.judo.meta.expression.operator.DecimalComparator;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
@@ -21,6 +23,7 @@ import java.util.Arrays;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
@@ -71,7 +74,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAlias("shipperName")
                 .build();
 
-        final CollectionVariable orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
                         .withVariable(order)
                         .build())
@@ -80,14 +83,26 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withName("od")
                 .build();
 
-        // TODO - add filter!
-        final CollectionVariable discountedOrderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+        final CollectionNavigationFromObjectExpression itemsOfDiscountedProductsBase = newCollectionNavigationFromObjectExpressionBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
                         .withVariable(order)
                         .build())
                 .withReferenceName("orderDetails")
-                .withAlias("discountedItems")
                 .withName("od")
+                .build();
+        final CollectionVariable itemsOfDiscountedProducts = newCollectionFilterExpressionBuilder()
+                .withCollectionExpression(itemsOfDiscountedProductsBase)
+                .withCondition(
+                        newLogicalAttributeBuilder()
+                                .withObjectExpression(newObjectNavigationExpressionBuilder()
+                                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                                .withVariable(itemsOfDiscountedProductsBase)
+                                                .build())
+                                        .withReferenceName("product")
+                                        .build())
+                                .withAttributeName("discounted")
+                                .build())
+                .withName("d")
                 .build();
 
         final NumericExpression price = newDecimalAritmeticExpressionBuilder()
@@ -133,7 +148,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
         final IntegerExpression itemCount = newCountExpressionBuilder()
                 .withCollectionExpression(newCollectionVariableReferenceBuilder()
-                        .withVariable(discountedOrderDetails)
+                        .withVariable(itemsOfDiscountedProducts)
                         .build())
                 .withAlias("numberOfItems")
                 .build();
@@ -179,7 +194,43 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAlias("completedDate")
                 .build();
 
-        expressionResource.getContents().addAll(Arrays.asList(orderType, order, orderDate, shipperName, orderDetails, discountedOrderDetails, totalPrice, itemCount, categories, categoryName, categoryDescription, completedDate));
+        final CollectionNavigationFromObjectExpression discountedItemsBase = newCollectionNavigationFromObjectExpressionBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(order)
+                        .build())
+                .withReferenceName("orderDetails")
+                .withName("od")
+                .build();
+        final CollectionVariable discountedItems = newCollectionFilterExpressionBuilder()
+                .withCollectionExpression(discountedItemsBase) // TODO - reusing variables (?)
+                .withCondition(newDecimalComparisonBuilder()
+                        .withLeft(newDecimalAttributeBuilder()
+                                .withObjectExpression(newObjectVariableReferenceBuilder()
+                                        .withVariable(discountedItemsBase)
+                                        .build())
+                                .withAttributeName("discount")
+                                .build())
+                        .withOperator(DecimalComparator.GREATER_THAN)
+                        .withRight(newIntegerConstantBuilder()
+                                .withValue(BigInteger.ONE)
+                                .build())
+                        .build())
+                .withName("di")
+                .withAlias("discountedItems")
+                .build();
+
+        final StringExpression discountedProductName = newStringAttributeBuilder()
+                .withObjectExpression(newObjectNavigationExpressionBuilder()
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(discountedItems)
+                                .build())
+                        .withReferenceName("product")
+                        .build())
+                .withAttributeName("productName")
+                .withAlias("product")
+                .build();
+
+        expressionResource.getContents().addAll(Arrays.asList(orderType, order, orderDate, shipperName, orderDetails, itemsOfDiscountedProducts, totalPrice, itemCount, categories, categoryName, categoryDescription, completedDate, discountedItems, discountedProductName));
 
         return expressionResource;
     }

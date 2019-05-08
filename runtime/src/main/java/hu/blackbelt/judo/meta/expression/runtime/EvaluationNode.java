@@ -8,13 +8,13 @@ import java.util.Map;
 @lombok.Getter
 @lombok.Builder
 @lombok.ToString
-public class EvaluationNode {
+public class EvaluationNode<T extends Expression> {
 
-    private Expression expression;
+    private T expression;
 
     private Map<String, Expression> terminals;
 
-    private Map<String, EvaluationNode> navigations;
+    private Map<SetTransformation, EvaluationNode> navigations;
 
     private Map<String, DataExpression> operations;
 }

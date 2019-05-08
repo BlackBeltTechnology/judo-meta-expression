@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
+import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.DataConstant;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -130,7 +131,7 @@ public class ExpressionEvaluator {
                 .collect(Collectors.toSet()));
 
         roots.putAll(navigationSources.values().stream()
-                .filter(s -> !navigationSources.containsKey(s))
+                .filter(s -> !navigationSources.containsKey(s) && !lambdaContainers.containsValue(s)) // FIXME - check lambdaContainers condition
                 .collect(Collectors.toSet())
                 .stream()
                 .collect(Collectors.toMap(r -> r, r -> evaluate(r, 0))));
@@ -147,7 +148,7 @@ public class ExpressionEvaluator {
         }
 
         final Map<String, Expression> terminals = new TreeMap<>();
-        final Map<String, EvaluationNode> navigations = new TreeMap<>();
+        final Map<SetTransformation, EvaluationNode> navigations = new HashMap<>();
         final Map<String, DataExpression> operations = new TreeMap<>();
 
         boolean processed = false;
@@ -158,9 +159,6 @@ public class ExpressionEvaluator {
 
             terminals.put(attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName(), expression);
             processed = true;
-        } else if (expression instanceof AggregatedExpression) {
-//            log.debug(pad(level) + "[aggregated] aggregated expression: {}, NOT SUPPORTED YET", expression);
-            processed = false;
         } else if (expression instanceof DataExpression) {
             final DataExpression dataExpression = (DataExpression) expression;
             log.debug(pad(level) + "[operation] data expression: {} AS {}", expression, dataExpression.getAlias());
@@ -196,10 +194,16 @@ public class ExpressionEvaluator {
             processed = true;
         }
 
+        if (lambdaContainers.containsKey(expression)) {
+            final ReferenceExpression referenceExpression = lambdaContainers.get(expression);
+            log.debug(pad(level) + "[lambda] container: {}", referenceExpression);
+
+            evaluateContainer(terminals, navigations, operations, referenceExpression, level);
+        }
+
         if (!processed) {
             log.warn(pad(level) + "! Unprocessed expression: {}", expression);
         }
-
 
         final EvaluationNode result = EvaluationNode.builder()
                 .expression(expression)
@@ -214,13 +218,32 @@ public class ExpressionEvaluator {
         return result;
     }
 
-    private void evaluateContainer(final Map<String, Expression> terminals, final Map<String, EvaluationNode> navigations, final Map<String, DataExpression> operations, final Expression expression, final int level) {
+    private void evaluateContainer(final Map<String, Expression> terminals, final Map<SetTransformation, EvaluationNode> navigations, final Map<String, DataExpression> operations, final Expression expression, final int level) {
         final EvaluationNode evaluationNode = evaluate(expression, level + 1);
 
         if (expression instanceof NavigationExpression) {
             final NavigationExpression navigationExpression = (NavigationExpression) expression;
             log.debug(pad(level) + "[container] alias: {}", navigationExpression.getAlias());
-            navigations.put(navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName(), evaluationNode);
+
+            final SetTransformation key = SetTransformation.builder()
+                    .alias(navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName())
+                    .build();
+
+            navigations.put(key, evaluationNode);
+        } else if (expression instanceof FilteringExpression) {
+            final FilteringExpression filteringExpression = (FilteringExpression) expression;
+            log.debug(pad(level) + "[filtering] filtering: {}", expression);
+
+            final SetTransformation key = SetTransformation.builder()
+                    .alias(filteringExpression.getAlias())
+                    .filtering(Collections.singleton(evaluationNode))
+                    .build();
+
+            navigations.put(key, evaluationNode);
+        } else if (expression instanceof SortExpression) {
+            log.warn(pad(level) + "[ordering] ordering is not supported yet: {}", expression);
+        } else if (expression instanceof WindowingExpression) {
+            log.warn(pad(level) + "[windowing] windowing is not supported yet: {}", expression);
         } else {
             terminals.putAll(evaluationNode.getTerminals());
             navigations.putAll(evaluationNode.getNavigations());
