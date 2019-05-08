@@ -141,48 +141,44 @@ public class ExpressionEvaluator {
         } else if (expression instanceof AggregatedExpression) {
             log.debug(pad(level) + "[aggregated] aggregated expression: {}, NOT SUPPORTED YET", expression);
         } else if (variableReferences.containsKey(expression)) {
-            final Collection<VariableReference> references = variableReferences.get(expression);
-            references.forEach(r -> {
+            variableReferences.get(expression).forEach(r -> {
                 if (variableReferenceSources.containsKey(r)) {
                     final Expression variableReferenceSource = variableReferenceSources.get(r);
                     log.debug(pad(level) + "[variable] variable type: {}", variableReferenceSource.getClass().getSimpleName());
 
-                    final EvaluationNode evaluationNode = evaluate(variableReferenceSource, level + 1);
-                    log.debug(pad(level) + "-> evaluated: {}", evaluationNode);
-
-                    if (variableReferenceSource instanceof NavigationExpression) {
-                        // variable must be base of navigation expressions so no further looking is required for source
-                        final NavigationExpression navigationExpression = (NavigationExpression) variableReferenceSource;
-                        navigations.put(navigationExpression.getReferenceName(), evaluationNode);
-                    } else {
-                        terminals.addAll(evaluationNode.getTerminals());
-                        navigations.putAll(evaluationNode.getNavigations());
-                    }
+                    evaluateContainer(terminals, navigations, variableReferenceSource, level);
+                } else {
+                    log.debug(pad(level) + "[variable] variable NOT USED: {}", r);
                 }
             });
         } else if (operandHolders.containsKey(expression)) {
             operandHolders.get(expression).forEach(holder -> {
                 log.debug(pad(level) + "[expr] operand of: {}", holder);
-                final EvaluationNode evaluationNode = evaluate(holder, level + 1);
-                log.debug(pad(level) + "=> evaluated: {}", evaluationNode);
 
-                if (holder instanceof NavigationExpression) {
-                    final NavigationExpression navigationExpression = (NavigationExpression) holder;
-                    navigations.put(navigationExpression.getReferenceName(), evaluationNode);
-                } else {
-                    terminals.addAll(evaluationNode.getTerminals());
-                    navigations.putAll(evaluationNode.getNavigations());
-                }
+                evaluateContainer(terminals, navigations, holder, level);
             });
         } else {
-            log.debug(pad(level) + "[---] {}", expression);
+            log.error("Unsupported expression: {}", expression);
         }
 
+        log.debug(pad(level) + "-> terminals: {}, navigations: {}", terminals, navigations);
         return EvaluationNode.builder()
                 .expression(expression)
                 .terminals(terminals)
                 .navigations(navigations)
                 .build();
+    }
+
+    private void evaluateContainer(final Collection<Expression> terminals, final Map<String, EvaluationNode> navigations, final Expression expression, final int level) {
+        final EvaluationNode evaluationNode = evaluate(expression, level + 1);
+
+        if (expression instanceof NavigationExpression) {
+            final NavigationExpression navigationExpression = (NavigationExpression) expression;
+            navigations.put(navigationExpression.getReferenceName(), evaluationNode);
+        } else {
+            terminals.addAll(evaluationNode.getTerminals());
+            navigations.putAll(evaluationNode.getNavigations());
+        }
     }
 
     private static String pad(int level) {
