@@ -102,8 +102,12 @@
         <genParameters ecoreParameter="expression.ecore#//MeasureName/get/modelAdapter"/>
       </genOperations>
     </genClasses>
-    <genClasses image="false" ecoreClass="expression.ecore#//WindowingExpression"/>
-    <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression"/>
+    <genClasses image="false" ecoreClass="expression.ecore#//WindowingExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//WindowingExpression/alias"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//FilteringExpression/alias"/>
+    </genClasses>
     <genClasses ecoreClass="expression.ecore#//ModelAdapter"/>
     <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -767,6 +771,7 @@
       <genClasses ecoreClass="expression.ecore#//collection/SortExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/SortExpression/collectionExpression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/SortExpression/orderBy"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//collection/SortExpression/alias"/>
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getObjectType"

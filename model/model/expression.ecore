@@ -162,9 +162,15 @@
     </eOperations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WindowingExpression" abstract="true"
-      interface="true" eSuperTypes="#//Expression"/>
+      interface="true" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        transient="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FilteringExpression" abstract="true"
-      interface="true" eSuperTypes="#//Expression"/>
+      interface="true" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        transient="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ModelAdapter" instanceClassName="hu.blackbelt.judo.meta.expression.adapters.ModelAdapter"
       abstract="true" interface="true"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
@@ -1018,7 +1024,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectSelectorExpression" eSuperTypes="#//ObjectExpression #//WindowingExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectSelectorExpression" eSuperTypes="#//ObjectExpression #//WindowingExpression #//variable/ObjectVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
@@ -1040,7 +1046,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/ObjectSelector"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression #//FilteringExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression #//FilteringExpression #//variable/ObjectVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
@@ -1119,7 +1125,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
           eType="#//ObjectExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectSwitchExpression" eSuperTypes="#//SwitchExpression #//ObjectExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectSwitchExpression" eSuperTypes="#//SwitchExpression #//ObjectExpression #//variable/ObjectVariable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
@@ -1146,7 +1152,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression #//FilteringExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression #//FilteringExpression #//variable/CollectionVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
@@ -1257,7 +1263,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SortExpression" eSuperTypes="#//OrderedCollectionExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="SortExpression" eSuperTypes="#//OrderedCollectionExpression #//variable/CollectionVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
@@ -1288,8 +1294,10 @@
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
           eType="#//collection/OrderByItem" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+          transient="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SubCollectionExpression" eSuperTypes="#//OrderedCollectionExpression #//WindowingExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="SubCollectionExpression" eSuperTypes="#//OrderedCollectionExpression #//WindowingExpression #//variable/CollectionVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
@@ -1366,7 +1374,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CollectionSwitchExpression" eSuperTypes="#//SwitchExpression #//CollectionExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="CollectionSwitchExpression" eSuperTypes="#//SwitchExpression #//CollectionExpression #//variable/CollectionVariable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
