@@ -49,6 +49,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 URI.createURI(createdSourceModelName));
 
         final TypeName orderType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Order").build();
+        final TypeName orderDetailType = newTypeNameBuilder().withNamespace("northwind.entities").withName("OrderDetail").build();
 
         final ObjectVariable order = newInstanceBuilder()
                 .withElementName(orderType)
@@ -105,18 +106,26 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withName("d")
                 .build();
 
+        final ObjectVariable orderDetail = newInstanceBuilder()
+                .withElementName(orderDetailType)
+                .withName("self")
+                .withDefinition(newInstanceReferenceBuilder()
+                        .withVariable(orderDetails)
+                        .build())
+                .build();
+
         final NumericExpression price = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAritmeticExpressionBuilder()
                         .withLeft(newIntegerAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(orderDetails)
+                                        .withVariable(orderDetail)
                                         .build())
                                 .withAttributeName("quantity")
                                 .build())
                         .withOperator(DecimalOperator.MULTIPLY)
                         .withRight(newDecimalAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(orderDetails)
+                                        .withVariable(orderDetail)
                                         .build())
                                 .withAttributeName("unitPrice")
                                 .build())
@@ -129,7 +138,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .withOperator(DecimalOperator.SUBSTRACT)
                         .withRight(newDecimalAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(orderDetails)
+                                        .withVariable(orderDetail)
                                         .build())
                                 .withAttributeName("discount")
                                 .build())
@@ -230,7 +239,21 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAlias("product")
                 .build();
 
-        expressionResource.getContents().addAll(Arrays.asList(orderType, order, orderDate, shipperName, orderDetails, itemsOfDiscountedProducts, totalPrice, itemCount, categories, categoryName, categoryDescription, completedDate, discountedItems, discountedProductName));
+        expressionResource.getContents().addAll(Arrays.asList(orderType, order
+                , orderDate
+                , shipperName
+                , orderDetails
+                , orderDetail
+                , itemsOfDiscountedProducts
+                , totalPrice
+                , itemCount
+                , categories
+                , categoryName
+                , categoryDescription
+                , completedDate
+                , discountedItems
+                , discountedProductName
+        ));
 
         return expressionResource;
     }

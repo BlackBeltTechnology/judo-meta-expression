@@ -5,9 +5,7 @@ import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
-import hu.blackbelt.judo.meta.expression.constant.Constant;
-import hu.blackbelt.judo.meta.expression.constant.DataConstant;
-import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -28,7 +26,6 @@ public class ExpressionEvaluator {
     private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
     private final Map<NavigationExpression, ReferenceExpression> navigationSources = new ConcurrentHashMap<>();
     private final Map<Expression, Collection<Expression>> operandHolders = new ConcurrentHashMap<>();
-    private final Map<VariableReference, Expression> variableReferenceSources = new ConcurrentHashMap<>();
     private final Map<Variable, Collection<VariableReference>> variableReferences = new ConcurrentHashMap<>();
     private final Map<ReferenceExpression, EvaluationNode> roots = new ConcurrentHashMap<>();
     private final Map<Expression, EvaluationNode> evaluationMap = new ConcurrentHashMap<>();
@@ -89,12 +86,6 @@ public class ExpressionEvaluator {
                     }
                     holders.add(expression);
                 }));
-
-        getAllInstances(Expression.class).forEach(navigationExpression -> {
-            variableReferenceSources.putAll(getAllInstances(VariableReference.class)
-                    .filter(referenceExpression -> navigationExpression.getOperands().contains(referenceExpression))
-                    .collect(Collectors.toMap(variableReference -> variableReference, variableReference -> navigationExpression)));
-        });
 
         getAllInstances(VariableReference.class).forEach(variableReference -> {
             final Collection<VariableReference> references;
@@ -175,13 +166,13 @@ public class ExpressionEvaluator {
 
         if (variableReferences.containsKey(expression)) {
             variableReferences.get(expression).forEach(r -> {
-                if (variableReferenceSources.containsKey(r)) {
-                    final Expression variableReferenceSource = variableReferenceSources.get(r);
+                if (r.eContainer() instanceof Expression) {
+                    final Expression variableReferenceSource = (Expression) r.eContainer();
                     log.debug(pad(level) + "[variable] variable type: {}", variableReferenceSource.getClass().getSimpleName());
 
                     evaluateContainer(terminals, navigations, operations, variableReferenceSource, level);
                 } else {
-                    log.debug(pad(level) + "[variable] variable NOT USED: {}", r);
+                    throw new IllegalStateException("Container must be expression");
                 }
             });
             processed = true;
@@ -192,6 +183,27 @@ public class ExpressionEvaluator {
                 evaluateContainer(terminals, navigations, operations, holder, level);
             });
             processed = true;
+//        } else if (expression instanceof Instance) {
+//            final Instance instance = (Instance) expression;
+//            if (instance.getDefinition() instanceof InstanceReference) {
+//                final InstanceReference instanceReference = (InstanceReference) instance.getDefinition();
+//
+//                final ObjectVariable objectVariable = instanceReference.getVariable();
+//                if (objectVariable instanceof CollectionVariable) {
+//                    log.debug(pad(level) + "[instance] referencing collection: {}", objectVariable);
+//                } else {
+//                    log.debug(pad(level) + "[instance] referencing object: {}", objectVariable);
+//
+//                }
+//            }
+//        } else if (expression instanceof ImmutableCollection) {
+//            final ImmutableCollection immutableCollection = (ImmutableCollection) expression;
+//            if (immutableCollection.getDefinition() instanceof CollectionReference) {
+//                final CollectionReference collectionReference = (CollectionReference) immutableCollection.getDefinition();
+//
+//                final CollectionVariable collectionVariable = collectionReference.getVariable();
+//                log.debug(pad(level) + "[collection] referencing collection: {}", collectionVariable);
+//            }
         }
 
         if (lambdaContainers.containsKey(expression)) {
