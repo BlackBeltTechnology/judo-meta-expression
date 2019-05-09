@@ -3,10 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
-import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
-import hu.blackbelt.judo.meta.expression.operator.DecimalComparator;
-import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
-import hu.blackbelt.judo.meta.expression.operator.TimestampDurationOperator;
+import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -133,7 +130,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withOperator(DecimalOperator.MULTIPLY)
                 .withRight(newDecimalAritmeticExpressionBuilder()
                         .withLeft(newIntegerConstantBuilder()
-                                .withValue(BigInteger.valueOf(1))
+                                .withValue(BigInteger.ONE)
                                 .build())
                         .withOperator(DecimalOperator.SUBSTRACT)
                         .withRight(newDecimalAttributeBuilder()
@@ -238,6 +235,14 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAttributeName("productName")
                 .withAlias("product")
                 .build();
+
+//        final NumericExpression number = newIntegerAritmeticExpressionBuilder()
+//                .withLeft(newIntegerConstantBuilder().withValue(BigInteger.valueOf(2)).build())
+//                .withOperator(IntegerOperator.MULTIPLY)
+//                .withRight(newIntegerConstantBuilder().withValue(BigInteger.valueOf(3)).build())
+//                .withAlias("result")
+//                .build();
+//        expressionResource.getContents().addAll(Arrays.asList(number));
 
         expressionResource.getContents().addAll(Arrays.asList(orderType, order
                 , orderDate

@@ -1,9 +1,9 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
+import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
@@ -27,7 +27,7 @@ public class ExpressionEvaluator {
     private final Map<NavigationExpression, ReferenceExpression> navigationSources = new ConcurrentHashMap<>();
     private final Map<Expression, Collection<Expression>> operandHolders = new ConcurrentHashMap<>();
     private final Map<Variable, Collection<VariableReference>> variableReferences = new ConcurrentHashMap<>();
-    private final Map<ReferenceExpression, EvaluationNode> roots = new ConcurrentHashMap<>();
+    private final Map<Expression, EvaluationNode> roots = new ConcurrentHashMap<>();
     private final Map<Expression, EvaluationNode> evaluationMap = new ConcurrentHashMap<>();
     private final Set<Expression> leaves = new HashSet<>();
 
@@ -111,23 +111,14 @@ public class ExpressionEvaluator {
             references.add(variableReference);
         });
 
-        evaluationMap.putAll(getAllInstances(Constant.class)
-                .filter(c -> c instanceof DataConstant)
-                .map(c -> (DataConstant) c)
-                .collect(Collectors.toMap(c -> c, c -> EvaluationNode.builder().expression(c).terminals(ImmutableMap.of(c.getAlias() != null ? c.getAlias() : "", c)).navigations(Collections.emptyMap()).build())));
-
         leaves.addAll(getAllInstances(Expression.class)
                 .filter(expression -> !getAllInstances(Expression.class)
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
                 .collect(Collectors.toSet()));
 
-        roots.putAll(navigationSources.values().stream()
-                .filter(s -> !navigationSources.containsKey(s) && !lambdaContainers.containsValue(s)) // FIXME - check lambdaContainers condition
-                .collect(Collectors.toSet())
-                .stream()
-                .collect(Collectors.toMap(r -> r, r -> evaluate(r, 0))));
-
-        log.debug("ROOTS:\n{}", roots);
+        roots.putAll(getAllInstances(Expression.class)
+                .filter(e -> e.getOperands().isEmpty() && ((e instanceof Instance) || (e instanceof ImmutableCollection) || !(e instanceof ReferenceExpression)))
+                .collect(Collectors.toMap(e -> e, e -> evaluate(e, 0))));
     }
 
     private EvaluationNode evaluate(final Expression expression, final int level) {
@@ -183,27 +174,6 @@ public class ExpressionEvaluator {
                 evaluateContainer(terminals, navigations, operations, holder, level);
             });
             processed = true;
-//        } else if (expression instanceof Instance) {
-//            final Instance instance = (Instance) expression;
-//            if (instance.getDefinition() instanceof InstanceReference) {
-//                final InstanceReference instanceReference = (InstanceReference) instance.getDefinition();
-//
-//                final ObjectVariable objectVariable = instanceReference.getVariable();
-//                if (objectVariable instanceof CollectionVariable) {
-//                    log.debug(pad(level) + "[instance] referencing collection: {}", objectVariable);
-//                } else {
-//                    log.debug(pad(level) + "[instance] referencing object: {}", objectVariable);
-//
-//                }
-//            }
-//        } else if (expression instanceof ImmutableCollection) {
-//            final ImmutableCollection immutableCollection = (ImmutableCollection) expression;
-//            if (immutableCollection.getDefinition() instanceof CollectionReference) {
-//                final CollectionReference collectionReference = (CollectionReference) immutableCollection.getDefinition();
-//
-//                final CollectionVariable collectionVariable = collectionReference.getVariable();
-//                log.debug(pad(level) + "[collection] referencing collection: {}", collectionVariable);
-//            }
         }
 
         if (lambdaContainers.containsKey(expression)) {

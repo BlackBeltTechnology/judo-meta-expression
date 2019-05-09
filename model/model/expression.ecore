@@ -70,8 +70,7 @@
       interface="true" eSuperTypes="#//CollectionExpression"/>
   <eClassifiers xsi:type="ecore:EClass" name="DataExpression" abstract="true" interface="true"
       eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NavigationExpression" abstract="true"
       eSuperTypes="#//Expression">
@@ -163,13 +162,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="WindowingExpression" abstract="true"
       interface="true" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FilteringExpression" abstract="true"
       interface="true" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ModelAdapter" instanceClassName="hu.blackbelt.judo.meta.expression.adapters.ModelAdapter"
       abstract="true" interface="true"/>
@@ -1315,8 +1312,7 @@
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
           eType="#//collection/OrderByItem" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-          transient="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="SubCollectionExpression" eSuperTypes="#//OrderedCollectionExpression #//WindowingExpression #//variable/CollectionVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
