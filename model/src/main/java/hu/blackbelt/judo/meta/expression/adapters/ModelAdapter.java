@@ -14,6 +14,8 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
 
     Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
+    Optional<TypeName> getTypeName(NE namespaceElement);
+
     /**
      * Get a namespace element by element name.
      *

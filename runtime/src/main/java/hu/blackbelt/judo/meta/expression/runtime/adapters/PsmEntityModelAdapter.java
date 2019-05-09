@@ -38,6 +38,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
+
 @Slf4j
 public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
 
@@ -68,6 +70,19 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
             ex.printStackTrace();
             throw ex;
         }
+    }
+
+    // TODO - use PSM utils, ensure FQ name is returned
+    private static String getFullName(final Namespace namespace) {
+        return namespace.toString();
+    }
+
+    @Override
+    public Optional<TypeName> getTypeName(final NamespaceElement namespaceElement) {
+        return namespaceCache.values().stream()
+                .filter(ns -> ns.getElements().contains(namespaceElement))
+                .map(ns -> newTypeNameBuilder().withNamespace(getFullName(ns)).withName(namespaceElement.getName()).build())
+                .findAny();
     }
 
     @Override

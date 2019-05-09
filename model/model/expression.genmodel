@@ -50,6 +50,7 @@
     <genClasses image="false" ecoreClass="expression.ecore#//OrderedCollectionExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//DataExpression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//DataExpression/alias"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//DataExpression/builtIn"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//NavigationExpression">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//NavigationExpression/referenceName"/>
@@ -229,8 +230,14 @@
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/CollectionVariable">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/CollectionVariable/iteratorVariable"/>
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/getObjectType/modelAdapter"/>
+        </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/createIterator"
+            body="setIteratorVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;                    .withElementName((hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get())&#xA;                    .withName(name)&#xA;                    .withDefinition(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceReferenceBuilder()&#xA;                            .withVariable(this)&#xA;                            .build())&#xA;                    .build());&#xA;return getIteratorVariable();">
+          <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/createIterator/name"/>
+          <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/createIterator/modelAdapter"/>
         </genOperations>
       </genClasses>
     </nestedGenPackages>
@@ -684,7 +691,7 @@
           <genParameters ecoreParameter="expression.ecore#//object/ObjectVariableReference/getObjectType/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectVariableReference/toString"
-            body="return getVariable().getName();"/>
+            body="return getVariable().getName() != null ? getVariable().getName() : getVariable().toString();"/>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectVariableReference/getVariableName"
             body="return toString();"/>
       </genClasses>
@@ -748,7 +755,7 @@
           <genParameters ecoreParameter="expression.ecore#//collection/CollectionVariableReference/getObjectType/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//collection/CollectionVariableReference/toString"
-            body="return String.valueOf(getVariable().getName());"/>
+            body="return getVariable().getName() != null ? getVariable().getName() : getVariable().toString();"/>
         <genOperations ecoreOperation="expression.ecore#//collection/CollectionVariableReference/getVariableName"
             body="return toString();"/>
       </genClasses>

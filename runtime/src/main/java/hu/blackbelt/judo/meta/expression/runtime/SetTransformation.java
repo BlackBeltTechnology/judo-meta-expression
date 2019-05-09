@@ -8,7 +8,6 @@ import java.util.Collection;
 
 @lombok.Getter
 @lombok.Builder
-@lombok.ToString
 public class SetTransformation {
 
     private String alias;
@@ -18,4 +17,13 @@ public class SetTransformation {
     private Collection<EvaluationNode<SortExpression>> ordering;
 
     private EvaluationNode<WindowingExpression> windowingExpression;
+
+    @Override
+    public String toString() {
+        return "[" + alias + "|" +
+                (filtering != null && !filtering.isEmpty() ? "F:" + filtering : "") +
+                (ordering != null && !ordering.isEmpty() ? "O:" + ordering : "") +
+                (windowingExpression != null ? "W:" + windowingExpression : "") +
+                "]";
+    }
 }

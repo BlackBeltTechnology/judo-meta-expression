@@ -38,7 +38,7 @@ import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 
 @Slf4j
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
@@ -70,6 +70,14 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                 .collect(Collectors.toList()));
+    }
+
+    @Override
+    public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
+        return namespaceCache.values().stream()
+                .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
+                .map(ns -> newTypeNameBuilder().withNamespace(AsmUtils.getFullName(ns)).withName(namespaceElement.getName()).build())
+                .findAny();
     }
 
     @Override
