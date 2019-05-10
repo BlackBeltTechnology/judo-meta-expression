@@ -2,7 +2,6 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
@@ -28,26 +27,8 @@ public class ExpressionEvaluator {
     private final Map<Expression, EvaluationNode> evaluationMap = new ConcurrentHashMap<>();
     private final Set<Expression> leaves = new HashSet<>();
 
-    public void init(final ModelAdapter modelAdapter, final Collection<Expression> expressions) {
+    public void init(final Collection<Expression> expressions) {
         this.expressions.addAll(expressions);
-
-//        getAllInstances(CollectionNavigationFromObjectExpression.class).forEach(e -> {
-//            log.info("Expression: {}", e);
-//            log.info("  - object type: {}", e.getObjectType(modelAdapter));
-//            //final Optional<TypeName> typeName = modelAdapter.getTypeName(e.getObjectType(modelAdapter));
-//            //log.info("  - type name: {}", typeName.get());
-//
-//
-//            final ObjectVariable x = hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()
-//                    .withElementName((hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(e.getObjectType(modelAdapter)).get())
-//                    .withName("TEST")
-//                    .withDefinition(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceReferenceBuilder()
-//                            .withVariable(e)
-//                            .build())
-//                    .build();
-//
-//            log.info("ITERATOR: {}", x);
-//        });
 
         getAllInstances(Expression.class).forEach(expression -> {
             final Optional<ReferenceExpression> lambdaContainer = getAllInstances(ReferenceExpression.class)
@@ -165,20 +146,6 @@ public class ExpressionEvaluator {
 
             processed = true;
         }
-
-//        if (variableReferences.containsKey(expression)) {
-//            variableReferences.get(expression).forEach(variableReference -> {
-//                if (variableReference.eContainer() instanceof Expression) {
-//                    final Expression variableReferenceContainer = (Expression) variableReference.eContainer();
-//                    log.debug(pad(level) + "[variable reference] used in: {}", variableReferenceContainer);
-//
-//                    evaluateContainer(terminals, navigations, operations, variableReferenceContainer, level);
-//                } else {
-//                    throw new IllegalStateException("Container must be expression");
-//                }
-//            });
-//            processed = true;
-//        }
 
         if (operandHolders.containsKey(expression)) {
             operandHolders.get(expression).forEach(holder -> {

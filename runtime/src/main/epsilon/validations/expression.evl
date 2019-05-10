@@ -18,7 +18,7 @@ operation displayAllExpressions() {
 }
 
 pre {
-    evaluator.init(modelAdapter, EXPR!Expression.ALL);
+    evaluator.init(EXPR!Expression.ALL);
 
     // displayAllExpressions();
 }
