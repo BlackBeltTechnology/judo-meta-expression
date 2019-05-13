@@ -326,7 +326,9 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DataConstant" abstract="true" eSuperTypes="#//constant/Constant #//DataExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DataConstant" abstract="true" eSuperTypes="#//constant/Constant #//DataExpression">
+      <eOperations name="getValue" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="InstanceId" eSuperTypes="#//constant/InstanceDefinition">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>

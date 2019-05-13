@@ -204,7 +204,9 @@
         <genOperations ecoreOperation="expression.ecore#//constant/TimestampConstant/toString"
             body="return String.valueOf(getValue());"/>
       </genClasses>
-      <genClasses image="false" ecoreClass="expression.ecore#//constant/DataConstant"/>
+      <genClasses image="false" ecoreClass="expression.ecore#//constant/DataConstant">
+        <genOperations ecoreOperation="expression.ecore#//constant/DataConstant/getValue"/>
+      </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/InstanceId">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/InstanceId/id"/>
       </genClasses>
