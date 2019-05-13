@@ -7,7 +7,7 @@ import com.google.common.collect.Iterables;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.expression.runtime.query.*;
-import hu.blackbelt.judo.meta.expression.runtime.query.function.Equals;
+import hu.blackbelt.judo.meta.expression.runtime.query.function.FunctionSignature;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
@@ -105,12 +105,10 @@ public class QueryAsmTest {
                 .joins(ImmutableList.of(
                         Join.builder().joined(shipper).reference((EReference) orderInfo.getEStructuralFeature("shipper")).build()
                 ))
-                .filters(ImmutableSet.of(
-                        Equals.builder()
-                                .left(SingleParameter.builder().feature(orderIdAttribute).build())
-                                .right(SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
-                                .build()
-                ))
+                .filters(ImmutableSet.of(FunctionSignature.EQUALS.create(ImmutableMap.of(
+                        FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(orderIdAttribute).build(),
+                        FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
+                )))
                 .subSelects(ImmutableMap.of(
                         (EReference) orderInfo.getEStructuralFeature("categories"),
                         SubSelect.builder()

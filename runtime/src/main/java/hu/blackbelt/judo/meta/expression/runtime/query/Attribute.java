@@ -11,4 +11,6 @@ public class Attribute implements Feature {
      * ASM entity type attribute.
      */
     private EAttribute targetAttribute;
+
+    private Identifiable identifiable;
 }

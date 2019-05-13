@@ -13,6 +13,8 @@ public class Join implements Identifiable {
      */
     private EReference reference;
 
+    private Identifiable identifiable;
+
     /**
      * ASM entity type.
      */

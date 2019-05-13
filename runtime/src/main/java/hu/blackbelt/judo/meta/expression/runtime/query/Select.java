@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
-import hu.blackbelt.judo.meta.expression.runtime.query.function.LogicalFunction;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
@@ -39,7 +38,7 @@ public class Select implements Identifiable {
      */
     private Map<EReference, SubSelect> subSelects;
 
-    private Collection<LogicalFunction> filters;
+    private Collection<Function> filters;
 
     // TODO - add ordering
 

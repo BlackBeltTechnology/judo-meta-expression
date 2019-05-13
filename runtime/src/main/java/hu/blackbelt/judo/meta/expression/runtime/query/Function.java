@@ -1,10 +1,18 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
+import hu.blackbelt.judo.meta.expression.runtime.query.function.FunctionSignature;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.Parameter;
 
 import java.util.Map;
 
-public interface Function extends Feature {
+@lombok.Getter
+@lombok.Builder
+@lombok.ToString
+public class Function implements Feature {
 
-    Map<String, Parameter> getParameters();
+    private FunctionSignature signature;
+
+    private Map<String, Parameter> parameters;
+
+    private Class type;
 }

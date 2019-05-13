@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
@@ -8,10 +9,10 @@ import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.InstanceId;
 import hu.blackbelt.judo.meta.expression.constant.InstanceReference;
 import hu.blackbelt.judo.meta.expression.runtime.query.Constant;
+import hu.blackbelt.judo.meta.expression.runtime.query.Function;
 import hu.blackbelt.judo.meta.expression.runtime.query.IdAttribute;
 import hu.blackbelt.judo.meta.expression.runtime.query.Select;
-import hu.blackbelt.judo.meta.expression.runtime.query.function.Equals;
-import hu.blackbelt.judo.meta.expression.runtime.query.function.LogicalFunction;
+import hu.blackbelt.judo.meta.expression.runtime.query.function.FunctionSignature;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EClass;
@@ -32,7 +33,7 @@ public class QueryModelBuilder {
     public Select createQueryModel(final EvaluationNode evaluationNode) {
         final Select.SelectBuilder builder = Select.builder();
 
-        final Collection<LogicalFunction> filters = new ArrayList<>();
+        final Collection<Function> filters = new ArrayList<>();
 
         final IdAttribute base = new IdAttribute();
 
@@ -45,10 +46,11 @@ public class QueryModelBuilder {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
                 log.debug("Base: instance with ID '{}' of {}", instanceId.getId(), type.getName());
 
-                filters.add(Equals.builder()
-                        .left(SingleParameter.builder().feature(base).build())
-                        .right(SingleParameter.builder().feature(Constant.<UUID>builder().value(UUID.fromString(instanceId.getId())).build()).build())
-                        .build());
+                filters.add(FunctionSignature.EQUALS.create(
+                        ImmutableMap.of(
+                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(base).build(),
+                                FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(UUID.fromString(instanceId.getId())).build()).build()
+                        )));
             } else if (instance.getDefinition() instanceof InstanceReference) {
                 throw new IllegalStateException("Instance references are not supported as base");
             } else {
