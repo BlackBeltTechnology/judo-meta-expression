@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class ExpressionEvaluator {
 
-    private final Collection<Expression> expressions = new ArrayList<>();
+    private final Set<Expression> allExpressions = new HashSet<>();
 
     private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
     private final Map<NavigationExpression, ReferenceExpression> navigationSources = new ConcurrentHashMap<>();
@@ -28,7 +28,7 @@ public class ExpressionEvaluator {
     private final Set<Expression> leaves = new HashSet<>();
 
     public void init(final Collection<Expression> expressions) {
-        this.expressions.addAll(expressions);
+        expressions.forEach(expression -> addToAllExpressions(expression));
 
         getAllInstances(Expression.class).forEach(expression -> {
             final Optional<ReferenceExpression> lambdaContainer = getAllInstances(ReferenceExpression.class)
@@ -73,6 +73,7 @@ public class ExpressionEvaluator {
 
         getAllInstances(Expression.class).forEach(expression ->
                 expression.getOperands().forEach(operand -> {
+                    log.debug("Checking operand {} of {}", operand, expression);
                     Expression expr = operand;
                     while (expr != null) {
                         final ObjectVariable variable;
@@ -85,6 +86,7 @@ public class ExpressionEvaluator {
                         } else {
                             variable = null;
                         }
+                        log.debug("  - expr: {}, variable: {}", expr, variable);
 
                         final Collection<Expression> holders;
                         if (operandHolders.containsKey(expr)) {
@@ -108,10 +110,16 @@ public class ExpressionEvaluator {
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
                 .collect(Collectors.toSet()));
 
-        // TODO - include data expressions without variable references
+        // TODO - include data allExpressions without variable references
         roots.putAll(getAllInstances(Expression.class)
                 .filter(e -> e.getOperands().isEmpty() && !(e instanceof ReferenceExpression) || (e instanceof Instance) || (e instanceof ImmutableCollection))
                 .collect(Collectors.toMap(e -> e, e -> evaluate(e, 0))));
+    }
+
+    private void addToAllExpressions(final Expression expression) {
+        allExpressions.add(expression);
+        expression.getOperands().forEach(e -> addToAllExpressions(e));
+        expression.getLambdaFunctions().forEach(e -> addToAllExpressions(e));
     }
 
     public EvaluationNode getEvaluationNode(final Expression expression) {
@@ -239,7 +247,7 @@ public class ExpressionEvaluator {
     }
 
     public void cleanup() {
-        expressions.clear();
+        allExpressions.clear();
         lambdaContainers.clear();
         navigationSources.clear();
         operandHolders.clear();
@@ -249,7 +257,7 @@ public class ExpressionEvaluator {
     }
 
     <T> Stream<T> getAllInstances(final Class<T> clazz) {
-        return expressions.stream()
+        return allExpressions.stream()
                 .filter(e -> clazz.isAssignableFrom(e.getClass()))
                 .map(e -> (T) e);
     }
@@ -280,7 +288,7 @@ public class ExpressionEvaluator {
     /**
      * Get terms of a given expression.
      * <p>
-     * Terms are atomic segments for evaluating an expression including variable references, constants and aggregators. Terms of lambda expressions are excluded because they are used in subprocess.
+     * Terms are atomic segments for evaluating an expression including variable references, constants and aggregators. Terms of lambda allExpressions are excluded because they are used in subprocess.
      *
      * @param expression an expression
      * @return expression terms

@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
 import hu.blackbelt.judo.meta.expression.constant.*;
@@ -83,6 +84,33 @@ public class QueryModelBuilder {
 
                         features.put((EAttribute) targetType.getEStructuralFeature(attributeRole.getAlias()), feature);
 
+                    });
+
+            evaluationNode.getNavigations().entrySet().stream()
+                    .forEach(n -> {
+                        final SetTransformation t = ((Map.Entry<SetTransformation, ?>) n).getKey();
+                        final EvaluationNode next = ((Map.Entry<SetTransformation, EvaluationNode>) n).getValue();
+
+                        //t.getFiltering() // TODO
+                        //t.getOrdering() // TODO
+                        //t.getWindowingExpression() // TODO
+
+                        final EClass joined;
+                        if (next.getExpression() instanceof ReferenceExpression) {
+                            joined = (EClass)((ReferenceExpression)next.getExpression()).getObjectType(modelAdapter);
+                        } else {
+                            throw new IllegalStateException("Expression must be reference");
+                        }
+
+                        log.info("targetType: {}", targetType);
+                        log.info("alias: {}", t.getAlias());
+                        joins.add(
+                                Join.builder()
+                                        .reference((EReference) type.getEStructuralFeature(t.getAlias()))
+                                        .joined(joined)
+                                        .alias(t.getAlias()) // TODO - include source class name
+                                        .build()
+                        );
                     });
 
             builder.from(type);

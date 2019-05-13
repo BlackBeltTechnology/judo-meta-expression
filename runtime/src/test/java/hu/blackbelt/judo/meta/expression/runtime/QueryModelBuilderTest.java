@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -28,6 +29,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
@@ -108,9 +110,32 @@ public class QueryModelBuilderTest {
 //                .withAlias("orderDate")
 //                .build();
 
+        final StringExpression shipperName = newStringAttributeBuilder()
+                .withObjectExpression(newObjectNavigationExpressionBuilder()
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(order)
+                                .build())
+                        .withName("s")
+                        .withReferenceName("shipper")
+                        .build())
+                .withAttributeName("companyName")
+                .withAlias("shipperName")
+                .build();
+
+//        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+//                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                        .withVariable(order)
+//                        .build())
+//                .withReferenceName("orderDetails")
+//                .withAlias("items")
+//                .build();
+//
+//        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
+
         final Collection<Expression> expressions = ImmutableList.<Expression>builder()
                 .add(order)
                 .add(orderDate)
+                .add(shipperName)
                 .build();
 
         expressionResource.getContents().addAll(ImmutableList.<EObject>builder()
@@ -118,13 +143,14 @@ public class QueryModelBuilderTest {
                 .addAll(expressions)
                 .build());
 
-        final ExpressionEvaluator evaluator = new ExpressionEvaluator();
-        evaluator.init(expressions);
-
-        final EvaluationNode evaluationNode = evaluator.getEvaluationNode(order);
-
-        final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter);
         try {
+            final ExpressionEvaluator evaluator = new ExpressionEvaluator();
+            evaluator.init(expressions);
+
+            final EvaluationNode evaluationNode = evaluator.getEvaluationNode(order);
+
+            final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter);
+
             final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
 
             log.debug("QUERY MODEL: \n{}", queryModel);
