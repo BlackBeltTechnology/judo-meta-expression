@@ -5,7 +5,8 @@ import org.eclipse.emf.ecore.EReference;
 
 @lombok.Getter
 @lombok.Builder
-public class Join {
+@lombok.ToString
+public class Join implements Identifiable {
 
     /**
      * ASM reference of {@link Select#getFrom()} and {@link #getJoined()} entity types.
@@ -18,4 +19,9 @@ public class Join {
     private EClass joined;
 
     // TODO - add filtering
+
+    @Override
+    public String getAlias() {
+        return joined.getName(); // TODO - return FQ name + reference name
+    }
 }

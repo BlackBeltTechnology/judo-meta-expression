@@ -97,6 +97,10 @@ public class ExpressionEvaluator {
                 .collect(Collectors.toMap(e -> e, e -> evaluate(e, 0))));
     }
 
+    public EvaluationNode getEvaluationNode(final Expression expression) {
+        return evaluationMap.get(expression);
+    }
+
     private EvaluationNode evaluate(final Expression expression, final int level) {
         log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName());
 

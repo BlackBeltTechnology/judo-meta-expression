@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 @lombok.Getter
 @lombok.Builder
+@lombok.ToString
 public class Attribute implements Feature {
 
     /**

@@ -4,6 +4,7 @@ import java.util.List;
 
 @lombok.Getter
 @lombok.Builder
+@lombok.ToString
 public class SubSelect {
 
     /**

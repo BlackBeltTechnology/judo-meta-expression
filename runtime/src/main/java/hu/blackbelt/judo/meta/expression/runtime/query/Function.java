@@ -1,13 +1,10 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
-import java.util.Collection;
+import hu.blackbelt.judo.meta.expression.runtime.query.function.Parameter;
 
-@lombok.Getter
-@lombok.Builder
-public class Function implements Feature {
+import java.util.Map;
 
-    /**
-     * ASM entity type attribute.
-     */
-    private Collection<Feature> parameters;
+public interface Function extends Feature {
+
+    Map<String, Parameter> getParameters();
 }

@@ -2,19 +2,20 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.expression.runtime.query.Attribute;
-import hu.blackbelt.judo.meta.expression.runtime.query.Join;
-import hu.blackbelt.judo.meta.expression.runtime.query.Select;
-import hu.blackbelt.judo.meta.expression.runtime.query.SubSelect;
+import hu.blackbelt.judo.meta.expression.runtime.query.*;
+import hu.blackbelt.judo.meta.expression.runtime.query.function.Equals;
+import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.URIHandler;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,6 +23,7 @@ import java.io.File;
 import java.nio.file.FileSystems;
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -69,6 +71,7 @@ public class QueryAsmTest {
         namespace.getESubpackages().stream().forEach(p -> initNamespace(newPath, p));
     }
 
+    @AfterEach
     void tearDown() {
         resourceSet = null;
     }
@@ -85,6 +88,10 @@ public class QueryAsmTest {
         final EClass orderItem = (EClass) namespaceCache.get("northwind.services").getEClassifier("OrderItem");
         final EClass categoryInfo = (EClass) namespaceCache.get("northwind.services").getEClassifier("CategoryInfo");
 
+        final UUID orderId = UUID.randomUUID();
+
+        final IdAttribute orderIdAttribute = new IdAttribute();
+
         final Select select = Select.builder()
                 .from(order)
                 .target(orderInfo)
@@ -97,6 +104,12 @@ public class QueryAsmTest {
                 ))
                 .joins(ImmutableList.of(
                         Join.builder().joined(shipper).reference((EReference) orderInfo.getEStructuralFeature("shipper")).build()
+                ))
+                .filters(ImmutableSet.of(
+                        Equals.builder()
+                                .left(SingleParameter.builder().feature(orderIdAttribute).build())
+                                .right(SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
+                                .build()
                 ))
                 .subSelects(ImmutableMap.of(
                         (EReference) orderInfo.getEStructuralFeature("categories"),
@@ -138,6 +151,8 @@ public class QueryAsmTest {
                                 .build()
                 ))
                 .build();
+
+        orderIdAttribute.setIdentifiable(select);
     }
 
     protected File srcDir() {

@@ -1,15 +1,18 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
+import hu.blackbelt.judo.meta.expression.runtime.query.function.LogicalFunction;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @lombok.Getter
 @lombok.Builder
-public class Select {
+@lombok.ToString
+public class Select implements Identifiable {
 
     /**
      * ASM entity type.
@@ -36,9 +39,15 @@ public class Select {
      */
     private Map<EReference, SubSelect> subSelects;
 
-    // TODO - add filtering
+    private Collection<LogicalFunction> filters;
 
     // TODO - add ordering
 
     // TODO - add windowing (head, tail)
+
+
+    @Override
+    public String getAlias() {
+        return from.getName(); // TODO - return FQ name
+    }
 }
