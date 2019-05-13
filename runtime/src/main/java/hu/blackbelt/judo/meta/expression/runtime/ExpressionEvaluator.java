@@ -73,18 +73,34 @@ public class ExpressionEvaluator {
 
         getAllInstances(Expression.class).forEach(expression ->
                 expression.getOperands().forEach(operand -> {
-                    final Collection<Expression> holders;
-                    if (operand == null) {
-                        log.error("Invalid operand of: {}", expression);
-                        return;
+                    Expression expr = operand;
+                    while (expr != null) {
+                        final ObjectVariable variable;
+                        if (expr instanceof ObjectVariableReference) {
+                            final ObjectVariableReference variableReference = (ObjectVariableReference) expr;
+                            variable = variableReference.getVariable();
+                        } else if (expr instanceof CollectionVariableReference) {
+                            final CollectionVariableReference variableReference = (CollectionVariableReference) expr;
+                            variable = variableReference.getVariable();
+                        } else {
+                            variable = null;
+                        }
+
+                        final Collection<Expression> holders;
+                        if (operandHolders.containsKey(expr)) {
+                            holders = operandHolders.get(expr);
+                        } else {
+                            holders = new ArrayList<>();
+                            operandHolders.put(expr, holders);
+                        }
+                        holders.add(expression);
+
+                        if (variable instanceof Expression) {
+                            expr = (Expression) variable;
+                        } else {
+                            expr = null;
+                        }
                     }
-                    if (operandHolders.containsKey(operand)) {
-                        holders = operandHolders.get(operand);
-                    } else {
-                        holders = new ArrayList<>();
-                        operandHolders.put(operand, holders);
-                    }
-                    holders.add(expression);
                 }));
 
         leaves.addAll(getAllInstances(Expression.class)
@@ -93,7 +109,7 @@ public class ExpressionEvaluator {
                 .collect(Collectors.toSet()));
 
         roots.putAll(getAllInstances(Expression.class)
-                .filter(e -> e.getOperands().isEmpty() && ((e instanceof Instance) || (e instanceof ImmutableCollection) || !(e instanceof ReferenceExpression)))
+                .filter(e -> e.getOperands().isEmpty() && !(e instanceof ReferenceExpression) || (e instanceof Instance) || (e instanceof ImmutableCollection))
                 .collect(Collectors.toMap(e -> e, e -> evaluate(e, 0))));
     }
 
