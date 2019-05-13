@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.expression.runtime.query.Select;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -77,6 +78,7 @@ public class QueryModelBuilderTest {
     @Test
     public void testSimpleQuery() {
         final TypeName orderType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Order").build();
+        final TypeName orderInfoType = newTypeNameBuilder().withNamespace("northwind.services").withName("OrderInfo").build();
 
         final UUID orderId = UUID.randomUUID();
 
@@ -101,7 +103,8 @@ public class QueryModelBuilderTest {
         final EvaluationNode evaluationNode = evaluator.getEvaluationNode(order);
 
         final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter);
-        final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode);
+        final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
+
         log.debug("QUERY MODEL: \n{}", queryModel);
     }
 

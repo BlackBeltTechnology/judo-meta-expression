@@ -1,12 +1,27 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
-@lombok.Data
-public class IdAttribute implements Feature {
+import lombok.NonNull;
+import org.eclipse.emf.ecore.EClass;
 
+@lombok.Getter
+@lombok.Builder
+public class IdAttribute implements IdentifiableFeature {
+
+    @NonNull
+    private EClass type;
+
+    @lombok.Setter
     private Identifiable identifiable;
 
     @Override
     public String toString() {
-        return "ID of " + identifiable.getAlias();
+        final String typeName;
+        if (identifiable != null) {
+            typeName = identifiable.getAlias() != null ? identifiable.getAlias() : identifiable.getObjectType().getName();
+        } else {
+            typeName = type.getName();
+        }
+
+        return "ID of " + typeName;
     }
 }

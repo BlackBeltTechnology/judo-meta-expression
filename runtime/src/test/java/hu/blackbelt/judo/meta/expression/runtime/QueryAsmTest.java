@@ -90,23 +90,21 @@ public class QueryAsmTest {
 
         final UUID orderId = UUID.randomUUID();
 
-        final IdAttribute orderIdAttribute = new IdAttribute();
-
         final Select select = Select.builder()
                 .from(order)
                 .target(orderInfo)
                 .features(ImmutableMap.of(
                         (EAttribute) orderInfo.getEStructuralFeature("orderDate"),
-                        Attribute.builder().targetAttribute((EAttribute) order.getEStructuralFeature("orderDate")).build(),
+                        Attribute.builder().sourceAttribute((EAttribute) order.getEStructuralFeature("orderDate")).build(),
 
                         (EAttribute) orderInfo.getEStructuralFeature("shipperName"),
-                        Attribute.builder().targetAttribute((EAttribute) shipper.getEStructuralFeature("companyName")).build()
+                        Attribute.builder().sourceAttribute((EAttribute) shipper.getEStructuralFeature("companyName")).build()
                 ))
                 .joins(ImmutableList.of(
-                        Join.builder().joined(shipper).reference((EReference) orderInfo.getEStructuralFeature("shipper")).build()
+                        Join.builder().joined(shipper).reference((EReference) order.getEStructuralFeature("shipper")).build()
                 ))
                 .filters(ImmutableSet.of(FunctionSignature.EQUALS.create(ImmutableMap.of(
-                        FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(orderIdAttribute).build(),
+                        FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(order).build()).build(),
                         FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
                 )))
                 .subSelects(ImmutableMap.of(
@@ -122,8 +120,11 @@ public class QueryAsmTest {
                                         .target(categoryInfo)
                                         .features(ImmutableMap.of(
                                                 (EAttribute) categoryInfo.getEStructuralFeature("categoryName"),
-                                                Attribute.builder().targetAttribute((EAttribute) category.getEStructuralFeature("categoryName")).build()
+                                                Attribute.builder().sourceAttribute((EAttribute) category.getEStructuralFeature("categoryName")).build()
                                         ))
+                                        .joins(Collections.emptyList())
+                                        .filters(Collections.emptyList())
+                                        .subSelects(Collections.emptyMap())
                                         .build())
                                 .build(),
 
@@ -137,20 +138,21 @@ public class QueryAsmTest {
                                         .target(orderItem)
                                         .features(ImmutableMap.of(
                                                 (EAttribute) orderItem.getEStructuralFeature("unitPrice"),
-                                                Attribute.builder().targetAttribute((EAttribute) orderDetails.getEStructuralFeature("unitPrice")).build(),
+                                                Attribute.builder().sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("unitPrice")).build(),
 
                                                 (EAttribute) orderItem.getEStructuralFeature("quantity"),
-                                                Attribute.builder().targetAttribute((EAttribute) orderDetails.getEStructuralFeature("quantity")).build(),
+                                                Attribute.builder().sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("quantity")).build(),
 
                                                 (EAttribute) orderItem.getEStructuralFeature("discount"),
-                                                Attribute.builder().targetAttribute((EAttribute) orderDetails.getEStructuralFeature("discount")).build()
+                                                Attribute.builder().sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("discount")).build()
                                         ))
+                                        .joins(Collections.emptyList())
+                                        .filters(Collections.emptyList())
+                                        .subSelects(Collections.emptyMap())
                                         .build())
                                 .build()
                 ))
                 .build();
-
-        orderIdAttribute.setIdentifiable(select);
     }
 
     protected File srcDir() {
