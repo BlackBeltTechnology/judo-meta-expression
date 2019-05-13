@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EAttribute;
 
 @lombok.Getter
 @lombok.Builder
-@lombok.ToString
 public class Attribute implements IdentifiableFeature {
 
     /**
@@ -16,4 +15,9 @@ public class Attribute implements IdentifiableFeature {
 
     @lombok.Setter
     private Identifiable identifiable;
+
+    @Override
+    public String toString() {
+        return identifiable.getAlias() + "." + sourceAttribute.getName();
+    }
 }

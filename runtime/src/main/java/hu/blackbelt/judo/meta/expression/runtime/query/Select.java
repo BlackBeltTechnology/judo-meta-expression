@@ -8,11 +8,11 @@ import org.eclipse.emf.ecore.EReference;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @lombok.Getter
 @lombok.Builder
-@lombok.ToString
 public class Select implements Identifiable {
 
     /**
@@ -51,6 +51,8 @@ public class Select implements Identifiable {
     @lombok.Setter
     private String alias;
 
+    // TODO - add filtering
+
     // TODO - add ordering
 
     // TODO - add windowing (head, tail)
@@ -73,5 +75,14 @@ public class Select implements Identifiable {
                 ),
                 filters.stream().flatMap(f -> f.getIdentifiableFeatures())
         );
+    }
+
+    @Override
+    public String toString() {
+        return "SELECT\n" +
+                "  FEATURES=" + features.entrySet().stream().map(f -> f.getValue() + " AS " + f.getKey().getName()).collect(Collectors.toList()) + "\n" +
+                "  FROM=" + from.getName() + " AS " + getAlias() + "\n" +
+                "  TO=" + target.getName() + "\n" +
+                "  WHERE=" + filters;
     }
 }

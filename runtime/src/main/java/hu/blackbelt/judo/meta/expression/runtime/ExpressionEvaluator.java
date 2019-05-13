@@ -108,6 +108,7 @@ public class ExpressionEvaluator {
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
                 .collect(Collectors.toSet()));
 
+        // TODO - include data expressions without variable references
         roots.putAll(getAllInstances(Expression.class)
                 .filter(e -> e.getOperands().isEmpty() && !(e instanceof ReferenceExpression) || (e instanceof Instance) || (e instanceof ImmutableCollection))
                 .collect(Collectors.toMap(e -> e, e -> evaluate(e, 0))));

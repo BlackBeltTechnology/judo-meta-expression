@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.runtime.query.Select;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -26,9 +27,10 @@ import java.nio.file.FileSystems;
 import java.util.Collection;
 import java.util.UUID;
 
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceIdBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 
 @Slf4j
 public class QueryModelBuilderTest {
@@ -88,8 +90,27 @@ public class QueryModelBuilderTest {
                 .withDefinition(newInstanceIdBuilder().withId(orderId.toString()).build())
                 .build();
 
+        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(order)
+                        .build())
+                .withAttributeName("orderDate")
+                .withAlias("orderDate")
+                .build();
+
+//        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
+//                .withObjectExpression(newInstanceBuilder()
+//                        .withElementName(orderType)
+//                        .withName("self")
+//                        .withDefinition(newInstanceIdBuilder().withId(orderId.toString()).build())
+//                        .build())
+//                .withAttributeName("orderDate")
+//                .withAlias("orderDate")
+//                .build();
+
         final Collection<Expression> expressions = ImmutableList.<Expression>builder()
                 .add(order)
+                .add(orderDate)
                 .build();
 
         expressionResource.getContents().addAll(ImmutableList.<EObject>builder()
@@ -103,9 +124,14 @@ public class QueryModelBuilderTest {
         final EvaluationNode evaluationNode = evaluator.getEvaluationNode(order);
 
         final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter);
-        final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
+        try {
+            final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
 
-        log.debug("QUERY MODEL: \n{}", queryModel);
+            log.debug("QUERY MODEL: \n{}", queryModel);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     protected File srcDir() {

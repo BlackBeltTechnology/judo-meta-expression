@@ -1,14 +1,13 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
-import hu.blackbelt.judo.meta.expression.constant.CollectionReference;
-import hu.blackbelt.judo.meta.expression.constant.Instance;
-import hu.blackbelt.judo.meta.expression.constant.InstanceId;
-import hu.blackbelt.judo.meta.expression.constant.InstanceReference;
+import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.runtime.query.*;
+import hu.blackbelt.judo.meta.expression.runtime.query.Constant;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.FunctionSignature;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +58,32 @@ public class QueryModelBuilder {
             } else {
                 throw new IllegalStateException("Missing instance definition");
             }
+
+            evaluationNode.getTerminals().entrySet().stream()
+                    .forEach(t -> {
+                        final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
+                        final Expression expr = ((Map.Entry<AttributeRole, Expression>) t).getValue();
+
+                        final Feature feature;
+                        if (expr instanceof DataConstant) {
+                            final DataConstant dataConstant = (DataConstant) expr;
+                            feature = Constant.builder().value(dataConstant.getValue()).build();
+                        } else if (expr instanceof AttributeSelector) {
+                            final AttributeSelector attributeSelector = (AttributeSelector) expr;
+
+                            final String alias = attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName();
+
+                            feature = Attribute.builder()
+                                    // .identifiable() // TODO
+                                    .sourceAttribute((EAttribute) type.getEStructuralFeature(alias))
+                                    .build();
+                        } else {
+                            throw new UnsupportedOperationException("Not supported yet");
+                        }
+
+                        features.put((EAttribute) targetType.getEStructuralFeature(attributeRole.getAlias()), feature);
+
+                    });
 
             builder.from(type);
         } else if (expression instanceof ImmutableCollection) {
@@ -121,7 +146,10 @@ public class QueryModelBuilder {
                 .forEach(identifiableFeature -> {
                     if (identifiableFeature instanceof Attribute) {
                         final EAttribute attribute = ((Attribute) identifiableFeature).getSourceAttribute();
-                        final List<Identifiable> list = identifiableMap.get(attribute.eClass());
+                        final List<Identifiable> list = identifiableMap.get(attribute.getEContainingClass());
+                        if (list == null) {
+                            log.error("LIST NOT FOUND: {}, {}", attribute.getEContainingClass(), attribute);
+                        }
                         if (list.size() == 1) {
                             identifiableFeature.setIdentifiable(list.get(0));
                         } else {

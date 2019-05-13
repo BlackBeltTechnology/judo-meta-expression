@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EReference;
 
 @lombok.Getter
 @lombok.Builder
-@lombok.ToString
+@lombok.ToString(exclude = "identifiable")
 public class Join implements Identifiable {
 
     /**
