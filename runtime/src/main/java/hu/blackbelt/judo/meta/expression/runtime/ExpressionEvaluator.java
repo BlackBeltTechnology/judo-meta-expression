@@ -117,9 +117,11 @@ public class ExpressionEvaluator {
     }
 
     private void addToAllExpressions(final Expression expression) {
-        allExpressions.add(expression);
-        expression.getOperands().forEach(e -> addToAllExpressions(e));
-        expression.getLambdaFunctions().forEach(e -> addToAllExpressions(e));
+        if (!allExpressions.contains(expression)) {
+            allExpressions.add(expression);
+            expression.getOperands().forEach(e -> addToAllExpressions(e));
+            expression.getLambdaFunctions().forEach(e -> addToAllExpressions(e));
+        }
     }
 
     public EvaluationNode getEvaluationNode(final Expression expression) {
@@ -127,6 +129,7 @@ public class ExpressionEvaluator {
     }
 
     private EvaluationNode evaluate(final Expression expression, final int level) {
+        log.debug("--------------------------------------------------------------------------------");
         log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName());
 
         if (evaluationMap.containsKey(expression)) {
@@ -160,7 +163,12 @@ public class ExpressionEvaluator {
                     .projection(true)
                     .build();
 
-            terminals.put(key, expression);
+            if (terminals.keySet().stream()
+                .anyMatch(k -> Objects.equals(k.getAlias(), alias))) {
+                throw new IllegalStateException("Attribute already processed");
+            } else {
+                terminals.put(key, expression);
+            }
             processed = true;
         } else if (expression instanceof DataExpression) {
             final DataExpression dataExpression = (DataExpression) expression;
@@ -178,9 +186,12 @@ public class ExpressionEvaluator {
 
         if (operandHolders.containsKey(expression)) {
             operandHolders.get(expression).forEach(holder -> {
-                log.debug(pad(level) + "[expr] operand of: {}", holder);
+                log.debug(pad(level) + "[expr] operand of: {} ({})", holder, holder.getClass().getSimpleName());
 
-                evaluateContainer(terminals, navigations, operations, holder, level);
+                if (!evaluationMap.containsKey(holder)) {
+                    // container is not processed yet
+                    evaluateContainer(terminals, navigations, operations, holder, level);
+                }
             });
             processed = true;
         }
@@ -214,13 +225,19 @@ public class ExpressionEvaluator {
 
         if (expression instanceof NavigationExpression) {
             final NavigationExpression navigationExpression = (NavigationExpression) expression;
-            log.debug(pad(level) + "[container] alias: {}", navigationExpression.getAlias());
+            log.debug(pad(level) + "--[container] alias: {}, name: {}", navigationExpression.getAlias(), navigationExpression.getReferenceName());
 
+            final String alias = navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName();
             final SetTransformation key = SetTransformation.builder()
-                    .alias(navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName())
+                    .alias(alias)
                     .build();
 
-            navigations.put(key, evaluationNode);
+            if (navigations.keySet().stream()
+                    .anyMatch(k -> Objects.equals(k.getAlias(), alias))) {
+                throw new IllegalStateException("Navigation already processed");
+            } else {
+                navigations.put(key, evaluationNode);
+            }
         } else if (expression instanceof FilteringExpression) {
             final FilteringExpression filteringExpression = (FilteringExpression) expression;
             log.debug(pad(level) + "[filtering] filtering: {}", expression);
@@ -236,6 +253,7 @@ public class ExpressionEvaluator {
         } else if (expression instanceof WindowingExpression) {
             log.warn(pad(level) + "[windowing] windowing is not supported yet: {}", expression);
         } else {
+            log.warn(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName());
             terminals.putAll(evaluationNode.getTerminals());
             navigations.putAll(evaluationNode.getNavigations());
             operations.putAll(evaluationNode.getOperations());
