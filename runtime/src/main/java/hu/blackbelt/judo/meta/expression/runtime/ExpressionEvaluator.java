@@ -164,7 +164,7 @@ public class ExpressionEvaluator {
                     .build();
 
             if (terminals.keySet().stream()
-                .anyMatch(k -> Objects.equals(k.getAlias(), alias))) {
+                    .anyMatch(k -> Objects.equals(k.getAlias(), alias))) {
                 throw new IllegalStateException("Attribute already processed");
             } else {
                 terminals.put(key, expression);
@@ -225,16 +225,58 @@ public class ExpressionEvaluator {
 
         if (expression instanceof NavigationExpression) {
             final NavigationExpression navigationExpression = (NavigationExpression) expression;
-            log.debug(pad(level) + "--[container] alias: {}, name: {}", navigationExpression.getAlias(), navigationExpression.getReferenceName());
+            log.debug(pad(level) + "[container] alias: {}, name: {}", navigationExpression.getAlias(), navigationExpression.getReferenceName());
 
             final String alias = navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName();
             final SetTransformation key = SetTransformation.builder()
                     .alias(alias)
                     .build();
 
-            if (navigations.keySet().stream()
-                    .anyMatch(k -> Objects.equals(k.getAlias(), alias))) {
-                throw new IllegalStateException("Navigation already processed");
+            final Optional<Map.Entry<SetTransformation, EvaluationNode>> entry = navigations.entrySet().stream()
+                    .filter(n -> Objects.equals(n.getKey().getAlias(), alias))
+                    .findAny();
+            if (entry.isPresent()) {
+                final EvaluationNode found = entry.get().getValue();
+                final List<String> foundTerminalAliases = (List<String>) found.getTerminals().keySet().stream()
+                        .map(k -> ((AttributeRole) k).getAlias())
+                        .collect(Collectors.toList());
+                final List<String> foundNavigationAliases = (List<String>) found.getNavigations().keySet().stream()
+                        .map(k -> ((SetTransformation) k).getAlias())
+                        .collect(Collectors.toList());
+                final Set<String> foundOperationAliases = found.getOperations().keySet();
+
+                final List<String> newTerminalAliases = (List<String>) evaluationNode.getTerminals().keySet().stream()
+                        .map(k -> ((AttributeRole) k).getAlias())
+                        .collect(Collectors.toList());
+                final List<String> newNavigationAliases = (List<String>) evaluationNode.getNavigations().keySet().stream()
+                        .map(k -> ((SetTransformation) k).getAlias())
+                        .collect(Collectors.toList());
+                final Set<String> newOperationAliases = evaluationNode.getOperations().keySet();
+
+                log.debug(pad(level) + "[merge] found: {}", found.getExpression());
+                log.debug(pad(level) + "  - terminals: {}", foundTerminalAliases);
+                log.debug(pad(level) + "  - navigations: {}", foundNavigationAliases);
+                log.debug(pad(level) + "  - operations: {}", foundOperationAliases);
+                log.debug(pad(level) + "[merge] processing: {}", expression);
+                log.debug(pad(level) + "  - terminals: {}", newTerminalAliases);
+                log.debug(pad(level) + "  - navigations: {}", newNavigationAliases);
+                log.debug(pad(level) + "  - operations: {}", newOperationAliases);
+
+                if (newTerminalAliases.stream().anyMatch(a -> foundTerminalAliases.contains(a))) {
+                    throw new IllegalStateException("Found terminal alias(es) that are already processed");
+                }
+
+                if (newNavigationAliases.stream().anyMatch(a -> foundNavigationAliases.contains(a))) {
+                    throw new IllegalStateException("Found navigation alias(es) that are already processed");
+                }
+
+                if (newOperationAliases.stream().anyMatch(a -> foundOperationAliases.contains(a))) {
+                    throw new IllegalStateException("Found operation alias(es) that are already processed");
+                }
+
+                found.getTerminals().putAll(evaluationNode.getTerminals());
+                found.getNavigations().putAll(evaluationNode.getNavigations());
+                found.getOperations().putAll(evaluationNode.getOperations());
             } else {
                 navigations.put(key, evaluationNode);
             }
