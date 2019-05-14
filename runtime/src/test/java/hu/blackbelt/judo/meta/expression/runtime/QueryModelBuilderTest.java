@@ -4,11 +4,13 @@ import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.runtime.query.Select;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
@@ -33,6 +35,7 @@ import java.util.UUID;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
@@ -136,6 +139,14 @@ public class QueryModelBuilderTest {
 
         final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
 
+        final NumericExpression price = newDecimalAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(od)
+                        .build())
+                .withAttributeName("price")
+                .withAlias("price")
+                .build();
+
 //        final CollectionVariable categories = newObjectNavigationFromCollectionExpressionBuilder()
 //                .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
 //                        .withCollectionExpression(newCollectionVariableReferenceBuilder()
@@ -160,6 +171,7 @@ public class QueryModelBuilderTest {
                 .add(orderDate)
                 .add(shipperName)
                 .add(orderDetails)
+                .add(price)
                 .build();
 
         expressionResource.getContents().addAll(ImmutableList.<EObject>builder()

@@ -44,9 +44,10 @@ public class QueryModelBuilder {
         final Collection<IdentifiableFeature> backReferences = new ArrayList<>();
 
         final Expression expression = evaluationNode.getExpression();
+        final EClass sourceType;
         if (expression instanceof Instance) {
             final Instance instance = (Instance) expression;
-            final EClass sourceType = (EClass) modelAdapter.get(instance.getElementName()).get();
+            sourceType =  (EClass) modelAdapter.get(instance.getElementName()).get();
 
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
@@ -62,29 +63,25 @@ public class QueryModelBuilder {
             } else {
                 throw new IllegalStateException("Missing instance definition");
             }
-
-            processEvaluationNode(evaluationNode, builder, sourceType, targetType, features, joins, filters, subSelects, backReferences);
-
-            builder.from(sourceType);
         } else if (expression instanceof ImmutableCollection) {
             final ImmutableCollection immutableCollection = (ImmutableCollection) expression;
-            final EClass type = (EClass) modelAdapter.get(immutableCollection.getElementName()).get();
+            sourceType  = (EClass) modelAdapter.get(immutableCollection.getElementName()).get();
 
             if (immutableCollection.getDefinition() instanceof CollectionReference) {
                 throw new IllegalStateException("Instance references are not supported as base");
             } else {
-                log.debug("Base: all instances of {}", type);
+                log.debug("Base: all instances of {}", sourceType);
             }
-
-            builder.from(type);
         } else if (expression instanceof ReferenceExpression) {
             log.info("Base: {} ({})", expression, expression.getClass().getSimpleName());
-            builder.from((EClass) ((ReferenceExpression) expression).getObjectType(modelAdapter));
+            sourceType = (EClass) ((ReferenceExpression) expression).getObjectType(modelAdapter);
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
         }
+        processEvaluationNode(evaluationNode, builder, sourceType, targetType, features, joins, filters, subSelects, backReferences);
 
         final Select select = builder
+                .from(sourceType)
                 .features(features)
                 .joins(joins)
                 .filters(filters)
@@ -167,7 +164,7 @@ public class QueryModelBuilder {
 
                         final Join join = Join.builder()
                                 .reference(sourceReference)
-                                .alias(t.getAlias())
+                                //.alias(t.getAlias())
                                 .build();
                         backReferences.add(join);
 
@@ -182,7 +179,9 @@ public class QueryModelBuilder {
                         }
 
                         // FIXME - put all joined types of navigation
-                        final Join join = Join.builder().alias(t.getAlias()).reference(sourceReference).build(); // set alias of last entry only!
+                        final Join join = Join.builder()
+                                //.alias(t.getAlias())
+                                .reference(sourceReference).build(); // set alias of last entry only!
                         final SubSelect subSelect = SubSelect.builder()
                                 .select(createQueryModel(next, targetReference.getEReferenceType()))
                                 .joins(ImmutableList.of(join))

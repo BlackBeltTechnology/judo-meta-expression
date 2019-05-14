@@ -344,6 +344,9 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_nMMlMHFeEemH_5wcKdro1w" name="discount" lowerBound="1">
         <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_HiDIsHZaEembjfmUoDnRDA" name="price" lowerBound="1" derived="true">
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JDouble"/>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_nMMlMnFeEemH_5wcKdro1w" name="OrderInfoʘitemsʘReference">
       <eAnnotations xmi:id="_nMMlM3FeEemH_5wcKdro1w" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">

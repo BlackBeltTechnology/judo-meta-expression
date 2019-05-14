@@ -8,10 +8,12 @@ import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.stringtemplate.language.Expr;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,6 +28,8 @@ public class ExpressionEvaluator {
     private final Map<Expression, EvaluationNode> roots = new ConcurrentHashMap<>();
     private final Map<Expression, EvaluationNode> evaluationMap = new ConcurrentHashMap<>();
     private final Set<Expression> leaves = new HashSet<>();
+
+    private final static Predicate<Expression> IS_ROOT = e -> e.getOperands().isEmpty() && !(e instanceof ReferenceExpression) || (e instanceof Instance) || (e instanceof ImmutableCollection);
 
     public void init(final Collection<Expression> expressions) {
         expressions.forEach(expression -> addToAllExpressions(expression));
@@ -112,7 +116,7 @@ public class ExpressionEvaluator {
 
         // TODO - include data allExpressions without variable references
         roots.putAll(getAllInstances(Expression.class)
-                .filter(e -> e.getOperands().isEmpty() && !(e instanceof ReferenceExpression) || (e instanceof Instance) || (e instanceof ImmutableCollection))
+                .filter(IS_ROOT)
                 .collect(Collectors.toMap(e -> e, e -> evaluate(e, 0))));
     }
 
@@ -130,7 +134,7 @@ public class ExpressionEvaluator {
 
     private EvaluationNode evaluate(final Expression expression, final int level) {
         log.debug("--------------------------------------------------------------------------------");
-        log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName());
+        log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName() + "#" + expression.hashCode());
 
         if (evaluationMap.containsKey(expression)) {
             log.debug(pad(level) + "[---] already processed");
@@ -184,13 +188,25 @@ public class ExpressionEvaluator {
             processed = true;
         }
 
+        final EvaluationNode result = EvaluationNode.builder()
+                .expression(expression)
+                .terminals(terminals)
+                .operations(operations)
+                .navigations(navigations)
+                .build();
+
         if (operandHolders.containsKey(expression)) {
             operandHolders.get(expression).forEach(holder -> {
-                log.debug(pad(level) + "[expr] operand of: {} ({})", holder, holder.getClass().getSimpleName());
+                log.debug(pad(level) + "[expr] operand of: {} ({})", holder, holder.getClass().getSimpleName() + "#" + holder.hashCode());
 
                 if (!evaluationMap.containsKey(holder)) {
                     // container is not processed yet
                     evaluateContainer(terminals, navigations, operations, holder, level);
+                } else if (IS_ROOT.test(holder)) {
+                    log.debug(pad(level) + "[merge] holder {} already found: {}", holder, evaluationMap.get(holder));
+                    merge(evaluationMap.get(holder), result, expression, level);
+                } else {
+                    log.debug(pad(level) + "[---] already processed {}: {}", holder, evaluationMap.get(holder));
                 }
             });
             processed = true;
@@ -207,15 +223,11 @@ public class ExpressionEvaluator {
             log.warn(pad(level) + "! Unprocessed/unused expression: {}", expression);
         }
 
-        final EvaluationNode result = EvaluationNode.builder()
-                .expression(expression)
-                .terminals(terminals)
-                .operations(operations)
-                .navigations(navigations)
-                .build();
         evaluationMap.put(expression, result);
 
         log.debug(pad(level) + "-> {}", result);
+
+        log.info("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
 
         return result;
     }
@@ -236,47 +248,7 @@ public class ExpressionEvaluator {
                     .filter(n -> Objects.equals(n.getKey().getAlias(), alias))
                     .findAny();
             if (entry.isPresent()) {
-                final EvaluationNode found = entry.get().getValue();
-                final List<String> foundTerminalAliases = (List<String>) found.getTerminals().keySet().stream()
-                        .map(k -> ((AttributeRole) k).getAlias())
-                        .collect(Collectors.toList());
-                final List<String> foundNavigationAliases = (List<String>) found.getNavigations().keySet().stream()
-                        .map(k -> ((SetTransformation) k).getAlias())
-                        .collect(Collectors.toList());
-                final Set<String> foundOperationAliases = found.getOperations().keySet();
-
-                final List<String> newTerminalAliases = (List<String>) evaluationNode.getTerminals().keySet().stream()
-                        .map(k -> ((AttributeRole) k).getAlias())
-                        .collect(Collectors.toList());
-                final List<String> newNavigationAliases = (List<String>) evaluationNode.getNavigations().keySet().stream()
-                        .map(k -> ((SetTransformation) k).getAlias())
-                        .collect(Collectors.toList());
-                final Set<String> newOperationAliases = evaluationNode.getOperations().keySet();
-
-                log.debug(pad(level) + "[merge] found: {}", found.getExpression());
-                log.debug(pad(level) + "  - terminals: {}", foundTerminalAliases);
-                log.debug(pad(level) + "  - navigations: {}", foundNavigationAliases);
-                log.debug(pad(level) + "  - operations: {}", foundOperationAliases);
-                log.debug(pad(level) + "[merge] processing: {}", expression);
-                log.debug(pad(level) + "  - terminals: {}", newTerminalAliases);
-                log.debug(pad(level) + "  - navigations: {}", newNavigationAliases);
-                log.debug(pad(level) + "  - operations: {}", newOperationAliases);
-
-                if (newTerminalAliases.stream().anyMatch(a -> foundTerminalAliases.contains(a))) {
-                    throw new IllegalStateException("Found terminal alias(es) that are already processed");
-                }
-
-                if (newNavigationAliases.stream().anyMatch(a -> foundNavigationAliases.contains(a))) {
-                    throw new IllegalStateException("Found navigation alias(es) that are already processed");
-                }
-
-                if (newOperationAliases.stream().anyMatch(a -> foundOperationAliases.contains(a))) {
-                    throw new IllegalStateException("Found operation alias(es) that are already processed");
-                }
-
-                found.getTerminals().putAll(evaluationNode.getTerminals());
-                found.getNavigations().putAll(evaluationNode.getNavigations());
-                found.getOperations().putAll(evaluationNode.getOperations());
+                merge(entry.get().getValue(), evaluationNode, expression, level);
             } else {
                 navigations.put(key, evaluationNode);
             }
@@ -295,11 +267,60 @@ public class ExpressionEvaluator {
         } else if (expression instanceof WindowingExpression) {
             log.warn(pad(level) + "[windowing] windowing is not supported yet: {}", expression);
         } else {
-            log.debug(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName());
+            log.debug(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName() + "#" + expression.hashCode());
             terminals.putAll(evaluationNode.getTerminals());
             navigations.putAll(evaluationNode.getNavigations());
             operations.putAll(evaluationNode.getOperations());
         }
+    }
+
+    private static void merge(final EvaluationNode baseNode, final EvaluationNode newNode, final Expression expression, final int level) {
+        final List<String> foundTerminalAliases = (List<String>) baseNode.getTerminals().keySet().stream()
+                .map(k -> ((AttributeRole) k).getAlias())
+                .collect(Collectors.toList());
+        final List<String> foundNavigationAliases = (List<String>) baseNode.getNavigations().keySet().stream()
+                .map(k -> ((SetTransformation) k).getAlias())
+                .collect(Collectors.toList());
+        final Set<String> foundOperationAliases = baseNode.getOperations().keySet();
+
+//        baseNode.getTerminals().putAll((Map<AttributeRole, Expression>)
+//                newNode.getTerminals().entrySet().stream()
+//                        .filter(e -> !foundTerminalAliases.contains(((Map.Entry<AttributeRole, Expression>) e).getKey().getAlias()))
+//                        .collect(Collectors.toMap(e -> ((Map.Entry<AttributeRole, Expression>) e).getKey(), e -> ((Map.Entry<AttributeRole, Expression>) e).getValue())));
+
+
+        final List<String> newTerminalAliases = (List<String>) newNode.getTerminals().keySet().stream()
+                .map(k -> ((AttributeRole) k).getAlias())
+                .collect(Collectors.toList());
+        final List<String> newNavigationAliases = (List<String>) newNode.getNavigations().keySet().stream()
+                .map(k -> ((SetTransformation) k).getAlias())
+                .collect(Collectors.toList());
+        final Set<String> newOperationAliases = newNode.getOperations().keySet();
+
+        log.debug(pad(level) + "[merge] found: {}", baseNode.getExpression());
+        log.debug(pad(level) + "  - terminals: {}", foundTerminalAliases);
+        log.debug(pad(level) + "  - navigations: {}", foundNavigationAliases);
+        log.debug(pad(level) + "  - operations: {}", foundOperationAliases);
+        log.debug(pad(level) + "[merge] processing: {}", expression);
+        log.debug(pad(level) + "  - terminals: {}", newTerminalAliases);
+        log.debug(pad(level) + "  - navigations: {}", newNavigationAliases);
+        log.debug(pad(level) + "  - operations: {}", newOperationAliases);
+
+        if (newTerminalAliases.stream().anyMatch(a -> foundTerminalAliases.contains(a))) {
+            throw new IllegalStateException("Found terminal alias(es) that are already processed");
+        }
+
+        if (newNavigationAliases.stream().anyMatch(a -> foundNavigationAliases.contains(a))) {
+            throw new IllegalStateException("Found navigation alias(es) that are already processed");
+        }
+
+        if (newOperationAliases.stream().anyMatch(a -> foundOperationAliases.contains(a))) {
+            throw new IllegalStateException("Found operation alias(es) that are already processed");
+        }
+
+        newNode.getTerminals().putAll(baseNode.getTerminals());
+        newNode.getNavigations().putAll(baseNode.getNavigations());
+        newNode.getOperations().putAll(baseNode.getOperations());
     }
 
     private static String pad(int level) {
