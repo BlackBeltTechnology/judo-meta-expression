@@ -172,9 +172,10 @@ public class QueryModelBuilder {
 
                         joins.add(join); // TODO - include source class name
                     } else if (expr instanceof CollectionExpression) {
+                        // FIXME - target type depends on transfer object relation (supporting chain of groups)
                         final EReference targetReference = (EReference) targetType.getEStructuralFeature(t.getAlias());
                         if (targetReference == null) {
-                            log.error("Reference {} of {} not found", t.getAlias(), targetReference.getName());
+                            log.error("Reference {} of {} not found", t.getAlias(), targetType.getName());
                             throw new IllegalStateException("Invalid target reference");
                         }
 

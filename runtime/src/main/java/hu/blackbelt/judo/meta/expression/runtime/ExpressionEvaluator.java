@@ -227,7 +227,9 @@ public class ExpressionEvaluator {
 
         log.debug(pad(level) + "-> {}", result);
 
-        log.info("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
+        if (log.isTraceEnabled()) {
+            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
+        }
 
         return result;
     }

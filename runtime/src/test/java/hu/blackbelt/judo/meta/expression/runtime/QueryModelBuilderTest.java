@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
+import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
@@ -147,24 +148,26 @@ public class QueryModelBuilderTest {
                 .withAlias("price")
                 .build();
 
-//        final CollectionVariable categories = newObjectNavigationFromCollectionExpressionBuilder()
-//                .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
-//                        .withCollectionExpression(newCollectionVariableReferenceBuilder()
-//                                .withVariable(orderDetails)
-//                                .build())
-//                        .withReferenceName("product")
-//                        .withName("p")
-//                        .build())
-//                .withReferenceName("category")
-//                .withName("c")
-//                .build();
-//
-//        final StringExpression categoryName = newStringAttributeBuilder()
-//                .withObjectExpression(newObjectVariableReferenceBuilder()
-//                        .withVariable(categories)
-//                        .build())
-//                .withAttributeName("categoryName")
-//                .build();
+        final ObjectNavigationFromCollectionExpression categories = newObjectNavigationFromCollectionExpressionBuilder()
+                .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
+                        .withCollectionExpression(newCollectionVariableReferenceBuilder()
+                                .withVariable(orderDetails)
+                                .build())
+                        .withReferenceName("product")
+//                        .withAlias("product")
+                        .withName("p")
+                        .build())
+                .withReferenceName("category")
+                .withAlias("category")
+                .withName("c")
+                .build();
+
+        final StringExpression categoryName = newStringAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(categories)
+                        .build())
+                .withAttributeName("categoryName")
+                .build();
 
         final Collection<Expression> expressions = ImmutableList.<Expression>builder()
                 .add(order)
@@ -172,6 +175,8 @@ public class QueryModelBuilderTest {
                 .add(shipperName)
                 .add(orderDetails)
                 .add(price)
+                .add(categories)
+                .add(categoryName)
                 .build();
 
         expressionResource.getContents().addAll(ImmutableList.<EObject>builder()

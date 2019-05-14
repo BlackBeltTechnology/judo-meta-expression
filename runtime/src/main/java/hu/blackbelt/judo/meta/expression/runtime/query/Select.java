@@ -23,7 +23,6 @@ public class Select implements Identifiable {
     /**
      * ASM transfer object type.
      */
-    @NonNull
     private EClass target;
 
     /**
