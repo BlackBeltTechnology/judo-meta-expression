@@ -73,7 +73,7 @@ public class QueryModelBuilder {
                 log.debug("Base: all instances of {}", sourceType);
             }
         } else if (expression instanceof ReferenceExpression) {
-            log.info("Base: {} ({})", expression, expression.getClass().getSimpleName());
+            log.debug("Base: {} ({})", expression, expression.getClass().getSimpleName());
             sourceType = (EClass) ((ReferenceExpression) expression).getObjectType(modelAdapter);
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
@@ -172,19 +172,24 @@ public class QueryModelBuilder {
 
                         joins.add(join); // TODO - include source class name
                     } else if (expr instanceof CollectionExpression) {
-                        // FIXME - target type depends on transfer object relation (supporting chain of groups)
-                        final EReference targetReference = (EReference) targetType.getEStructuralFeature(t.getAlias());
-                        if (targetReference == null) {
-                            log.error("Reference {} of {} not found", t.getAlias(), targetType.getName());
-                            throw new IllegalStateException("Invalid target reference");
+                        final EClass newTargetType;
+                        if (t.getAlias() != null) {
+                            final EReference targetReference = (EReference) targetType.getEStructuralFeature(t.getAlias());
+                            if (targetReference == null) {
+                                log.error("Reference {} of {} not found", t.getAlias(), targetType.getName());
+                                throw new IllegalStateException("Invalid target reference");
+                            }
+                            newTargetType = targetReference.getEReferenceType();
+                        } else {
+                            newTargetType = targetType;
                         }
 
                         // FIXME - put all joined types of navigation
                         final Join join = Join.builder()
-                                //.alias(t.getAlias())
+                                .alias(referenceName)
                                 .reference(sourceReference).build(); // set alias of last entry only!
                         final SubSelect subSelect = SubSelect.builder()
-                                .select(createQueryModel(next, targetReference.getEReferenceType()))
+                                .select(createQueryModel(next, newTargetType))
                                 .joins(ImmutableList.of(join))
                                 .alias(t.getAlias())
                                 .build();

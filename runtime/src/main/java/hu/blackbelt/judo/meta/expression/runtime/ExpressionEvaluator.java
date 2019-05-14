@@ -158,17 +158,15 @@ public class ExpressionEvaluator {
         if (expression instanceof AttributeSelector) {
             final AttributeSelector attributeSelector = (AttributeSelector) expression;
 
-            final String alias = attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName();
-
-            log.debug(pad(level) + "[terminal] attribute selector: {} AS {}", expression, alias);
+            log.debug(pad(level) + "[terminal] attribute selector: {} AS {}", expression, attributeSelector.getAlias());
 
             final AttributeRole key = AttributeRole.builder()
-                    .alias(alias)
+                    .alias(attributeSelector.getAlias())
                     .projection(true)
                     .build();
 
             if (terminals.keySet().stream()
-                    .anyMatch(k -> Objects.equals(k.getAlias(), alias))) {
+                    .anyMatch(k -> attributeSelector.getAlias() != null && Objects.equals(k.getAlias(), attributeSelector.getAlias()))) {
                 throw new IllegalStateException("Attribute already processed");
             } else {
                 terminals.put(key, expression);
@@ -241,13 +239,12 @@ public class ExpressionEvaluator {
             final NavigationExpression navigationExpression = (NavigationExpression) expression;
             log.debug(pad(level) + "[container] alias: {}, name: {}", navigationExpression.getAlias(), navigationExpression.getReferenceName());
 
-            final String alias = navigationExpression.getAlias() != null ? navigationExpression.getAlias() : navigationExpression.getReferenceName();
             final SetTransformation key = SetTransformation.builder()
-                    .alias(alias)
+                    .alias(navigationExpression.getAlias())
                     .build();
 
             final Optional<Map.Entry<SetTransformation, EvaluationNode>> entry = navigations.entrySet().stream()
-                    .filter(n -> Objects.equals(n.getKey().getAlias(), alias))
+                    .filter(n -> navigationExpression.getAlias() != null && Objects.equals(n.getKey().getAlias(), navigationExpression.getAlias()))
                     .findAny();
             if (entry.isPresent()) {
                 merge(entry.get().getValue(), evaluationNode, expression, level);

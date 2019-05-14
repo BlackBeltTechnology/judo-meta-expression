@@ -154,11 +154,10 @@ public class QueryModelBuilderTest {
                                 .withVariable(orderDetails)
                                 .build())
                         .withReferenceName("product")
-//                        .withAlias("product")
                         .withName("p")
                         .build())
                 .withReferenceName("category")
-                .withAlias("category")
+                .withAlias("category") // FIXME - change to categories
                 .withName("c")
                 .build();
 
@@ -167,6 +166,7 @@ public class QueryModelBuilderTest {
                         .withVariable(categories)
                         .build())
                 .withAttributeName("categoryName")
+                .withAlias("categoryName")
                 .build();
 
         final Collection<Expression> expressions = ImmutableList.<Expression>builder()
