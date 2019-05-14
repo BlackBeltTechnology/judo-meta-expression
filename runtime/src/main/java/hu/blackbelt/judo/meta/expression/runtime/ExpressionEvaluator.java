@@ -73,7 +73,7 @@ public class ExpressionEvaluator {
 
         getAllInstances(Expression.class).forEach(expression ->
                 expression.getOperands().forEach(operand -> {
-                    log.debug("Checking operand {} of {}", operand, expression);
+                    log.trace("Checking operand {} of {}", operand, expression);
                     Expression expr = operand;
                     while (expr != null) {
                         final ObjectVariable variable;
@@ -86,7 +86,7 @@ public class ExpressionEvaluator {
                         } else {
                             variable = null;
                         }
-                        log.debug("  - expr: {}, variable: {}", expr, variable);
+                        log.trace("  - expr: {}, variable: {}", expr, variable);
 
                         final Collection<Expression> holders;
                         if (operandHolders.containsKey(expr)) {
@@ -295,7 +295,7 @@ public class ExpressionEvaluator {
         } else if (expression instanceof WindowingExpression) {
             log.warn(pad(level) + "[windowing] windowing is not supported yet: {}", expression);
         } else {
-            log.warn(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName());
+            log.debug(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName());
             terminals.putAll(evaluationNode.getTerminals());
             navigations.putAll(evaluationNode.getNavigations());
             operations.putAll(evaluationNode.getOperations());

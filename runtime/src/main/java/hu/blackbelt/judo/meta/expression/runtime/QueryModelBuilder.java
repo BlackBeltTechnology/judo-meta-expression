@@ -43,15 +43,15 @@ public class QueryModelBuilder {
         final Expression expression = evaluationNode.getExpression();
         if (expression instanceof Instance) {
             final Instance instance = (Instance) expression;
-            final EClass type = (EClass) modelAdapter.get(instance.getElementName()).get();
+            final EClass sourceType = (EClass) modelAdapter.get(instance.getElementName()).get();
 
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
-                log.debug("Base: instance with ID '{}' of {}", instanceId.getId(), type.getName());
+                log.debug("Base: instance with ID '{}' of {}", instanceId.getId(), sourceType.getName());
 
                 filters.add(FunctionSignature.EQUALS.create(
                         ImmutableMap.of(
-                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(type).build()).build(),
+                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(sourceType).build()).build(),
                                 FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(UUID.fromString(instanceId.getId())).build()).build()
                         )));
             } else if (instance.getDefinition() instanceof InstanceReference) {
@@ -60,60 +60,9 @@ public class QueryModelBuilder {
                 throw new IllegalStateException("Missing instance definition");
             }
 
-            evaluationNode.getTerminals().entrySet().stream()
-                    .forEach(t -> {
-                        final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
-                        final Expression expr = ((Map.Entry<AttributeRole, Expression>) t).getValue();
+            processEvaluationNode(evaluationNode, builder, sourceType, targetType, features, joins, filters, subSelects);
 
-                        final Feature feature;
-                        if (expr instanceof DataConstant) {
-                            final DataConstant dataConstant = (DataConstant) expr;
-                            feature = Constant.builder().value(dataConstant.getValue()).build();
-                        } else if (expr instanceof AttributeSelector) {
-                            final AttributeSelector attributeSelector = (AttributeSelector) expr;
-
-                            final String alias = attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName();
-
-                            feature = Attribute.builder()
-                                    // .identifiable() // TODO
-                                    .sourceAttribute((EAttribute) type.getEStructuralFeature(alias))
-                                    .build();
-                        } else {
-                            throw new UnsupportedOperationException("Not supported yet");
-                        }
-
-                        features.put((EAttribute) targetType.getEStructuralFeature(attributeRole.getAlias()), feature);
-
-                    });
-
-            evaluationNode.getNavigations().entrySet().stream()
-                    .forEach(n -> {
-                        final SetTransformation t = ((Map.Entry<SetTransformation, ?>) n).getKey();
-                        final EvaluationNode next = ((Map.Entry<SetTransformation, EvaluationNode>) n).getValue();
-
-                        //t.getFiltering() // TODO
-                        //t.getOrdering() // TODO
-                        //t.getWindowingExpression() // TODO
-
-                        final EClass joined;
-                        if (next.getExpression() instanceof ReferenceExpression) {
-                            joined = (EClass)((ReferenceExpression)next.getExpression()).getObjectType(modelAdapter);
-                        } else {
-                            throw new IllegalStateException("Expression must be reference");
-                        }
-
-                        log.info("targetType: {}", targetType);
-                        log.info("alias: {}", t.getAlias());
-                        joins.add(
-                                Join.builder()
-                                        .reference((EReference) type.getEStructuralFeature(t.getAlias()))
-                                        .joined(joined)
-                                        .alias(t.getAlias()) // TODO - include source class name
-                                        .build()
-                        );
-                    });
-
-            builder.from(type);
+            builder.from(sourceType);
         } else if (expression instanceof ImmutableCollection) {
             final ImmutableCollection immutableCollection = (ImmutableCollection) expression;
             final EClass type = (EClass) modelAdapter.get(immutableCollection.getElementName()).get();
@@ -135,6 +84,81 @@ public class QueryModelBuilder {
                 .filters(filters)
                 .subSelects(subSelects)
                 .build());
+    }
+
+    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select.SelectBuilder builder, final EClass sourceType, final EClass targetType,
+                                       final Map<EAttribute, Feature> features, final List<Join> joins, final Collection<Function> filters, final Map<EReference, SubSelect> subSelects) {
+        evaluationNode.getTerminals().entrySet().stream()
+                .forEach(t -> {
+                    final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
+                    final Expression expr = ((Map.Entry<AttributeRole, Expression>) t).getValue();
+
+                    final Feature feature;
+                    if (expr instanceof DataConstant) {
+                        final DataConstant dataConstant = (DataConstant) expr;
+                        feature = Constant.builder().value(dataConstant.getValue()).build();
+                    } else if (expr instanceof AttributeSelector) {
+                        final AttributeSelector attributeSelector = (AttributeSelector) expr;
+
+                        //final String alias = attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName();
+
+                        final EAttribute sourceAttribute = (EAttribute) sourceType.getEStructuralFeature(attributeSelector.getAttributeName());
+                        if (sourceAttribute == null) {
+                            log.error("Attribute {} of {} not found", attributeSelector.getAttributeName(), sourceType.getName());
+                            throw new IllegalStateException("Invalid source attribute");
+                        }
+
+                        feature = Attribute.builder()
+                                // .identifiable() // TODO
+                                .sourceAttribute(sourceAttribute)
+                                .build();
+                    } else {
+                        throw new UnsupportedOperationException("Not supported yet");
+                    }
+
+                    final EAttribute targetAttribute = (EAttribute) targetType.getEStructuralFeature(attributeRole.getAlias());
+                    if (targetAttribute == null) {
+                        log.error("Attribute {} of {} not found", attributeRole.getAlias(), targetType.getName());
+                        throw new IllegalStateException("Invalid target attribute");
+                    }
+
+                    features.put(targetAttribute, feature);
+
+                });
+
+        evaluationNode.getNavigations().entrySet().stream()
+                .forEach(n -> {
+                    final SetTransformation t = ((Map.Entry<SetTransformation, ?>) n).getKey();
+                    final EvaluationNode next = ((Map.Entry<SetTransformation, EvaluationNode>) n).getValue();
+
+                    //t.getFiltering() // TODO
+                    //t.getOrdering() // TODO
+                    //t.getWindowingExpression() // TODO
+
+                    final EClass joined;
+
+                    if (next.getExpression() instanceof ReferenceExpression) {
+                        joined = (EClass) ((ReferenceExpression) next.getExpression()).getObjectType(modelAdapter);
+                    } else {
+                        throw new IllegalStateException("Expression must be reference");
+                    }
+
+                    processEvaluationNode(next, builder, joined, targetType, features, joins, filters, subSelects);
+
+                    final EReference ref = (EReference) sourceType.getEStructuralFeature(t.getAlias());
+                    if (ref == null) {
+                        log.error("Reference {} of {} not found", t.getAlias(), sourceType.getName());
+                        throw new IllegalStateException("Invalid reference");
+                    }
+
+                    joins.add(
+                            Join.builder()
+                                    .reference(ref)
+                                    .joined(joined)
+                                    .alias(t.getAlias()) // TODO - include source class name
+                                    .build()
+                    );
+                });
     }
 
     private Select resolve(final Select select) {

@@ -82,7 +82,7 @@ public class Select implements Identifiable {
         return "SELECT\n" +
                 "  FEATURES=" + features.entrySet().stream().map(f -> f.getValue() + " AS " + f.getKey().getName()).collect(Collectors.toList()) + "\n" +
                 "  FROM=" + from.getName() + " AS " + getAlias() + "\n" +
-                "  JOINING=" + joins.stream().map(j -> j.getJoined().getName() + " AS " + j.getReference().getName() + "." + j.getAlias()).collect(Collectors.toList()) + "\n" +
+                "  JOINING=" + joins.stream().map(j -> j.getJoined().getName() + " AT " + j.getReference().getEContainingClass().getName() + "." + j.getReference().getName() + " AS " + j.getAlias()).collect(Collectors.toList()) + "\n" +
                 "  TO=" + target.getName() + "\n" +
                 "  WHERE=" + filters;
     }
