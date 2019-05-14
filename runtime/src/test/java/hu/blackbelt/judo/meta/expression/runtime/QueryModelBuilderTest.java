@@ -7,10 +7,13 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.runtime.query.Select;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
+import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
+import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
@@ -28,6 +31,7 @@ import java.nio.file.FileSystems;
 import java.util.Collection;
 import java.util.UUID;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
@@ -122,20 +126,40 @@ public class QueryModelBuilderTest {
                 .withAlias("shipperName")
                 .build();
 
-//        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
-//                .withObjectExpression(newObjectVariableReferenceBuilder()
-//                        .withVariable(order)
+        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(order)
+                        .build())
+                .withReferenceName("orderDetails")
+                .withAlias("items")
+                .build();
+
+        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
+
+//        final CollectionVariable categories = newObjectNavigationFromCollectionExpressionBuilder()
+//                .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
+//                        .withCollectionExpression(newCollectionVariableReferenceBuilder()
+//                                .withVariable(orderDetails)
+//                                .build())
+//                        .withReferenceName("product")
+//                        .withName("p")
 //                        .build())
-//                .withReferenceName("orderDetails")
-//                .withAlias("items")
+//                .withReferenceName("category")
+//                .withName("c")
 //                .build();
 //
-//        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
+//        final StringExpression categoryName = newStringAttributeBuilder()
+//                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                        .withVariable(categories)
+//                        .build())
+//                .withAttributeName("categoryName")
+//                .build();
 
         final Collection<Expression> expressions = ImmutableList.<Expression>builder()
                 .add(order)
                 .add(orderDate)
                 .add(shipperName)
+                .add(orderDetails)
                 .build();
 
         expressionResource.getContents().addAll(ImmutableList.<EObject>builder()

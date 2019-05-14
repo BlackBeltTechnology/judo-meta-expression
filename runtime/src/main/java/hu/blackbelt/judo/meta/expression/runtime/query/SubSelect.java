@@ -15,6 +15,9 @@ public class SubSelect {
     @NonNull
     private List<Join> joins;
 
+    @lombok.Setter
+    private String alias;
+
     /**
      * ASM entity type.
      */

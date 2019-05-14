@@ -1,11 +1,13 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.AttributeSelector;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
+import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
 import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.runtime.query.*;
 import hu.blackbelt.judo.meta.expression.runtime.query.Constant;
@@ -38,7 +40,8 @@ public class QueryModelBuilder {
         final Map<EAttribute, Feature> features = new HashMap<>();
         final List<Join> joins = new ArrayList<>();
         final Collection<Function> filters = new ArrayList<>();
-        final Map<EReference, SubSelect> subSelects = new HashMap<>();
+        final List<SubSelect> subSelects = new ArrayList<>();
+        final Collection<IdentifiableFeature> backReferences = new ArrayList<>();
 
         final Expression expression = evaluationNode.getExpression();
         if (expression instanceof Instance) {
@@ -60,7 +63,7 @@ public class QueryModelBuilder {
                 throw new IllegalStateException("Missing instance definition");
             }
 
-            processEvaluationNode(evaluationNode, builder, sourceType, targetType, features, joins, filters, subSelects);
+            processEvaluationNode(evaluationNode, builder, sourceType, targetType, features, joins, filters, subSelects, backReferences);
 
             builder.from(sourceType);
         } else if (expression instanceof ImmutableCollection) {
@@ -74,20 +77,26 @@ public class QueryModelBuilder {
             }
 
             builder.from(type);
+        } else if (expression instanceof ReferenceExpression) {
+            log.info("Base: {} ({})", expression, expression.getClass().getSimpleName());
+            builder.from((EClass) ((ReferenceExpression) expression).getObjectType(modelAdapter));
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
         }
 
-        return resolve(builder
+        final Select select = builder
                 .features(features)
                 .joins(joins)
                 .filters(filters)
                 .subSelects(subSelects)
-                .build());
+                .build();
+        backReferences.forEach(r -> r.setIdentifiable(select));
+
+        return resolve(select);
     }
 
     private void processEvaluationNode(final EvaluationNode evaluationNode, final Select.SelectBuilder builder, final EClass sourceType, final EClass targetType,
-                                       final Map<EAttribute, Feature> features, final List<Join> joins, final Collection<Function> filters, final Map<EReference, SubSelect> subSelects) {
+                                       final Map<EAttribute, Feature> features, final List<Join> joins, final Collection<Function> filters, final Collection<SubSelect> subSelects, final Collection<IdentifiableFeature> backReferences) {
         evaluationNode.getTerminals().entrySet().stream()
                 .forEach(t -> {
                     final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
@@ -100,8 +109,6 @@ public class QueryModelBuilder {
                     } else if (expr instanceof AttributeSelector) {
                         final AttributeSelector attributeSelector = (AttributeSelector) expr;
 
-                        //final String alias = attributeSelector.getAlias() != null ? attributeSelector.getAlias() : attributeSelector.getAttributeName();
-
                         final EAttribute sourceAttribute = (EAttribute) sourceType.getEStructuralFeature(attributeSelector.getAttributeName());
                         if (sourceAttribute == null) {
                             log.error("Attribute {} of {} not found", attributeSelector.getAttributeName(), sourceType.getName());
@@ -109,9 +116,9 @@ public class QueryModelBuilder {
                         }
 
                         feature = Attribute.builder()
-                                // .identifiable() // TODO
                                 .sourceAttribute(sourceAttribute)
                                 .build();
+                        backReferences.add((Attribute) feature);
                     } else {
                         throw new UnsupportedOperationException("Not supported yet");
                     }
@@ -123,41 +130,74 @@ public class QueryModelBuilder {
                     }
 
                     features.put(targetAttribute, feature);
-
                 });
 
         evaluationNode.getNavigations().entrySet().stream()
                 .forEach(n -> {
                     final SetTransformation t = ((Map.Entry<SetTransformation, ?>) n).getKey();
                     final EvaluationNode next = ((Map.Entry<SetTransformation, EvaluationNode>) n).getValue();
-
-                    //t.getFiltering() // TODO
-                    //t.getOrdering() // TODO
-                    //t.getWindowingExpression() // TODO
+                    final Expression expr = next.getExpression();
 
                     final EClass joined;
-
-                    if (next.getExpression() instanceof ReferenceExpression) {
+                    if (expr instanceof ReferenceExpression) {
                         joined = (EClass) ((ReferenceExpression) next.getExpression()).getObjectType(modelAdapter);
                     } else {
                         throw new IllegalStateException("Expression must be reference");
                     }
 
-                    processEvaluationNode(next, builder, joined, targetType, features, joins, filters, subSelects);
+                    final String referenceName;
+                    if (expr instanceof NavigationExpression) {
+                        final NavigationExpression ne = (NavigationExpression) expr;
 
-                    final EReference ref = (EReference) sourceType.getEStructuralFeature(t.getAlias());
-                    if (ref == null) {
-                        log.error("Reference {} of {} not found", t.getAlias(), sourceType.getName());
-                        throw new IllegalStateException("Invalid reference");
+                        referenceName = ne.getReferenceName();
+                    } else {
+                        throw new UnsupportedOperationException("Not supported yet");
                     }
 
-                    joins.add(
-                            Join.builder()
-                                    .reference(ref)
-                                    .joined(joined)
-                                    .alias(t.getAlias()) // TODO - include source class name
-                                    .build()
-                    );
+                    final EReference sourceReference = (EReference) sourceType.getEStructuralFeature(referenceName);
+                    ;
+                    if (sourceReference == null) {
+                        log.error("Reference {} of {} not found", referenceName, sourceType.getName());
+                        throw new IllegalStateException("Invalid source reference");
+                    }
+
+                    if (expr instanceof ObjectExpression) {
+                        final Collection<IdentifiableFeature> joinedBackReferences = new ArrayList<>();
+                        processEvaluationNode(next, builder, joined, targetType, features, joins, filters, subSelects, joinedBackReferences);
+
+                        final Join join = Join.builder()
+                                .reference(sourceReference)
+                                .alias(t.getAlias())
+                                .build();
+                        backReferences.add(join);
+
+                        joinedBackReferences.forEach(j -> j.setIdentifiable(join));
+
+                        joins.add(join); // TODO - include source class name
+                    } else if (expr instanceof CollectionExpression) {
+                        final EReference targetReference = (EReference) targetType.getEStructuralFeature(t.getAlias());
+                        if (targetReference == null) {
+                            log.error("Reference {} of {} not found", t.getAlias(), targetReference.getName());
+                            throw new IllegalStateException("Invalid target reference");
+                        }
+
+                        // FIXME - put all joined types of navigation
+                        final Join join = Join.builder().alias(t.getAlias()).reference(sourceReference).build(); // set alias of last entry only!
+                        final SubSelect subSelect = SubSelect.builder()
+                                .select(createQueryModel(next, targetReference.getEReferenceType()))
+                                .joins(ImmutableList.of(join))
+                                .alias(t.getAlias())
+                                .build();
+                        backReferences.add(join);
+
+                        subSelects.add(subSelect);
+                    } else {
+                        throw new IllegalArgumentException("Navigation must be object/collection expression");
+                    }
+
+                    //t.getFiltering() // TODO
+                    //t.getOrdering() // TODO
+                    //t.getWindowingExpression() // TODO
                 });
     }
 
@@ -180,11 +220,11 @@ public class QueryModelBuilder {
         select.getJoins().stream()
                 .forEach(j -> {
                     final List<Identifiable> list;
-                    if (identifiableMap.containsKey(j.getJoined())) {
-                        list = identifiableMap.get(j.getJoined());
+                    if (identifiableMap.containsKey(j.getReference().getEReferenceType())) {
+                        list = identifiableMap.get(j.getReference().getEReferenceType());
                     } else {
                         list = new ArrayList<>();
-                        identifiableMap.put(j.getJoined(), list);
+                        identifiableMap.put(j.getReference().getEReferenceType(), list);
                     }
                     list.add(j);
                 });

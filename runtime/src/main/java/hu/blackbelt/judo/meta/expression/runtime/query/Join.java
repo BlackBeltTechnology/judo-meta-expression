@@ -6,11 +6,10 @@ import org.eclipse.emf.ecore.EReference;
 
 @lombok.Getter
 @lombok.Builder
-@lombok.ToString(exclude = "identifiable")
-public class Join implements Identifiable {
+public class Join implements Identifiable, IdentifiableFeature {
 
     /**
-     * ASM reference of {@link Select#getFrom()} and {@link #getJoined()} entity types.
+     * ASM reference of {@link Select#getFrom()}.
      */
     @NonNull
     private EReference reference;
@@ -18,20 +17,18 @@ public class Join implements Identifiable {
     @lombok.Setter
     private Identifiable identifiable;
 
-    /**
-     * ASM entity type.
-     */
-    @NonNull
-    private EClass joined;
-
     @lombok.Setter
     private String alias;
 
     // TODO - add filtering
 
-
     @Override
     public EClass getObjectType() {
-        return joined;
+        return reference.getEReferenceType();
+    }
+
+    @Override
+    public String toString() {
+        return reference.getEReferenceType().getName() + "@" + (identifiable != null ? identifiable.getAlias() : reference.getEContainingClass().getName()) + "." + reference.getName() + " AS " + alias;
     }
 }

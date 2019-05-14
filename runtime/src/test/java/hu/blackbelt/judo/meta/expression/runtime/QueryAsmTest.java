@@ -101,20 +101,20 @@ public class QueryAsmTest {
                         Attribute.builder().sourceAttribute((EAttribute) shipper.getEStructuralFeature("companyName")).build()
                 ))
                 .joins(ImmutableList.of(
-                        Join.builder().joined(shipper).reference((EReference) order.getEStructuralFeature("shipper")).build()
+                        Join.builder().reference((EReference) order.getEStructuralFeature("shipper")).build()
                 ))
                 .filters(ImmutableSet.of(FunctionSignature.EQUALS.create(ImmutableMap.of(
                         FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(order).build()).build(),
                         FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
                 )))
-                .subSelects(ImmutableMap.of(
-                        (EReference) orderInfo.getEStructuralFeature("categories"),
+                .subSelects(ImmutableList.of(
                         SubSelect.builder()
                                 .joins(ImmutableList.of(
-                                        Join.builder().joined(orderDetails).reference((EReference) order.getEStructuralFeature("orderDetails")).build(),
-                                        Join.builder().joined(product).reference((EReference) orderDetails.getEStructuralFeature("product")).build(),
-                                        Join.builder().joined(category).reference((EReference) product.getEStructuralFeature("category")).build()
+                                        Join.builder().reference((EReference) order.getEStructuralFeature("orderDetails")).build(),
+                                        Join.builder().reference((EReference) orderDetails.getEStructuralFeature("product")).build(),
+                                        Join.builder().reference((EReference) product.getEStructuralFeature("category")).build()
                                 ))
+                                .alias("categories")
                                 .select(Select.builder()
                                         .from(category)
                                         .target(categoryInfo)
@@ -124,15 +124,14 @@ public class QueryAsmTest {
                                         ))
                                         .joins(Collections.emptyList())
                                         .filters(Collections.emptyList())
-                                        .subSelects(Collections.emptyMap())
+                                        .subSelects(Collections.emptyList())
                                         .build())
                                 .build(),
-
-                        (EReference) orderInfo.getEStructuralFeature("items"),
                         SubSelect.builder()
                                 .joins(ImmutableList.of(
-                                        Join.builder().joined(orderDetails).reference((EReference) order.getEStructuralFeature("orderDetails")).build()
+                                        Join.builder().reference((EReference) order.getEStructuralFeature("orderDetails")).build()
                                 ))
+                                .alias("items")
                                 .select(Select.builder()
                                         .from(orderDetails)
                                         .target(orderItem)
@@ -148,7 +147,7 @@ public class QueryAsmTest {
                                         ))
                                         .joins(Collections.emptyList())
                                         .filters(Collections.emptyList())
-                                        .subSelects(Collections.emptyMap())
+                                        .subSelects(Collections.emptyList())
                                         .build())
                                 .build()
                 ))

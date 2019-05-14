@@ -3,7 +3,6 @@ package hu.blackbelt.judo.meta.expression.runtime.query;
 import lombok.NonNull;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EReference;
 
 import java.util.Collection;
 import java.util.List;
@@ -28,7 +27,7 @@ public class Select implements Identifiable {
     private EClass target;
 
     /**
-     * Map of attributes, keys are attributes of {@link #getTarget()}, fields are attributes of {@link #getFrom()} and {@link Join#getJoined()} or function calls.
+     * Map of attributes, keys are attributes of {@link #getTarget()}, fields are attributes of {@link #getFrom()} and {@link Join#getReference()} (called recursively) or function calls.
      */
     @NonNull
     private Map<EAttribute, Feature> features;
@@ -40,10 +39,10 @@ public class Select implements Identifiable {
     private List<Join> joins;
 
     /**
-     * Data sets retrieved in separate query. Keys are references of {@link #getFrom()}.
+     * Data sets retrieved in separate query. Keys are references of {@link #getTarget()} ()}.
      */
     @NonNull
-    private Map<EReference, SubSelect> subSelects;
+    private List<SubSelect> subSelects;
 
     @NonNull
     private Collection<Function> filters;
@@ -56,7 +55,6 @@ public class Select implements Identifiable {
     // TODO - add ordering
 
     // TODO - add windowing (head, tail)
-
 
     @Override
     public EClass getObjectType() {
@@ -82,8 +80,9 @@ public class Select implements Identifiable {
         return "SELECT\n" +
                 "  FEATURES=" + features.entrySet().stream().map(f -> f.getValue() + " AS " + f.getKey().getName()).collect(Collectors.toList()) + "\n" +
                 "  FROM=" + from.getName() + " AS " + getAlias() + "\n" +
-                "  JOINING=" + joins.stream().map(j -> j.getJoined().getName() + " AT " + j.getReference().getEContainingClass().getName() + "." + j.getReference().getName() + " AS " + j.getAlias()).collect(Collectors.toList()) + "\n" +
+                "  JOINING=" + joins + "\n" +
                 "  TO=" + target.getName() + "\n" +
-                "  WHERE=" + filters;
+                "  WHERE=" + filters + "\n" +
+                " TRAVERSE=" + subSelects.stream().map(s -> s.getJoins() + " AS " + s.getAlias() + "\n" + s.getSelect()).collect(Collectors.toList());
     }
 }
