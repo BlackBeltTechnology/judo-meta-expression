@@ -5,7 +5,7 @@ import org.eclipse.emf.ecore.EAttribute;
 
 @lombok.Getter
 @lombok.Builder
-public class Attribute implements IdentifiableFeature {
+public class Attribute implements Feature, TargetFeature {
 
     /**
      * ASM entity type attribute.
@@ -13,11 +13,18 @@ public class Attribute implements IdentifiableFeature {
     @NonNull
     private EAttribute sourceAttribute;
 
-    @lombok.Setter
-    private Identifiable identifiable;
+    /**
+     * ASM transfer object type attribute.
+     */
+    @NonNull
+    private EAttribute targetAttribute;
+
+    private Source source;
+
+    private Target target;
 
     @Override
     public String toString() {
-        return identifiable.getAlias() + "." + sourceAttribute.getName();
+        return source.getSourceAlias() + "." + sourceAttribute.getName() + " AS " + targetAttribute.getName() + "@" + target.hashCode();
     }
 }

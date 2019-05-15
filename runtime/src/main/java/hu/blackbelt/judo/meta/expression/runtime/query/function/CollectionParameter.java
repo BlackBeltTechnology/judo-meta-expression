@@ -1,8 +1,8 @@
 package hu.blackbelt.judo.meta.expression.runtime.query.function;
 
 import hu.blackbelt.judo.meta.expression.runtime.query.Feature;
-import lombok.NonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @lombok.Getter
@@ -10,6 +10,5 @@ import java.util.Collection;
 @lombok.ToString
 public class CollectionParameter implements Parameter {
 
-    @NonNull
-    private Collection<Feature> features;
+    private final Collection<Feature> features = new ArrayList<>();
 }

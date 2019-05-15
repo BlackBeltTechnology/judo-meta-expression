@@ -90,68 +90,84 @@ public class QueryAsmTest {
 
         final UUID orderId = UUID.randomUUID();
 
+        final Target target = Target.builder()
+                .type(orderInfo)
+                .build();
+
         final Select select = Select.builder()
                 .from(order)
-                .target(orderInfo)
-                .features(ImmutableMap.of(
-                        (EAttribute) orderInfo.getEStructuralFeature("orderDate"),
-                        Attribute.builder().sourceAttribute((EAttribute) order.getEStructuralFeature("orderDate")).build(),
-
-                        (EAttribute) orderInfo.getEStructuralFeature("shipperName"),
-                        Attribute.builder().sourceAttribute((EAttribute) shipper.getEStructuralFeature("companyName")).build()
-                ))
-                .joins(ImmutableList.of(
-                        Join.builder().reference((EReference) order.getEStructuralFeature("shipper")).build()
-                ))
-                .filters(ImmutableSet.of(FunctionSignature.EQUALS.create(ImmutableMap.of(
-                        FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(order).build()).build(),
-                        FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
-                )))
-                .subSelects(ImmutableList.of(
-                        SubSelect.builder()
-                                .joins(ImmutableList.of(
-                                        Join.builder().reference((EReference) order.getEStructuralFeature("orderDetails")).build(),
-                                        Join.builder().reference((EReference) orderDetails.getEStructuralFeature("product")).build(),
-                                        Join.builder().reference((EReference) product.getEStructuralFeature("category")).build()
-                                ))
-                                .alias("categories")
-                                .select(Select.builder()
-                                        .from(category)
-                                        .target(categoryInfo)
-                                        .features(ImmutableMap.of(
-                                                (EAttribute) categoryInfo.getEStructuralFeature("categoryName"),
-                                                Attribute.builder().sourceAttribute((EAttribute) category.getEStructuralFeature("categoryName")).build()
-                                        ))
-                                        .joins(Collections.emptyList())
-                                        .filters(Collections.emptyList())
-                                        .subSelects(Collections.emptyList())
-                                        .build())
-                                .build(),
-                        SubSelect.builder()
-                                .joins(ImmutableList.of(
-                                        Join.builder().reference((EReference) order.getEStructuralFeature("orderDetails")).build()
-                                ))
-                                .alias("items")
-                                .select(Select.builder()
-                                        .from(orderDetails)
-                                        .target(orderItem)
-                                        .features(ImmutableMap.of(
-                                                (EAttribute) orderItem.getEStructuralFeature("unitPrice"),
-                                                Attribute.builder().sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("unitPrice")).build(),
-
-                                                (EAttribute) orderItem.getEStructuralFeature("quantity"),
-                                                Attribute.builder().sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("quantity")).build(),
-
-                                                (EAttribute) orderItem.getEStructuralFeature("discount"),
-                                                Attribute.builder().sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("discount")).build()
-                                        ))
-                                        .joins(Collections.emptyList())
-                                        .filters(Collections.emptyList())
-                                        .subSelects(Collections.emptyList())
-                                        .build())
-                                .build()
-                ))
                 .build();
+        select.getTargets().addAll(ImmutableList.of(target));
+        select.getJoins().addAll(ImmutableList.of(
+                Join.builder().partner(select).reference((EReference) order.getEStructuralFeature("shipper")).build()
+        ));
+        select.getFilters().addAll(ImmutableSet.of(FunctionSignature.EQUALS.create(ImmutableMap.of(
+                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().target(target).build()).build(),
+                FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(orderId).build()).build())
+        )));
+        target.getFeatures().addAll(ImmutableList.of(
+                Attribute.builder()
+                        .target(target)
+                        .targetAttribute((EAttribute) orderInfo.getEStructuralFeature("orderDate"))
+                        .source(select)
+                        .sourceAttribute((EAttribute) order.getEStructuralFeature("orderDate")).build(),
+                Attribute.builder()
+                        .target(target)
+                        .targetAttribute((EAttribute) orderInfo.getEStructuralFeature("shipperName"))
+                        .source(select.getJoins().get(0))
+                        .sourceAttribute((EAttribute) shipper.getEStructuralFeature("companyName")).build()
+        ));
+
+        final Select select1 = Select.builder()
+                .from(category)
+                .build();
+        final Target target1 = Target.builder().type(categoryInfo).build();
+        target1.getFeatures().addAll(ImmutableList.of(
+                Attribute.builder()
+                        .target(target1)
+                        .targetAttribute((EAttribute) categoryInfo.getEStructuralFeature("categoryName"))
+                        .source(select1)
+                        .sourceAttribute((EAttribute) category.getEStructuralFeature("categoryName")).build()
+        ));
+        final SubSelect subSelect1 = SubSelect.builder()
+                .select(select1)
+                .alias("categories")
+                .build();
+        final Join joinOrderDetails = Join.builder().partner(select).reference((EReference) order.getEStructuralFeature("orderDetails")).build();
+        final Join joinProduct = Join.builder().partner(joinOrderDetails).reference((EReference) orderDetails.getEStructuralFeature("product")).build();
+        final Join joinCategory = Join.builder().partner(joinProduct).reference((EReference) product.getEStructuralFeature("category")).build();
+
+        subSelect1.getJoins().addAll(ImmutableList.of(joinOrderDetails, joinProduct, joinCategory));
+
+        final Target target2 = Target.builder().type(orderItem).build();
+        final Select select2 = Select.builder()
+                .from(orderDetails)
+                .build();
+        target2.getFeatures().addAll(
+                ImmutableList.of(
+                        Attribute.builder()
+                                .target(target2)
+                                .targetAttribute((EAttribute) orderItem.getEStructuralFeature("unitPrice"))
+                                .source(select2)
+                                .sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("unitPrice")).build(),
+                        Attribute.builder()
+                                .target(target2)
+                                .targetAttribute((EAttribute) orderItem.getEStructuralFeature("quantity"))
+                                .source(select2)
+                                .sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("quantity")).build(),
+                        Attribute.builder()
+                                .target(target2)
+                                .targetAttribute((EAttribute) orderItem.getEStructuralFeature("discount"))
+                                .source(select2)
+                                .sourceAttribute((EAttribute) orderDetails.getEStructuralFeature("discount")).build()
+                ));
+        final SubSelect subSelect2 = SubSelect.builder()
+                .select(select2)
+                .alias("items")
+                .build();
+        subSelect2.getJoins().addAll(ImmutableList.of(
+                Join.builder().partner(select).reference((EReference) order.getEStructuralFeature("orderDetails")).build()
+        ));
     }
 
     protected File srcDir() {

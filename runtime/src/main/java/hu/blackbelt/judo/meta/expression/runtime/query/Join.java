@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EReference;
 
 @lombok.Getter
 @lombok.Builder
-public class Join implements Identifiable, IdentifiableFeature {
+public class Join extends Source {
 
     /**
      * ASM reference of {@link Select#getFrom()}.
@@ -14,21 +14,18 @@ public class Join implements Identifiable, IdentifiableFeature {
     @NonNull
     private EReference reference;
 
-    @lombok.Setter
-    private Identifiable identifiable;
+    @NonNull
+    private Source partner;
 
-    @lombok.Setter
-    private String alias;
+    @Override
+    public EClass getType() {
+        return reference.getEReferenceType();
+    }
 
     // TODO - add filtering
 
     @Override
-    public EClass getObjectType() {
-        return reference.getEReferenceType();
-    }
-
-    @Override
     public String toString() {
-        return reference.getEReferenceType().getName() + "@" + (identifiable != null ? identifiable.getAlias() : reference.getEContainingClass().getName()) + "." + reference.getName() + " AS " + alias;
+        return partner.getSourceAlias() + "." + reference.getName() + "<" + reference.getEReferenceType().getName() + ">" + " AS " + getSourceAlias();
     }
 }

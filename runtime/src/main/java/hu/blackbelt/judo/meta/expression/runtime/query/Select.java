@@ -1,18 +1,16 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
 import lombok.NonNull;
-import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @lombok.Getter
 @lombok.Builder
-public class Select implements Identifiable {
+public class Select extends Source {
 
     /**
      * ASM entity type.
@@ -20,37 +18,28 @@ public class Select implements Identifiable {
     @NonNull
     private EClass from;
 
-    /**
-     * ASM transfer object type.
-     */
-    private EClass target;
-
-    @lombok.Setter
-    private Feature idFeature;
+    @NonNull
+    private final List<Target> targets = new ArrayList<>();
 
     /**
-     * Map of attributes, keys are attributes of {@link #getTarget()}, fields are attributes of {@link #getFrom()} and {@link Join#getReference()} (called recursively) or function calls.
+     * Joined data sets for attributes of the same {@link #getTargets()}.
      */
     @NonNull
-    private Map<EAttribute, Feature> features;
+    private final List<Join> joins = new ArrayList<>();
 
     /**
-     * Joined data sets for attributes of the same {@link #getTarget()}.
+     * Data sets retrieved in separate query.
      */
     @NonNull
-    private List<Join> joins;
-
-    /**
-     * Data sets retrieved in separate query. Keys are references of {@link #getTarget()} ()}.
-     */
-    @NonNull
-    private List<SubSelect> subSelects;
+    private final Collection<SubSelect> subSelects = new ArrayList<>();
 
     @NonNull
-    private Collection<Function> filters;
+    private final Collection<Function> filters = new ArrayList<>();
 
-    @lombok.Setter
-    private String alias;
+    @Override
+    public EClass getType() {
+        return from;
+    }
 
     // TODO - add filtering
 
@@ -59,32 +48,13 @@ public class Select implements Identifiable {
     // TODO - add windowing (head, tail)
 
     @Override
-    public EClass getObjectType() {
-        return from;
-    }
-
-    public Stream<IdentifiableFeature> getIdentifiableFeatures() {
-        return Stream.concat(
-                Stream.concat(
-                        features.values().stream()
-                                .filter(f -> f instanceof IdentifiableFeature)
-                                .map(f -> (IdentifiableFeature) f),
-                        features.values().stream()
-                                .filter(f -> f instanceof Function)
-                                .flatMap(f -> ((Function) f).getIdentifiableFeatures())
-                ),
-                filters.stream().flatMap(f -> f.getIdentifiableFeatures())
-        );
-    }
-
-    @Override
     public String toString() {
         return "SELECT\n" +
-                "  ID=" + idFeature + "\n" +
-                "  FEATURES=" + features.entrySet().stream().map(f -> f.getValue() + " AS " + f.getKey().getName()).collect(Collectors.toList()) + "\n" +
-                "  FROM=" + from.getName() + " AS " + getAlias() + "\n" +
+                "  IDS=" + (targets.isEmpty() ? "-" : targets.get(0).getIdAttribute()) + "\n" +
+                "  FEATURES=" + targets.stream().flatMap(t -> t.getFeatures().stream()).collect(Collectors.toList()) + "\n" +
+                "  FROM=" + from.getName() + " AS " + getSourceAlias() + "\n" +
                 "  JOINING=" + joins + "\n" +
-                "  TO=" + target.getName() + "\n" +
+                "  TO=" + targets + "\n" +
                 "  WHERE=" + filters + "\n" +
                 " TRAVERSE=" + subSelects.stream().map(s -> s.getJoins() + " AS " + s.getAlias() + "\n" + s.getSelect()).collect(Collectors.toList());
     }

@@ -25,11 +25,12 @@ public enum FunctionSignature {
         if (this.parameters.entrySet().stream().anyMatch(e -> e.getValue() && !parameters.containsKey(e.getKey()))) {
             throw new IllegalArgumentException("Missing required parameter(s)");
         }
-        return Function.builder()
+        final Function function = Function.builder()
                 .signature(this)
                 .type(type)
-                .parameters(ImmutableMap.copyOf(parameters))
                 .build();
+        function.getParameters().putAll(ImmutableMap.copyOf(parameters));
+        return function;
     }
 
     public enum TwoOperandFunctionParameterName {
