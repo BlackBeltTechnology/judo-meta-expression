@@ -8,7 +8,6 @@ import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.stringtemplate.language.Expr;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

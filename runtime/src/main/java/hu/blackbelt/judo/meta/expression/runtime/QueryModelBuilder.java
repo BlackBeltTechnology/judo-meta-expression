@@ -62,7 +62,7 @@ public class QueryModelBuilder {
                 .subSelects(new ArrayList<>())
                 .build();
 
-        processEvaluationNode(evaluationNode, select, select.getFrom(), select.getTarget(), nextAliasIndex);
+        processEvaluationNode(evaluationNode, select, select, select.getFrom(), select.getTarget(), nextAliasIndex);
 
         return resolve(select, nextAliasIndex);
     }
@@ -100,7 +100,7 @@ public class QueryModelBuilder {
         }
     }
 
-    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final EClass sourceType, final EClass targetType, final AtomicInteger nextAliasIndex) {
+    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final Identifiable identifiable, final EClass sourceType, final EClass targetType, final AtomicInteger nextAliasIndex) {
         createIdFilters(evaluationNode, select, sourceType);
 
         evaluationNode.getTerminals().entrySet().stream()
@@ -123,7 +123,7 @@ public class QueryModelBuilder {
 
                         feature = Attribute.builder()
                                 .sourceAttribute(sourceAttribute)
-                                .identifiable(select)
+                                .identifiable(identifiable)
                                 .build();
                     } else {
                         throw new UnsupportedOperationException("Not supported yet");
@@ -167,18 +167,14 @@ public class QueryModelBuilder {
                     }
 
                     if (expr instanceof ObjectExpression) {
-                        final Collection<IdentifiableFeature> joinedBackReferences = new ArrayList<>();
-                        processEvaluationNode(next, select, joined, targetType, nextAliasIndex);
-
                         final Join join = Join.builder()
                                 .reference(sourceReference)
-                                .identifiable(select)
+                                .identifiable(identifiable)
                                 //.alias(t.getAlias())
                                 .build();
-
-                        joinedBackReferences.forEach(j -> j.setIdentifiable(join));
-
                         select.getJoins().add(join); // TODO - include source class name
+
+                        processEvaluationNode(next, select, join, joined, targetType, nextAliasIndex);
                     } else if (expr instanceof CollectionExpression) {
                         final EClass newTargetType;
                         if (t.getAlias() != null) {
