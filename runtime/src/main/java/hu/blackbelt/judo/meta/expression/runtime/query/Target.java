@@ -19,8 +19,7 @@ public class Target {
 
     private EReference role;
 
-    @lombok.Setter
-    private IdAttribute idAttribute;
+    private final Collection<IdAttribute> idAttributes = new ArrayList<>();
 
     /**
      * Attributes of {@link Select#getFrom()} and {@link Join#getReference()} (called recursively) or function calls.

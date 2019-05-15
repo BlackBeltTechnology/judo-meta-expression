@@ -50,7 +50,7 @@ public class Select extends Source {
     @Override
     public String toString() {
         return "SELECT\n" +
-                "  IDS=" + (targets.isEmpty() ? "-" : targets.get(0).getIdAttribute()) + "\n" +
+                "  IDS=" + targets.stream().map(t -> t.getIdAttributes()).collect(Collectors.toList()) + "\n" +
                 "  FEATURES=" + targets.stream().flatMap(t -> t.getFeatures().stream()).collect(Collectors.toList()) + "\n" +
                 "  FROM=" + from.getName() + " AS " + getSourceAlias() + "\n" +
                 "  JOINING=" + joins + "\n" +

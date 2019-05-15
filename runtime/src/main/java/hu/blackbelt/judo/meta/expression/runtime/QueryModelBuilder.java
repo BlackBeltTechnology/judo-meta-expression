@@ -61,22 +61,31 @@ public class QueryModelBuilder {
         select.getTargets().addAll(targets);
         select.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
+        addIdAttribute(select, select);
         createIdFilters(evaluationNode, select);
         processEvaluationNode(evaluationNode, select, select, nextAliasIndex);
 
         return select;
     }
 
+    private void addIdAttribute(final Select select, final Source source) {
+        select.getTargets().forEach(target -> {
+            target.getIdAttributes().add(IdAttribute.builder()
+                    .source(source)
+                    .target(target)
+                    .build());
+        });
+    }
+
     private void createIdFilters(final EvaluationNode evaluationNode, final Select select) {
         if (evaluationNode.getExpression() instanceof Instance) {
             final Instance instance = (Instance) evaluationNode.getExpression();
 
-            final IdAttribute id = IdAttribute.builder().source(select).target(select.getTargets().get(0)).build();
-            select.getTargets().get(0).setIdAttribute(id);
-
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
                 log.debug("Base instance ID: {}", instanceId.getId());
+
+                final IdAttribute id = select.getTargets().get(0).getIdAttributes().iterator().next();
 
                 select.getFilters().add(FunctionSignature.EQUALS.create(
                         ImmutableMap.of(
@@ -90,16 +99,9 @@ public class QueryModelBuilder {
             }
         } else if (evaluationNode.getExpression() instanceof ImmutableCollection) {
             final ImmutableCollection immutableCollection = (ImmutableCollection) evaluationNode.getExpression();
-
-            final IdAttribute id = IdAttribute.builder().source(select).target(select.getTargets().get(0)).build();
-            select.getTargets().get(0).setIdAttribute(id);
-
             if (immutableCollection.getDefinition() instanceof CollectionReference) {
                 throw new IllegalStateException("Instance references are not supported as base");
             }
-        } else if (evaluationNode.getExpression() instanceof NavigationExpression) {
-            final IdAttribute id = IdAttribute.builder().source(select).target(select.getTargets().get(0)).build();
-            select.getTargets().get(0).setIdAttribute(id);
         }
     }
 
@@ -187,6 +189,7 @@ public class QueryModelBuilder {
                         join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
                         select.getJoins().add(join);
 
+                        addIdAttribute(select, join);
                         createIdFilters(next, select);
                         processEvaluationNode(next, select, join, nextAliasIndex);
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
@@ -208,6 +211,7 @@ public class QueryModelBuilder {
                                             .build());
                                     nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
+                                    addIdAttribute(nestedSelect, nestedSelect);
                                     createIdFilters(next, nestedSelect);
                                     processEvaluationNode(next, nestedSelect, nestedSelect, nextAliasIndex);
                                     // TODO - add IN filter expression
