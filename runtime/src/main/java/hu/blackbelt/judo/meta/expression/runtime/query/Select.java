@@ -25,6 +25,9 @@ public class Select implements Identifiable {
      */
     private EClass target;
 
+    @lombok.Setter
+    private Feature idFeature;
+
     /**
      * Map of attributes, keys are attributes of {@link #getTarget()}, fields are attributes of {@link #getFrom()} and {@link Join#getReference()} (called recursively) or function calls.
      */
@@ -77,6 +80,7 @@ public class Select implements Identifiable {
     @Override
     public String toString() {
         return "SELECT\n" +
+                "  ID=" + idFeature + "\n" +
                 "  FEATURES=" + features.entrySet().stream().map(f -> f.getValue() + " AS " + f.getKey().getName()).collect(Collectors.toList()) + "\n" +
                 "  FROM=" + from.getName() + " AS " + getAlias() + "\n" +
                 "  JOINING=" + joins + "\n" +

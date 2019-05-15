@@ -71,13 +71,16 @@ public class QueryModelBuilder {
         if (evaluationNode.getExpression() instanceof Instance) {
             final Instance instance = (Instance) evaluationNode.getExpression();
 
+            final IdAttribute id = IdAttribute.builder().type(sourceType).build();
+            select.setIdFeature(id);
+
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
                 log.debug("Base instance ID: {}", instanceId.getId());
 
                 select.getFilters().add(FunctionSignature.EQUALS.create(
                         ImmutableMap.of(
-                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(sourceType).build()).build(),
+                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(id).build(),
                                 FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(UUID.fromString(instanceId.getId())).build()).build()
                         )));
             } else if (instance.getDefinition() instanceof InstanceReference) {
@@ -87,6 +90,9 @@ public class QueryModelBuilder {
             }
         } else if (evaluationNode.getExpression() instanceof ImmutableCollection) {
             final ImmutableCollection immutableCollection = (ImmutableCollection) evaluationNode.getExpression();
+
+            final IdAttribute id = IdAttribute.builder().type(sourceType).build();
+            select.setIdFeature(id);
 
             if (immutableCollection.getDefinition() instanceof CollectionReference) {
                 throw new IllegalStateException("Instance references are not supported as base");
