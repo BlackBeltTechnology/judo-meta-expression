@@ -27,27 +27,24 @@ public class QueryModelBuilder {
 
     private ModelAdapter modelAdapter;
 
-    private static final String TABLE_ALIAS_FORMAT = "_t{0}";
+    private static final String TABLE_ALIAS_FORMAT = "_t{0,number,00}";
 
     public QueryModelBuilder(final ModelAdapter modelAdapter) {
         this.modelAdapter = modelAdapter;
     }
 
     public Select createQueryModel(final EvaluationNode evaluationNode, final EClass targetType) {
-        final Select.SelectBuilder builder = Select.builder()
-                .target(targetType);
+        return createQueryModel(evaluationNode, targetType, new AtomicInteger(0));
+    }
 
-        final Map<EAttribute, Feature> features = new HashMap<>();
-        final List<Join> joins = new ArrayList<>();
+    private Select createQueryModel(final EvaluationNode evaluationNode, final EClass targetType, final AtomicInteger nextAliasIndex) {
         final Collection<Function> filters = new ArrayList<>();
-        final List<SubSelect> subSelects = new ArrayList<>();
-        final Collection<IdentifiableFeature> backReferences = new ArrayList<>();
 
         final Expression expression = evaluationNode.getExpression();
         final EClass sourceType;
         if (expression instanceof Instance) {
             final Instance instance = (Instance) expression;
-            sourceType =  (EClass) modelAdapter.get(instance.getElementName()).get();
+            sourceType = (EClass) modelAdapter.get(instance.getElementName()).get();
 
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
@@ -65,7 +62,7 @@ public class QueryModelBuilder {
             }
         } else if (expression instanceof ImmutableCollection) {
             final ImmutableCollection immutableCollection = (ImmutableCollection) expression;
-            sourceType  = (EClass) modelAdapter.get(immutableCollection.getElementName()).get();
+            sourceType = (EClass) modelAdapter.get(immutableCollection.getElementName()).get();
 
             if (immutableCollection.getDefinition() instanceof CollectionReference) {
                 throw new IllegalStateException("Instance references are not supported as base");
@@ -78,22 +75,22 @@ public class QueryModelBuilder {
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
         }
-        processEvaluationNode(evaluationNode, builder, sourceType, targetType, features, joins, filters, subSelects, backReferences);
 
-        final Select select = builder
+        final Select select = Select.builder()
                 .from(sourceType)
-                .features(features)
-                .joins(joins)
+                .target(targetType)
+                .features(new HashMap<>())
+                .joins(new ArrayList<>())
                 .filters(filters)
-                .subSelects(subSelects)
+                .subSelects(new ArrayList<>())
                 .build();
-        backReferences.forEach(r -> r.setIdentifiable(select));
 
-        return resolve(select);
+        processEvaluationNode(evaluationNode, select, select.getFrom(), select.getTarget(), nextAliasIndex);
+
+        return resolve(select, nextAliasIndex);
     }
 
-    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select.SelectBuilder builder, final EClass sourceType, final EClass targetType,
-                                       final Map<EAttribute, Feature> features, final List<Join> joins, final Collection<Function> filters, final Collection<SubSelect> subSelects, final Collection<IdentifiableFeature> backReferences) {
+    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final EClass sourceType, final EClass targetType, final AtomicInteger nextAliasIndex) {
         evaluationNode.getTerminals().entrySet().stream()
                 .forEach(t -> {
                     final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
@@ -114,8 +111,8 @@ public class QueryModelBuilder {
 
                         feature = Attribute.builder()
                                 .sourceAttribute(sourceAttribute)
+                                .identifiable(select)
                                 .build();
-                        backReferences.add((Attribute) feature);
                     } else {
                         throw new UnsupportedOperationException("Not supported yet");
                     }
@@ -126,7 +123,7 @@ public class QueryModelBuilder {
                         throw new IllegalStateException("Invalid target attribute");
                     }
 
-                    features.put(targetAttribute, feature);
+                    select.getFeatures().put(targetAttribute, feature);
                 });
 
         evaluationNode.getNavigations().entrySet().stream()
@@ -152,7 +149,6 @@ public class QueryModelBuilder {
                     }
 
                     final EReference sourceReference = (EReference) sourceType.getEStructuralFeature(referenceName);
-                    ;
                     if (sourceReference == null) {
                         log.error("Reference {} of {} not found", referenceName, sourceType.getName());
                         throw new IllegalStateException("Invalid source reference");
@@ -160,17 +156,17 @@ public class QueryModelBuilder {
 
                     if (expr instanceof ObjectExpression) {
                         final Collection<IdentifiableFeature> joinedBackReferences = new ArrayList<>();
-                        processEvaluationNode(next, builder, joined, targetType, features, joins, filters, subSelects, joinedBackReferences);
+                        processEvaluationNode(next, select, joined, targetType, nextAliasIndex);
 
                         final Join join = Join.builder()
                                 .reference(sourceReference)
+                                .identifiable(select)
                                 //.alias(t.getAlias())
                                 .build();
-                        backReferences.add(join);
 
                         joinedBackReferences.forEach(j -> j.setIdentifiable(join));
 
-                        joins.add(join); // TODO - include source class name
+                        select.getJoins().add(join); // TODO - include source class name
                     } else if (expr instanceof CollectionExpression) {
                         final EClass newTargetType;
                         if (t.getAlias() != null) {
@@ -185,17 +181,19 @@ public class QueryModelBuilder {
                         }
 
                         // FIXME - put all joined types of navigation
-                        final Join join = Join.builder()
-                                .alias(referenceName)
-                                .reference(sourceReference).build(); // set alias of last entry only!
                         final SubSelect subSelect = SubSelect.builder()
-                                .select(createQueryModel(next, newTargetType))
-                                .joins(ImmutableList.of(join))
+                                .select(createQueryModel(next, newTargetType, nextAliasIndex))
+                                .joins(ImmutableList.of(
+                                        Join.builder()
+//                                                .alias(referenceName)
+                                                .reference(sourceReference)
+                                                .identifiable(select)
+                                                .build() // set alias of last entry only!
+                                ))
                                 .alias(t.getAlias())
                                 .build();
-                        backReferences.add(join);
 
-                        subSelects.add(subSelect);
+                        select.getSubSelects().add(subSelect);
                     } else {
                         throw new IllegalArgumentException("Navigation must be object/collection expression");
                     }
@@ -206,20 +204,14 @@ public class QueryModelBuilder {
                 });
     }
 
-    private Select resolve(final Select select) {
-        return resolve(select, 0);
-    }
-
-    private Select resolve(final Select select, final int identifiableId) {
-        final AtomicInteger nextIdentifiable = new AtomicInteger(identifiableId);
-
+    private Select resolve(final Select select, final AtomicInteger nextAliasIndex ) {
         final Map<EClass, List<Identifiable>> identifiableMap = new HashMap<>();
         final List<Identifiable> selectType = new ArrayList<>();
         selectType.add(select);
         identifiableMap.put(select.getFrom(), selectType);
 
         if (select.getAlias() == null) {
-            select.setAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextIdentifiable.getAndIncrement()));
+            select.setAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
         }
 
         select.getJoins().stream()
@@ -236,7 +228,7 @@ public class QueryModelBuilder {
 
         select.getJoins().stream()
                 .filter(j -> j.getAlias() == null)
-                .forEach(j -> j.setAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextIdentifiable.getAndIncrement())));
+                .forEach(j -> j.setAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement())));
 
         select.getIdentifiableFeatures()
                 .filter(f -> f.getIdentifiable() == null)
