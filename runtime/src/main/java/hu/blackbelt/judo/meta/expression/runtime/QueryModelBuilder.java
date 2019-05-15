@@ -43,38 +43,15 @@ public class QueryModelBuilder {
         final Expression expression = evaluationNode.getExpression();
         final EClass sourceType;
         if (expression instanceof Instance) {
-            final Instance instance = (Instance) expression;
-            sourceType = (EClass) modelAdapter.get(instance.getElementName()).get();
-
-            if (instance.getDefinition() instanceof InstanceId) {
-                final InstanceId instanceId = (InstanceId) instance.getDefinition();
-                log.debug("Base: instance with ID '{}' of {}", instanceId.getId(), sourceType.getName());
-
-                filters.add(FunctionSignature.EQUALS.create(
-                        ImmutableMap.of(
-                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(sourceType).build()).build(),
-                                FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(UUID.fromString(instanceId.getId())).build()).build()
-                        )));
-            } else if (instance.getDefinition() instanceof InstanceReference) {
-                throw new IllegalStateException("Instance references are not supported as base");
-            } else {
-                throw new IllegalStateException("Missing instance definition");
-            }
+            sourceType = (EClass) modelAdapter.get(((Instance)expression).getElementName()).get();
         } else if (expression instanceof ImmutableCollection) {
-            final ImmutableCollection immutableCollection = (ImmutableCollection) expression;
-            sourceType = (EClass) modelAdapter.get(immutableCollection.getElementName()).get();
-
-            if (immutableCollection.getDefinition() instanceof CollectionReference) {
-                throw new IllegalStateException("Instance references are not supported as base");
-            } else {
-                log.debug("Base: all instances of {}", sourceType);
-            }
+            sourceType = (EClass) modelAdapter.get(((ImmutableCollection) expression).getElementName()).get();
         } else if (expression instanceof ReferenceExpression) {
-            log.debug("Base: {} ({})", expression, expression.getClass().getSimpleName());
             sourceType = (EClass) ((ReferenceExpression) expression).getObjectType(modelAdapter);
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
         }
+        log.debug("Base: {}, type: {} ({})", new Object[] {expression, sourceType.getName(), expression.getClass().getSimpleName() + "#" + expression.hashCode()});
 
         final Select select = Select.builder()
                 .from(sourceType)
@@ -90,7 +67,36 @@ public class QueryModelBuilder {
         return resolve(select, nextAliasIndex);
     }
 
+    private void createIdFilters(final EvaluationNode evaluationNode, final Select select, final EClass sourceType) {
+        if (evaluationNode.getExpression() instanceof Instance) {
+            final Instance instance = (Instance) evaluationNode.getExpression();
+
+            if (instance.getDefinition() instanceof InstanceId) {
+                final InstanceId instanceId = (InstanceId) instance.getDefinition();
+                log.debug("Base instance ID: {}", instanceId.getId());
+
+                select.getFilters().add(FunctionSignature.EQUALS.create(
+                        ImmutableMap.of(
+                                FunctionSignature.TwoOperandFunctionParameterName.left.name(), SingleParameter.builder().feature(IdAttribute.builder().type(sourceType).build()).build(),
+                                FunctionSignature.TwoOperandFunctionParameterName.right.name(), SingleParameter.builder().feature(Constant.<UUID>builder().value(UUID.fromString(instanceId.getId())).build()).build()
+                        )));
+            } else if (instance.getDefinition() instanceof InstanceReference) {
+                throw new IllegalStateException("Instance references are not supported as base");
+            } else {
+                throw new IllegalStateException("Missing instance definition");
+            }
+        } else if (evaluationNode.getExpression() instanceof ImmutableCollection) {
+            final ImmutableCollection immutableCollection = (ImmutableCollection) evaluationNode.getExpression();
+
+            if (immutableCollection.getDefinition() instanceof CollectionReference) {
+                throw new IllegalStateException("Instance references are not supported as base");
+            }
+        }
+    }
+
     private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final EClass sourceType, final EClass targetType, final AtomicInteger nextAliasIndex) {
+        createIdFilters(evaluationNode, select, sourceType);
+
         evaluationNode.getTerminals().entrySet().stream()
                 .forEach(t -> {
                     final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
