@@ -4,16 +4,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
-import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.runtime.query.*;
 import hu.blackbelt.judo.meta.expression.runtime.query.Constant;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.FunctionSignature;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
+import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
+import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -28,11 +28,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class QueryModelBuilder {
 
     private ModelAdapter modelAdapter;
+    private ExpressionEvaluator evaluator;
 
     private static final String TABLE_ALIAS_FORMAT = "_t{0,number,00}";
 
-    public QueryModelBuilder(final ModelAdapter modelAdapter) {
+    public QueryModelBuilder(final ModelAdapter modelAdapter, final ExpressionEvaluator evaluator) {
         this.modelAdapter = modelAdapter;
+        this.evaluator = evaluator;
     }
 
     public Select createQueryModel(final EvaluationNode evaluationNode, final EClass targetType) {
@@ -193,7 +195,35 @@ public class QueryModelBuilder {
                         createIdFilters(next, select);
                         processEvaluationNode(next, select, join, nextAliasIndex);
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
+                        log.info("EXPR: {}", evaluationNode.getExpression());
+                        evaluator.getAllInstances(Expression.class)
+                                .filter(expressionWithEvaluationNodeBase -> EcoreUtil.equals(evaluator.getBase(expressionWithEvaluationNodeBase), evaluationNode.getExpression()))
+                                .forEach(expressionWithEvaluationNodeBase -> {
+                                    evaluator.getAllInstances(Instance.class)
+                                            .filter(i -> i.getDefinition() instanceof InstanceReference)
+                                            .filter(i -> EcoreUtil.equals(((InstanceReference) i.getDefinition()).getVariable(), expressionWithEvaluationNodeBase))
+                                            .forEach(i -> {
+                                                if (expressionWithEvaluationNodeBase instanceof NavigationExpression) {
+                                                    final String alias = ((NavigationExpression)expressionWithEvaluationNodeBase).getAlias();
+                                                    log.info("E: {}", expressionWithEvaluationNodeBase);
+                                                    log.info("I: {} -> {}", i, ((InstanceReference) i.getDefinition()).getVariable());
+                                                    log.info("Alias: {}", alias);
+                                                }
+                                            });
+                                });
+
+
+                        log.info("EVAL: {}", evaluationNode.getExpression());
+
+
+                        evaluator.getAllInstances(Expression.class)
+                                //.filter(e -> EcoreUtil.equals(evaluator.getBase(e), expr))
+                                .forEach(e -> {
+                                    log.info("EXPR: {} -> {}", e, evaluator.getBase(e));
+                                });
+
                         final String alias = ((NavigationExpression) expr).getAlias();
+                        log.info("ALIAS: {}", alias);
                         select.getTargets().stream()
                                 .filter(target -> target.getType().getEStructuralFeature(alias) != null)
                                 .forEach(target -> {

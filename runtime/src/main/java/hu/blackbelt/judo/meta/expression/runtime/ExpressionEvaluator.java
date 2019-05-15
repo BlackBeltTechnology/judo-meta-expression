@@ -5,6 +5,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
+import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
@@ -394,10 +395,23 @@ public class ExpressionEvaluator {
      */
     public Set<Variable> getVariablesOfScope(final Expression expression) {
         if (!isLambdaFunction(expression)) {
-            return getExpressionTerms(expression).stream()
-                    .filter(e -> (e instanceof ImmutableSet) || (e instanceof Instance))
-                    .map(e -> (ObjectVariable) e)
-                    .collect(Collectors.toSet());
+            final Set<Variable> variables = new HashSet<>();
+
+            Expression expr = expression;
+
+            while (expr != null) {
+                if (expr instanceof Variable) {
+                    variables.add((Variable) expr);
+                }
+
+                if (navigationSources.containsKey(expr)) {
+                    expr = navigationSources.get(expr);
+                } else {
+                    expr = null;
+                }
+            }
+
+            return variables;
         } else {
             final Set<Variable> variables = new HashSet<>();
 
@@ -417,6 +431,32 @@ public class ExpressionEvaluator {
             }
 
             return variables;
+        }
+    }
+
+    public Expression getBase(final Expression expression) {
+        if ((expression instanceof Instance) || (expression instanceof ImmutableCollection)) {
+            return expression;
+        } if (expression instanceof NavigationExpression) {
+            final List<Expression> sources = expression.getOperands();
+            if (sources.isEmpty()) {
+                return expression;
+            } else if (sources.size() == 1) {
+                return getBase(sources.get(0));
+            } else {
+                throw new UnsupportedOperationException("Multiple sources are not supported");
+            }
+        } else if (expression instanceof AttributeSelector) {
+            return getBase(((AttributeSelector) expression).getObjectExpression());
+        } else if (expression instanceof ObjectVariableReference) {
+            final ObjectVariable objectVariable = ((ObjectVariableReference) expression).getVariable();
+            return objectVariable instanceof Expression ? (Expression) objectVariable : null;
+        } else if (expression instanceof CollectionVariableReference) {
+            final CollectionVariable collectionVariable = ((CollectionVariableReference) expression).getVariable();
+            return collectionVariable instanceof Expression ? (Expression) collectionVariable : null;
+        } else {
+            log.error("TYPE: {}", expression.getClass().getSimpleName());
+            throw new UnsupportedOperationException("Not supported yet");
         }
     }
 }

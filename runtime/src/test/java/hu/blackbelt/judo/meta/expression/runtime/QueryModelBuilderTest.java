@@ -91,6 +91,7 @@ public class QueryModelBuilderTest {
     public void testSimpleQuery() {
         final TypeName orderType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Order").build();
         final TypeName orderInfoType = newTypeNameBuilder().withNamespace("northwind.services").withName("OrderInfo").build();
+//        final TypeName categoryType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Category").build();
 
         final UUID orderId = UUID.randomUUID();
 
@@ -100,13 +101,13 @@ public class QueryModelBuilderTest {
                 .withDefinition(newInstanceIdBuilder().withId(orderId.toString()).build())
                 .build();
 
-        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(order)
-                        .build())
-                .withAttributeName("orderDate")
-                .withAlias("orderDate")
-                .build();
+//        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
+//                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                        .withVariable(order)
+//                        .build())
+//                .withAttributeName("orderDate")
+//                .withAlias("orderDate")
+//                .build();
 
 //        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
 //                .withObjectExpression(newInstanceBuilder()
@@ -118,52 +119,65 @@ public class QueryModelBuilderTest {
 //                .withAlias("orderDate")
 //                .build();
 
-        final StringExpression shipperName = newStringAttributeBuilder()
-                .withObjectExpression(newObjectNavigationExpressionBuilder()
-                        .withObjectExpression(newObjectVariableReferenceBuilder()
-                                .withVariable(order)
-                                .build())
-                        .withName("s")
-                        .withReferenceName("shipper")
-                        .build())
-                .withAttributeName("companyName")
-                .withAlias("shipperName")
-                .build();
+//        final StringExpression shipperName = newStringAttributeBuilder()
+//                .withObjectExpression(newObjectNavigationExpressionBuilder()
+//                        .withObjectExpression(newObjectVariableReferenceBuilder()
+//                                .withVariable(order)
+//                                .build())
+//                        .withName("s")
+//                        .withReferenceName("shipper")
+//                        .build())
+//                .withAttributeName("companyName")
+//                .withAlias("shipperName")
+//                .build();
 
-        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(order)
-                        .build())
-                .withReferenceName("orderDetails")
-                .withAlias("items")
-                .build();
+//        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
+//                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                        .withVariable(order)
+//                        .build())
+//                .withReferenceName("orderDetails")
+////                .withAlias("items")
+//                .build();
+//
+//        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
 
-        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
-
-        final NumericExpression price = newDecimalAttributeBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(od)
-                        .build())
-                .withAttributeName("price")
-                .withAlias("price")
-                .build();
+//        final NumericExpression price = newDecimalAttributeBuilder()
+//                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                        .withVariable(od)
+//                        .build())
+//                .withAttributeName("price")
+//                .withAlias("price")
+//                .build();
 
         final ObjectNavigationFromCollectionExpression categories = newObjectNavigationFromCollectionExpressionBuilder()
                 .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
-                        .withCollectionExpression(newCollectionVariableReferenceBuilder()
-                                .withVariable(orderDetails)
+                        .withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder()
+                                .withObjectExpression(newObjectVariableReferenceBuilder()
+                                        .withVariable(order)
+                                        .build())
+                                .withReferenceName("orderDetails")
                                 .build())
                         .withReferenceName("product")
                         .withName("p")
                         .build())
                 .withReferenceName("category")
-                .withAlias("category") // FIXME - change to categories
+                .withAlias("categories")
                 .withName("c")
                 .build();
 
+        final ObjectVariable category = categories.createIterator("cat", modelAdapter);
+////        final Instance category = newInstanceBuilder()
+//                .withElementName(categoryType)
+//                .withName("cat")
+//                .withDefinition(newInstanceReferenceBuilder()
+//                        .withVariable()
+//                        .build()
+//                )
+//                .build();
+
         final StringExpression categoryName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(categories)
+                        .withVariable(category)
                         .build())
                 .withAttributeName("categoryName")
                 .withAlias("categoryName")
@@ -171,10 +185,10 @@ public class QueryModelBuilderTest {
 
         final Collection<Expression> expressions = ImmutableList.<Expression>builder()
                 .add(order)
-                .add(orderDate)
-                .add(shipperName)
-                .add(orderDetails)
-                .add(price)
+//                .add(orderDate)
+//                .add(shipperName)
+//                .add(orderDetails)
+//                .add(price)
                 .add(categories)
                 .add(categoryName)
                 .build();
@@ -190,7 +204,7 @@ public class QueryModelBuilderTest {
 
             final EvaluationNode evaluationNode = evaluator.getEvaluationNode(order);
 
-            final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter);
+            final QueryModelBuilder queryModelBuilder = new QueryModelBuilder(modelAdapter, evaluator);
 
             final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
 
