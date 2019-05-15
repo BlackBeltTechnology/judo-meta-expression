@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class QueryModelBuilder {
@@ -108,6 +109,17 @@ public class QueryModelBuilder {
     }
 
     private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final Source source, final AtomicInteger nextAliasIndex) {
+        final Map<Expression, List<Instance>> instanceMap = evaluator.getAllInstances(Expression.class)
+                .filter(expressionWithEvaluationNodeBase -> EcoreUtil.equals(evaluator.getBase(expressionWithEvaluationNodeBase), evaluationNode.getExpression()))
+                .filter(expressionWithEvaluationNodeBase -> expressionWithEvaluationNodeBase instanceof NavigationExpression)
+                .collect(Collectors.toMap(expressionWithEvaluationNodeBase -> expressionWithEvaluationNodeBase,
+                        expressionWithEvaluationNodeBase -> evaluator.getAllInstances(Instance.class)
+                                .filter(i -> i.getDefinition() instanceof InstanceReference)
+                                .filter(i -> EcoreUtil.equals(((InstanceReference) i.getDefinition()).getVariable(), expressionWithEvaluationNodeBase))
+                                .collect(Collectors.toList())));
+
+        log.info("Expression: {}, instance map: {}", evaluationNode.getExpression(), instanceMap);
+
         evaluationNode.getTerminals().entrySet().stream()
                 .forEach(t -> {
                     final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
@@ -195,33 +207,6 @@ public class QueryModelBuilder {
                         createIdFilters(next, select);
                         processEvaluationNode(next, select, join, nextAliasIndex);
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
-                        log.info("EXPR: {}", evaluationNode.getExpression());
-                        evaluator.getAllInstances(Expression.class)
-                                .filter(expressionWithEvaluationNodeBase -> EcoreUtil.equals(evaluator.getBase(expressionWithEvaluationNodeBase), evaluationNode.getExpression()))
-                                .forEach(expressionWithEvaluationNodeBase -> {
-                                    evaluator.getAllInstances(Instance.class)
-                                            .filter(i -> i.getDefinition() instanceof InstanceReference)
-                                            .filter(i -> EcoreUtil.equals(((InstanceReference) i.getDefinition()).getVariable(), expressionWithEvaluationNodeBase))
-                                            .forEach(i -> {
-                                                if (expressionWithEvaluationNodeBase instanceof NavigationExpression) {
-                                                    final String alias = ((NavigationExpression)expressionWithEvaluationNodeBase).getAlias();
-                                                    log.info("E: {}", expressionWithEvaluationNodeBase);
-                                                    log.info("I: {} -> {}", i, ((InstanceReference) i.getDefinition()).getVariable());
-                                                    log.info("Alias: {}", alias);
-                                                }
-                                            });
-                                });
-
-
-                        log.info("EVAL: {}", evaluationNode.getExpression());
-
-
-                        evaluator.getAllInstances(Expression.class)
-                                //.filter(e -> EcoreUtil.equals(evaluator.getBase(e), expr))
-                                .forEach(e -> {
-                                    log.info("EXPR: {} -> {}", e, evaluator.getBase(e));
-                                });
-
                         final String alias = ((NavigationExpression) expr).getAlias();
                         log.info("ALIAS: {}", alias);
                         select.getTargets().stream()
