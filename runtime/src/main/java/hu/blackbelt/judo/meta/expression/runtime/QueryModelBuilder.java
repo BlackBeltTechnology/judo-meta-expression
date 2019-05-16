@@ -194,15 +194,15 @@ public class QueryModelBuilder {
 
                                     log.debug(pad(level) + "        - adding JOIN from {} to {} with reference name: {}", new Object[]{nestedSource.getType().getName(), targetType.getName(), referenceName});
 
-                                    final EReference joinedTargetReference = (EReference) nestedSource.getType().getEStructuralFeature(referenceName);
-                                    if (joinedTargetReference.isDerived()) {
+                                    final EReference joinedSourceReference = (EReference) nestedSource.getType().getEStructuralFeature(referenceName);
+                                    if (joinedSourceReference.isDerived()) {
                                         throw new UnsupportedOperationException("Derived references are not supported yet");
                                     }
 
-                                    final Join join = Join.builder().partner(nestedSource).reference(joinedTargetReference).build();
+                                    final Join join = Join.builder().partner(nestedSource).reference(joinedSourceReference).build();
                                     join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
-                                    if (!EcoreUtil.equals(joinedTargetReference.getEReferenceType(), targetType)) {
+                                    if (!EcoreUtil.equals(joinedSourceReference.getEReferenceType(), targetType)) {
                                         log.error("Type of reference {} of {} is {} instead of {}", new Object[]{referenceName, source.getType().getName(), nestedSource.getType().getName(), targetType});
                                         throw new IllegalStateException("Invalid reference");
                                     }
@@ -255,6 +255,30 @@ public class QueryModelBuilder {
                     if ((expr instanceof ObjectNavigationExpression) || (expr instanceof ObjectNavigationFromCollectionExpression)) {
                         if (instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
                             log.debug(pad(level) + "     - processed in separate query: {}", expr);
+                        } else if (!instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
+                            log.debug(pad(level) + "!!!! - separating navigation {} of {}", referenceName, source.getType().getName());
+
+                            final Select nestedSelect = Select.builder()
+                                    .from(joined)
+                                    .build();
+                            nestedSelect.getTargets().addAll(select.getTargets());
+                            nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
+
+                            addIdAttribute(nestedSelect, nestedSelect);
+
+//                        createIdFilters(next, nestedSelect, level); // TODO - add IN filter expression
+                            processEvaluationNode(next, nestedSelect, nestedSelect, nextAliasIndex, level + 1);
+
+                            final SubSelect subSelect = SubSelect.builder()
+                                    .select(nestedSelect)
+                                    .build();
+
+                            final Join join = Join.builder().partner(select).reference(sourceReference).build();
+                            join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
+
+                            subSelect.getJoins().add(join);
+
+                            select.getSubSelects().add(subSelect);
                         } else {
                             log.debug(pad(level) + "     - processing navigation {} of {}", referenceName, source.getType().getName());
 
@@ -297,7 +321,7 @@ public class QueryModelBuilder {
                         if (instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
                             log.debug(pad(level) + "     - processed in separate query: {}", expr);
                         } else {
-                            log.debug(pad(level) + "     - processed (???) in separate query: {}", expr); // TODO - check
+                            log.debug(pad(level) + "     - skipped, must be processed in separate query: {}", expr);
                         }
                     } else {
                         throw new IllegalArgumentException("Navigation must be object/collection expression");

@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
 import lombok.NonNull;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EClass;
 
 import java.util.ArrayList;
@@ -49,13 +50,21 @@ public class Select extends Source {
 
     @Override
     public String toString() {
-        return "SELECT\n" +
-                "  IDS=" + targets.stream().map(t -> t.getIdAttributes()).collect(Collectors.toList()) + "\n" +
-                "  FEATURES=" + targets.stream().flatMap(t -> t.getFeatures().stream()).collect(Collectors.toList()) + "\n" +
-                "  FROM=" + from.getName() + " AS " + getSourceAlias() + "\n" +
-                "  JOINING=" + joins + "\n" +
-                "  TO=" + targets + "\n" +
-                "  WHERE=" + filters + "\n" +
-                " TRAVERSE=" + subSelects.stream().map(s -> s.getJoins() + " AS " + s.getAlias() + "\n" + s.getSelect()).collect(Collectors.toList());
+        return toString(0);
+    }
+
+    public String toString(int level) {
+        return pad(level) + "SELECT\n" +
+                pad(level) + "  IDS=" + targets.stream().map(t -> t.getIdAttributes()).collect(Collectors.toList()) + "\n" +
+                pad(level) + "  FEATURES=" + targets.stream().flatMap(t -> t.getFeatures().stream()).collect(Collectors.toList()) + "\n" +
+                pad(level) + "  FROM=" + from.getName() + " AS " + getSourceAlias() + "\n" +
+                pad(level) + "  JOINING=" + joins + "\n" +
+                pad(level) + "  TO=" + targets + "\n" +
+                pad(level) + "  WHERE=" + filters + "\n" +
+                pad(level) + "  TRAVERSE=" + subSelects.stream().map(s -> s.getJoins() + " AS " + s.getAlias() + "\n" + s.getSelect().toString(level + 1)).collect(Collectors.toList());
+    }
+
+    private static String pad(int level) {
+        return StringUtils.leftPad("", level * 4, " ");
     }
 }
