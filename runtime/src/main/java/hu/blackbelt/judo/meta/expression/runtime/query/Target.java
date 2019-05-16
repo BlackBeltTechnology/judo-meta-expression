@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime.query;
 
+import hu.blackbelt.judo.meta.expression.runtime.EvaluationNode;
 import lombok.NonNull;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
@@ -16,6 +17,8 @@ public class Target {
      */
     @NonNull
     private EClass type;
+
+    private EvaluationNode base;
 
     private EReference role;
 

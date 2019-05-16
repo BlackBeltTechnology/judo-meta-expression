@@ -32,6 +32,8 @@ public class QueryModelBuilder {
 
     private static final String TABLE_ALIAS_FORMAT = "_t{0,number,00}";
 
+    private final static Predicate<NavigationExpression> SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT = navigationExpression -> navigationExpression instanceof CollectionExpression;
+
     public QueryModelBuilder(final ModelAdapter modelAdapter, final ExpressionEvaluator evaluator) {
         this.modelAdapter = modelAdapter;
         this.evaluator = evaluator;
@@ -39,7 +41,7 @@ public class QueryModelBuilder {
 
     public Select createQueryModel(final EvaluationNode evaluationNode, final EClass targetType) {
         return createQueryModel(evaluationNode,
-                ImmutableList.of(Target.builder().type(targetType).build()),
+                ImmutableList.of(Target.builder().type(targetType).base(evaluationNode).build()),
                 new AtomicInteger(0),
                 0);
     }
@@ -110,8 +112,6 @@ public class QueryModelBuilder {
         }
     }
 
-    private final static Predicate<NavigationExpression> SEPARATE_QUERY = navigationExpression -> navigationExpression instanceof CollectionExpression;
-
     private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final Source source, final AtomicInteger nextAliasIndex, final int level) {
         log.debug(pad(level) + " - processing expression: {}", evaluationNode.getExpression());
 
@@ -131,7 +131,7 @@ public class QueryModelBuilder {
         select.getTargets().forEach(target -> {
             log.debug(pad(level) + "   - checking target {} ...", target);
             instanceMap.entrySet().stream()
-                    .filter(e -> SEPARATE_QUERY.test(e.getKey()))
+                    .filter(e -> SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test(e.getKey()))
                     .forEach(entry -> {
                         log.debug(pad(level) + "     ... in navigation expression: {}", entry.getKey());
                         entry.getValue().forEach(instance -> {
@@ -142,9 +142,8 @@ public class QueryModelBuilder {
                             } else {
                                 log.debug(pad(level) + "        - alias for target relation: {}", alias);
                                 final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
-                                if (targetReference == null) {
-                                    log.error("Reference {} of {} not found", alias, target.getType().getName());
-                                    throw new IllegalStateException("Invalid target reference");
+                                if (targetReference.isDerived()) {
+                                    throw new UnsupportedOperationException("Derived references are not supported yet");
                                 }
 
                                 final EvaluationNode next = evaluator.getEvaluationNode(instance);
@@ -153,6 +152,7 @@ public class QueryModelBuilder {
                                         .from((EClass) instance.getObjectType(modelAdapter))
                                         .build();
                                 nestedSelect.getTargets().add(Target.builder()
+                                        .base(evaluator.getEvaluationNode(instance))
                                         .role(targetReference)
                                         .type(targetReference.getEReferenceType())
                                         .build());
@@ -195,9 +195,8 @@ public class QueryModelBuilder {
                                     log.debug(pad(level) + "        - adding JOIN from {} to {} with reference name: {}", new Object[]{nestedSource.getType().getName(), targetType.getName(), referenceName});
 
                                     final EReference joinedTargetReference = (EReference) nestedSource.getType().getEStructuralFeature(referenceName);
-                                    if (joinedTargetReference == null) {
-                                        log.error("Reference {} of {} not found", referenceName, nestedSource.getType().getName());
-                                        throw new IllegalStateException("Invalid target reference");
+                                    if (joinedTargetReference.isDerived()) {
+                                        throw new UnsupportedOperationException("Derived references are not supported yet");
                                     }
 
                                     final Join join = Join.builder().partner(nestedSource).reference(joinedTargetReference).build();
@@ -217,47 +216,6 @@ public class QueryModelBuilder {
                         });
                     });
         });
-
-        evaluationNode.getTerminals().entrySet().stream()
-                .forEach(t -> {
-                    final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
-                    final Expression expr = ((Map.Entry<AttributeRole, Expression>) t).getValue();
-
-                    if (expr instanceof DataConstant) {
-                        throw new UnsupportedOperationException("Not supported yet");
-//                        final DataConstant dataConstant = (DataConstant) expr;
-//                        feature = Constant.builder().value(dataConstant.getValue()).build();
-                    } else if (expr instanceof AttributeSelector) {
-                        final AttributeSelector attributeSelector = (AttributeSelector) expr;
-
-                        final EAttribute sourceAttribute = (EAttribute) source.getType().getEStructuralFeature(attributeSelector.getAttributeName());
-                        if (sourceAttribute == null) {
-                            log.error("Attribute {} of {} not found", attributeSelector.getAttributeName(), source.getType().getName());
-                            throw new IllegalStateException("Invalid source attribute");
-                        }
-
-                        // FIXME - use expression base (self transfer objects) to select relevant targets
-                        select.getTargets().stream()
-                                .filter(target -> target.getType().getEStructuralFeature(attributeRole.getAlias()) != null)
-                                .forEach(target -> {
-                                    final EAttribute targetAttribute = (EAttribute) target.getType().getEStructuralFeature(attributeRole.getAlias());
-                                    if (targetAttribute == null) {
-                                        log.error("Attribute {} of {} not found", attributeRole.getAlias(), target.getType().getName());
-                                        throw new IllegalStateException("Invalid target attribute");
-                                    }
-
-                                    final Feature feature = Attribute.builder()
-                                            .source(source)
-                                            .sourceAttribute(sourceAttribute)
-                                            .target(target)
-                                            .targetAttribute(targetAttribute)
-                                            .build();
-                                    target.getFeatures().add(feature);
-                                });
-                    } else {
-                        throw new UnsupportedOperationException("Not supported yet");
-                    }
-                });
 
         evaluationNode.getNavigations().entrySet().stream()
                 .forEach(n -> {
@@ -280,11 +238,11 @@ public class QueryModelBuilder {
                     } else {
                         throw new UnsupportedOperationException("Not supported yet");
                     }
+                    log.debug(pad(level) + "   - adding navigation: {}", referenceName);
 
                     final EReference sourceReference = (EReference) source.getType().getEStructuralFeature(referenceName);
-                    if (sourceReference == null) {
-                        log.error("Reference {} of {} not found", referenceName, source.getType().getName());
-                        throw new IllegalStateException("Invalid source reference");
+                    if (sourceReference.isDerived()) {
+                        throw new UnsupportedOperationException("Derived references are not supported yet");
                     }
 
                     if (!EcoreUtil.equals(joined, sourceReference.getEReferenceType())) {
@@ -293,15 +251,15 @@ public class QueryModelBuilder {
                     }
 
                     if ((expr instanceof ObjectNavigationExpression) || (expr instanceof ObjectNavigationFromCollectionExpression)) {
-                        if (instanceMap.containsKey(expr) && SEPARATE_QUERY.test((NavigationExpression) expr)) {
-                            log.debug(pad(level) + " - processed in separate query: {}", expr);
+                        if (instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
+                            log.debug(pad(level) + "     - processed in separate query: {}", expr);
                         } else {
-                            log.debug(pad(level) + " - processing navigation {} of {}", referenceName, source.getType().getName());
+                            log.debug(pad(level) + "     - processing navigation {} of {}", referenceName, source.getType().getName());
 
                             if (instanceMap.containsKey(expr)) {
                                 final List<Target> newTargets = new ArrayList<>();
                                 select.getTargets().forEach(target -> {
-                                    log.debug(pad(level) + "   - checking target {} ...", target);
+                                    log.debug(pad(level) + "       - checking target {} ...", target);
                                     instanceMap.get(expr).forEach(instance -> {
                                         final String alias = instance.getAlias();
                                         if (alias == null) {
@@ -309,11 +267,11 @@ public class QueryModelBuilder {
                                         } else {
                                             log.debug(pad(level) + "     - adding new target: {} AS {} (filled by JOIN queries)", instance, instance.getAlias());
                                             final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
-                                            if (targetReference == null) {
-                                                log.error("Reference {} of {} not found", alias, target.getType().getName());
-                                                throw new IllegalStateException("Invalid target reference");
+                                            if (targetReference.isDerived()) {
+                                                throw new UnsupportedOperationException("Derived references are not supported yet");
                                             }
                                             newTargets.add(Target.builder()
+                                                    .base(evaluator.getEvaluationNode(instance))
                                                     .role(targetReference)
                                                     .type(targetReference.getEReferenceType())
                                                     .build());
@@ -336,10 +294,10 @@ public class QueryModelBuilder {
                             processEvaluationNode(next, select, join, nextAliasIndex, level);
                         }
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
-                        if (instanceMap.containsKey(expr) && SEPARATE_QUERY.test((NavigationExpression) expr)) {
-                            log.debug(pad(level) + " - processed in separate query: {}", expr);
+                        if (instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
+                            log.debug(pad(level) + "     - processed in separate query: {}", expr);
                         } else {
-                            log.debug(pad(level) + " - processed (???) in separate query: {}", expr); // TODO - check
+                            log.debug(pad(level) + "     - processed (???) in separate query: {}", expr); // TODO - check
                         }
                     } else {
                         throw new IllegalArgumentException("Navigation must be object/collection expression");
@@ -349,6 +307,55 @@ public class QueryModelBuilder {
                     //t.getOrdering() // TODO
                     //t.getWindowingExpression() // TODO
                 });
+
+        evaluationNode.getTerminals().entrySet().stream()
+                .forEach(t -> {
+                    final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
+                    final Expression expr = ((Map.Entry<AttributeRole, Expression>) t).getValue();
+                    log.debug(pad(level) + "   - adding terminal: {}", attributeRole.getAlias());
+
+                    final Expression expressionBase = evaluator.getBase(expr);
+
+                    if (expr instanceof DataConstant) {
+                        throw new UnsupportedOperationException("Not supported yet");
+//                        final DataConstant dataConstant = (DataConstant) expr;
+//                        feature = Constant.builder().value(dataConstant.getValue()).build();
+                    } else if (expr instanceof AttributeSelector) {
+                        final AttributeSelector attributeSelector = (AttributeSelector) expr;
+
+                        final EAttribute sourceAttribute = (EAttribute) source.getType().getEStructuralFeature(attributeSelector.getAttributeName());
+                        if (sourceAttribute.isDerived()) {
+                            throw new UnsupportedOperationException("Derived attributes are not supported yet");
+                        }
+
+                        // FIXME - use expression base (self transfer objects) to select relevant targets
+                        select.getTargets().stream()
+                                .filter(target -> target.getType().getEStructuralFeature(attributeRole.getAlias()) != null)
+                                .filter(target -> EcoreUtil.equals(target.getBase().getExpression(), expressionBase))
+                                .forEach(target -> {
+                                    log.debug(pad(level) + "     - checking target {} ...", target);
+                                    final EAttribute targetAttribute = (EAttribute) target.getType().getEStructuralFeature(attributeRole.getAlias());
+
+                                    log.debug(pad(level) + "       - target base: {}", target.getBase().getExpression());
+                                    log.debug(pad(level) + "       - evaluation base: {}", evaluator.getBase(expr));
+
+                                    if (targetAttribute.isDerived()) {
+                                        throw new UnsupportedOperationException("Derived attributes are not supported yet");
+                                    }
+
+                                    final Feature feature = Attribute.builder()
+                                            .source(source)
+                                            .sourceAttribute(sourceAttribute)
+                                            .target(target)
+                                            .targetAttribute(targetAttribute)
+                                            .build();
+                                    target.getFeatures().add(feature);
+                                });
+                    } else {
+                        throw new UnsupportedOperationException("Not supported yet");
+                    }
+                });
+
     }
 
     private static String pad(int level) {

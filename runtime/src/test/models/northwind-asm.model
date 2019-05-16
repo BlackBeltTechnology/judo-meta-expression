@@ -323,6 +323,12 @@
       </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_nMMlIHFeEemH_5wcKdro1w" name="product" lowerBound="1" eType="_nML-DHFeEemH_5wcKdro1w"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_nMMlInFeEemH_5wcKdro1w" name="category" lowerBound="1" eType="_nML-IHFeEemH_5wcKdro1w"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_txb6IHf1Eemel6rPzL_s-g" name="productName">
+        <eAnnotations xmi:id="_txb6IXf1Eemel6rPzL_s-g" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
+          <details xmi:id="_txb6Inf1Eemel6rPzL_s-g" key="maxLength" value="255"/>
+        </eAnnotations>
+        <eType xsi:type="ecore:EDataType" href="http://blackbelt.hu/judo/asm/types#//JString"/>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_nMMlKHFeEemH_5wcKdro1w" name="categoryName" lowerBound="1">
         <eAnnotations xmi:id="_nMMlKXFeEemH_5wcKdro1w" source="http://blackbelt.hu/judo/meta/ExtendedMetadata">
           <details xmi:id="_nMMlKnFeEemH_5wcKdro1w" key="maxLength" value="255"/>
