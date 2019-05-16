@@ -15,6 +15,7 @@ import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EReference;
@@ -41,10 +42,13 @@ public class QueryModelBuilder {
     public Select createQueryModel(final EvaluationNode evaluationNode, final EClass targetType) {
         return createQueryModel(evaluationNode,
                 ImmutableList.of(Target.builder().type(targetType).build()),
-                new AtomicInteger(0));
+                new AtomicInteger(0),
+                0);
     }
 
-    private Select createQueryModel(final EvaluationNode evaluationNode, final List<Target> targets, final AtomicInteger nextAliasIndex) {
+    private Select createQueryModel(final EvaluationNode evaluationNode, final List<Target> targets, final AtomicInteger nextAliasIndex, final int level) {
+        log.debug(pad(level) + "Processing evaluation expression: {}", evaluationNode.getExpression());
+
         final Expression expression = evaluationNode.getExpression();
         final EClass sourceType;
         if (expression instanceof Instance) {
@@ -56,7 +60,7 @@ public class QueryModelBuilder {
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
         }
-        log.debug("Base: {}, type: {} ({})", new Object[]{expression, sourceType.getName(), expression.getClass().getSimpleName() + "#" + expression.hashCode()});
+        log.debug(pad(level) + " - base: {}, type: {} ({})", new Object[]{expression, sourceType.getName(), expression.getClass().getSimpleName() + "#" + expression.hashCode()});
 
         final Select select = Select.builder()
                 .from(sourceType)
@@ -65,8 +69,8 @@ public class QueryModelBuilder {
         select.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
         addIdAttribute(select, select);
-        createIdFilters(evaluationNode, select);
-        processEvaluationNode(evaluationNode, select, select, nextAliasIndex);
+        createIdFilters(evaluationNode, select, 0);
+        processEvaluationNode(evaluationNode, select, select, nextAliasIndex, level);
 
         return select;
     }
@@ -80,13 +84,13 @@ public class QueryModelBuilder {
         });
     }
 
-    private void createIdFilters(final EvaluationNode evaluationNode, final Select select) {
+    private void createIdFilters(final EvaluationNode evaluationNode, final Select select, final int level) {
         if (evaluationNode.getExpression() instanceof Instance) {
             final Instance instance = (Instance) evaluationNode.getExpression();
 
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
-                log.debug("Base instance ID: {}", instanceId.getId());
+                log.debug(pad(level) + "   - base instance ID: {}", instanceId.getId());
 
                 final IdAttribute id = select.getTargets().get(0).getIdAttributes().iterator().next();
 
@@ -108,17 +112,108 @@ public class QueryModelBuilder {
         }
     }
 
-    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final Source source, final AtomicInteger nextAliasIndex) {
-        final Map<Expression, List<Instance>> instanceMap = evaluator.getAllInstances(Expression.class)
+    private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final Source source, final AtomicInteger nextAliasIndex, final int level) {
+        log.debug(pad(level) + " - processing expression: {}", evaluationNode.getExpression());
+
+        final Map<NavigationExpression, List<Instance>> instanceMap = evaluator.getAllInstances(NavigationExpression.class)
                 .filter(expressionWithEvaluationNodeBase -> EcoreUtil.equals(evaluator.getBase(expressionWithEvaluationNodeBase), evaluationNode.getExpression()))
-                .filter(expressionWithEvaluationNodeBase -> expressionWithEvaluationNodeBase instanceof NavigationExpression)
                 .collect(Collectors.toMap(expressionWithEvaluationNodeBase -> expressionWithEvaluationNodeBase,
                         expressionWithEvaluationNodeBase -> evaluator.getAllInstances(Instance.class)
                                 .filter(i -> i.getDefinition() instanceof InstanceReference)
                                 .filter(i -> EcoreUtil.equals(((InstanceReference) i.getDefinition()).getVariable(), expressionWithEvaluationNodeBase))
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toList())))
+                .entrySet().stream()
+                .filter(e -> !e.getValue().isEmpty())
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-        log.info("Expression: {}, instance map: {}", evaluationNode.getExpression(), instanceMap);
+        log.debug(pad(level) + " - referenced instances: {}", instanceMap);
+
+        select.getTargets().forEach(target -> {
+            log.debug(pad(level) + " - checking target {} ...", target);
+            instanceMap.entrySet().stream().forEach(entry -> {
+                log.debug(pad(level) + "   ... in navigation expression: {}", entry.getKey());
+                entry.getValue().forEach(instance -> {
+                    log.debug(pad(level) + "      - processing instance: {}", instance);
+                    final String alias = entry.getKey().getAlias(); // FIXME - replace with alias of instance (instead of navigation expression)
+                    if (alias == null) {
+                        log.error("No alias is defined for target relation");
+                    } else {
+                        log.debug(pad(level) + "      - alias for target relation: {}", alias);
+                        final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
+                        if (targetReference == null) {
+                            log.error("Reference {} of {} not found", alias, target.getType().getName());
+                            throw new IllegalStateException("Invalid target reference");
+                        }
+
+                        final EvaluationNode next = evaluator.getEvaluationNode(instance);
+
+                        final Select nestedSelect = Select.builder()
+                                .from((EClass) instance.getObjectType(modelAdapter))
+                                .build();
+                        nestedSelect.getTargets().add(Target.builder()
+                                .type(targetReference.getEReferenceType())
+                                .build());
+                        nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
+
+                        addIdAttribute(nestedSelect, nestedSelect);
+
+//                        createIdFilters(next, nestedSelect, level); // TODO - add IN filter expression
+                        processEvaluationNode(next, nestedSelect, nestedSelect, nextAliasIndex, level + 1);
+
+                        final SubSelect subSelect = SubSelect.builder()
+                                .select(nestedSelect)
+                                .alias(alias)
+                                .build();
+
+                        NavigationExpression n = entry.getKey();
+
+                        final List<String> referenceNames = new LinkedList<>();
+                        final List<EClass> targetTypes = new LinkedList<>();
+                        while (n != null) {
+                            final EClass targetType = ((EClass) ((ReferenceExpression) n).getObjectType(modelAdapter));
+                            targetTypes.add(targetType);
+                            referenceNames.add(n.getReferenceName());
+                            log.debug(pad(level) + "      - marking JOIN to {} with reference name: {} ({})", new Object[]{targetType.getName(), n.getReferenceName(), n});
+                            if (n.getOperands().isEmpty()) {
+                                n = null;
+                            } else if (n.getOperands().size() == 1) {
+                                final Expression e = n.getOperands().get(0);
+                                n = (e instanceof NavigationExpression) ? (NavigationExpression) e : null;
+                            } else {
+                                throw new IllegalStateException("Multiple sources are not supported");
+                            }
+                        }
+
+                        Source nestedSource = select;
+                        for (int i = referenceNames.size(); i > 0; i--) {
+                            final String referenceName = referenceNames.get(i - 1);
+                            final EClass targetType = targetTypes.get(i - 1);
+
+                            log.debug(pad(level) + "      - adding JOIN from {} to {} with reference name: {}", new Object[] {nestedSource.getType().getName(), targetType.getName(), referenceName});
+
+                            final EReference joinedTargetReference = (EReference) nestedSource.getType().getEStructuralFeature(referenceName);
+                            if (joinedTargetReference == null) {
+                                log.error("Reference {} of {} not found", referenceName, nestedSource.getType().getName());
+                                throw new IllegalStateException("Invalid target reference");
+                            }
+
+                            final Join join = Join.builder().partner(nestedSource).reference(joinedTargetReference).build();
+                            join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
+
+                            if (!EcoreUtil.equals(joinedTargetReference.getEReferenceType(), targetType)) {
+                                log.error("Type of reference {} of {} is {} instead of {}", new Object[] {referenceName, source.getType().getName(), nestedSource.getType().getName(), targetType});
+                                throw new IllegalStateException("Invalid reference");
+                            }
+                            nestedSource = join;
+                            subSelect.getJoins().add(join);
+                        }
+
+
+                        select.getSubSelects().add(subSelect);
+                    }
+                });
+            });
+        });
 
         evaluationNode.getTerminals().entrySet().stream()
                 .forEach(t -> {
@@ -195,55 +290,27 @@ public class QueryModelBuilder {
                     }
 
                     if ((expr instanceof ObjectNavigationExpression) || (expr instanceof ObjectNavigationFromCollectionExpression)) {
-                        // TODO - process expression as collection if alias is set!!!
-                        final Join join = Join.builder()
-                                .partner(source)
-                                .reference(sourceReference)
-                                .build();
-                        join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
-                        select.getJoins().add(join);
+                        final String alias = ((NavigationExpression) expr).getAlias();
+                        log.debug(pad(level) + " - processing navigation with alias: {}", alias);
 
-                        addIdAttribute(select, join);
-                        createIdFilters(next, select);
-                        processEvaluationNode(next, select, join, nextAliasIndex);
+                        if (alias != null) {
+                            throw new UnsupportedOperationException("Not supported yet");
+                        } else {
+                            // TODO - process expression as collection if alias is set!!!
+                            final Join join = Join.builder()
+                                    .partner(source)
+                                    .reference(sourceReference)
+                                    .build();
+                            join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
+                            select.getJoins().add(join);
+
+                            addIdAttribute(select, join);
+                            createIdFilters(next, select, level);
+                            processEvaluationNode(next, select, join, nextAliasIndex, level);
+                        }
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
                         final String alias = ((NavigationExpression) expr).getAlias();
-                        log.info("ALIAS: {}", alias);
-                        select.getTargets().stream()
-                                .filter(target -> target.getType().getEStructuralFeature(alias) != null)
-                                .forEach(target -> {
-                                    final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
-                                    if (targetReference == null) {
-                                        log.error("Attribute {} of {} not found", alias, target.getType().getName());
-                                        throw new IllegalStateException("Invalid target reference");
-                                    }
-
-                                    final Select nestedSelect = Select.builder()
-                                            .from(joined)
-                                            .build();
-                                    nestedSelect.getTargets().add(Target.builder()
-                                            .type(targetReference.getEReferenceType())
-                                            .build());
-                                    nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
-
-                                    addIdAttribute(nestedSelect, nestedSelect);
-                                    createIdFilters(next, nestedSelect);
-                                    processEvaluationNode(next, nestedSelect, nestedSelect, nextAliasIndex);
-                                    // TODO - add IN filter expression
-
-                                    final SubSelect subSelect = SubSelect.builder()
-                                            .select(nestedSelect)
-                                            .alias(alias)
-                                            .build();
-                                    final Join join = Join.builder()
-                                            .partner(source)
-                                            .reference(sourceReference)
-                                            .build();
-                                    join.setSourceAlias(nestedSelect.getSourceAlias());
-                                    subSelect.getJoins().add(join);
-
-                                    select.getSubSelects().add(subSelect);
-                                });
+                        log.debug(pad(level) + " - processing navigation with alias: {}", alias);
                     } else {
                         throw new IllegalArgumentException("Navigation must be object/collection expression");
                     }
@@ -252,5 +319,9 @@ public class QueryModelBuilder {
                     //t.getOrdering() // TODO
                     //t.getWindowingExpression() // TODO
                 });
+    }
+
+    private static String pad(int level) {
+        return StringUtils.leftPad("", level * 2, " ");
     }
 }
