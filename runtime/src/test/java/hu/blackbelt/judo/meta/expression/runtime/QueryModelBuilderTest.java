@@ -11,11 +11,10 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.runtime.query.Select;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
-import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -91,8 +90,6 @@ public class QueryModelBuilderTest {
     public void testSimpleQuery() {
         final TypeName orderType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Order").build();
         final TypeName orderInfoType = newTypeNameBuilder().withNamespace("northwind.services").withName("OrderInfo").build();
-        final TypeName productInfoType = newTypeNameBuilder().withNamespace("northwind.services").withName("ProductInfo").build();
-//        final TypeName categoryType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Category").build();
 
         final UUID orderId = UUID.randomUUID();
 
@@ -109,16 +106,6 @@ public class QueryModelBuilderTest {
                 .withAttributeName("orderDate")
                 .withAlias("orderDate")
                 .build();
-
-//        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
-//                .withObjectExpression(newInstanceBuilder()
-//                        .withElementName(orderType)
-//                        .withName("self")
-//                        .withDefinition(newInstanceIdBuilder().withId(orderId.toString()).build())
-//                        .build())
-//                .withAttributeName("orderDate")
-//                .withAlias("orderDate")
-//                .build();
 
         final StringExpression shipperName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectNavigationExpressionBuilder()
@@ -137,10 +124,9 @@ public class QueryModelBuilderTest {
                         .withVariable(order)
                         .build())
                 .withReferenceName("orderDetails")
-                .withAlias("items")
                 .build();
 
-        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
+        final ObjectVariable od = orderDetails.createIterator("od", "items", modelAdapter);
 
         final NumericExpression unitPrice = newDecimalAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
@@ -166,6 +152,22 @@ public class QueryModelBuilderTest {
                 .withAlias("discount")
                 .build();
 
+        final ObjectNavigationExpression product = newObjectNavigationExpressionBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(od)
+                        .build())
+                .withReferenceName("product")
+                .withAlias("product")
+                .build();
+
+        final StringExpression productName = newStringAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(product)
+                        .build())
+                .withAttributeName("productName")
+                .withAlias("productName")
+                .build();
+
         final ObjectNavigationFromCollectionExpression categories = newObjectNavigationFromCollectionExpressionBuilder()
                 .withCollectionExpression(newObjectNavigationFromCollectionExpressionBuilder()
                         .withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder()
@@ -178,11 +180,10 @@ public class QueryModelBuilderTest {
                         .withName("p")
                         .build())
                 .withReferenceName("category")
-                .withAlias("categories")
                 .withName("c")
                 .build();
 
-        final ObjectVariable category = categories.createIterator("cat", modelAdapter);
+        final ObjectVariable category = categories.createIterator("cat", "categories", modelAdapter);
 
         final StringExpression categoryName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
@@ -199,6 +200,8 @@ public class QueryModelBuilderTest {
                 .add(orderDetails)
                 .add(unitPrice)
                 .add(quantity)
+                .add(product)
+                .add(productName)
                 .add(discount)
                 .add(categories)
                 .add(categoryName)

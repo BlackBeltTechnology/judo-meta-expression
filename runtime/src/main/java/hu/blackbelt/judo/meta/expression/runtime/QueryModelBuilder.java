@@ -7,13 +7,10 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.*;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.runtime.query.*;
 import hu.blackbelt.judo.meta.expression.runtime.query.Constant;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.FunctionSignature;
 import hu.blackbelt.judo.meta.expression.runtime.query.function.SingleParameter;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
-import hu.blackbelt.judo.meta.expression.variable.Variable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EAttribute;
@@ -126,19 +123,19 @@ public class QueryModelBuilder {
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-        log.debug(pad(level) + " - referenced instances: {}", instanceMap);
+        log.debug(pad(level) + "   - referenced instances: {}", instanceMap);
 
         select.getTargets().forEach(target -> {
-            log.debug(pad(level) + " - checking target {} ...", target);
+            log.debug(pad(level) + "   - checking target {} ...", target);
             instanceMap.entrySet().stream().forEach(entry -> {
-                log.debug(pad(level) + "   ... in navigation expression: {}", entry.getKey());
+                log.debug(pad(level) + "     ... in navigation expression: {}", entry.getKey());
                 entry.getValue().forEach(instance -> {
-                    log.debug(pad(level) + "      - processing instance: {}", instance);
-                    final String alias = entry.getKey().getAlias(); // FIXME - replace with alias of instance (instead of navigation expression)
+                    log.debug(pad(level) + "        - processing instance: {}", instance);
+                    final String alias = instance.getAlias();
                     if (alias == null) {
                         log.error("No alias is defined for target relation");
                     } else {
-                        log.debug(pad(level) + "      - alias for target relation: {}", alias);
+                        log.debug(pad(level) + "        - alias for target relation: {}", alias);
                         final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
                         if (targetReference == null) {
                             log.error("Reference {} of {} not found", alias, target.getType().getName());
@@ -173,7 +170,7 @@ public class QueryModelBuilder {
                             final EClass targetType = ((EClass) ((ReferenceExpression) n).getObjectType(modelAdapter));
                             targetTypes.add(targetType);
                             referenceNames.add(n.getReferenceName());
-                            log.debug(pad(level) + "      - marking JOIN to {} with reference name: {} ({})", new Object[]{targetType.getName(), n.getReferenceName(), n});
+                            log.debug(pad(level) + "        - marking JOIN to {} with reference name: {} ({})", new Object[]{targetType.getName(), n.getReferenceName(), n});
                             if (n.getOperands().isEmpty()) {
                                 n = null;
                             } else if (n.getOperands().size() == 1) {
@@ -189,7 +186,7 @@ public class QueryModelBuilder {
                             final String referenceName = referenceNames.get(i - 1);
                             final EClass targetType = targetTypes.get(i - 1);
 
-                            log.debug(pad(level) + "      - adding JOIN from {} to {} with reference name: {}", new Object[] {nestedSource.getType().getName(), targetType.getName(), referenceName});
+                            log.debug(pad(level) + "        - adding JOIN from {} to {} with reference name: {}", new Object[] {nestedSource.getType().getName(), targetType.getName(), referenceName});
 
                             final EReference joinedTargetReference = (EReference) nestedSource.getType().getEStructuralFeature(referenceName);
                             if (joinedTargetReference == null) {
@@ -291,11 +288,9 @@ public class QueryModelBuilder {
 
                     if ((expr instanceof ObjectNavigationExpression) || (expr instanceof ObjectNavigationFromCollectionExpression)) {
                         final String alias = ((NavigationExpression) expr).getAlias();
-                        log.debug(pad(level) + " - processing navigation with alias: {}", alias);
+                        if (alias == null) {
+                            log.debug(pad(level) + " - processing navigation {} of {}", referenceName, source.getType().getName());
 
-                        if (alias != null) {
-                            throw new UnsupportedOperationException("Not supported yet");
-                        } else {
                             // TODO - process expression as collection if alias is set!!!
                             final Join join = Join.builder()
                                     .partner(source)
@@ -307,10 +302,12 @@ public class QueryModelBuilder {
                             addIdAttribute(select, join);
                             createIdFilters(next, select, level);
                             processEvaluationNode(next, select, join, nextAliasIndex, level);
+                        } else {
+                            log.debug(pad(level) + " - processed in separate query: {} AS {}", expr, alias);
                         }
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
                         final String alias = ((NavigationExpression) expr).getAlias();
-                        log.debug(pad(level) + " - processing navigation with alias: {}", alias);
+                        log.debug(pad(level) + " - processed in separate query: {} AS {}", expr, alias);
                     } else {
                         throw new IllegalArgumentException("Navigation must be object/collection expression");
                     }

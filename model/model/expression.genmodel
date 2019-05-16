@@ -156,6 +156,7 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//constant/Instance/elementName"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//constant/Instance/definition"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Instance/alias"/>
         <genOperations ecoreOperation="expression.ecore#//constant/Instance/toString"
             body="return &quot;INSTANCE{&quot; + String.valueOf(getElementName()) + &quot;}&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//constant/Instance/getObjectType"
@@ -237,8 +238,9 @@
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/getObjectType/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/createIterator"
-            body="setIteratorVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;                    .withElementName((hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get())&#xA;                    .withName(name)&#xA;                    .withDefinition(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceReferenceBuilder()&#xA;                            .withVariable(this)&#xA;                            .build())&#xA;                    .build());&#xA;return getIteratorVariable();">
+            body="setIteratorVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;                    .withElementName((hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get())&#xA;                    .withName(name)&#xA;                    .withAlias(alias)&#xA;                    .withDefinition(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceReferenceBuilder()&#xA;                            .withVariable(this)&#xA;                            .build())&#xA;                    .build());&#xA;return getIteratorVariable();">
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/createIterator/name"/>
+          <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/createIterator/alias"/>
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/createIterator/modelAdapter"/>
         </genOperations>
       </genClasses>
@@ -722,6 +724,7 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//collection/ImmutableCollection/elementName"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/ImmutableCollection/definition"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//collection/ImmutableCollection/alias"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ImmutableCollection/toString"
             body="return &quot;ALL{&quot; + String.valueOf(getElementName()) + &quot;}&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ImmutableCollection/getObjectType"
