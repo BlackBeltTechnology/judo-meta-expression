@@ -223,6 +223,8 @@ public class QueryModelBuilder {
                     final EvaluationNode next = ((Map.Entry<SetTransformation, EvaluationNode>) n).getValue();
                     final Expression expr = next.getExpression();
 
+                    final Expression expressionBase = evaluator.getBase(expr);
+
                     final EClass joined;
                     if (expr instanceof ReferenceExpression) {
                         joined = (EClass) ((ReferenceExpression) next.getExpression()).getObjectType(modelAdapter);
@@ -258,34 +260,32 @@ public class QueryModelBuilder {
 
                             if (instanceMap.containsKey(expr)) {
                                 final List<Target> newTargets = new ArrayList<>();
-                                select.getTargets().forEach(target -> {
-                                    log.debug(pad(level) + "       - checking target {} ...", target);
-                                    instanceMap.get(expr).forEach(instance -> {
-                                        final String alias = instance.getAlias();
-                                        if (alias == null) {
-                                            log.error("No alias is defined for target relation");
-                                        } else {
-                                            log.debug(pad(level) + "     - adding new target: {} AS {} (filled by JOIN queries)", instance, instance.getAlias());
-                                            final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
-                                            if (targetReference.isDerived()) {
-                                                throw new UnsupportedOperationException("Derived references are not supported yet");
-                                            }
-                                            newTargets.add(Target.builder()
-                                                    .base(evaluator.getEvaluationNode(instance))
-                                                    .role(targetReference)
-                                                    .type(targetReference.getEReferenceType())
-                                                    .build());
-                                        }
-                                    });
-                                });
+                                select.getTargets().stream()
+                                        .filter(target -> EcoreUtil.equals(target.getBase().getExpression(), expressionBase))
+                                        .forEach(target -> {
+                                            log.debug(pad(level) + "       - checking target {} ...", target);
+                                            instanceMap.get(expr).forEach(instance -> {
+                                                final String alias = instance.getAlias();
+                                                if (alias == null) {
+                                                    log.error("No alias is defined for target relation");
+                                                } else {
+                                                    log.debug(pad(level) + "     - adding new target: {} AS {} (filled by JOIN queries)", instance, instance.getAlias());
+                                                    final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
+                                                    if (targetReference.isDerived()) {
+                                                        throw new UnsupportedOperationException("Derived references are not supported yet");
+                                                    }
+                                                    newTargets.add(Target.builder()
+                                                            .base(evaluator.getEvaluationNode(instance))
+                                                            .role(targetReference)
+                                                            .type(targetReference.getEReferenceType())
+                                                            .build());
+                                                }
+                                            });
+                                        });
                                 select.getTargets().addAll(newTargets);
                             }
 
-                            // TODO - process expression as collection if alias is set!!!
-                            final Join join = Join.builder()
-                                    .partner(source)
-                                    .reference(sourceReference)
-                                    .build();
+                            final Join join = Join.builder().partner(source).reference(sourceReference).build();
                             join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
                             select.getJoins().add(join);
 
@@ -328,16 +328,12 @@ public class QueryModelBuilder {
                             throw new UnsupportedOperationException("Derived attributes are not supported yet");
                         }
 
-                        // FIXME - use expression base (self transfer objects) to select relevant targets
                         select.getTargets().stream()
                                 .filter(target -> target.getType().getEStructuralFeature(attributeRole.getAlias()) != null)
                                 .filter(target -> EcoreUtil.equals(target.getBase().getExpression(), expressionBase))
                                 .forEach(target -> {
                                     log.debug(pad(level) + "     - checking target {} ...", target);
                                     final EAttribute targetAttribute = (EAttribute) target.getType().getEStructuralFeature(attributeRole.getAlias());
-
-                                    log.debug(pad(level) + "       - target base: {}", target.getBase().getExpression());
-                                    log.debug(pad(level) + "       - evaluation base: {}", evaluator.getBase(expr));
 
                                     if (targetAttribute.isDerived()) {
                                         throw new UnsupportedOperationException("Derived attributes are not supported yet");
