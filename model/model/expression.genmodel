@@ -228,12 +228,18 @@
             body="return getName();"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/ObjectVariable">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/ObjectVariable/iteratorVariable"/>
         <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/createIterator"
+            body="setIteratorVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;                    .withElementName((hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get())&#xA;                    .withName(name)&#xA;                    .withAlias(alias)&#xA;                    .withDefinition(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceReferenceBuilder()&#xA;                            .withVariable(this)&#xA;                            .build())&#xA;                    .build());&#xA;return getIteratorVariable();">
+          <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/createIterator/name"/>
+          <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/createIterator/alias"/>
+          <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/createIterator/modelAdapter"/>
+        </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/CollectionVariable">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/CollectionVariable/iteratorVariable"/>
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/getObjectType/modelAdapter"/>
         </genOperations>

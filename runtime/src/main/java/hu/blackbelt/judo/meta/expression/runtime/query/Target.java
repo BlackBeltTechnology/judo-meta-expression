@@ -33,6 +33,6 @@ public class Target {
 
     @Override
     public String toString() {
-        return type.getName() + "@" + hashCode();
+        return type.getName() + "@" + hashCode() + (role != null ? " AS " + role.getName() : "");
     }
 }

@@ -157,12 +157,13 @@ public class QueryModelBuilderTest {
                         .withVariable(od)
                         .build())
                 .withReferenceName("product")
-                .withAlias("product")
                 .build();
+
+        final ObjectVariable p = product.createIterator("p", "product", modelAdapter);
 
         final StringExpression productName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(product)
+                        .withVariable(p)
                         .build())
                 .withAttributeName("productName")
                 .withAlias("productName")
