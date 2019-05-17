@@ -54,7 +54,7 @@ public class Select extends Source {
         return toString(0);
     }
 
-    private boolean isContainment(final Feature feature) {
+    public boolean isContainment(final Feature feature) {
         if (feature instanceof Attribute) {
             return Objects.equals(((Attribute) feature).getSource(), this);
         } else if (feature instanceof IdAttribute) {
