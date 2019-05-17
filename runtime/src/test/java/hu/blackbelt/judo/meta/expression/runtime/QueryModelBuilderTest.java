@@ -214,6 +214,7 @@ public class QueryModelBuilderTest {
                 .build());
 
         try {
+            final long startTs = System.currentTimeMillis();
             final ExpressionEvaluator evaluator = new ExpressionEvaluator();
             evaluator.init(expressions);
 
@@ -223,7 +224,10 @@ public class QueryModelBuilderTest {
 
             final Select queryModel = queryModelBuilder.createQueryModel(evaluationNode, (EClass) modelAdapter.get(orderInfoType).get());
 
-            log.debug("QUERY MODEL: \n{}", queryModel);
+            final long endTs = System.currentTimeMillis();
+            log.debug("Query model created in {} ms", (endTs - startTs));
+
+            log.info("QUERY MODEL: \n{}", queryModel);
         } catch (RuntimeException ex) {
             ex.printStackTrace();
             throw ex;

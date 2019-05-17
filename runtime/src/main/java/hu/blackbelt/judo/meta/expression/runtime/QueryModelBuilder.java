@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -47,7 +48,9 @@ public class QueryModelBuilder {
     }
 
     private Select createQueryModel(final EvaluationNode evaluationNode, final List<Target> targets, final AtomicInteger nextAliasIndex, final int level) {
-        log.debug(pad(level) + "Processing evaluation expression: {}", evaluationNode.getExpression());
+        if (log.isDebugEnabled()) {
+            log.debug(pad(level) + "Processing evaluation expression: {}", evaluationNode.getExpression());
+        }
 
         final Expression expression = evaluationNode.getExpression();
         final EClass sourceType;
@@ -60,11 +63,13 @@ public class QueryModelBuilder {
         } else {
             throw new UnsupportedOperationException("Unsupported base expression");
         }
-        log.debug(pad(level) + " - base: {}, type: {} ({})", new Object[]{expression, sourceType.getName(), expression.getClass().getSimpleName() + "#" + expression.hashCode()});
+        if (log.isDebugEnabled()) {
+            log.debug(pad(level) + " - base: {}, type: {} ({})", new Object[]{expression, sourceType.getName(), expression.getClass().getSimpleName() + "#" + expression.hashCode()});
+        }
 
         final Select select = Select.builder()
                 .from(sourceType)
-                .targets(new ArrayList<>(targets))
+                .targets(new CopyOnWriteArrayList<>(targets))
                 .build();
         select.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
@@ -90,7 +95,9 @@ public class QueryModelBuilder {
 
             if (instance.getDefinition() instanceof InstanceId) {
                 final InstanceId instanceId = (InstanceId) instance.getDefinition();
-                log.debug(pad(level) + "   - base instance ID: {}", instanceId.getId());
+                if (log.isDebugEnabled()) {
+                    log.debug(pad(level) + "   - base instance ID: {}", instanceId.getId());
+                }
 
                 final IdAttribute id = select.getTargets().get(0).getIdAttributes().iterator().next();
 
@@ -113,7 +120,9 @@ public class QueryModelBuilder {
     }
 
     private void processEvaluationNode(final EvaluationNode evaluationNode, final Select select, final Source source, final AtomicInteger nextAliasIndex, final int level) {
-        log.debug(pad(level) + " - processing expression: {}", evaluationNode.getExpression());
+        if (log.isDebugEnabled()) {
+            log.debug(pad(level) + " - processing expression: {}", evaluationNode.getExpression());
+        }
 
         final Map<NavigationExpression, List<Instance>> instanceMap = evaluator.getAllInstances(NavigationExpression.class)
                 .filter(expressionWithEvaluationNodeBase -> EcoreUtil.equals(evaluator.getBase(expressionWithEvaluationNodeBase), evaluationNode.getExpression()))
@@ -122,25 +131,35 @@ public class QueryModelBuilder {
                                 .filter(i -> i.getDefinition() instanceof InstanceReference)
                                 .filter(i -> EcoreUtil.equals(((InstanceReference) i.getDefinition()).getVariable(), expressionWithEvaluationNodeBase))
                                 .collect(Collectors.toList())))
-                .entrySet().stream()
+                .entrySet().parallelStream()
                 .filter(e -> !e.getValue().isEmpty())
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
 
-        log.debug(pad(level) + "   - referenced instances: {}", instanceMap);
+        if (log.isDebugEnabled()) {
+            log.debug(pad(level) + "   - referenced instances: {}", instanceMap);
+        }
 
         select.getTargets().forEach(target -> {
-            log.debug(pad(level) + "   - checking target {} ...", target);
-            instanceMap.entrySet().stream()
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "   - checking target {} ...", target);
+            }
+            instanceMap.entrySet().parallelStream()
                     .filter(e -> SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test(e.getKey()))
                     .forEach(entry -> {
-                        log.debug(pad(level) + "     ... in navigation expression: {}", entry.getKey());
+                        if (log.isDebugEnabled()) {
+                            log.debug(pad(level) + "     ... in navigation expression: {}", entry.getKey());
+                        }
                         entry.getValue().forEach(instance -> {
-                            log.debug(pad(level) + "        - processing instance: {}", instance);
+                            if (log.isDebugEnabled()) {
+                                log.debug(pad(level) + "        - processing instance: {}", instance);
+                            }
                             final String alias = instance.getAlias();
                             if (alias == null) {
                                 log.error("No alias is defined for target relation");
                             } else {
-                                log.debug(pad(level) + "        - alias for target relation: {}", alias);
+                                if (log.isDebugEnabled()) {
+                                    log.debug(pad(level) + "        - alias for target relation: {}", alias);
+                                }
                                 final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
                                 if (targetReference.isDerived()) {
                                     throw new UnsupportedOperationException("Derived references are not supported yet");
@@ -148,7 +167,7 @@ public class QueryModelBuilder {
 
                                 final EvaluationNode next = evaluator.getEvaluationNode(instance);
 
-                                final List<Target> targets = new ArrayList<>();
+                                final List<Target> targets = new CopyOnWriteArrayList<>();
                                 final Select nestedSelect = Select.builder()
                                         .from((EClass) instance.getObjectType(modelAdapter))
                                         .targets(targets)
@@ -177,7 +196,9 @@ public class QueryModelBuilder {
                                     final EClass targetType = ((EClass) ((ReferenceExpression) n).getObjectType(modelAdapter));
                                     targetTypes.add(targetType);
                                     referenceNames.add(n.getReferenceName());
-                                    log.debug(pad(level) + "        - marking JOIN to {} with reference name: {} ({})", new Object[]{targetType.getName(), n.getReferenceName(), n});
+                                    if (log.isDebugEnabled()) {
+                                        log.debug(pad(level) + "        - marking JOIN to {} with reference name: {} ({})", new Object[]{targetType.getName(), n.getReferenceName(), n});
+                                    }
                                     if (n.getOperands().isEmpty()) {
                                         n = null;
                                     } else if (n.getOperands().size() == 1) {
@@ -193,7 +214,9 @@ public class QueryModelBuilder {
                                     final String referenceName = referenceNames.get(i - 1);
                                     final EClass targetType = targetTypes.get(i - 1);
 
-                                    log.debug(pad(level) + "        - adding JOIN from {} to {} with reference name: {}", new Object[]{nestedSource.getType().getName(), targetType.getName(), referenceName});
+                                    if (log.isDebugEnabled()) {
+                                        log.debug(pad(level) + "        - adding JOIN from {} to {} with reference name: {}", new Object[]{nestedSource.getType().getName(), targetType.getName(), referenceName});
+                                    }
 
                                     final EReference joinedSourceReference = (EReference) nestedSource.getType().getEStructuralFeature(referenceName);
                                     if (joinedSourceReference.isDerived()) {
@@ -222,7 +245,7 @@ public class QueryModelBuilder {
                     });
         });
 
-        evaluationNode.getNavigations().entrySet().stream()
+        evaluationNode.getNavigations().entrySet().parallelStream()
                 .forEach(n -> {
                     final SetTransformation t = ((Map.Entry<SetTransformation, ?>) n).getKey();
                     final EvaluationNode next = ((Map.Entry<SetTransformation, EvaluationNode>) n).getValue();
@@ -245,7 +268,9 @@ public class QueryModelBuilder {
                     } else {
                         throw new UnsupportedOperationException("Not supported yet");
                     }
-                    log.debug(pad(level) + "   - adding navigation: {}", referenceName);
+                    if (log.isDebugEnabled()) {
+                        log.debug(pad(level) + "   - adding navigation: {}", referenceName);
+                    }
 
                     final EReference sourceReference = (EReference) source.getType().getEStructuralFeature(referenceName);
                     if (sourceReference.isDerived()) {
@@ -259,9 +284,13 @@ public class QueryModelBuilder {
 
                     if ((expr instanceof ObjectNavigationExpression) || (expr instanceof ObjectNavigationFromCollectionExpression)) {
                         if (instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
-                            log.debug(pad(level) + "     - processed in separate query: {}", expr);
+                            if (log.isDebugEnabled()) {
+                                log.debug(pad(level) + "     - processed in separate query: {}", expr);
+                            }
                         } else if (!instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
-                            log.debug(pad(level) + "!!!! - separating navigation {} of {}", referenceName, source.getType().getName());
+                            if (log.isDebugEnabled()) {
+                                log.debug(pad(level) + "!!!! - separating navigation {} of {}", referenceName, source.getType().getName());
+                            }
 
                             final Select nestedSelect = Select.builder()
                                     .from(joined)
@@ -285,20 +314,26 @@ public class QueryModelBuilder {
 
                             select.getSubSelects().add(subSelect);
                         } else {
-                            log.debug(pad(level) + "     - processing navigation {} of {}", referenceName, source.getType().getName());
+                            if (log.isDebugEnabled()) {
+                                log.debug(pad(level) + "     - processing navigation {} of {}", referenceName, source.getType().getName());
+                            }
 
                             if (instanceMap.containsKey(expr)) {
-                                final List<Target> newTargets = new ArrayList<>();
-                                select.getTargets().stream()
+                                final List<Target> newTargets = new CopyOnWriteArrayList<>();
+                                select.getTargets().parallelStream()
                                         .filter(target -> EcoreUtil.equals(target.getBase().getExpression(), expressionBase))
                                         .forEach(target -> {
-                                            log.debug(pad(level) + "       - checking target {} ...", target);
+                                            if (log.isDebugEnabled()) {
+                                                log.debug(pad(level) + "       - checking target {} ...", target);
+                                            }
                                             instanceMap.get(expr).forEach(instance -> {
                                                 final String alias = instance.getAlias();
                                                 if (alias == null) {
                                                     log.error("No alias is defined for target relation");
                                                 } else {
-                                                    log.debug(pad(level) + "     - adding new target: {} AS {} (filled by JOIN queries)", instance, instance.getAlias());
+                                                    if (log.isDebugEnabled()) {
+                                                        log.debug(pad(level) + "     - adding new target: {} AS {} (filled by JOIN queries)", instance, instance.getAlias());
+                                                    }
                                                     final EReference targetReference = (EReference) target.getType().getEStructuralFeature(alias);
                                                     if (targetReference.isDerived()) {
                                                         throw new UnsupportedOperationException("Derived references are not supported yet");
@@ -324,9 +359,13 @@ public class QueryModelBuilder {
                         }
                     } else if ((expr instanceof CollectionNavigationFromObjectExpression) || (expr instanceof CollectionNavigationFromCollectionExpression)) {
                         if (instanceMap.containsKey(expr) && SEPARATE_QUERY_FOR_REFERENCED_TRANSFEROBJECT.test((NavigationExpression) expr)) {
-                            log.debug(pad(level) + "     - processed in separate query: {}", expr);
+                            if (log.isDebugEnabled()) {
+                                log.debug(pad(level) + "     - processed in separate query: {}", expr);
+                            }
                         } else {
-                            log.debug(pad(level) + "     - skipped, must be processed in separate query: {}", expr);
+                            if (log.isDebugEnabled()) {
+                                log.debug(pad(level) + "     - skipped, must be processed in separate query: {}", expr);
+                            }
                         }
                     } else {
                         throw new IllegalArgumentException("Navigation must be object/collection expression");
@@ -337,11 +376,13 @@ public class QueryModelBuilder {
                     //t.getWindowingExpression() // TODO
                 });
 
-        evaluationNode.getTerminals().entrySet().stream()
+        evaluationNode.getTerminals().entrySet().parallelStream()
                 .forEach(t -> {
                     final AttributeRole attributeRole = ((Map.Entry<AttributeRole, Expression>) t).getKey();
                     final Expression expr = ((Map.Entry<AttributeRole, Expression>) t).getValue();
-                    log.debug(pad(level) + "   - adding terminal: {}", attributeRole.getAlias());
+                    if (log.isDebugEnabled()) {
+                        log.debug(pad(level) + "   - adding terminal: {}", attributeRole.getAlias());
+                    }
 
                     final Expression expressionBase = evaluator.getBase(expr);
 
@@ -357,11 +398,13 @@ public class QueryModelBuilder {
                             throw new UnsupportedOperationException("Derived attributes are not supported yet");
                         }
 
-                        select.getTargets().stream()
+                        select.getTargets().parallelStream()
                                 .filter(target -> target.getType().getEStructuralFeature(attributeRole.getAlias()) != null)
                                 .filter(target -> EcoreUtil.equals(target.getBase().getExpression(), expressionBase))
                                 .forEach(target -> {
-                                    log.debug(pad(level) + "     - checking target {} ...", target);
+                                    if (log.isDebugEnabled()) {
+                                        log.debug(pad(level) + "     - checking target {} ...", target);
+                                    }
                                     final EAttribute targetAttribute = (EAttribute) target.getType().getEStructuralFeature(attributeRole.getAlias());
 
                                     if (targetAttribute.isDerived()) {

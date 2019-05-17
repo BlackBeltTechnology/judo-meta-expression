@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,7 +97,7 @@ public class ExpressionEvaluator {
                         if (operandHolders.containsKey(expr)) {
                             holders = operandHolders.get(expr);
                         } else {
-                            holders = new ArrayList<>();
+                            holders = new CopyOnWriteArrayList<>();
                             operandHolders.put(expr, holders);
                         }
                         holders.add(expression);
@@ -133,15 +134,21 @@ public class ExpressionEvaluator {
     }
 
     private EvaluationNode evaluate(final Expression expression, final int level) {
-        log.debug("--------------------------------------------------------------------------------");
-        log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName() + "#" + expression.hashCode());
+        if (log.isDebugEnabled()) {
+            log.debug("--------------------------------------------------------------------------------");
+            log.debug(pad(level) + "Evaluating expression: {}, type: {}", expression, expression.getClass().getSimpleName() + "#" + expression.hashCode());
+        }
 
         if (evaluationMap.containsKey(expression)) {
-            log.debug(pad(level) + "[---] already processed");
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[---] already processed");
+            }
             return evaluationMap.get(expression);
         } else if ((expression instanceof InstanceDefinition)) {
             // instance/collection reference is used by holder (instance/immutable set)
-            log.debug(pad(level) + "[definition] container: {}", expression.eContainer());
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[definition] container: {}", expression.eContainer());
+            }
 
             return EvaluationNode.builder()
                     .terminals(Collections.emptyMap())
@@ -150,22 +157,24 @@ public class ExpressionEvaluator {
                     .build();
         }
 
-        final Map<AttributeRole, Expression> terminals = new HashMap<>();
-        final Map<SetTransformation, EvaluationNode> navigations = new HashMap<>();
-        final Map<String, DataExpression> operations = new TreeMap<>();
+        final Map<AttributeRole, Expression> terminals = new ConcurrentHashMap<>();
+        final Map<SetTransformation, EvaluationNode> navigations = new ConcurrentHashMap<>();
+        final Map<String, DataExpression> operations = new ConcurrentHashMap<>();
 
         boolean processed = false;
         if (expression instanceof AttributeSelector) {
             final AttributeSelector attributeSelector = (AttributeSelector) expression;
 
-            log.debug(pad(level) + "[terminal] attribute selector: {} AS {}", expression, attributeSelector.getAlias());
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[terminal] attribute selector: {} AS {}", expression, attributeSelector.getAlias());
+            }
 
             final AttributeRole key = AttributeRole.builder()
                     .alias(attributeSelector.getAlias())
                     .projection(true)
                     .build();
 
-            if (terminals.keySet().stream()
+            if (terminals.keySet().parallelStream()
                     .anyMatch(k -> attributeSelector.getAlias() != null && Objects.equals(k.getAlias(), attributeSelector.getAlias()))) {
                 throw new IllegalStateException("Attribute already processed");
             } else {
@@ -174,7 +183,9 @@ public class ExpressionEvaluator {
             processed = true;
         } else if (expression instanceof DataExpression) {
             final DataExpression dataExpression = (DataExpression) expression;
-            log.debug(pad(level) + "[operation] data expression: {} AS {}", expression, dataExpression.getAlias());
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[operation] data expression: {} AS {}", expression, dataExpression.getAlias());
+            }
 
             final String alias = dataExpression.getAlias();
             if (alias != null) {
@@ -195,17 +206,23 @@ public class ExpressionEvaluator {
 
         if (operandHolders.containsKey(expression)) {
             operandHolders.get(expression).forEach(holder -> {
-                log.debug(pad(level) + "[expr] operand of: {} ({})", holder, holder.getClass().getSimpleName() + "#" + holder.hashCode());
+                if (log.isDebugEnabled()) {
+                    log.debug(pad(level) + "[expr] operand of: {} ({})", holder, holder.getClass().getSimpleName() + "#" + holder.hashCode());
+                }
 
                 if (!evaluationMap.containsKey(holder)) {
                     // container is not processed yet
                     evaluateContainer(terminals, navigations, operations, holder, level);
                 } else if (IS_ROOT.test(holder)) {
-                    log.debug(pad(level) + "[merge] holder {} already found: {}", holder, evaluationMap.get(holder));
+                    if (log.isDebugEnabled()) {
+                        log.debug(pad(level) + "[merge] holder {} already found: {}", holder, evaluationMap.get(holder));
+                    }
                     merge(evaluationMap.get(holder), result, expression, level);
                 } else {
-                    log.debug(pad(level) + "[---] already processed {}: {}", holder, evaluationMap.get(holder));
-                }
+                    if (log.isDebugEnabled()) {
+                        log.debug(pad(level) + "[---] already processed {}: {}", holder, evaluationMap.get(holder));
+                    }
+               }
             });
             processed = true;
         }
@@ -223,10 +240,12 @@ public class ExpressionEvaluator {
 
         evaluationMap.put(expression, result);
 
-        log.debug(pad(level) + "-> {}", result);
+        if (log.isDebugEnabled()) {
+            log.debug(pad(level) + "-> {}", result);
+        }
 
         if (log.isTraceEnabled()) {
-            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
+            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().parallelStream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
         }
 
         return result;
@@ -237,13 +256,15 @@ public class ExpressionEvaluator {
 
         if (expression instanceof NavigationExpression) {
             final NavigationExpression navigationExpression = (NavigationExpression) expression;
-            log.debug(pad(level) + "[container] alias: {}, name: {}", navigationExpression.getAlias(), navigationExpression.getReferenceName());
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[container] alias: {}, name: {}", navigationExpression.getAlias(), navigationExpression.getReferenceName());
+            }
 
             final SetTransformation key = SetTransformation.builder()
                     .alias(navigationExpression.getAlias())
                     .build();
 
-            final Optional<Map.Entry<SetTransformation, EvaluationNode>> entry = navigations.entrySet().stream()
+            final Optional<Map.Entry<SetTransformation, EvaluationNode>> entry = navigations.entrySet().parallelStream()
                     .filter(n -> navigationExpression.getAlias() != null && Objects.equals(n.getKey().getAlias(), navigationExpression.getAlias()))
                     .findAny();
             if (entry.isPresent()) {
@@ -253,7 +274,9 @@ public class ExpressionEvaluator {
             }
         } else if (expression instanceof FilteringExpression) {
             final FilteringExpression filteringExpression = (FilteringExpression) expression;
-            log.debug(pad(level) + "[filtering] filtering: {}", expression);
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[filtering] filtering: {}", expression);
+            }
 
             final SetTransformation key = SetTransformation.builder()
                     .alias(filteringExpression.getAlias())
@@ -266,7 +289,9 @@ public class ExpressionEvaluator {
         } else if (expression instanceof WindowingExpression) {
             log.warn(pad(level) + "[windowing] windowing is not supported yet: {}", expression);
         } else {
-            log.debug(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName() + "#" + expression.hashCode());
+            if (log.isDebugEnabled()) {
+                log.debug(pad(level) + "[copy] {} ({})", expression, expression.getClass().getSimpleName() + "#" + expression.hashCode());
+            }
             terminals.putAll(evaluationNode.getTerminals());
             navigations.putAll(evaluationNode.getNavigations());
             operations.putAll(evaluationNode.getOperations());
@@ -274,46 +299,48 @@ public class ExpressionEvaluator {
     }
 
     private static void merge(final EvaluationNode baseNode, final EvaluationNode newNode, final Expression expression, final int level) {
-        final List<String> foundTerminalAliases = (List<String>) baseNode.getTerminals().keySet().stream()
+        final List<String> foundTerminalAliases = (List<String>) baseNode.getTerminals().keySet().parallelStream()
                 .map(k -> ((AttributeRole) k).getAlias())
                 .collect(Collectors.toList());
-        final List<String> foundNavigationAliases = (List<String>) baseNode.getNavigations().keySet().stream()
+        final List<String> foundNavigationAliases = (List<String>) baseNode.getNavigations().keySet().parallelStream()
                 .map(k -> ((SetTransformation) k).getAlias())
                 .collect(Collectors.toList());
         final Set<String> foundOperationAliases = baseNode.getOperations().keySet();
 
 //        baseNode.getTerminals().putAll((Map<AttributeRole, Expression>)
-//                newNode.getTerminals().entrySet().stream()
+//                newNode.getTerminals().entrySet().parallelStream()
 //                        .filter(e -> !foundTerminalAliases.contains(((Map.Entry<AttributeRole, Expression>) e).getKey().getAlias()))
 //                        .collect(Collectors.toMap(e -> ((Map.Entry<AttributeRole, Expression>) e).getKey(), e -> ((Map.Entry<AttributeRole, Expression>) e).getValue())));
 
 
-        final List<String> newTerminalAliases = (List<String>) newNode.getTerminals().keySet().stream()
+        final List<String> newTerminalAliases = (List<String>) newNode.getTerminals().keySet().parallelStream()
                 .map(k -> ((AttributeRole) k).getAlias())
                 .collect(Collectors.toList());
-        final List<String> newNavigationAliases = (List<String>) newNode.getNavigations().keySet().stream()
+        final List<String> newNavigationAliases = (List<String>) newNode.getNavigations().keySet().parallelStream()
                 .map(k -> ((SetTransformation) k).getAlias())
                 .collect(Collectors.toList());
         final Set<String> newOperationAliases = newNode.getOperations().keySet();
 
-        log.debug(pad(level) + "[merge] found: {}", baseNode.getExpression());
-        log.debug(pad(level) + "  - terminals: {}", foundTerminalAliases);
-        log.debug(pad(level) + "  - navigations: {}", foundNavigationAliases);
-        log.debug(pad(level) + "  - operations: {}", foundOperationAliases);
-        log.debug(pad(level) + "[merge] processing: {}", expression);
-        log.debug(pad(level) + "  - terminals: {}", newTerminalAliases);
-        log.debug(pad(level) + "  - navigations: {}", newNavigationAliases);
-        log.debug(pad(level) + "  - operations: {}", newOperationAliases);
+        if (log.isDebugEnabled()) {
+            log.debug(pad(level) + "[merge] found: {}", baseNode.getExpression());
+            log.debug(pad(level) + "  - terminals: {}", foundTerminalAliases);
+            log.debug(pad(level) + "  - navigations: {}", foundNavigationAliases);
+            log.debug(pad(level) + "  - operations: {}", foundOperationAliases);
+            log.debug(pad(level) + "[merge] processing: {}", expression);
+            log.debug(pad(level) + "  - terminals: {}", newTerminalAliases);
+            log.debug(pad(level) + "  - navigations: {}", newNavigationAliases);
+            log.debug(pad(level) + "  - operations: {}", newOperationAliases);
+        }
 
-        if (newTerminalAliases.stream().anyMatch(a -> foundTerminalAliases.contains(a))) {
+        if (newTerminalAliases.parallelStream().anyMatch(a -> foundTerminalAliases.contains(a))) {
             throw new IllegalStateException("Found terminal alias(es) that are already processed");
         }
 
-        if (newNavigationAliases.stream().anyMatch(a -> foundNavigationAliases.contains(a))) {
+        if (newNavigationAliases.parallelStream().anyMatch(a -> foundNavigationAliases.contains(a))) {
             throw new IllegalStateException("Found navigation alias(es) that are already processed");
         }
 
-        if (newOperationAliases.stream().anyMatch(a -> foundOperationAliases.contains(a))) {
+        if (newOperationAliases.parallelStream().anyMatch(a -> foundOperationAliases.contains(a))) {
             throw new IllegalStateException("Found operation alias(es) that are already processed");
         }
 
@@ -337,7 +364,7 @@ public class ExpressionEvaluator {
     }
 
     <T> Stream<T> getAllInstances(final Class<T> clazz) {
-        return allExpressions.stream()
+        return allExpressions.parallelStream()
                 .filter(e -> clazz.isAssignableFrom(e.getClass()))
                 .map(e -> (T) e);
     }
@@ -374,13 +401,13 @@ public class ExpressionEvaluator {
      * @return expression terms
      */
     public Set<Expression> getExpressionTerms(final Expression expression) {
-        final List<Expression> terms = new ArrayList<>(expression.getOperands());
+        final List<Expression> terms = new CopyOnWriteArrayList<>(expression.getOperands());
         terms.removeAll(expression.getLambdaFunctions());
 
         if (terms.isEmpty()) {
-            return terms.stream()
+            return terms.parallelStream()
                     .map(e -> getExpressionTerms(e))
-                    .flatMap(Collection::stream)
+                    .flatMap(Collection::parallelStream)
                     .collect(Collectors.toSet());
         } else {
             return ImmutableSet.of(expression);

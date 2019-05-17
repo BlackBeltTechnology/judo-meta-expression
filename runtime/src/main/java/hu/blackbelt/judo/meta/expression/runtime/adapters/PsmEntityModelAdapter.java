@@ -57,13 +57,13 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         this.resourceSet = resourceSet;
 
         final Iterable<Notifier> contents = resourceSet::getAllContents;
-        StreamSupport.stream(contents.spliterator(), false)
+        StreamSupport.stream(contents.spliterator(), true)
                 .filter(e -> e instanceof Model).map(e -> (Model) e)
                 .forEach(m -> initNamespace(Collections.emptyList(), m));
 
         try {
             final Iterable<Notifier> measureContents = resourceSet::getAllContents;
-            measureAdapter = new PsmEntityMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), false)
+            measureAdapter = new PsmEntityMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
                     .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                     .collect(Collectors.toList()));
         } catch (RuntimeException ex) {
@@ -79,7 +79,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     @Override
     public Optional<TypeName> getTypeName(final NamespaceElement namespaceElement) {
-        return namespaceCache.values().stream()
+        return namespaceCache.values().parallelStream()
                 .filter(ns -> ns.getElements().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(getFullName(ns)).withName(namespaceElement.getName()).build())
                 .findAny();
@@ -89,7 +89,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     public Optional<NamespaceElement> get(final TypeName elementName) {
         final Namespace namespace = namespaceCache.get(elementName.getNamespace().replace("::", NAMESPACE_SEPARATOR));
         if (namespace != null) {
-            return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
+            return namespace.getElements().parallelStream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
                     .findAny();
         } else {
             log.warn("Namespace not found: {}", elementName.getNamespace());
@@ -101,7 +101,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     public Optional<? extends Measure> get(final MeasureName measureName) {
         final Namespace namespace = namespaceCache.get(measureName.getNamespace().replace("::", NAMESPACE_SEPARATOR));
         if (namespace != null) {
-            return namespace.getElements().stream().filter(e -> Objects.equals(e.getName(), measureName.getName()) && e instanceof Measure)
+            return namespace.getElements().parallelStream().filter(e -> Objects.equals(e.getName(), measureName.getName()) && e instanceof Measure)
                     .map(m -> (Measure) m)
                     .findAny();
         } else {
@@ -208,9 +208,9 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     @Override
     public Optional<Measure> getDurationMeasure() {
         final Iterable<Notifier> contents = resourceSet::getAllContents;
-        return StreamSupport.stream(contents.spliterator(), false)
+        return StreamSupport.stream(contents.spliterator(), true)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .filter(m -> m.getUnits().stream().anyMatch(u -> isSupportingAddition(u)))
+                .filter(m -> m.getUnits().parallelStream().anyMatch(u -> isSupportingAddition(u)))
                 .findAny();
     }
 
@@ -240,7 +240,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     private void initNamespace(final Iterable<Namespace> path, final Namespace namespace) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.join(NAMESPACE_SEPARATOR, StreamSupport.stream(path.spliterator(), false).map(p -> p.getName()).collect(Collectors.toList())));
+        sb.append(String.join(NAMESPACE_SEPARATOR, StreamSupport.stream(path.spliterator(), true).map(p -> p.getName()).collect(Collectors.toList())));
         if (sb.length() > 0) {
             sb.append(NAMESPACE_SEPARATOR);
         }
@@ -252,7 +252,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         log.debug("Cached namespace: {}", key);
 
         final Iterable<Namespace> newPath = Iterables.concat(path, Collections.singleton(namespace));
-        namespace.getPackages().stream().forEach(p -> initNamespace(newPath, p));
+        namespace.getPackages().parallelStream().forEach(p -> initNamespace(newPath, p));
     }
 
     private Optional<Unit> getUnit(final PrimitiveTypedElement primitiveTypedElement) {
@@ -268,13 +268,13 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         if (measureName.isPresent()) {
             return get(measureName.get())
-                    .map(m -> m.getUnits().stream()
+                    .map(m -> m.getUnits().parallelStream()
                             .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                             .findAny().orElse(null));
         } else {
             // TODO - log if unit found in multiple measures
             final Iterable<Notifier> contents = resourceSet::getAllContents;
-            return StreamSupport.stream(contents.spliterator(), false)
+            return StreamSupport.stream(contents.spliterator(), true)
                     .filter(e -> e instanceof Unit).map(e -> (Unit) e)
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny();
@@ -289,7 +289,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         @Override
         String getMeasureNamespace(final Measure measure) {
-            return namespaceCache.values().stream()
+            return namespaceCache.values().parallelStream()
                     .filter(ns -> ns.getElements().contains(measure))
                     .map(ns -> ns.getName())
                     .findAny().get();
@@ -304,7 +304,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         Map<Measure, Integer> getBaseMeasures(final Measure measure) {
             if (measure instanceof DerivedMeasure) {
                 final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
-                final Map<Measure, Integer> base = new HashMap<>();
+                final Map<Measure, Integer> base = new ConcurrentHashMap<>();
                 derivedMeasure.getTerms().forEach(t ->
                         getBaseMeasures(getMeasure(t.getUnit())).forEach((m, exponent) -> {
                             final int currentExponent = base.getOrDefault(getMeasure(t.getUnit()), 0);
