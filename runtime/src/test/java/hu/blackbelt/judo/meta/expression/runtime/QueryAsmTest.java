@@ -21,9 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.FileSystems;
-import java.util.Collections;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -96,8 +94,8 @@ public class QueryAsmTest {
 
         final Select select = Select.builder()
                 .from(order)
+                .targets(ImmutableList.of(target))
                 .build();
-        select.getTargets().addAll(ImmutableList.of(target));
         select.getJoins().addAll(ImmutableList.of(
                 Join.builder().partner(select).reference((EReference) order.getEStructuralFeature("shipper")).build()
         ));
@@ -118,10 +116,11 @@ public class QueryAsmTest {
                         .sourceAttribute((EAttribute) shipper.getEStructuralFeature("companyName")).build()
         ));
 
+        final Target target1 = Target.builder().type(categoryInfo).build();
         final Select select1 = Select.builder()
                 .from(category)
+                .targets(ImmutableList.of(target1))
                 .build();
-        final Target target1 = Target.builder().type(categoryInfo).build();
         target1.getFeatures().addAll(ImmutableList.of(
                 Attribute.builder()
                         .target(target1)
@@ -142,6 +141,7 @@ public class QueryAsmTest {
         final Target target2 = Target.builder().type(orderItem).build();
         final Select select2 = Select.builder()
                 .from(orderDetails)
+                .targets(ImmutableList.of(target2))
                 .build();
         target2.getFeatures().addAll(
                 ImmutableList.of(

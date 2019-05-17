@@ -64,8 +64,8 @@ public class QueryModelBuilder {
 
         final Select select = Select.builder()
                 .from(sourceType)
+                .targets(new ArrayList<>(targets))
                 .build();
-        select.getTargets().addAll(targets);
         select.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
         addIdAttribute(select, select);
@@ -148,10 +148,12 @@ public class QueryModelBuilder {
 
                                 final EvaluationNode next = evaluator.getEvaluationNode(instance);
 
+                                final List<Target> targets = new ArrayList<>();
                                 final Select nestedSelect = Select.builder()
                                         .from((EClass) instance.getObjectType(modelAdapter))
+                                        .targets(targets)
                                         .build();
-                                nestedSelect.getTargets().add(Target.builder()
+                                targets.add(Target.builder()
                                         .base(evaluator.getEvaluationNode(instance))
                                         .role(targetReference)
                                         .type(targetReference.getEReferenceType())
@@ -260,8 +262,8 @@ public class QueryModelBuilder {
 
                             final Select nestedSelect = Select.builder()
                                     .from(joined)
+                                    .targets(select.getTargets())
                                     .build();
-                            nestedSelect.getTargets().addAll(select.getTargets());
                             nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
                             addIdAttribute(nestedSelect, nestedSelect);

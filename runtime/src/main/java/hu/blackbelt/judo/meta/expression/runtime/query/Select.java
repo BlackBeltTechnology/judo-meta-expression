@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EClass;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @lombok.Getter
@@ -20,7 +21,7 @@ public class Select extends Source {
     private EClass from;
 
     @NonNull
-    private final List<Target> targets = new ArrayList<>();
+    private List<Target> targets;
 
     /**
      * Joined data sets for attributes of the same {@link #getTargets()}.
@@ -53,10 +54,20 @@ public class Select extends Source {
         return toString(0);
     }
 
+    private boolean isContainment(final Feature feature) {
+        if (feature instanceof Attribute) {
+            return Objects.equals(((Attribute) feature).getSource(), this);
+        } else if (feature instanceof IdAttribute) {
+            return Objects.equals(((IdAttribute) feature).getSource(), this);
+        } else {
+            return false; // TODO - support functions
+        }
+    }
+
     public String toString(int level) {
         return pad(level) + "SELECT\n" +
                 pad(level) + "  IDS=" + targets.stream().map(t -> t.getIdAttributes()).collect(Collectors.toList()) + "\n" +
-                pad(level) + "  FEATURES=" + targets.stream().flatMap(t -> t.getFeatures().stream()).collect(Collectors.toList()) + "\n" +
+                pad(level) + "  FEATURES=" + targets.stream().flatMap(t -> t.getFeatures().stream().filter(f -> isContainment(f))).collect(Collectors.toList()) + "\n" +
                 pad(level) + "  FROM=" + from.getName() + " AS " + getSourceAlias() + "\n" +
                 pad(level) + "  JOINING=" + joins + "\n" +
                 pad(level) + "  TO=" + targets + "\n" +
