@@ -158,7 +158,6 @@ public class QueryModelBuilder {
                                         .role(targetReference)
                                         .type(targetReference.getEReferenceType())
                                         .build());
-                                nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
                                 addIdAttribute(nestedSelect, nestedSelect);
 
@@ -211,7 +210,11 @@ public class QueryModelBuilder {
                                     nestedSource = join;
                                     subSelect.getJoins().add(join);
                                 }
-
+                                if (nestedSource.getSourceAlias() != null) {
+                                    nestedSelect.setSourceAlias(nestedSource.getSourceAlias());
+                                } else {
+                                    nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
+                                }
 
                                 select.getSubSelects().add(subSelect);
                             }
@@ -264,7 +267,6 @@ public class QueryModelBuilder {
                                     .from(joined)
                                     .targets(select.getTargets())
                                     .build();
-                            nestedSelect.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
                             addIdAttribute(nestedSelect, nestedSelect);
 
@@ -279,6 +281,7 @@ public class QueryModelBuilder {
                             join.setSourceAlias(MessageFormat.format(TABLE_ALIAS_FORMAT, nextAliasIndex.getAndIncrement()));
 
                             subSelect.getJoins().add(join);
+                            nestedSelect.setSourceAlias(join.getSourceAlias());
 
                             select.getSubSelects().add(subSelect);
                         } else {

@@ -7,7 +7,6 @@ import org.eclipse.emf.ecore.EClass;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @lombok.Getter
@@ -56,9 +55,11 @@ public class Select extends Source {
 
     public boolean isContainment(final Feature feature) {
         if (feature instanceof Attribute) {
-            return Objects.equals(((Attribute) feature).getSource(), this);
+            final Source source = ((Attribute) feature).getSource();
+            return this.equals(source) || getJoins().contains(source);
         } else if (feature instanceof IdAttribute) {
-            return Objects.equals(((IdAttribute) feature).getSource(), this);
+            final Source source = ((IdAttribute) feature).getSource();
+            return this.equals(source) || getJoins().contains(source);
         } else {
             return false; // TODO - support functions
         }
@@ -72,7 +73,7 @@ public class Select extends Source {
                 pad(level) + "  JOINING=" + joins + "\n" +
                 pad(level) + "  TO=" + targets + "\n" +
                 pad(level) + "  WHERE=" + filters + "\n" +
-                pad(level) + "  TRAVERSE=" + subSelects.stream().map(s -> s.getJoins() + " AS " + s.getAlias() + "\n" + s.getSelect().toString(level + 1)).collect(Collectors.toList());
+                (subSelects.isEmpty() ? "" : String.join("", subSelects.stream().map(s -> pad(level) + "  TRAVERSE=" + s.getJoins() + " AS " + s.getAlias() + "\n" + s.getSelect().toString(level + 1)).collect(Collectors.toList())));
     }
 
     private static String pad(int level) {
