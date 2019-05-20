@@ -363,7 +363,7 @@ public class ExpressionEvaluator {
         evaluationMap.clear();
     }
 
-    <T> Stream<T> getAllInstances(final Class<T> clazz) {
+    public <T> Stream<T> getAllInstances(final Class<T> clazz) {
         return allExpressions.parallelStream()
                 .filter(e -> clazz.isAssignableFrom(e.getClass()))
                 .map(e -> (T) e);
