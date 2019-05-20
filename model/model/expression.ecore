@@ -81,8 +81,7 @@
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="referenceName" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-        transient="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SwitchExpression" abstract="true" eSuperTypes="#//Expression">
     <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
@@ -266,8 +265,7 @@
           eType="#//TypeName"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="definition" eType="#//constant/InstanceDefinition"
           containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-          transient="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CustomData" eSuperTypes="#//CustomExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -1193,8 +1191,7 @@
           eType="#//TypeName"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="definition" eType="#//constant/CollectionDefinition"
           containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
-          transient="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="alias" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CollectionFilterExpression" eSuperTypes="#//CollectionExpression #//FilteringExpression #//variable/CollectionVariable">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">

@@ -9,7 +9,6 @@
     <semanticResources>../target/t001-eval.model</semanticResources>
     <semanticResources>http://blackbelt.hu/judo/meta/expression/temporal</semanticResources>
     <semanticResources>expression-evaluation.genmodel</semanticResources>
-    <semanticResources>expression-evaluation.ecore</semanticResources>
     <ownedViews xmi:type="viewpoint:DView" uid="_pvoC0BjEEemJ9IMxFeLS3g">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
       <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_qXCoIRjEEemJ9IMxFeLS3g" name="expression class diagram" repPath="#_qXCBEBjEEemJ9IMxFeLS3g">
