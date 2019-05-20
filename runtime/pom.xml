@@ -18,8 +18,8 @@
     <description>Judo Architecture Specific Metamodel runtime</description>
 
     <properties>
-        <judo-meta-asm-version>1.0.0-develop-43</judo-meta-asm-version>
-        <judo-meta-psm-version>1.0.1.develop_248</judo-meta-psm-version>
+        <judo-meta-asm-version>1.0.0-develop-47</judo-meta-asm-version>
+        <judo-meta-psm-version>1.0.1.develop_258</judo-meta-psm-version>
         <judo-meta-measure-version>1.0.1.develop_23</judo-meta-measure-version>
     </properties>
     

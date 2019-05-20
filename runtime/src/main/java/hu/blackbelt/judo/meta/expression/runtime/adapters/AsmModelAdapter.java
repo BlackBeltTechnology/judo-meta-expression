@@ -56,6 +56,8 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     private MeasureAdapter<Measure, Unit> measureAdapter;
 
+    private final AsmUtils asmUtils;
+
     public AsmModelAdapter(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet) {
         this.asmResourceSet = asmResourceSet;
         this.measureResourceSet = measureResourceSet;
@@ -70,13 +72,15 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                 .collect(Collectors.toList()));
+
+        asmUtils = new AsmUtils(asmResourceSet);
     }
 
     @Override
     public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
         return namespaceCache.values().parallelStream()
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
-                .map(ns -> newTypeNameBuilder().withNamespace(AsmUtils.getFullName(ns)).withName(namespaceElement.getName()).build())
+                .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns)).withName(namespaceElement.getName()).build())
                 .findAny();
     }
 
@@ -134,52 +138,52 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public boolean isNumeric(final EDataType primitive) {
-        return AsmUtils.isNumeric(primitive);
+        return asmUtils.isNumeric(primitive);
     }
 
     @Override
     public boolean isInteger(final EDataType primitive) {
-        return AsmUtils.isInteger(primitive);
+        return asmUtils.isInteger(primitive);
     }
 
     @Override
     public boolean isDecimal(final EDataType primitive) {
-        return AsmUtils.isDecimal(primitive);
+        return asmUtils.isDecimal(primitive);
     }
 
     @Override
     public boolean isBoolean(final EDataType primitive) {
-        return AsmUtils.isBoolean(primitive);
+        return asmUtils.isBoolean(primitive);
     }
 
     @Override
     public boolean isString(final EDataType primitive) {
-        return AsmUtils.isString(primitive);
+        return asmUtils.isString(primitive);
     }
 
     @Override
     public boolean isEnumeration(final EDataType primitive) {
-        return AsmUtils.isEnumeration(primitive);
+        return asmUtils.isEnumeration(primitive);
     }
 
     @Override
     public boolean isDate(final EDataType primitive) {
-        return AsmUtils.isDate(primitive);
+        return asmUtils.isDate(primitive);
     }
 
     @Override
     public boolean isTimestamp(final EDataType primitive) {
-        return AsmUtils.isTimestamp(primitive);
+        return asmUtils.isTimestamp(primitive);
     }
 
     @Override
     public boolean isCustom(final EDataType primitive) {
-        return !AsmUtils.isBoolean(primitive)
-                && !AsmUtils.isNumeric(primitive)
-                && !AsmUtils.isString(primitive)
-                && !AsmUtils.isEnumeration(primitive)
-                && !AsmUtils.isDate(primitive)
-                && !AsmUtils.isTimestamp(primitive);
+        return !asmUtils.isBoolean(primitive)
+                && !asmUtils.isNumeric(primitive)
+                && !asmUtils.isString(primitive)
+                && !asmUtils.isEnumeration(primitive)
+                && !asmUtils.isDate(primitive)
+                && !asmUtils.isTimestamp(primitive);
     }
 
     @Override
@@ -239,8 +243,8 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     private Optional<Unit> getUnit(final EAttribute attribute) {
-        if (AsmUtils.isNumeric(attribute.getEAttributeType())) {
-            final Optional<EAnnotation> annotation = AsmUtils.getExtensionAnnotation(attribute, false);
+        if (asmUtils.isNumeric(attribute.getEAttributeType())) {
+            final Optional<EAnnotation> annotation = asmUtils.getExtensionAnnotation(attribute, false);
             if (annotation.isPresent()) {
                 return getUnitByNameOrSymbol(parseMeasureName(annotation.get().getDetails().get(MEASURE_NAME_KEY)), annotation.get().getDetails().get(UNIT_NAME_KEY));
             } else {
