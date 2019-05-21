@@ -63,13 +63,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         this.measureResourceSet = measureResourceSet;
 
         final Iterable<Notifier> asmContents = asmResourceSet::getAllContents;
-        StreamSupport.stream(asmContents.spliterator(), true)
+        StreamSupport.stream(asmContents.spliterator(), false)
                 .filter(e -> e instanceof EPackage).map(e -> (EPackage) e)
                 .filter(e -> e.getESuperPackage() == null)
                 .forEach(m -> initNamespace(Collections.emptyList(), m));
 
         final Iterable<Notifier> measureContents = measureResourceSet::getAllContents;
-        measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), true)
+        measureAdapter = new AsmMeasureAdapter(StreamSupport.stream(measureContents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
                 .collect(Collectors.toList()));
 
@@ -78,7 +78,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
-        return namespaceCache.values().parallelStream()
+        return namespaceCache.values().stream()
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns)).withName(namespaceElement.getName()).build())
                 .findAny();
@@ -88,7 +88,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     public Optional<EClassifier> get(final TypeName elementName) {
         final EPackage namespace = namespaceCache.get(elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR));
         if (namespace != null) {
-            return namespace.getEClassifiers().parallelStream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
+            return namespace.getEClassifiers().stream().filter(e -> Objects.equals(e.getName(), elementName.getName()))
                     .findAny();
         } else {
             log.warn("Namespace not found: {}", elementName.getNamespace());
@@ -108,7 +108,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<EReference> getReference(final EClass clazz, final String referenceName) {
-        return clazz.getEAllReferences().parallelStream().filter(r -> Objects.equals(r.getName(), referenceName)).findAny();
+        return clazz.getEAllReferences().stream().filter(r -> Objects.equals(r.getName(), referenceName)).findAny();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<EAttribute> getAttribute(final EClass clazz, final String attributeName) {
-        return clazz.getEAllAttributes().parallelStream().filter(r -> Objects.equals(r.getName(), attributeName)).findAny();
+        return clazz.getEAllAttributes().stream().filter(r -> Objects.equals(r.getName(), attributeName)).findAny();
     }
 
     @Override
@@ -193,7 +193,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public boolean contains(final EEnum enumeration, final String memberName) {
-        return enumeration.getELiterals().parallelStream().filter(l -> Objects.equals(l.getLiteral(), memberName)).findAny().isPresent();
+        return enumeration.getELiterals().stream().filter(l -> Objects.equals(l.getLiteral(), memberName)).findAny().isPresent();
     }
 
     @Override
@@ -227,7 +227,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     private void initNamespace(final Iterable<EPackage> path, final EPackage namespace) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.join(NAMESPACE_SEPARATOR, StreamSupport.stream(path.spliterator(), true).map(p -> p.getName()).collect(Collectors.toList())));
+        sb.append(String.join(NAMESPACE_SEPARATOR, StreamSupport.stream(path.spliterator(), false).map(p -> p.getName()).collect(Collectors.toList())));
         if (sb.length() > 0) {
             sb.append(NAMESPACE_SEPARATOR);
         }
@@ -239,7 +239,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         log.debug("Cached namespace: {}", key);
 
         final Iterable<EPackage> newPath = Iterables.concat(path, Collections.singleton(namespace));
-        namespace.getESubpackages().parallelStream().forEach(p -> initNamespace(newPath, p));
+        namespace.getESubpackages().stream().forEach(p -> initNamespace(newPath, p));
     }
 
     private Optional<Unit> getUnit(final EAttribute attribute) {
@@ -264,13 +264,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
         if (measureName.isPresent()) {
             return get(measureName.get())
-                    .map(m -> m.getUnits().parallelStream()
+                    .map(m -> m.getUnits().stream()
                             .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                             .findAny().orElse(null));
         } else {
             // TODO - log if unit found in multiple measures
             final Iterable<Notifier> contents = measureResourceSet::getAllContents;
-            return StreamSupport.stream(contents.spliterator(), true)
+            return StreamSupport.stream(contents.spliterator(), false)
                     .filter(e -> e instanceof Unit).map(e -> (Unit) e)
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny();
@@ -313,7 +313,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         Map<Measure, Integer> getBaseMeasures(final Measure measure) {
             if (measure instanceof DerivedMeasure) {
                 final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
-                return derivedMeasure.getTerms().parallelStream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
+                return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
             } else {
                 return ImmutableMap.of(measure, 1);
             }
