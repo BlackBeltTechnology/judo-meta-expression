@@ -114,7 +114,9 @@ public class ExpressionEvaluator {
                 .filter(expression -> !getAllInstances(Expression.class)
                         .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
                 .collect(Collectors.toSet()));
+    }
 
+    public void evaluate() {
         // TODO - include data allExpressions without variable references
         roots.putAll(getAllInstances(Expression.class)
                 .filter(IS_ROOT)
@@ -245,7 +247,7 @@ public class ExpressionEvaluator {
         }
 
         if (log.isTraceEnabled()) {
-            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
+            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + ": " + e.getKey().getClass().getSimpleName() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
         }
 
         return result;
