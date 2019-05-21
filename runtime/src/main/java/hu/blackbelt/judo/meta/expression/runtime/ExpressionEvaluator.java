@@ -174,7 +174,7 @@ public class ExpressionEvaluator {
                     .projection(true)
                     .build();
 
-            if (terminals.keySet().parallelStream()
+            if (terminals.keySet().stream()
                     .anyMatch(k -> attributeSelector.getAlias() != null && Objects.equals(k.getAlias(), attributeSelector.getAlias()))) {
                 throw new IllegalStateException("Attribute already processed");
             } else {
@@ -245,7 +245,7 @@ public class ExpressionEvaluator {
         }
 
         if (log.isTraceEnabled()) {
-            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().parallelStream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
+            log.trace("MAP:\n  {}", String.join("\n  ", evaluationMap.entrySet().stream().map(e -> e.getKey().toString() + "  => " + e.getValue().toString()).collect(Collectors.toList())));
         }
 
         return result;
@@ -264,7 +264,7 @@ public class ExpressionEvaluator {
                     .alias(navigationExpression.getAlias())
                     .build();
 
-            final Optional<Map.Entry<SetTransformation, EvaluationNode>> entry = navigations.entrySet().parallelStream()
+            final Optional<Map.Entry<SetTransformation, EvaluationNode>> entry = navigations.entrySet().stream()
                     .filter(n -> navigationExpression.getAlias() != null && Objects.equals(n.getKey().getAlias(), navigationExpression.getAlias()))
                     .findAny();
             if (entry.isPresent()) {
@@ -299,24 +299,24 @@ public class ExpressionEvaluator {
     }
 
     private static void merge(final EvaluationNode baseNode, final EvaluationNode newNode, final Expression expression, final int level) {
-        final List<String> foundTerminalAliases = (List<String>) baseNode.getTerminals().keySet().parallelStream()
+        final List<String> foundTerminalAliases = (List<String>) baseNode.getTerminals().keySet().stream()
                 .map(k -> ((AttributeRole) k).getAlias())
                 .collect(Collectors.toList());
-        final List<String> foundNavigationAliases = (List<String>) baseNode.getNavigations().keySet().parallelStream()
+        final List<String> foundNavigationAliases = (List<String>) baseNode.getNavigations().keySet().stream()
                 .map(k -> ((SetTransformation) k).getAlias())
                 .collect(Collectors.toList());
         final Set<String> foundOperationAliases = baseNode.getOperations().keySet();
 
 //        baseNode.getTerminals().putAll((Map<AttributeRole, Expression>)
-//                newNode.getTerminals().entrySet().parallelStream()
+//                newNode.getTerminals().entrySet().stream()
 //                        .filter(e -> !foundTerminalAliases.contains(((Map.Entry<AttributeRole, Expression>) e).getKey().getAlias()))
 //                        .collect(Collectors.toMap(e -> ((Map.Entry<AttributeRole, Expression>) e).getKey(), e -> ((Map.Entry<AttributeRole, Expression>) e).getValue())));
 
 
-        final List<String> newTerminalAliases = (List<String>) newNode.getTerminals().keySet().parallelStream()
+        final List<String> newTerminalAliases = (List<String>) newNode.getTerminals().keySet().stream()
                 .map(k -> ((AttributeRole) k).getAlias())
                 .collect(Collectors.toList());
-        final List<String> newNavigationAliases = (List<String>) newNode.getNavigations().keySet().parallelStream()
+        final List<String> newNavigationAliases = (List<String>) newNode.getNavigations().keySet().stream()
                 .map(k -> ((SetTransformation) k).getAlias())
                 .collect(Collectors.toList());
         final Set<String> newOperationAliases = newNode.getOperations().keySet();
@@ -332,15 +332,15 @@ public class ExpressionEvaluator {
             log.debug(pad(level) + "  - operations: {}", newOperationAliases);
         }
 
-        if (newTerminalAliases.parallelStream().anyMatch(a -> foundTerminalAliases.contains(a))) {
+        if (newTerminalAliases.stream().anyMatch(a -> foundTerminalAliases.contains(a))) {
             throw new IllegalStateException("Found terminal alias(es) that are already processed");
         }
 
-        if (newNavigationAliases.parallelStream().anyMatch(a -> foundNavigationAliases.contains(a))) {
+        if (newNavigationAliases.stream().anyMatch(a -> foundNavigationAliases.contains(a))) {
             throw new IllegalStateException("Found navigation alias(es) that are already processed");
         }
 
-        if (newOperationAliases.parallelStream().anyMatch(a -> foundOperationAliases.contains(a))) {
+        if (newOperationAliases.stream().anyMatch(a -> foundOperationAliases.contains(a))) {
             throw new IllegalStateException("Found operation alias(es) that are already processed");
         }
 
@@ -364,7 +364,7 @@ public class ExpressionEvaluator {
     }
 
     public <T> Stream<T> getAllInstances(final Class<T> clazz) {
-        return allExpressions.parallelStream()
+        return allExpressions.stream()
                 .filter(e -> clazz.isAssignableFrom(e.getClass()))
                 .map(e -> (T) e);
     }
@@ -405,9 +405,9 @@ public class ExpressionEvaluator {
         terms.removeAll(expression.getLambdaFunctions());
 
         if (terms.isEmpty()) {
-            return terms.parallelStream()
+            return terms.stream()
                     .map(e -> getExpressionTerms(e))
-                    .flatMap(Collection::parallelStream)
+                    .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
         } else {
             return ImmutableSet.of(expression);
