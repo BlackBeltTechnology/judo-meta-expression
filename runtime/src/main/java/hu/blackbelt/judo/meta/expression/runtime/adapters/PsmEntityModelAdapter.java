@@ -1,7 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
@@ -26,13 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -237,7 +230,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         return measureAdapter.getDimension(numericExpression);
     }
 
-    private void initNamespace(final Iterable<Namespace> path, final Namespace namespace) {
+    private void initNamespace(final List<Namespace> path, final Namespace namespace) {
         final StringBuilder sb = new StringBuilder();
         sb.append(String.join(NAMESPACE_SEPARATOR, StreamSupport.stream(path.spliterator(), false).map(p -> p.getName()).collect(Collectors.toList())));
         if (sb.length() > 0) {
@@ -250,7 +243,8 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         namespaceCache.put(key, namespace);
         log.debug("Cached namespace: {}", key);
 
-        final Iterable<Namespace> newPath = Iterables.concat(path, Collections.singleton(namespace));
+        final List<Namespace> newPath = new ArrayList<>(path);
+        newPath.add(namespace);
         namespace.getPackages().stream().forEach(p -> initNamespace(newPath, p));
     }
 

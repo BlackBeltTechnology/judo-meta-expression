@@ -1,7 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NavigationExpression;
@@ -26,13 +25,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -225,7 +218,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return measureAdapter.getDimension(numericExpression);
     }
 
-    private void initNamespace(final Iterable<EPackage> path, final EPackage namespace) {
+    private void initNamespace(final List<EPackage> path, final EPackage namespace) {
         final StringBuilder sb = new StringBuilder();
         sb.append(String.join(NAMESPACE_SEPARATOR, StreamSupport.stream(path.spliterator(), false).map(p -> p.getName()).collect(Collectors.toList())));
         if (sb.length() > 0) {
@@ -238,7 +231,8 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         namespaceCache.put(key, namespace);
         log.debug("Cached namespace: {}", key);
 
-        final Iterable<EPackage> newPath = Iterables.concat(path, Collections.singleton(namespace));
+        final List<EPackage> newPath = new ArrayList<>(path);
+        newPath.add(namespace);
         namespace.getESubpackages().stream().forEach(p -> initNamespace(newPath, p));
     }
 
