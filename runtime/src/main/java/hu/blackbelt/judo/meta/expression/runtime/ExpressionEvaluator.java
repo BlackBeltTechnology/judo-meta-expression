@@ -23,7 +23,7 @@ public class ExpressionEvaluator {
     private final Set<Expression> allExpressions = new HashSet<>();
 
     private final EMap<Expression, ReferenceExpression> lambdaContainers = ECollections.asEMap(new ConcurrentHashMap<>());
-    private final EMap<NavigationExpression, ReferenceExpression> navigationSources = ECollections.asEMap(new ConcurrentHashMap<>());
+    private final EMap<ReferenceExpression, ReferenceExpression> referenceSources = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Set<Expression> leaves = new HashSet<>();
 
     public void init(final Collection<Expression> expressions) {
@@ -39,34 +39,34 @@ public class ExpressionEvaluator {
             }
         });
 
-        getAllInstances(NavigationExpression.class).forEach(navigationExpression -> {
+        getAllInstances(ReferenceExpression.class).forEach(referenceExpression -> {
             // single sources are supported only (ie. filtering unions is unsupported)
-            final Optional<ReferenceExpression> navigationSource = getAllInstances(ReferenceExpression.class)
-                    .filter(referenceExpression -> navigationExpression.getOperands().contains(referenceExpression))
+            final Optional<ReferenceExpression> referenceSource = getAllInstances(ReferenceExpression.class)
+                    .filter(referenceSourceExpression -> referenceExpression.getOperands().contains(referenceSourceExpression))
                     .findAny();
 
-            if (navigationSource.isPresent()) {
-                ReferenceExpression referenceExpression = navigationSource.get();
+            if (referenceSource.isPresent()) {
+                ReferenceExpression referenceSourceExpression = referenceSource.get();
 
-                while (referenceExpression != null && referenceExpression instanceof VariableReference) {
+                while (referenceSourceExpression != null && referenceSourceExpression instanceof VariableReference) {
                     final ObjectVariable resolved;
 
-                    if (referenceExpression instanceof ObjectVariableReference) {
-                        resolved = ((ObjectVariableReference) referenceExpression).getVariable();
-                    } else if (referenceExpression instanceof CollectionVariableReference) {
-                        resolved = ((CollectionVariableReference) referenceExpression).getVariable();
+                    if (referenceSourceExpression instanceof ObjectVariableReference) {
+                        resolved = ((ObjectVariableReference) referenceSourceExpression).getVariable();
+                    } else if (referenceSourceExpression instanceof CollectionVariableReference) {
+                        resolved = ((CollectionVariableReference) referenceSourceExpression).getVariable();
                     } else {
                         throw new IllegalStateException("Unsupported variable reference");
                     }
 
                     if (resolved instanceof ReferenceExpression) {
-                        referenceExpression = (ReferenceExpression) resolved;
+                        referenceSourceExpression = (ReferenceExpression) resolved;
                     } else {
                         throw new IllegalStateException("Object variable is not a reference");
                     }
                 }
 
-                navigationSources.put(navigationExpression, referenceExpression);
+                referenceSources.put(referenceExpression, referenceSourceExpression);
             }
         });
 
@@ -87,7 +87,7 @@ public class ExpressionEvaluator {
     public void cleanup() {
         allExpressions.clear();
         lambdaContainers.clear();
-        navigationSources.clear();
+        referenceSources.clear();
         leaves.clear();
     }
 
@@ -144,8 +144,8 @@ public class ExpressionEvaluator {
                     variables.add((Variable) expr);
                 }
 
-                if (navigationSources.containsKey(expr)) {
-                    expr = navigationSources.get(expr);
+                if (referenceSources.containsKey(expr)) {
+                    expr = referenceSources.get(expr);
                 } else {
                     expr = null;
                 }
@@ -162,8 +162,8 @@ public class ExpressionEvaluator {
                     variables.add((Variable) expr);
                 }
 
-                if (navigationSources.containsKey(expr)) {
-                    expr = navigationSources.get(expr);
+                if (referenceSources.containsKey(expr)) {
+                    expr = referenceSources.get(expr);
                 } else {
                     variables.addAll(getVariablesOfScope(expr));
                     expr = null;
@@ -177,7 +177,7 @@ public class ExpressionEvaluator {
     public static Expression getBase(final Expression expression) {
         if ((expression instanceof Instance) || (expression instanceof ImmutableCollection)) {
             return expression;
-        } if (expression instanceof NavigationExpression) {
+        } if (expression instanceof ReferenceExpression) {
             final List<Expression> sources = expression.getOperands();
             if (sources.isEmpty()) {
                 return expression;

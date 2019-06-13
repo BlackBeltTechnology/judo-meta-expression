@@ -52,13 +52,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//DataExpression/alias"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//DataExpression/builtIn"/>
     </genClasses>
-    <genClasses image="false" ecoreClass="expression.ecore#//NavigationExpression">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//NavigationExpression/referenceName"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//NavigationExpression/alias"/>
-      <genOperations ecoreOperation="expression.ecore#//NavigationExpression/getReference">
-        <genParameters ecoreParameter="expression.ecore#//NavigationExpression/getReference/modelAdapter"/>
-      </genOperations>
-    </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//SwitchExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/cases"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//SwitchExpression/defaultExpression"/>
@@ -84,10 +77,14 @@
           body="return getCollectionExpression().getVariableName();"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ReferenceExpression/referenceName"/>
       <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getObjectType">
         <genParameters ecoreParameter="expression.ecore#//ReferenceExpression/getObjectType/modelAdapter"/>
       </genOperations>
       <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getVariableName"/>
+      <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getReference">
+        <genParameters ecoreParameter="expression.ecore#//ReferenceExpression/getReference/modelAdapter"/>
+      </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector"/>
     <genClasses image="false" ecoreClass="expression.ecore#//CustomExpression"/>

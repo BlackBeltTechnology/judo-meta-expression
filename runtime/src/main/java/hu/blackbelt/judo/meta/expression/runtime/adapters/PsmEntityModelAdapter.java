@@ -1,10 +1,7 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
 import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.NavigationExpression;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
@@ -113,8 +110,8 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
     }
 
     @Override
-    public boolean isCollection(final NavigationExpression navigationExpression) {
-        return ((ReferenceTypedElement) navigationExpression.getReference(this)).isCollection();
+    public boolean isCollection(final ReferenceExpression referenceExpression) {
+        return ((ReferenceTypedElement) referenceExpression.getReference(this)).isCollection();
     }
 
     @Override
