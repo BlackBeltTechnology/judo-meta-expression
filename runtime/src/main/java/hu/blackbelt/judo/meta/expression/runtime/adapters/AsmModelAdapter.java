@@ -3,8 +3,8 @@ package hu.blackbelt.judo.meta.expression.runtime.adapters;
 import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.NavigationExpression;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
@@ -105,8 +105,8 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public boolean isCollection(final NavigationExpression navigationExpression) {
-        return ((EReference) navigationExpression.getReference(this)).isMany();
+    public boolean isCollection(final ReferenceExpression referenceExpression) {
+        return ((EReference) referenceExpression.getReference(this)).isMany();
     }
 
     @Override
