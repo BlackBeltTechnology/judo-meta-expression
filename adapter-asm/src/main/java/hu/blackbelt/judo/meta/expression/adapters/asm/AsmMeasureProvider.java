@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
-import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.measure.*;
 import org.eclipse.emf.common.notify.Notifier;
@@ -44,7 +43,7 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
             final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
             return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
         } else {
-            return ImmutableMap.of(measure, 1);
+            return Collections.singletonMap(measure, 1);
         }
     }
 
@@ -70,12 +69,10 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
                     .findAny().orElse(null));
         } else {
             // NOTE - non-deterministic if multiple units exist
-            getMeasureElement(Unit.class)
+            return getMeasureElement(Unit.class)
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny();
         }
-
-        return Optional.empty();
     }
 
     @Override

@@ -3,7 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;

@@ -46,10 +46,5 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-expression-model</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-measure-runtime</artifactId>
-        </dependency>
     </dependencies>
 </project>

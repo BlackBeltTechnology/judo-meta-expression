@@ -286,10 +286,18 @@ public class MeasureAdapter<M, U, T> {
         final Set<M> measures = new HashSet<>();
 
         switchExpression.getCases().stream().map(c -> c.getExpression())
-                .forEach(e -> measures.add(getMeasure((NumericExpression) e).orElse(null)));
+                .forEach(e -> {
+                    final Optional<M> measure = getMeasure((NumericExpression) e);
+                    if (measure.isPresent()) {
+                        measures.add(measure.get());
+                    }
+                });
 
         if (switchExpression.getDefaultExpression() != null) {
-            measures.add(getMeasure((NumericExpression) switchExpression.getDefaultExpression()).orElse(null));
+            final Optional<M> measure = getMeasure((NumericExpression) switchExpression.getDefaultExpression());
+            if (measure.isPresent()) {
+                measures.add(measure.get());
+            }
         }
 
         if (measures.size() == 1) {

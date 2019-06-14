@@ -1,7 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 /**
  * Measure support for metamodels of data structures (ie. PSM or ASM).
@@ -10,8 +9,6 @@ import java.util.regex.Pattern;
  * @param <U> unit
  */
 public interface MeasureSupport<T, U> {
-
-    Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
     /**
      * Get unit of a given numeric attribute.

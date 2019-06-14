@@ -69,6 +69,10 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-expression-adapter-asm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-psm-runtime</artifactId>
             <version>${judo-meta-psm-version}</version>
             <scope>compile</scope>
