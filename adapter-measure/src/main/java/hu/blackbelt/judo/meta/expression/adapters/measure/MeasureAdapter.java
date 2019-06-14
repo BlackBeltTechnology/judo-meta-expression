@@ -43,7 +43,7 @@ public class MeasureAdapter<M, U, T> {
     /**
      * Cache of dimensions (map of base measured with exponents).
      */
-    private final Map<Map<M, Integer>, M> dimensions = new ConcurrentHashMap<>();
+    final Map<Map<M, Integer>, M> dimensions = new ConcurrentHashMap<>();
 
     public MeasureAdapter(final ModelAdapter modelAdapter, final MeasureProvider<M, U> measureProvider, final MeasureSupport<T, U> measureSupport) {
         this.modelAdapter = modelAdapter;
