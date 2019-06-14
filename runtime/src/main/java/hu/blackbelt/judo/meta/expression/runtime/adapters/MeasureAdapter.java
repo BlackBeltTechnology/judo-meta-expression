@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
-import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.SwitchExpression;
@@ -156,7 +155,7 @@ public abstract class MeasureAdapter<M, U> {
         } else if (numericExpression instanceof TimestampDifferenceExpression) {
             final Optional<M> durationMeasure = getDurationMeasure();
             if (durationMeasure.isPresent()) {
-                return Optional.of(ImmutableMap.of(durationMeasure.get(), 1));
+                return Optional.of(Collections.singletonMap(durationMeasure.get(), 1));
             } else {
                 log.error("No base measure is defined for temporal expressions");
                 return Optional.empty();

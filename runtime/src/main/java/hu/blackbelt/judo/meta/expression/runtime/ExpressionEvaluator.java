@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import com.google.common.collect.ImmutableSet;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.*;
@@ -123,7 +122,7 @@ public class ExpressionEvaluator {
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
         } else {
-            return ImmutableSet.of(expression);
+            return Collections.singleton(expression);
         }
     }
 

@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
-import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
@@ -309,7 +308,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
                 );
                 return Collections.unmodifiableMap(base);
             } else {
-                return ImmutableMap.of(measure, 1);
+                return Collections.singletonMap(measure, 1);
             }
         }
 
