@@ -15,13 +15,34 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+/**
+ * Measure adapter for expressions.
+ *
+ * @param <M> measure type (in metamodel)
+ * @param <U> unit type (in metamodel)
+ * @param <T> object type (in metamodel)
+ */
 @Slf4j
 public class MeasureAdapter<M, U, T> {
 
+    /**
+     * Measure adapter that is used to resolve (object) types of numeric expressions.
+     */
     private final ModelAdapter modelAdapter;
+
+    /**
+     * Measure provider.
+     */
     private final MeasureProvider<M, U> measureProvider;
+
+    /**
+     * Measure support of underlying data model. It can be used to resolve unit of an attribute.
+     */
     private final MeasureSupport<T, U> measureSupport;
 
+    /**
+     * Cache of dimensions (map of base measured with exponents).
+     */
     private final Map<Map<M, Integer>, M> dimensions = new ConcurrentHashMap<>();
 
     public MeasureAdapter(final ModelAdapter modelAdapter, final MeasureProvider<M, U> measureProvider, final MeasureSupport<T, U> measureSupport) {
@@ -32,6 +53,9 @@ public class MeasureAdapter<M, U, T> {
         refreshDimensions();
     }
 
+    /**
+     * Refresh dimensions of measures.
+     */
     public void refreshDimensions() {
         dimensions.clear();
 
@@ -39,16 +63,30 @@ public class MeasureAdapter<M, U, T> {
                 .collect(Collectors.toMap(m -> measureProvider.getBaseMeasures(m), m -> m)));
     }
 
+    /**
+     * Get measure by measure name (namespace + name).
+     *
+     * @param measureName measure name (defined by expression metamodel)
+     * @return measure
+     */
     public Optional<M> get(final MeasureName measureName) {
         return measureProvider.getMeasures()
                 .filter(m -> Objects.equals(measureProvider.getMeasureNamespace(m), measureName.getNamespace()) && Objects.equals(measureProvider.getMeasureName(m), measureName.getName()))
                 .findAny();
     }
 
+    /**
+     * Check if a numeric expression is measured.
+     *
+     * @param numericExpression numeric expression
+     * @return <code>true</code> if numeric expression is measured, <code>false</code> otherwise
+     */
     public boolean isMeasured(final NumericExpression numericExpression) {
         if (numericExpression instanceof MeasuredInteger) {
+            // measured integer (constant) is always measured
             return true;
         } else if (numericExpression instanceof MeasuredDecimal) {
+            // measured decimal (constant) is always measured
             return true;
         } else if (numericExpression instanceof NumericAttribute) {
             return getMeasure(numericExpression).isPresent();
@@ -70,6 +108,7 @@ public class MeasureAdapter<M, U, T> {
             return isMeasured(((RoundExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof IntegerSwitchExpression) {
             final IntegerSwitchExpression integerSwitchExpression = (IntegerSwitchExpression) numericExpression;
+            // an integer switch expression is measured if any case (including default) is measured
             if (integerSwitchExpression.getCases().stream().anyMatch(c -> isMeasured((NumericExpression) c.getExpression()))) {
                 return true;
             } else if (integerSwitchExpression.getDefaultExpression() != null) {
@@ -79,6 +118,7 @@ public class MeasureAdapter<M, U, T> {
             }
         } else if (numericExpression instanceof DecimalSwitchExpression) {
             final DecimalSwitchExpression decimalSwitchExpression = (DecimalSwitchExpression) numericExpression;
+            // a decimal switch expression is measured if any case (including default) is measured
             if (decimalSwitchExpression.getCases().stream().anyMatch(c -> isMeasured((NumericExpression) c.getExpression()))) {
                 return true;
             } else if (decimalSwitchExpression.getDefaultExpression() != null) {
@@ -87,17 +127,30 @@ public class MeasureAdapter<M, U, T> {
                 return false;
             }
         } else if (numericExpression instanceof TimestampDifferenceExpression) {
+            // timestamp difference expression is measured (duration)
             return true;
         } else {
+            // numeric type that not supports measures by architecture
             return false;
         }
     }
 
+    /**
+     * Get duration measure that supports adding system duration units (ie. ms, s, min, etc.).
+     *
+     * @return duration measure
+     */
     public Optional<M> getDurationMeasure() {
         return measureProvider.getMeasures().filter(m -> measureProvider.getUnits(m).stream().anyMatch(u -> measureProvider.isDurationSupportingAddition(u)))
                 .findAny();
     }
 
+    /**
+     * Get unit of a numeric expression.
+     *
+     * @param numericExpression numeric expression
+     * @return unit
+     */
     public Optional<U> getUnit(final NumericExpression numericExpression) {
         if (numericExpression instanceof NumericAttribute) {
             return measureSupport.getUnit((T) (((NumericAttribute) numericExpression).getObjectExpression().getObjectType(modelAdapter)), ((NumericAttribute) numericExpression).getAttributeName());
@@ -124,10 +177,22 @@ public class MeasureAdapter<M, U, T> {
         }
     }
 
+    /**
+     * Get measure of a numeric expression.
+     *
+     * @param numericExpression numeric expression
+     * @return measure
+     */
     public Optional<M> getMeasure(final NumericExpression numericExpression) {
         return getDimension(numericExpression).map(bm -> dimensions.get(bm));
     }
 
+    /**
+     * Get dimension (map of base measures with exponents) of a numeric expression.
+     *
+     * @param numericExpression numeric expression
+     * @return map of base measures with exponents
+     */
     public Optional<Map<M, Integer>> getDimension(final NumericExpression numericExpression) {
         if (numericExpression instanceof NumericAttribute) {
             return getUnit(numericExpression)
@@ -176,6 +241,12 @@ public class MeasureAdapter<M, U, T> {
         }
     }
 
+    /**
+     * Get measure of a unit.
+     *
+     * @param unit unit
+     * @return measure
+     */
     M getMeasure(final U unit) {
         return measureProvider.getMeasures()
                 .filter(m -> measureProvider.getUnits(m).contains(unit))

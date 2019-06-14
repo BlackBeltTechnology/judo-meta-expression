@@ -30,7 +30,6 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     private static final String NAMESPACE_SEPARATOR = ".";
 
     private final ResourceSet asmResourceSet;
-    private final ResourceSet measureResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
     private final MeasureSupport<EClass, Unit> measureSupport;
     private final MeasureAdapter measureAdapter;
@@ -39,7 +38,6 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     public AsmModelAdapter(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet) {
         this.asmResourceSet = asmResourceSet;
-        this.measureResourceSet = measureResourceSet;
 
         asmUtils = new AsmUtils(asmResourceSet);
         measureProvider = new AsmMeasureProvider(measureResourceSet);
@@ -199,12 +197,6 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     <T> Stream<T> getAsmElement(final Class<T> clazz) {
         final Iterable<Notifier> asmContents = asmResourceSet::getAllContents;
-        return StreamSupport.stream(asmContents.spliterator(), true)
-                .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
-    }
-
-    <T> Stream<T> getMeasureElement(final Class<T> clazz) {
-        final Iterable<Notifier> asmContents = measureResourceSet::getAllContents;
         return StreamSupport.stream(asmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
