@@ -199,12 +199,12 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         final Iterable<Notifier> contents = resourceSet::getAllContents;
         return StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .filter(m -> m.getUnits().stream().anyMatch(u -> isSupportingAddition(u)))
+                .filter(m -> m.getUnits().stream().anyMatch(u -> isDurationSupportingAddition(u)))
                 .findAny();
     }
 
     @Override
-    public boolean isSupportingAddition(final Unit unit) {
+    public boolean isDurationSupportingAddition(final Unit unit) {
         if (unit instanceof DurationUnit) {
             return (unit instanceof DurationUnit) && DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getUnitType());
         } else {
@@ -320,7 +320,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         @Override
         boolean isSupportingAddition(final Unit unit) {
-            return PsmEntityModelAdapter.this.isSupportingAddition(unit);
+            return PsmEntityModelAdapter.this.isDurationSupportingAddition(unit);
         }
 
         @Override

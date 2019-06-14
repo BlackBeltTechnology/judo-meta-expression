@@ -59,6 +59,9 @@
         <module>runtime</module>
         <module>feature</module>
         <module>site</module>
+        <module>adapter-measure</module>
+        <module>adapter-asm</module>
+        <module>adapter-psm</module>
     </modules>
     
     <properties>
@@ -78,6 +81,15 @@
         <epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
 
         <emf-builder-generator-version>0.0.1.develop_54</emf-builder-generator-version>
+
+        <judo-meta-psm-version>1.0.1.develop_262</judo-meta-psm-version>
+        <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
+
+        <judo-meta-asm-version>1.0.0-develop-50</judo-meta-asm-version>
+        <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
+
+        <judo-meta-measure-version>1.0.1.develop_27</judo-meta-measure-version>
+        <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
     </properties>
     
     <build>
@@ -335,6 +347,26 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>judo-meta-expression-model</artifactId>
                 <version>1.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-expression-adapter-measure</artifactId>
+                <version>1.0.1-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-psm-runtime</artifactId>
+                <version>${judo-meta-psm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-asm</artifactId>
+                <version>${judo-meta-asm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>judo-meta-measure-runtime</artifactId>
+                <version>${judo-meta-measure-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

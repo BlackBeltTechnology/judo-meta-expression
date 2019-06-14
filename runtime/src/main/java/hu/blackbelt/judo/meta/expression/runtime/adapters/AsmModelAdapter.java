@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -35,6 +36,8 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 
 @Slf4j
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
+
+    private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
     private static final String NAMESPACE_SEPARATOR = ".";
     private static final String MEASURE_NAME_KEY = "measure";
@@ -195,7 +198,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public boolean isSupportingAddition(final Unit unit) {
+    public boolean isDurationSupportingAddition(final Unit unit) {
         if (unit instanceof DurationUnit) {
             return (unit instanceof DurationUnit) && DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getType());
         } else {
@@ -320,7 +323,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
         @Override
         boolean isSupportingAddition(final Unit unit) {
-            return AsmModelAdapter.this.isSupportingAddition(unit);
+            return AsmModelAdapter.this.isDurationSupportingAddition(unit);
         }
 
         @Override

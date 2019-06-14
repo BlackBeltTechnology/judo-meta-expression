@@ -5,11 +5,20 @@ import hu.blackbelt.judo.meta.expression.*;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
+/**
+ * Expression model adapter.
+ *
+ * @param <NE>  namespace element
+ * @param <P>   primitive
+ * @param <PTE> primitive typed element (ie. attribute)
+ * @param <E>   enumeration
+ * @param <C>   class
+ * @param <RTE> reference typed element (ie. reference)
+ * @param <M>   measure
+ * @param <U>   unit
+ */
 public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
-
-    Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
     Optional<TypeName> getTypeName(NE namespaceElement);
 
@@ -67,7 +76,7 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
 
     Optional<M> getDurationMeasure();
 
-    boolean isSupportingAddition(U unit);
+    boolean isDurationSupportingAddition(U unit);
 
     Optional<M> getMeasure(NumericExpression numericExpression);
 

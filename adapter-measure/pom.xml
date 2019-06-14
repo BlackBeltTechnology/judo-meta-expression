@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>hu.blackbelt.judo.meta</groupId>
+        <artifactId>judo-meta-expression-parent</artifactId>
+        <version>1.0.1-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    
+    <artifactId>judo-meta-expression-adapter-measure</artifactId>
+    <packaging>bundle</packaging>
+    
+    <name>JUDO expression metamodel measure adapter</name>
+    <description>Judo Architecture Specific Expression Metamodel adapter for measures</description>
+    
+    <build>
+        <plugins>
+            <!-- Creating Judo bundle -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Import-Package>
+                            !lombok,
+                            org.osgi.framework;version="[1.8,2.0)",
+                            *
+                        </Import-Package>
+                        <Export-Package>
+                            hu.blackbelt.judo.meta.expression.adapters.measure*;version=${project.version}
+                        </Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-expression-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>judo-meta-measure-runtime</artifactId>
+        </dependency>
+    </dependencies>
+</project>
