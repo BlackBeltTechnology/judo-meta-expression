@@ -250,7 +250,8 @@ public class MeasureAdapter<M, U, T> {
     M getMeasure(final U unit) {
         return measureProvider.getMeasures()
                 .filter(m -> measureProvider.getUnits(m).contains(unit))
-                .findAny().get();
+                .findAny()
+                .orElse(null);
     }
 
     private Optional<Map<M, Integer>> getDimensionOfIntegerAritmeticExpression(final IntegerAritmeticExpression integerAritmeticExpression) {

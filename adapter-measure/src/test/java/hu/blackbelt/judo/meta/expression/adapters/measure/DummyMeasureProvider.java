@@ -12,6 +12,7 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     private final Measure time;
     private final Measure length;
+    private final Measure mass;
     private final Measure velocity;
 
     public DummyMeasureProvider() {
@@ -37,6 +38,16 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
                         Unit.builder().name("metre").symbol("m").build()
                 )).build();
 
+        mass = Measure.builder()
+                .namespace("base")
+                .namespace("Mass")
+                .units(Arrays.asList(
+                        Unit.builder().name("milligramm").symbol("mg").build(),
+                        Unit.builder().name("gramm").symbol("g").build(),
+                        Unit.builder().name("dekagramm").symbol("dkg").build(),
+                        Unit.builder().name("kilogramm").symbol("kg").build()
+                )).build();
+
         velocity = Measure.builder()
                 .namespace("derived")
                 .name("Velocity")
@@ -45,7 +56,7 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
                         Unit.builder().name("metrePerSecond").symbol("m/s").build()
                 )).build();
 
-        measures = Arrays.asList(time, length, velocity);
+        measures = Arrays.asList(time, length, mass, velocity);
     }
 
     @Override
@@ -114,6 +125,10 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     public Measure getTime() {
         return time;
+    }
+
+    public Measure getMass() {
+        return mass;
     }
 
     Measure getVelocity() {

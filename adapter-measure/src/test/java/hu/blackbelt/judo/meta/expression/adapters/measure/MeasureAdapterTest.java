@@ -1,31 +1,46 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
 
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 public class MeasureAdapterTest {
 
     private DummyMeasureProvider measureProvider = new DummyMeasureProvider();
-    private MeasureSupport<Class, Unit> measureSupport = new DummyMeasureSupport();
+    private MeasureSupport<Object, Unit> measureSupport;
+    private ModelAdapter modelAdapter;
     private MeasureAdapter measureAdapter;
 
     @BeforeEach
     public void setUp() {
-        measureAdapter = new MeasureAdapter(null, measureProvider, measureSupport);
+        modelAdapter = mock(ModelAdapter.class);
+        measureSupport = mock(MeasureSupport.class);
+
+        measureAdapter = new MeasureAdapter(modelAdapter, measureProvider, measureSupport);
+        measureAdapter.refreshDimensions();
     }
 
     @AfterEach
@@ -59,16 +74,15 @@ public class MeasureAdapterTest {
     }
 
     @Test
-    public void testRefresh() {
-        measureAdapter.refreshDimensions();
-
+    public void testRefreshDimensions() {
         final Map<Map<Measure, Integer>, Measure> dimensions = measureAdapter.dimensions;
 
-        Assert.assertThat(dimensions.size(), is(3));
+        Assert.assertThat(dimensions.size(), is(4));
 
         final Map<Map<Measure, Integer>, Measure> expected = new HashMap<>();
         expected.put(Collections.singletonMap(measureProvider.getTime(), 1), measureProvider.getTime());
         expected.put(Collections.singletonMap(measureProvider.getLength(), 1), measureProvider.getLength());
+        expected.put(Collections.singletonMap(measureProvider.getMass(), 1), measureProvider.getMass());
 
         final Map<Measure, Integer> velocityBase = new HashMap<>();
         velocityBase.put(measureProvider.getLength(), 1);
@@ -76,5 +90,123 @@ public class MeasureAdapterTest {
         expected.put(velocityBase, measureProvider.getVelocity());
 
         Assert.assertThat(dimensions, is(expected));
+    }
+
+    @Test
+    public void testIsMeasuredMeasuredInteger() {
+        final NumericExpression numericExpressionWithoutMeasure = newMeasuredIntegerBuilder().withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithoutMeasure));
+
+        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
+        final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithMeasure));
+    }
+
+    @Test
+    public void testIsMeasuredMeasuredDecimal() {
+        final NumericExpression numericExpressionWithoutMeasure = newMeasuredDecimalBuilder().withUnitName("kg").withValue(BigDecimal.ONE).build();
+        Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithoutMeasure));
+
+        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
+        final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithMeasure));
+    }
+
+    @Test
+    public void testIsMeasuredNumericAttribute() {
+        final TypeName personType = newTypeNameBuilder().withNamespace("dummy").withName("Person").build();
+        final TypeName orderItemType = newTypeNameBuilder().withNamespace("dummy").withName("OrderItem").build();
+
+        final Instance personInstance = newInstanceBuilder().withElementName(personType).build();
+        final Instance orderItemInstance = newInstanceBuilder().withElementName(orderItemType).build();
+
+        final NumericExpression weight = newDecimalAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(personInstance)
+                        .withReferenceName("self")
+                        .build())
+                .withAttributeName("weight")
+                .build();
+        final NumericExpression daysLeftToShip = newIntegerAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(orderItemInstance)
+                        .withReferenceName("self")
+                        .build())
+                .withAttributeName("daysLeftToShip")
+                .build();
+        final NumericExpression quantity = newIntegerAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(orderItemInstance)
+                        .withReferenceName("self")
+                        .build())
+                .withAttributeName("quantity")
+                .build();
+
+        final Object person = new Object();
+        final Object orderItem = new Object();
+
+        when(modelAdapter.get(personType)).thenReturn(Optional.of(person));
+        when(modelAdapter.get(orderItemType)).thenReturn(Optional.of(orderItem));
+
+        when(measureSupport.getUnit(person, "weight"))
+                .thenReturn(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny());
+        when(measureSupport.getUnit(orderItem, "daysLeftToShip"))
+                .thenReturn(measureProvider.getTime().getUnits().parallelStream().filter(u -> Objects.equals(u.getName(), "day")).findAny());
+        when(measureSupport.getUnit(orderItem, "quantity"))
+                .thenReturn(Optional.empty());
+
+        Assert.assertTrue(measureAdapter.isMeasured(weight));
+        Assert.assertTrue(measureAdapter.isMeasured(daysLeftToShip));
+        Assert.assertFalse(measureAdapter.isMeasured(quantity));
+    }
+
+    public void testIsMeasuredIntegerAritmeticExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredDecimalAritmeticExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredIntegerOppositeExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredDecimalOppositeExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredIntegerAggregatedExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredDecimalAggregatedExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredRoundExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredIntegerSwitchExpression() {
+        // TODO
+    }
+
+    public void testIsMeasuredDecimalSwitchExpression() {
+        // TODO
+    }
+
+    @Test
+    public void testIsMeasuredTimestampDifferenceExpression() {
+        final NumericExpression duration = newTimestampDifferenceExpressionBuilder()
+                .withStartTimestamp(newTimestampConstantBuilder()
+                        .withValue("2019-01-01 12:00:00Z")
+                        .build())
+                .withEndTimestamp(newTimestampConstantBuilder()
+                        .withValue("2019-01-01 13:00:00Z")
+                        .build())
+                .build();
+
+        Assert.assertTrue(measureAdapter.isMeasured(duration));
     }
 }
