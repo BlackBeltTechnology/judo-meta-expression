@@ -209,4 +209,143 @@ public class MeasureAdapterTest {
 
         Assert.assertTrue(measureAdapter.isMeasured(duration));
     }
+
+    @Test
+    public void testIsMeasuredNonMeasuredConstant() {
+        final NumericExpression integerExpression = newIntegerConstantBuilder().withValue(BigInteger.ONE).build();
+        Assert.assertFalse(measureAdapter.isMeasured(integerExpression));
+
+        final NumericExpression decimalExpression = newDecimalConstantBuilder().withValue(BigDecimal.ONE).build();
+        Assert.assertFalse(measureAdapter.isMeasured(decimalExpression));
+    }
+
+    @Test
+    public void testGetUnitOfNumericAttribute() {
+        final TypeName personType = newTypeNameBuilder().withNamespace("dummy").withName("Person").build();
+
+        final Instance personInstance = newInstanceBuilder().withElementName(personType).build();
+
+        final NumericExpression weight = newDecimalAttributeBuilder()
+                .withObjectExpression(newObjectVariableReferenceBuilder()
+                        .withVariable(personInstance)
+                        .withReferenceName("self")
+                        .build())
+                .withAttributeName("weight")
+                .build();
+
+        final Object person = new Object();
+
+        when(modelAdapter.get(personType)).thenReturn(Optional.of(person));
+
+        when(measureSupport.getUnit(person, "weight"))
+                .thenReturn(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny());
+
+        final Optional<Unit> unit = measureAdapter.getUnit(weight);
+        Assert.assertThat(unit, is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+    }
+
+    @Test
+    public void testGetUnitOfMeasuredInteger() {
+        final NumericExpression numericExpressionWithoutMeasure = newMeasuredIntegerBuilder().withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithoutMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+
+        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
+        final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+    }
+
+    @Test
+    public void testGetUnitOfMeasuredDecimal() {
+        final NumericExpression numericExpressionWithoutMeasure = newMeasuredDecimalBuilder().withUnitName("kg").withValue(BigDecimal.ONE).build();
+        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithoutMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+
+        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
+        final NumericExpression numericExpressionWithMeasure = newMeasuredDecimalBuilder().withMeasure(massName).withUnitName("kg").withValue(BigDecimal.ONE).build();
+        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+    }
+
+    public void testGetDimensionOfNumericAttribute() {
+        // TODO
+    }
+
+    @Test
+    public void testGetDimensionOfMeasuredDecimal() {
+        final NumericExpression numericExpressionWithoutMeasure = newMeasuredDecimalBuilder().withUnitName("kg").withValue(BigDecimal.ONE).build();
+
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithoutMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+
+        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
+        final NumericExpression numericExpressionWithMeasure = newMeasuredDecimalBuilder().withMeasure(massName).withUnitName("kg").withValue(BigDecimal.ONE).build();
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+    }
+
+    @Test
+    public void testGetDimensionOfMeasuredInteger() {
+        final NumericExpression numericExpressionWithoutMeasure = newMeasuredIntegerBuilder().withUnitName("kg").withValue(BigInteger.ONE).build();
+
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithoutMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+
+        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
+        final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+    }
+
+    public void testGetDimensionOfDecimalAritmeticExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfIntegerAritmeticExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfIntegerOppositeExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfDecimalOppositeExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfIntegerAggregatedExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfDecimalAggregatedExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfRoundExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfIntegerSwitchExpression() {
+        // TODO
+    }
+
+    public void testGetDimensionOfDecimalSwitchExpression() {
+        // TODO
+    }
+
+    @Test
+    public void testGetDimensionOfTimestampDifferenceExpression() {
+        final NumericExpression duration = newTimestampDifferenceExpressionBuilder()
+                .withStartTimestamp(newTimestampConstantBuilder()
+                        .withValue("2019-01-01 12:00:00Z")
+                        .build())
+                .withEndTimestamp(newTimestampConstantBuilder()
+                        .withValue("2019-01-01 13:00:00Z")
+                        .build())
+                .build();
+
+        Assert.assertThat(measureAdapter.getDimension(duration), is(Optional.of(Collections.singletonMap(measureProvider.getTime(), 1))));
+    }
+
+    @Test
+    public void testGetDimensionOfNonMeasuredConstant() {
+        final NumericExpression integerExpression = newIntegerConstantBuilder().withValue(BigInteger.ONE).build();
+        Assert.assertThat(measureAdapter.getDimension(integerExpression), is(Optional.of(Collections.emptyMap())));
+
+        final NumericExpression decimalExpression = newDecimalConstantBuilder().withValue(BigDecimal.ONE).build();
+        Assert.assertThat(measureAdapter.getDimension(decimalExpression), is(Optional.of(Collections.emptyMap())));
+    }
 }
