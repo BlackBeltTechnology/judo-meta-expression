@@ -11,4 +11,4 @@ import "measured.evl";
 import "numeric.evl";
 import "object.evl";
 import "string.evl";
-import "temporal.evl";
+import "time.evl";

@@ -10,7 +10,7 @@ context EXPR!TimestampAdditionExpression {
         guard: self.satisfiesAll("Resolved")
     
         check: modelAdapter.isDurationSupportingAddition(modelAdapter.getUnit(self.duration).orElse(null))
-        message: "Duration is not a valid temporal unit: " + self.duration
+        message: "Duration is not a valid time unit: " + self.duration
     }
 }
 

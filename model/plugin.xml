@@ -164,16 +164,16 @@
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
-      <!-- @generated expression -->
+      <!-- @generated judo-meta-expression-model -->
       <package
-            uri="http://blackbelt.hu/judo/meta/expression/temporal"
-            class="hu.blackbelt.judo.meta.expression.temporal.TemporalPackage"/>
+            uri="http://blackbelt.hu/judo/meta/expression/time"
+            class="hu.blackbelt.judo.meta.expression.time.TimePackage"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.extension_parser">
-      <!-- @generated expression -->
+      <!-- @generated judo-meta-expression-model -->
       <parser
-            type="temporal"
-            class="hu.blackbelt.judo.meta.expression.temporal.util.TemporalResourceFactoryImpl"/>
+            type="time"
+            class="hu.blackbelt.judo.meta.expression.time.util.TimeResourceFactoryImpl"/>
    </extension>
 </plugin>

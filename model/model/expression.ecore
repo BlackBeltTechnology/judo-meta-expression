@@ -1420,7 +1420,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="CustomAttribute" eSuperTypes="#//CustomExpression #//AttributeSelector"/>
     <eClassifiers xsi:type="ecore:EClass" name="CustomSwitchExpression" eSuperTypes="#//SwitchExpression #//CustomExpression"/>
   </eSubpackages>
-  <eSubpackages name="temporal" nsURI="http://blackbelt.hu/judo/meta/expression/temporal"
+  <eSubpackages name="time" nsURI="http://blackbelt.hu/judo/meta/expression/time"
       nsPrefix="t">
     <eClassifiers xsi:type="ecore:EClass" name="DateAttribute" eSuperTypes="#//DateExpression #//AttributeSelector"/>
     <eClassifiers xsi:type="ecore:EClass" name="TimestampAttribute" eSuperTypes="#//TimestampExpression #//AttributeSelector"/>

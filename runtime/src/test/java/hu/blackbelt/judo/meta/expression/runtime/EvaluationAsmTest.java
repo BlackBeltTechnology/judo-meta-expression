@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.operator.*;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
+import hu.blackbelt.judo.meta.expression.time.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import org.eclipse.emf.common.util.URI;
@@ -24,7 +24,7 @@ import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuil
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.time.util.builder.TimeBuilders.*;
 
 public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 

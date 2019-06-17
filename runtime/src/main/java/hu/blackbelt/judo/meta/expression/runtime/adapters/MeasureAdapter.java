@@ -16,7 +16,7 @@ import hu.blackbelt.judo.meta.expression.numeric.IntegerOppositeExpression;
 import hu.blackbelt.judo.meta.expression.numeric.IntegerSwitchExpression;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.numeric.RoundExpression;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
+import hu.blackbelt.judo.meta.expression.time.TimestampDifferenceExpression;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
@@ -157,7 +157,7 @@ public abstract class MeasureAdapter<M, U> {
             if (durationMeasure.isPresent()) {
                 return Optional.of(Collections.singletonMap(durationMeasure.get(), 1));
             } else {
-                log.error("No base measure is defined for temporal expressions");
+                log.error("No base measure is defined for time expressions");
                 return Optional.empty();
             }
         } else if (numericExpression instanceof Constant) {

@@ -873,32 +873,32 @@
       <genClasses ecoreClass="expression.ecore#//custom/CustomAttribute"/>
       <genClasses ecoreClass="expression.ecore#//custom/CustomSwitchExpression"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Temporal" resource="XMI" disposableProviderFactory="true"
+    <nestedGenPackages prefix="Time" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
-        fileExtensions="judo-meta-expression-temporal" ecorePackage="expression.ecore#//temporal">
-      <genClasses ecoreClass="expression.ecore#//temporal/DateAttribute"/>
-      <genClasses ecoreClass="expression.ecore#//temporal/TimestampAttribute"/>
-      <genClasses ecoreClass="expression.ecore#//temporal/DateSwitchExpression"/>
-      <genClasses ecoreClass="expression.ecore#//temporal/TimestampSwitchExpression"/>
-      <genClasses ecoreClass="expression.ecore#//temporal/TimestampAdditionExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampAdditionExpression/timestamp"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampAdditionExpression/duration"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampAdditionExpression/operator"/>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAdditionExpression/getOperands"
+        ecorePackage="expression.ecore#//time">
+      <genClasses ecoreClass="expression.ecore#//time/DateAttribute"/>
+      <genClasses ecoreClass="expression.ecore#//time/TimestampAttribute"/>
+      <genClasses ecoreClass="expression.ecore#//time/DateSwitchExpression"/>
+      <genClasses ecoreClass="expression.ecore#//time/TimestampSwitchExpression"/>
+      <genClasses ecoreClass="expression.ecore#//time/TimestampAdditionExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//time/TimestampAdditionExpression/timestamp"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//time/TimestampAdditionExpression/duration"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//time/TimestampAdditionExpression/operator"/>
+        <genOperations ecoreOperation="expression.ecore#//time/TimestampAdditionExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getDuration());"/>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAdditionExpression/toString"
+        <genOperations ecoreOperation="expression.ecore#//time/TimestampAdditionExpression/toString"
             body="return &quot;(&quot; + getTimestamp() + &quot; &quot; + getOperator() + &quot; &quot; + getDuration() + &quot;)&quot;;"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//temporal/TimestampDifferenceExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/startTimestamp"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/endTimestamp"/>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/getOperands"
+      <genClasses ecoreClass="expression.ecore#//time/TimestampDifferenceExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//time/TimestampDifferenceExpression/startTimestamp"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//time/TimestampDifferenceExpression/endTimestamp"/>
+        <genOperations ecoreOperation="expression.ecore#//time/TimestampDifferenceExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getStartTimestamp(), getEndTimestamp());"/>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/isMeasured"
+        <genOperations ecoreOperation="expression.ecore#//time/TimestampDifferenceExpression/isMeasured"
             body="return true;">
-          <genParameters ecoreParameter="expression.ecore#//temporal/TimestampDifferenceExpression/isMeasured/modelAdapter"/>
+          <genParameters ecoreParameter="expression.ecore#//time/TimestampDifferenceExpression/isMeasured/modelAdapter"/>
         </genOperations>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/toString"
+        <genOperations ecoreOperation="expression.ecore#//time/TimestampDifferenceExpression/toString"
             body="return &quot;(&quot; + getEndTimestamp() + &quot; - &quot; + getStartTimestamp() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>

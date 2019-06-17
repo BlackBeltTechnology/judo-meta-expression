@@ -8,7 +8,7 @@ import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.*;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
+import hu.blackbelt.judo.meta.expression.time.TimestampDifferenceExpression;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -231,7 +231,7 @@ public class MeasureAdapter<M, U, T> {
             if (durationMeasure.isPresent()) {
                 return Optional.of(Collections.singletonMap(durationMeasure.get(), 1));
             } else {
-                log.error("No base measure is defined for temporal expressions");
+                log.error("No base measure is defined for time expressions");
                 return Optional.empty();
             }
         } else if (numericExpression instanceof Constant) {

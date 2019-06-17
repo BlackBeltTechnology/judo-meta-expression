@@ -20,7 +20,7 @@ import java.util.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.time.util.builder.TimeBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
