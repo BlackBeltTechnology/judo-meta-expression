@@ -55,7 +55,7 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public boolean isDurationSupportingAddition(final Unit unit) {
         if (unit instanceof DurationUnit) {
-            return (unit instanceof DurationUnit) && DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getType());
+            return DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getType());
         } else {
             return false;
         }
