@@ -13,6 +13,8 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     private final Measure time;
     private final Measure length;
     private final Measure mass;
+    private final Measure area;
+    private final Measure volume;
     private final Measure velocity;
 
     public DummyMeasureProvider() {
@@ -21,8 +23,8 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
                 .name("Time")
                 .units(Arrays.asList(
                         Unit.builder().name("millisecond").symbol("ms").build(),
-                        Unit.builder().name("second").symbol("s").build(),
-                        Unit.builder().name("minute").symbol("m").build(),
+                        Unit.builder().name("second").symbol("sec").build(),
+                        Unit.builder().name("minute").symbol("min").build(),
                         Unit.builder().name("hour").symbol("h").build(),
                         Unit.builder().name("day").symbol("d").build(),
                         Unit.builder().name("week").symbol("w").build()
@@ -38,14 +40,40 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
                         Unit.builder().name("metre").symbol("m").build()
                 )).build();
 
+        area = Measure.builder()
+                .namespace("derived")
+                .name("Area")
+                .units(Arrays.asList(
+                        Unit.builder().name("squaredMillimetre").symbol("mm²").build(),
+                        Unit.builder().name("squaredCentimetre").symbol("cm²").build(),
+                        Unit.builder().name("squaredDecimetre").symbol("dm²").build(),
+                        Unit.builder().name("squaredMetre").symbol("m²").build()
+                )).build();
+
+        volume = Measure.builder()
+                .namespace("derived")
+                .name("Volume")
+                .units(Arrays.asList(
+                        Unit.builder().name("cubicMillimetre").symbol("mm³").build(),
+                        Unit.builder().name("cubicCentimetre").symbol("cm³").build(),
+                        Unit.builder().name("cubicDecimetre").symbol("dm³").build(),
+                        Unit.builder().name("cubicMetre").symbol("m³").build(),
+                        Unit.builder().name("millilitre").symbol("ml").build(),
+                        Unit.builder().name("centilitre").symbol("cl").build(),
+                        Unit.builder().name("decilitre").symbol("dl").build(),
+                        Unit.builder().name("litre").symbol("l").build()
+                )).build();
+
         mass = Measure.builder()
                 .namespace("base")
-                .namespace("Mass")
+                .name("Mass")
                 .units(Arrays.asList(
                         Unit.builder().name("milligramm").symbol("mg").build(),
                         Unit.builder().name("gramm").symbol("g").build(),
                         Unit.builder().name("dekagramm").symbol("dkg").build(),
-                        Unit.builder().name("kilogramm").symbol("kg").build()
+                        Unit.builder().name("kilogramm").symbol("kg").build(),
+                        Unit.builder().name("quintal").symbol("q").build(),
+                        Unit.builder().name("tonne").symbol("t").build()
                 )).build();
 
         velocity = Measure.builder()
@@ -56,7 +84,7 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
                         Unit.builder().name("metrePerSecond").symbol("m/s").build()
                 )).build();
 
-        measures = Arrays.asList(time, length, mass, velocity);
+        measures = Arrays.asList(time, length, area, volume, mass, velocity);
     }
 
     @Override
@@ -83,6 +111,10 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
             base.put(length, 1);
             base.put(time, -1);
             return base;
+        } else if (area.equals(measure)) {
+            return Collections.singletonMap(length, 2);
+        } else if (volume.equals(measure)) {
+            return Collections.singletonMap(length, 3);
         } else {
             return Collections.singletonMap(measure, 1);
         }
@@ -105,12 +137,13 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny();
         } else {
-            return measures.parallelStream()
+            final Optional<Unit> unit = measures.parallelStream()
                     .map(m -> m.getUnits().parallelStream()
                             .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                             .findAny())
                     .filter(us -> us.isPresent()).map(us -> us.get())
                     .findAny();
+            return unit;
         }
     }
 
@@ -129,6 +162,14 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     public Measure getMass() {
         return mass;
+    }
+
+    public Measure getArea() {
+        return area;
+    }
+
+    public Measure getVolume() {
+        return volume;
     }
 
     Measure getVelocity() {

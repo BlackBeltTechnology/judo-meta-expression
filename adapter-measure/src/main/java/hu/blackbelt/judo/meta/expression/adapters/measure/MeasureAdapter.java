@@ -261,6 +261,7 @@ public class MeasureAdapter<M, U, T> {
         switch (integerAritmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
+            case MODULO:
                 if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
@@ -298,8 +299,6 @@ public class MeasureAdapter<M, U, T> {
                     });
                 }
                 return Optional.of(base);
-            case MODULO:
-                return left;
         }
 
         throw new IllegalArgumentException("Unsupported operation");
