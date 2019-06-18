@@ -31,7 +31,7 @@ public class AsmMeasureSupport implements MeasureSupport<EClass, Unit> {
     private final AsmUtils asmUtils;
     private final MeasureProvider<Measure, Unit> measureProvider;
 
-    public AsmMeasureSupport(final @NonNull ResourceSet asmResourceSet, final MeasureProvider measureProvider) {
+    public AsmMeasureSupport(final @NonNull ResourceSet asmResourceSet, final @NonNull MeasureProvider measureProvider) {
         this.measureProvider = measureProvider;
         asmUtils = new AsmUtils(asmResourceSet);
     }
@@ -54,10 +54,15 @@ public class AsmMeasureSupport implements MeasureSupport<EClass, Unit> {
         if (asmUtils.isNumeric(attribute.getEAttributeType())) {
             final Optional<EAnnotation> annotation = asmUtils.getExtensionAnnotation(attribute, false);
             if (annotation.isPresent()) {
-                final Optional<MeasureName> measureName = parseMeasureName(annotation.get().getDetails().get(MEASURE_NAME_KEY));
+                final String measureNameAsString = annotation.get().getDetails().get(MEASURE_NAME_KEY);
+                final Optional<MeasureName> measureName = parseMeasureName(measureNameAsString);
+                if (!measureName.isPresent() && measureNameAsString != null) {
+                    log.error("Failed to parse measure name: {}", measureNameAsString);
+                    return Optional.empty();
+                }
                 final Optional<Measure> measure = measureName.isPresent() ? measureProvider.getMeasure(measureName.get().getNamespace(), measureName.get().getName()) : Optional.empty();
-                if (!measure.isPresent() && annotation.get().getDetails().containsKey(MEASURE_NAME_KEY)) {
-                    // measure name is defined but not resolved
+                if (!measure.isPresent() && measureNameAsString != null) {
+                    log.error("Measure is defined but not resolved: {}", measureNameAsString);
                     return Optional.empty();
                 }
                 return measureProvider.getUnitByNameOrSymbol(measure, annotation.get().getDetails().get(UNIT_NAME_KEY));

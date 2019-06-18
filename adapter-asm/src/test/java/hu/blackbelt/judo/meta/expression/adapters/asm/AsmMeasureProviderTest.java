@@ -122,11 +122,17 @@ public class AsmMeasureProviderTest {
     public void testGetUnitByNameOrSymbol() {
         final Optional<Measure> length = getMeasureByName("Length");
         final Optional<Unit> metre = getUnitByName("metre");
+        final Optional<Measure> time = getMeasureByName("Time");
+        final Optional<Unit> halfDay = getUnitByName("halfDay");
 
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(length, "metre"), is(metre));
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "metre"), is(metre));
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(length, "m"), is(metre));
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "m"), is(metre));
+        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(time, "halfDay"), is(halfDay));
+        Assert.assertFalse(measureProvider.getUnitByNameOrSymbol(time, null).isPresent()); // units are not compared by symbol if is it not defined
+        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "halfDay"), is(halfDay));
+        Assert.assertFalse(measureProvider.getUnitByNameOrSymbol(Optional.empty(), null).isPresent()); // nothing is defined
     }
 
     @Test
