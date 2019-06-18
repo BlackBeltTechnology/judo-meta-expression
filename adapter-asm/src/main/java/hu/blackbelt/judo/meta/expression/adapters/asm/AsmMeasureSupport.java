@@ -56,6 +56,10 @@ public class AsmMeasureSupport implements MeasureSupport<EClass, Unit> {
             if (annotation.isPresent()) {
                 final Optional<MeasureName> measureName = parseMeasureName(annotation.get().getDetails().get(MEASURE_NAME_KEY));
                 final Optional<Measure> measure = measureName.isPresent() ? measureProvider.getMeasure(measureName.get().getNamespace(), measureName.get().getName()) : Optional.empty();
+                if (!measure.isPresent() && annotation.get().getDetails().containsKey(MEASURE_NAME_KEY)) {
+                    // measure name is defined but not resolved
+                    return Optional.empty();
+                }
                 return measureProvider.getUnitByNameOrSymbol(measure, annotation.get().getDetails().get(UNIT_NAME_KEY));
             } else {
                 return Optional.empty();
@@ -76,7 +80,7 @@ public class AsmMeasureSupport implements MeasureSupport<EClass, Unit> {
                         .withName(m.group(2))
                         .build());
             } else {
-                throw new IllegalArgumentException("Invalid measure name " + name);
+                return Optional.empty();
             }
         }
     }

@@ -65,12 +65,12 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     public Optional<Unit> getUnitByNameOrSymbol(final Optional<Measure> measure, final String nameOrSymbol) {
         if (measure.isPresent()) {
             return measure.map(m -> m.getUnits().stream()
-                    .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
+                    .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || u.getSymbol() != null && Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny().orElse(null));
         } else {
             // NOTE - non-deterministic if multiple units exist
             return getMeasureElement(Unit.class)
-                    .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
+                    .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || u.getSymbol() != null && Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny();
         }
     }
