@@ -41,7 +41,7 @@ public class MeasureAdapterTest {
         modelAdapter = mock(ModelAdapter.class);
         measureSupport = mock(MeasureSupport.class);
 
-        measureAdapter = new MeasureAdapter(modelAdapter, measureProvider, measureSupport);
+        measureAdapter = new MeasureAdapter(measureProvider, measureSupport, modelAdapter);
         measureAdapter.refreshDimensions();
     }
 

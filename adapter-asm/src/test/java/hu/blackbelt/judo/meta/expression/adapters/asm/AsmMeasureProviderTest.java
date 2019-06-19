@@ -1,16 +1,21 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
+import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureSupport;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +30,8 @@ public class AsmMeasureProviderTest {
     private MeasureModel measureModel;
     private MeasureProvider<Measure, Unit> measureProvider;
 
+    private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
+
     @BeforeEach
     public void setUp() throws IOException {
         measureModel = MeasureModelLoader.loadMeasureModel(
@@ -32,6 +39,8 @@ public class AsmMeasureProviderTest {
                 "test",
                 "1.0.0");
         measureProvider = new AsmMeasureProvider(measureModel.getResourceSet());
+
+        measureAdapter = new MeasureAdapter<>(measureProvider, Mockito.mock(MeasureSupport.class), Mockito.mock(ModelAdapter.class));
     }
 
     @AfterEach

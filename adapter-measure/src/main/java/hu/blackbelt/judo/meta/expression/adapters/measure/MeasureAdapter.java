@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -45,10 +46,12 @@ public class MeasureAdapter<M, U, T> {
      */
     final Map<Map<M, Integer>, M> dimensions = new ConcurrentHashMap<>();
 
-    public MeasureAdapter(final ModelAdapter modelAdapter, final MeasureProvider<M, U> measureProvider, final MeasureSupport<T, U> measureSupport) {
-        this.modelAdapter = modelAdapter;
+    public MeasureAdapter(@NonNull final MeasureProvider<M, U> measureProvider, @NonNull final MeasureSupport<T, U> measureSupport, @NonNull final ModelAdapter modelAdapter) {
         this.measureProvider = measureProvider;
         this.measureSupport = measureSupport;
+        this.modelAdapter = modelAdapter;
+
+        measureProvider.setMeasureChangeHandler(new MeasureChangeAdapter());
 
         refreshDimensions();
     }
@@ -375,6 +378,64 @@ public class MeasureAdapter<M, U, T> {
             return Optional.ofNullable(measureProvider.getBaseMeasures(measures.iterator().next()));
         } else {
             return Optional.empty();
+        }
+    }
+
+    private class MeasureChangeAdapter implements MeasureChangedHandler<M> {
+
+        @Override
+        public void measureAdded(final M measure) {
+            if (measureProvider.isBaseMeasure(measure)) {
+                log.trace("Base measure added: {}", measure);
+                dimensions.put(Collections.singletonMap(measure, 1), measure);
+            } else {
+                log.trace("Derived measure added: {}", measure);
+                dimensions.put(measureProvider.getBaseMeasures(measure), measure);
+            }
+            prettyPrintDimensions();
+        }
+
+        @Override
+        public void measureChanged(final M measure) {
+            if (!measureProvider.isBaseMeasure(measure)) {
+                log.trace("Derived measure changed: {}", measure);
+                measureRemoved(measure);
+                measureAdded(measure);
+            }
+        }
+
+        @Override
+        public void measureRemoved(final M measure) {
+            if (measureProvider.isBaseMeasure(measure)) {
+                log.trace("Base measure removed: {}", measure);
+                final Iterator<Map.Entry<Map<M, Integer>, M>> it = dimensions.entrySet().iterator();
+                while (it.hasNext()) {
+                    final Map.Entry<Map<M, Integer>, M> entry = it.next();
+                    if (measureProvider.equals(entry.getValue(), measure)) {
+                        it.remove();
+                        break;
+                    }
+                }
+            } else {
+                log.trace("Derived measure removed: {}", measure);
+                final Iterator<Map.Entry<Map<M, Integer>, M>> it = dimensions.entrySet().iterator();
+                while (it.hasNext()) {
+                    final Map.Entry<Map<M, Integer>, M> entry = it.next();
+                    if (measureProvider.equals(entry.getValue(), measure)) {
+                        it.remove();
+                        break;
+                    }
+                }
+            }
+            prettyPrintDimensions();
+        }
+
+        private void prettyPrintDimensions() {
+            if (log.isTraceEnabled()) {
+                log.trace("Dimensions:\n{}", dimensions.entrySet().stream().map(e -> "  - " + e.getValue() + ":\n" +
+                        e.getKey().entrySet().stream().map(k -> "    * " + k.getKey() + " ^ " + k.getValue()).collect(Collectors.joining("\n"))
+                ).collect(Collectors.joining("\n")));
+            }
         }
     }
 }

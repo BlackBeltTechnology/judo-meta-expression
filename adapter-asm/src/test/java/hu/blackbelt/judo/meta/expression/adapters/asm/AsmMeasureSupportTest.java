@@ -46,7 +46,7 @@ public class AsmMeasureSupportTest {
                 "1.0.0");
 
         asmResourceSet = AsmModelLoader.createAsmResourceSet();
-        final Resource asmResource = asmResourceSet.createResource(URI.createURI("urn:esm.judo-meta-asm"));
+        final Resource asmResource = asmResourceSet.createResource(URI.createURI("urn:asm.judo-meta-asm"));
 
         final EDataType stringType = newEDataTypeBuilder()
                 .withName("String")
@@ -119,9 +119,7 @@ public class AsmMeasureSupportTest {
         Assert.assertFalse(measureSupport.getUnit(product, "vat").isPresent());          // EUR is not defined as unit
         Assert.assertFalse(measureSupport.getUnit(product, "netWeight").isPresent());    // unit belongs to another measure
         Assert.assertFalse(measureSupport.getUnit(product, "grossWeight").isPresent());  // measure name is not matching expected pattern
-        Assert.assertFalse(
-                measureSupport.getUnit(product, "width")
-                        .isPresent());        // measure name is invalid
+        Assert.assertFalse(measureSupport.getUnit(product, "width").isPresent());        // measure name is invalid
     }
 
     @Test

@@ -1,15 +1,21 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
+import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureChangedHandler;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.measure.*;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@Slf4j
 public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
@@ -78,6 +84,69 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public Stream<Measure> getMeasures() {
         return getMeasureElement(Measure.class);
+    }
+
+    @Override
+    public void setMeasureChangeHandler(final MeasureChangedHandler measureChangeHandler) {
+        resourceSet.eAdapters().add(new EContentAdapter() {
+            @Override
+            public void notifyChanged(final Notification notification) {
+                super.notifyChanged(notification);
+
+                if (measureChangeHandler == null) {
+                    return;
+                }
+
+                switch (notification.getEventType()) {
+                    case Notification.ADD:
+                    case Notification.ADD_MANY:
+                        if (notification.getNewValue() instanceof BaseMeasure) {
+                            measureChangeHandler.measureAdded(notification.getNewValue());
+                        } else if (notification.getNewValue() instanceof DerivedMeasure) {
+                            measureChangeHandler.measureAdded(notification.getNewValue());
+                        } else if (notification.getNewValue() instanceof Collection) {
+                            ((Collection) notification.getNewValue()).forEach(newValue -> {
+                                if (newValue instanceof BaseMeasure) {
+                                    measureChangeHandler.measureAdded(newValue);
+                                } else if (newValue instanceof DerivedMeasure) {
+                                    measureChangeHandler.measureAdded(newValue);
+                                }
+                            });
+                        } else if (notification.getFeatureID(DerivedMeasure.class) == MeasurePackage.DERIVED_MEASURE__TERMS) {
+                            measureChangeHandler.measureChanged(notification.getNotifier());
+                        }
+                        break;
+                    case Notification.REMOVE:
+                    case Notification.REMOVE_MANY:
+                        if (notification.getOldValue() instanceof BaseMeasure) {
+                            measureChangeHandler.measureRemoved(notification.getOldValue());
+                        } else if (notification.getOldValue() instanceof DerivedMeasure) {
+                            measureChangeHandler.measureRemoved(notification.getOldValue());
+                        } else if (notification.getOldValue() instanceof Collection) {
+                            ((Collection) notification.getOldValue()).forEach(oldValue -> {
+                                if (oldValue instanceof BaseMeasure) {
+                                    measureChangeHandler.measureRemoved(oldValue);
+                                } else if (oldValue instanceof DerivedMeasure) {
+                                    measureChangeHandler.measureRemoved(oldValue);
+                                }
+                            });
+                        } else if (notification.getFeatureID(DerivedMeasure.class) == MeasurePackage.DERIVED_MEASURE__TERMS) {
+                            measureChangeHandler.measureChanged(notification.getNotifier());
+                        }
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean isBaseMeasure(Measure measure) {
+        return measure instanceof BaseMeasure;
+    }
+
+    @Override
+    public boolean equals(final Measure left, final Measure right) {
+        return EcoreUtil.equals(left, right);
     }
 
     <T> Stream<T> getMeasureElement(final Class<T> clazz) {

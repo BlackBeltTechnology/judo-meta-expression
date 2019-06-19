@@ -175,4 +175,19 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     Measure getVelocity() {
         return velocity;
     }
+
+    @Override
+    public boolean isBaseMeasure(Measure measure) {
+        return Arrays.asList(time, length, mass).contains(measure);
+    }
+
+    @Override
+    public boolean equals(final Measure left, final Measure right) {
+        return Objects.equals(left, right);
+    }
+
+    @Override
+    public void setMeasureChangeHandler(final MeasureChangedHandler measureChangeHandler) {
+        // not implemented yet
+    }
 }

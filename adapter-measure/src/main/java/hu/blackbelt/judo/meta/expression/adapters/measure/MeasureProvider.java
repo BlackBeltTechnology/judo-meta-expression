@@ -81,4 +81,28 @@ public interface MeasureProvider<M, U> {
      * @return all measures
      */
     Stream<M> getMeasures();
+
+    /**
+     * Check if a measure is base (or derived) measure.
+     *
+     * @param measure measure
+     * @return <code>true</code> if argument is base measure, <code>false</code> otherwise
+     */
+    boolean isBaseMeasure(M measure);
+
+    /**
+     * Check if two measures are equal.
+     *
+     * @param left  left side
+     * @param right right side
+     * @return <code>true</code> if two measures are equal, <code>false</code> otherwise
+     */
+    boolean equals(M left, M right);
+
+    /**
+     * Set handler of measure changes. Measure provider can keep state in sync via this object.
+     *
+     * @param measureChangeHandler measure change handler
+     */
+    void setMeasureChangeHandler(MeasureChangedHandler measureChangeHandler);
 }

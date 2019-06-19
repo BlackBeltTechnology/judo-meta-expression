@@ -43,7 +43,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         measureProvider = new AsmMeasureProvider(measureResourceSet);
         measureSupport = new AsmMeasureSupport(asmResourceSet, measureProvider);
 
-        measureAdapter = new MeasureAdapter<>(this, measureProvider, measureSupport);
+        measureAdapter = new MeasureAdapter<>(measureProvider, measureSupport, this);
     }
 
     @Override
