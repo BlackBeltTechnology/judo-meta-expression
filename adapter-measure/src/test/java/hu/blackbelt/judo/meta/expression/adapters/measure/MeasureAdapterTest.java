@@ -709,6 +709,13 @@ public class MeasureAdapterTest {
         final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
         final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
         Assert.assertThat(measureAdapter.getUnit(numericExpressionWithMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+
+        final MeasureName invalidMassName = newMeasureNameBuilder().withNamespace("custom").withName("Mass").build();
+        final NumericExpression numericExpressionWithInvalidMeasure = newMeasuredIntegerBuilder().withMeasure(invalidMassName).withUnitName("kg").withValue(BigInteger.ONE).build();
+        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidMeasure).isPresent());
+
+        final NumericExpression numericExpressionWithInvalidUnit = newMeasuredIntegerBuilder().withUnitName("μg").withValue(BigInteger.ONE).build();
+        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidUnit).isPresent());
     }
 
     @Test
@@ -719,5 +726,18 @@ public class MeasureAdapterTest {
         final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
         final NumericExpression numericExpressionWithMeasure = newMeasuredDecimalBuilder().withMeasure(massName).withUnitName("kg").withValue(BigDecimal.ONE).build();
         Assert.assertThat(measureAdapter.getUnit(numericExpressionWithMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+
+        final MeasureName invalidMassName = newMeasureNameBuilder().withNamespace("custom").withName("Mass").build();
+        final NumericExpression numericExpressionWithInvalidMeasure = newMeasuredDecimalBuilder().withMeasure(invalidMassName).withUnitName("kg").withValue(BigDecimal.ONE).build();
+        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidMeasure).isPresent());
+
+        final NumericExpression numericExpressionWithInvalidUnit = newMeasuredDecimalBuilder().withUnitName("μg").withValue(BigDecimal.ONE).build();
+        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidUnit).isPresent());
+    }
+
+    @Test
+    public void testGetUnitOfNonMeasured() {
+        final NumericExpression numericExpressionWithoutMeasure = newIntegerConstantBuilder().withValue(BigInteger.ONE.ONE).build();
+        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithoutMeasure).isPresent());
     }
 }

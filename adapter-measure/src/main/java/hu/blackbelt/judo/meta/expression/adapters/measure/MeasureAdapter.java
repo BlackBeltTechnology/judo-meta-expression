@@ -158,7 +158,15 @@ public class MeasureAdapter<M, U, T> {
             } else {
                 measure = Optional.empty();
             }
-            return measureProvider.getUnitByNameOrSymbol(measure, measuredDecimal.getUnitName());
+            if (measuredDecimal.getMeasure() != null && !measure.isPresent()) {
+                log.error("Invalid measure: {}::{}", measuredDecimal.getMeasure().getNamespace(), measuredDecimal.getMeasure().getName());
+                return Optional.empty();
+            }
+            final Optional<U> unit = measureProvider.getUnitByNameOrSymbol(measure, measuredDecimal.getUnitName());
+            if (!unit.isPresent()) {
+                log.error("Invalid unit: {}", measuredDecimal.getUnitName());
+            }
+            return unit;
         } else if (numericExpression instanceof MeasuredInteger) {
             final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
             final Optional<M> measure;
@@ -167,7 +175,15 @@ public class MeasureAdapter<M, U, T> {
             } else {
                 measure = Optional.empty();
             }
-            return measureProvider.getUnitByNameOrSymbol(measure, measuredInteger.getUnitName());
+            if (measuredInteger.getMeasure() != null && !measure.isPresent()) {
+                log.error("Invalid measure: {}::{}", measuredInteger.getMeasure().getNamespace(), measuredInteger.getMeasure().getName());
+                return Optional.empty();
+            }
+            final Optional<U> unit = measureProvider.getUnitByNameOrSymbol(measure, measuredInteger.getUnitName());
+            if (!unit.isPresent()) {
+                log.error("Invalid unit: {}", measuredInteger.getUnitName());
+            }
+            return unit;
         } else {
             return Optional.empty();
         }
@@ -195,12 +211,10 @@ public class MeasureAdapter<M, U, T> {
                     .map(u -> getMeasure(u))
                     .map(m -> measureProvider.getBaseMeasures(m));
         } else if (numericExpression instanceof MeasuredDecimal) {
-            // TODO - log if unit not found
             return getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> measureProvider.getBaseMeasures(m));
         } else if (numericExpression instanceof MeasuredInteger) {
-            // TODO - log if unit not found
             return getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> measureProvider.getBaseMeasures(m));
@@ -261,10 +275,10 @@ public class MeasureAdapter<M, U, T> {
                 if (Objects.equals(left.orElse(ECollections.emptyEMap()), right.orElse(ECollections.emptyEMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
-                    log.warn("Addition of scalar and measured values is not allowed");
+                    log.error("Addition of scalar and measured values is not allowed");
                     return Optional.empty();
                 } else {
-                    log.warn("Additional operands must match");
+                    log.error("Additional operands must match");
                     return Optional.empty();
                 }
             case MULTIPLY:
@@ -317,10 +331,10 @@ public class MeasureAdapter<M, U, T> {
                 if (Objects.equals(left.orElse(ECollections.emptyEMap()), right.orElse(ECollections.emptyEMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
-                    log.warn("Addition of scalar and measured values is not allowed");
+                    log.error("Addition of scalar and measured values is not allowed");
                     return Optional.empty();
                 } else {
-                    log.warn("Additional operands must match");
+                    log.error("Additional operands must match");
                     return Optional.empty();
                 }
             case MULTIPLY:
