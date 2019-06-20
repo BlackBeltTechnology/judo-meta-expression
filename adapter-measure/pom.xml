@@ -50,5 +50,11 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>judo-meta-expression-model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>20.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -182,11 +182,6 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public boolean equals(final Measure left, final Measure right) {
-        return Objects.equals(left, right);
-    }
-
-    @Override
     public void setMeasureChangeHandler(final MeasureChangedHandler measureChangeHandler) {
         // not implemented yet
     }

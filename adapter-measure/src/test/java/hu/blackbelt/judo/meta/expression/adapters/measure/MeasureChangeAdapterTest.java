@@ -1,13 +1,12 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EMap;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -15,10 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -47,8 +43,13 @@ public class MeasureChangeAdapterTest {
 
         Mockito.doAnswer(invocationOnMock -> {
             final Object[] args = invocationOnMock.getArguments();
-            return Objects.equals(args[0], args[1]);
-        }).when(measureProvider).equals(any(Measure.class), any(Measure.class));
+            return ((Measure) args[0]).getName();
+        }).when(measureProvider).getMeasureName(any(Measure.class));
+
+        Mockito.doAnswer(invocationOnMock -> {
+            final Object[] args = invocationOnMock.getArguments();
+            return ((Measure) args[0]).getNamespace();
+        }).when(measureProvider).getMeasureNamespace(any(Measure.class));
 
         modelAdapter = mock(ModelAdapter.class);
         measureSupport = mock(MeasureSupport.class);
@@ -65,9 +66,10 @@ public class MeasureChangeAdapterTest {
     public void testLogger() {
         Assert.assertEquals(0, measureAdapter.dimensions.size());
 
+        final Level original = Logger.getRootLogger().getLevel();
         Logger.getRootLogger().setLevel(Level.ALL);
 
-        final EMap expected = ECollections.asEMap(new HashMap<>());
+        final Map<Map<MeasureAdapter.MeasureId, Integer>, MeasureAdapter.MeasureId> expected = new HashMap<>();
 
         final Measure length = Measure.builder().namespace("base").name("Length").units(Arrays.asList(
                 Unit.builder().name("millimetre").symbol("mm").build(),
@@ -76,21 +78,38 @@ public class MeasureChangeAdapterTest {
                 Unit.builder().name("metre").symbol("m").build()
         )).build();
 
-        final EMap<Measure, Integer> lengthDimension = ECollections.singletonEMap(length, 1);
-        expected.put(lengthDimension, length);
-        Mockito.when(measureProvider.getBaseMeasures(length)).thenReturn(lengthDimension.map());
+        Mockito.when(measureProvider.getBaseMeasures(length)).thenReturn(Collections.singletonMap(length, 1));
         Mockito.when(measureProvider.isBaseMeasure(length)).thenReturn(true);
 
         measureChangedHandler.measureAdded(length);
 
+        expected.put(Collections.singletonMap(measureIdFrom(length), 1), measureIdFrom(length));
         Assert.assertEquals(1, measureAdapter.dimensions.size());
+        Assert.assertThat(measureAdapter.dimensions, is(expected));
+
+        final Measure area = Measure.builder().namespace("derived").name("Area").units(Arrays.asList(
+                Unit.builder().name("square millimetre").symbol("mm²").build(),
+                Unit.builder().name("square centimetre").symbol("cm²").build(),
+                Unit.builder().name("square decimetre").symbol("dm²").build()
+        )).build();
+
+        Mockito.when(measureProvider.getBaseMeasures(area)).thenReturn(Collections.singletonMap(length, 2));
+        Mockito.when(measureProvider.isBaseMeasure(area)).thenReturn(false);
+
+        measureChangedHandler.measureAdded(area);
+
+        expected.put(Collections.singletonMap(measureIdFrom(length), 2), measureIdFrom(area));
+        Assert.assertEquals(2, measureAdapter.dimensions.size());
+        Assert.assertThat(measureAdapter.dimensions, is(expected));
+
+        Logger.getRootLogger().setLevel(original);
     }
 
     @Test
     public void testBaseMeasureAddedChangedAndRemoved() {
         Assert.assertEquals(0, measureAdapter.dimensions.size());
 
-        final EMap expected = ECollections.asEMap(new HashMap<>());
+        final Map<Map<MeasureAdapter.MeasureId, Integer>, MeasureAdapter.MeasureId> expected = new HashMap<>();
 
         final Measure length = Measure.builder().namespace("base").name("Length").units(Arrays.asList(
                 Unit.builder().name("millimetre").symbol("mm").build(),
@@ -98,31 +117,31 @@ public class MeasureChangeAdapterTest {
                 Unit.builder().name("decimetre").symbol("dm").build(),
                 Unit.builder().name("metre").symbol("m").build()
         )).build();
-        final EMap<Measure, Integer> lengthDimension = ECollections.singletonEMap(length, 1);
-        expected.put(lengthDimension, length);
-        Mockito.when(measureProvider.getBaseMeasures(length)).thenReturn(lengthDimension.map());
+        Mockito.when(measureProvider.getBaseMeasures(length)).thenReturn(Collections.singletonMap(length, 1));
         Mockito.when(measureProvider.isBaseMeasure(length)).thenReturn(true);
 
         measureChangedHandler.measureAdded(length);
+
+        expected.put(Collections.singletonMap(measureIdFrom(length), 1), measureIdFrom(length));
         Assert.assertEquals(1, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
+        Assert.assertThat(measureAdapter.dimensions, is(expected));
 
         measureChangedHandler.measureChanged(length);
-        Assert.assertEquals(1, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
 
-        expected.remove(lengthDimension);
+        Assert.assertEquals(1, measureAdapter.dimensions.size());
+        Assert.assertThat(measureAdapter.dimensions, is(expected));
+
         measureChangedHandler.measureRemoved(length);
 
         Assert.assertEquals(0, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
+        Assert.assertThat(measureAdapter.dimensions, is(Collections.emptyMap()));
     }
 
     @Test
     public void testDerivedMeasureAddedChangedAndRemoved() {
         Assert.assertEquals(0, measureAdapter.dimensions.size());
 
-        final Map<EMap<Measure, Integer>, Measure> expected = new HashMap<>();
+        final Map<Map<MeasureAdapter.MeasureId, Integer>, MeasureAdapter.MeasureId> expected = new HashMap<>();
 
         final Measure length = Measure.builder().namespace("base").name("Length").units(Arrays.asList(
                 Unit.builder().name("millimetre").symbol("mm").build(),
@@ -130,18 +149,14 @@ public class MeasureChangeAdapterTest {
                 Unit.builder().name("decimetre").symbol("dm").build(),
                 Unit.builder().name("metre").symbol("m").build()
         )).build();
-        final EMap<Measure, Integer> lengthDimension = ECollections.singletonEMap(length, 1);
-        expected.put(lengthDimension, length);
-        Mockito.when(measureProvider.getBaseMeasures(length)).thenReturn(lengthDimension.map());
+        Mockito.when(measureProvider.getBaseMeasures(length)).thenReturn(Collections.singletonMap(length, 1));
         Mockito.when(measureProvider.isBaseMeasure(length)).thenReturn(true);
 
         final Measure time = Measure.builder().namespace("base").name("Time").units(Arrays.asList(
                 Unit.builder().name("millisecond").symbol("ms").build(),
                 Unit.builder().name("second").symbol("s").build()
         )).build();
-        final EMap<Measure, Integer> timeDimension = ECollections.singletonEMap(time, 1);
-        expected.put(timeDimension, time);
-        Mockito.when(measureProvider.getBaseMeasures(time)).thenReturn(timeDimension.map());
+        Mockito.when(measureProvider.getBaseMeasures(time)).thenReturn(Collections.singletonMap(time, 1));
         Mockito.when(measureProvider.isBaseMeasure(time)).thenReturn(true);
 
         measureChangedHandler.measureAdded(length);
@@ -152,24 +167,24 @@ public class MeasureChangeAdapterTest {
         final Measure velocity = Measure.builder().namespace("derived").name("Velocity").units(Arrays.asList(
                 Unit.builder().name("metre per second").symbol("m/s").build()
         )).build();
-        final EMap<Measure, Integer> velocityDimension = ECollections.asEMap(new HashMap<>());
-        velocityDimension.put(length, 1);
-        velocityDimension.put(time, -1);
-        expected.put(velocityDimension, velocity);
-        Mockito.when(measureProvider.getBaseMeasures(velocity)).thenReturn(velocityDimension.map());
+        Mockito.when(measureProvider.getBaseMeasures(velocity)).thenReturn(ImmutableMap.of(length, 1, time, -1));
         Mockito.when(measureProvider.isBaseMeasure(velocity)).thenReturn(false);
 
         measureChangedHandler.measureAdded(velocity);
 
         Assert.assertEquals(3, measureAdapter.dimensions.size());
+        expected.put(Collections.singletonMap(measureIdFrom(length), 1), measureIdFrom(length));
+        expected.put(Collections.singletonMap(measureIdFrom(time), 1), measureIdFrom(time));
+        expected.put(ImmutableMap.of(measureIdFrom(length), 1, measureIdFrom(time), -1), measureIdFrom(velocity));
         Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
 
         final Measure acceleration = Measure.builder().namespace("derived").name("Acceleration").units(Arrays.asList(
                 Unit.builder().name("metre per second square").symbol("m/s²").build()
         )).build();
-        final EMap<Measure, Integer> accelerationDimension = ECollections.asEMap(new HashMap<>());
+        final Map<Measure, Integer> accelerationDimension = new HashMap<>();
         accelerationDimension.put(velocity, 1);
-        Mockito.when(measureProvider.getBaseMeasures(acceleration)).thenReturn(accelerationDimension.map());
+
+        Mockito.when(measureProvider.getBaseMeasures(acceleration)).thenReturn(accelerationDimension);
         Mockito.when(measureProvider.isBaseMeasure(acceleration)).thenReturn(false);
 
         Assertions.assertThrows(IllegalArgumentException.class, () -> measureChangedHandler.measureAdded(acceleration));
@@ -177,16 +192,15 @@ public class MeasureChangeAdapterTest {
         accelerationDimension.put(time, -2);
         measureChangedHandler.measureAdded(acceleration);
 
-        final EMap<Measure, Integer> expectedAccelerationDimension = ECollections.asEMap(new HashMap<>());
-        expectedAccelerationDimension.put(length, 1);
-        expectedAccelerationDimension.put(time, -3);
-        expected.put(expectedAccelerationDimension, acceleration);
-
+        final Map<MeasureAdapter.MeasureId, Integer> expectedAccelerationDimension = new HashMap<>();
+        expectedAccelerationDimension.put(measureIdFrom(length), 1);
+        expectedAccelerationDimension.put(measureIdFrom(time), -3);
+        expected.put(expectedAccelerationDimension, measureIdFrom(acceleration));
         Assert.assertEquals(4, measureAdapter.dimensions.size());
         Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
 
         accelerationDimension.put(time, -1);
-        expectedAccelerationDimension.put(time, -2);
+        expectedAccelerationDimension.put(measureIdFrom(time), -2);
         measureChangedHandler.measureChanged(acceleration);
 
         Assert.assertEquals(4, measureAdapter.dimensions.size());
@@ -200,6 +214,10 @@ public class MeasureChangeAdapterTest {
         measureChangedHandler.measureRemoved(time);
 
         Assert.assertEquals(0, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
+        Assert.assertThat(measureAdapter.dimensions, is(Collections.emptyMap()));
+    }
+
+    private MeasureAdapter.MeasureId measureIdFrom(final Measure measure) {
+        return MeasureAdapter.MeasureId.fromMeasure(measureProvider, measure);
     }
 }

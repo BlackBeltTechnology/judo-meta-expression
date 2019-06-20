@@ -11,9 +11,6 @@ import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.BasicEMap;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EMap;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,7 +45,7 @@ public class MeasureAdapter<M, U, T> {
     /**
      * Cache of dimensions (map of base measured with exponents).
      */
-    final Map<EMap<M, Integer>, M> dimensions = new ConcurrentHashMap<>();
+    final Map<Map<MeasureId, Integer>, MeasureId> dimensions = new ConcurrentHashMap<>();
 
     public MeasureAdapter(@NonNull final MeasureProvider<M, U> measureProvider, @NonNull final MeasureSupport<T, U> measureSupport, @NonNull final ModelAdapter modelAdapter) {
         this.measureProvider = measureProvider;
@@ -58,7 +55,7 @@ public class MeasureAdapter<M, U, T> {
         measureProvider.setMeasureChangeHandler(new MeasureChangeAdapter());
 
         dimensions.putAll(measureProvider.getMeasures()
-                .collect(Collectors.toMap(m -> getBaseMeasures(m), m -> m)));
+                .collect(Collectors.toMap(m -> getBaseMeasures(m), m -> MeasureId.fromMeasure(measureProvider, m))));
     }
 
     /**
@@ -198,7 +195,8 @@ public class MeasureAdapter<M, U, T> {
      * @return measure
      */
     public Optional<M> getMeasure(final NumericExpression numericExpression) {
-        return getDimension(numericExpression).map(bm -> dimensions.get(bm));
+        return getDimension(numericExpression).map(bm -> measureProvider.getMeasure(dimensions.get(bm).getNamespace(), dimensions.get(bm).getName()))
+                .filter(m -> m.isPresent()).map(m -> m.get());
     }
 
     /**
@@ -207,7 +205,7 @@ public class MeasureAdapter<M, U, T> {
      * @param numericExpression numeric expression
      * @return map of base measures with exponents
      */
-    public Optional<EMap<M, Integer>> getDimension(final NumericExpression numericExpression) {
+    public Optional<Map<MeasureId, Integer>> getDimension(final NumericExpression numericExpression) {
         if (numericExpression instanceof NumericAttribute) {
             return getUnit(numericExpression)
                     .map(u -> getMeasure(u))
@@ -244,13 +242,13 @@ public class MeasureAdapter<M, U, T> {
         } else if (numericExpression instanceof TimestampDifferenceExpression) {
             final Optional<M> durationMeasure = getDurationMeasure();
             if (durationMeasure.isPresent()) {
-                return Optional.of(ECollections.singletonEMap(durationMeasure.get(), 1));
+                return Optional.of(Collections.singletonMap(MeasureId.fromMeasure(measureProvider, durationMeasure.get()), 1));
             } else {
                 log.error("No base measure is defined for temporal expressions");
                 return Optional.empty();
             }
         } else if (numericExpression instanceof Constant) {
-            return Optional.of(ECollections.emptyEMap());
+            return Optional.of(Collections.emptyMap());
         } else {
             return Optional.empty();
         }
@@ -269,15 +267,15 @@ public class MeasureAdapter<M, U, T> {
                 .orElse(null);
     }
 
-    private Optional<EMap<M, Integer>> getDimensionOfIntegerAritmeticExpression(final IntegerAritmeticExpression integerAritmeticExpression) {
-        final Optional<EMap<M, Integer>> left = getDimension(integerAritmeticExpression.getLeft());
-        final Optional<EMap<M, Integer>> right = getDimension(integerAritmeticExpression.getRight());
+    private Optional<Map<MeasureId, Integer>> getDimensionOfIntegerAritmeticExpression(final IntegerAritmeticExpression integerAritmeticExpression) {
+        final Optional<Map<MeasureId, Integer>> left = getDimension(integerAritmeticExpression.getLeft());
+        final Optional<Map<MeasureId, Integer>> right = getDimension(integerAritmeticExpression.getRight());
 
         switch (integerAritmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
             case MODULO:
-                if (Objects.equals(left.orElse(ECollections.emptyEMap()), right.orElse(ECollections.emptyEMap()))) {
+                if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
                     log.error("Addition of scalar and measured values is not allowed");
@@ -288,14 +286,12 @@ public class MeasureAdapter<M, U, T> {
                 }
             case MULTIPLY:
             case DIVIDE:
-                final EMap<M, Integer> base = ECollections.asEMap(new HashMap<>());
+                final Map<MeasureId, Integer> base = new HashMap<>();
                 if (left.isPresent()) {
                     base.putAll(left.get());
                 }
                 if (right.isPresent()) {
-                    right.get().forEach(e -> {
-                        final M measure = e.getKey();
-                        final Integer exponent = e.getValue();
+                    right.get().forEach((measure, exponent) -> {
                         final int currentExponent;
                         if (base.containsKey(measure)) {
                             currentExponent = base.get(measure);
@@ -326,14 +322,14 @@ public class MeasureAdapter<M, U, T> {
         throw new IllegalArgumentException("Unsupported operation");
     }
 
-    private Optional<EMap<M, Integer>> getDimensionOfDecimalAritmeticExpression(final DecimalAritmeticExpression decimalAritmeticExpression) {
-        final Optional<EMap<M, Integer>> left = getDimension(decimalAritmeticExpression.getLeft());
-        final Optional<EMap<M, Integer>> right = getDimension(decimalAritmeticExpression.getRight());
+    private Optional<Map<MeasureId, Integer>> getDimensionOfDecimalAritmeticExpression(final DecimalAritmeticExpression decimalAritmeticExpression) {
+        final Optional<Map<MeasureId, Integer>> left = getDimension(decimalAritmeticExpression.getLeft());
+        final Optional<Map<MeasureId, Integer>> right = getDimension(decimalAritmeticExpression.getRight());
 
         switch (decimalAritmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
-                if (Objects.equals(left.orElse(ECollections.emptyEMap()), right.orElse(ECollections.emptyEMap()))) {
+                if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
                     return left;
                 } else if (!left.isPresent() || !right.isPresent()) {
                     log.error("Addition of scalar and measured values is not allowed");
@@ -344,14 +340,12 @@ public class MeasureAdapter<M, U, T> {
                 }
             case MULTIPLY:
             case DIVIDE:
-                final EMap<M, Integer> base = ECollections.asEMap(new HashMap<>());
+                final Map<MeasureId, Integer> base = new HashMap<>();
                 if (left.isPresent()) {
                     base.putAll(left.get());
                 }
                 if (right.isPresent()) {
-                    right.get().forEach(e -> {
-                        final M measure = e.getKey();
-                        final Integer exponent = e.getValue();
+                    right.get().forEach((measure, exponent) -> {
                         final int currentExponent;
                         if (base.containsKey(measure)) {
                             currentExponent = base.get(measure);
@@ -382,7 +376,7 @@ public class MeasureAdapter<M, U, T> {
         throw new IllegalArgumentException("Unsupported operation");
     }
 
-    private Optional<EMap<M, Integer>> getDimensionOfSwitchExpression(final SwitchExpression switchExpression) {
+    private Optional<Map<MeasureId, Integer>> getDimensionOfSwitchExpression(final SwitchExpression switchExpression) {
         final Set<M> measures = new HashSet<>();
 
         switchExpression.getCases().stream().map(c -> c.getExpression())
@@ -411,12 +405,12 @@ public class MeasureAdapter<M, U, T> {
 
         @Override
         public void measureAdded(final M measure) {
-            final EMap<M, Integer> key = getBaseMeasures(measure);
+            final Map<MeasureId, Integer> key = getBaseMeasures(measure);
             if (dimensions.containsKey(key)) {
                 log.error("Unable to add measure {}, dimension is already defined: {}", measure, key);
                 throw new IllegalArgumentException("Dimension is already defined");
             }
-            dimensions.put(key, measure);
+            dimensions.put(key, MeasureId.fromMeasure(measureProvider, measure));
             log.trace("Measure added: {}", measure);
             prettyPrintDimensions(dimensions);
         }
@@ -434,10 +428,11 @@ public class MeasureAdapter<M, U, T> {
         @Override
         public void measureRemoved(final M measure) {
             final boolean removed;
+            final MeasureId measureId = MeasureId.fromMeasure(measureProvider, measure);
             if (measureProvider.isBaseMeasure(measure)) {
-                removed = dimensions.entrySet().removeIf(e -> measureProvider.equals(e.getValue(), measure));
+                removed = dimensions.entrySet().removeIf(e -> Objects.equals(e.getValue(), measureId));
             } else {
-                removed = dimensions.entrySet().removeIf(e -> measureProvider.equals(e.getValue(), measure));
+                removed = dimensions.entrySet().removeIf(e -> Objects.equals(e.getValue(), measureId));
             }
             if (!removed) {
                 log.warn("Measure is not removed: {}", measure);
@@ -449,7 +444,7 @@ public class MeasureAdapter<M, U, T> {
 
     }
 
-    void prettyPrintDimensions(final Map<EMap<M, Integer>, M> dimensions) {
+    void prettyPrintDimensions(final Map<Map<MeasureId, Integer>, MeasureId> dimensions) {
         if (log.isTraceEnabled()) {
             log.trace("Dimensions:\n{}", dimensions.entrySet().stream().map(e -> "  - " + e.getValue() + ":\n" +
                     e.getKey().entrySet().stream().map(k -> "    * " + k.getKey() + " ^ " + k.getValue()).collect(Collectors.joining("\n"))
@@ -457,31 +452,32 @@ public class MeasureAdapter<M, U, T> {
         }
     }
 
-    private EMap<M, Integer> getBaseMeasures(final M measure) {
+    private Map<MeasureId, Integer> getBaseMeasures(final M measure) {
+        final MeasureId measureId = MeasureId.fromMeasure(measureProvider, measure);
+
         if (measureProvider.isBaseMeasure(measure)) {
-            return ECollections.singletonEMap(measure, 1);
+            return Collections.singletonMap(measureId, 1);
         } else {
-            return ECollections.asEMap(resolveBaseMeasures(measure)
+            return resolveBaseMeasures(measure)
                     .entrySet().stream()
-                    .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().intValue())));
+                    .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().intValue()));
         }
     }
 
-    private EMap<M, AtomicInteger> resolveBaseMeasures(final M measure) {
-        final EMap<M, AtomicInteger> baseMeasures = new BasicEMap<>();
+    private Map<MeasureId, AtomicInteger> resolveBaseMeasures(final M measure) {
+        final Map<MeasureId, AtomicInteger> baseMeasures = new HashMap<>();
 
         measureProvider.getBaseMeasures(measure).forEach((base, exponent) -> {
             if (measureProvider.isBaseMeasure(base)) {
-                if (baseMeasures.containsKey(base)) {
-                    baseMeasures.get(base).addAndGet(exponent);
+                final MeasureId baseId = MeasureId.fromMeasure(measureProvider, base);
+
+                if (baseMeasures.containsKey(baseId)) {
+                    baseMeasures.get(baseId).addAndGet(exponent);
                 } else {
-                    baseMeasures.put(base, new AtomicInteger(exponent));
+                    baseMeasures.put(baseId, new AtomicInteger(exponent));
                 }
             } else {
-                resolveBaseMeasures(base).forEach(derived -> {
-                    final M derivedBase = derived.getKey();
-                    final AtomicInteger derivedExponent = derived.getValue();
-
+                resolveBaseMeasures(base).forEach((derivedBase, derivedExponent) -> {
                     if (baseMeasures.containsKey(derivedBase)) {
                         baseMeasures.get(derivedBase).addAndGet(exponent * derivedExponent.intValue());
                     } else {
@@ -498,10 +494,38 @@ public class MeasureAdapter<M, U, T> {
         return baseMeasures;
     }
 
-    private Optional<EMap<M, Integer>> getDimensionOfMeasure(final M measure) {
+    private Optional<Map<MeasureId, Integer>> getDimensionOfMeasure(final M measure) {
+        final MeasureId measureId = MeasureId.fromMeasure(measureProvider, measure);
         return dimensions.entrySet().parallelStream()
-                .filter(e -> measureProvider.equals(e.getValue(), measure))
+                .filter(e -> Objects.equals(e.getValue(), measureId))
                 .map(e -> e.getKey())
                 .findAny();
+    }
+
+    /**
+     * Measure ID used internally.
+     */
+    @lombok.Data
+    @lombok.AllArgsConstructor
+    public static class MeasureId {
+
+        /**
+         * Namespace of measure.
+         */
+        private String namespace;
+
+        /**
+         * Name of measure.
+         */
+        @NonNull
+        private String name;
+
+        public static <M, U> MeasureId fromMeasure(final MeasureProvider<M, U> measureProvider, M measure) {
+            return new MeasureId(measureProvider.getMeasureNamespace(measure), measureProvider.getMeasureName(measure));
+        }
+
+        public String toString() {
+            return namespace + "::" + name;
+        }
     }
 }

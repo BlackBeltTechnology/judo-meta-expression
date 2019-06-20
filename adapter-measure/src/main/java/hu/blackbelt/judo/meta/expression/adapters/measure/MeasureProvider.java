@@ -91,15 +91,6 @@ public interface MeasureProvider<M, U> {
     boolean isBaseMeasure(M measure);
 
     /**
-     * Check if two measures are equal.
-     *
-     * @param left  left side
-     * @param right right side
-     * @return <code>true</code> if two measures are equal, <code>false</code> otherwise
-     */
-    boolean equals(M left, M right);
-
-    /**
      * Set handler of measure changes. Measure provider can keep state in sync via this object.
      *
      * @param measureChangeHandler measure change handler

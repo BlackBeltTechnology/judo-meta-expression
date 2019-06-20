@@ -11,7 +11,6 @@ import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
-import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -24,6 +23,7 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
@@ -66,7 +66,7 @@ public class AsmModelAdapterDimensionTest {
         // base measure is added
         resource.getContents().add(length);
         Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m").build()).get(),
-                is(ECollections.singletonEMap(length, 1)));
+                is(Collections.singletonMap(measureIdFrom(length), 1)));
 
         // test cleanup
         resource.getContents().remove(length);
@@ -137,17 +137,17 @@ public class AsmModelAdapterDimensionTest {
 
         // base and derived measures are added as collections
         Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m").build()).get(),
-                is(ECollections.singletonEMap(length, 1)));
+                is(Collections.singletonMap(measureIdFrom(length), 1)));
         Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m²").build()).get(),
-                is(ECollections.singletonEMap(length, 2)));
+                is(Collections.singletonMap(measureIdFrom(length), 2)));
         Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("s").build()).get(),
-                is(ECollections.singletonEMap(time, 1)));
+                is(Collections.singletonMap(measureIdFrom(time), 1)));
 
         resource.getContents().add(velocity);
 
         // derived measure is added
-        Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m/s").build()).get().entrySet(),
-                is(ECollections.asEMap(ImmutableMap.of(length, 1, time, -1)).entrySet()));
+        Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m/s").build()).get(),
+                is(ImmutableMap.of(measureIdFrom(length), 1, measureIdFrom(time), -1)));
 
         final DerivedMeasure volume = newDerivedMeasureBuilder()
                 .withNamespace("custom")
@@ -164,7 +164,7 @@ public class AsmModelAdapterDimensionTest {
 
         // dimension of volume is not defined yet
         Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("dm³").build()).get(),
-                is(ECollections.emptyEMap()));
+                is(Collections.emptyMap()));
 
         volume.getTerms().add(newBaseMeasureTermBuilder()
                 .withBaseMeasure(length)
@@ -173,7 +173,7 @@ public class AsmModelAdapterDimensionTest {
 
         // dimension of volume is defined
         Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("dm³").build()).get(),
-                is(ECollections.singletonEMap(length, 3)));
+                is(Collections.singletonMap(measureIdFrom(length), 3)));
 
         resource.getContents().removeAll(Arrays.asList(length, area, volume, time));
         resource.getContents().remove(velocity);
@@ -184,5 +184,9 @@ public class AsmModelAdapterDimensionTest {
         Assert.assertFalse(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("s").build()).isPresent());
         Assert.assertFalse(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m/s").build()).isPresent());
         Assert.assertFalse(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("dm³").build()).isPresent());
+    }
+
+    private MeasureAdapter.MeasureId measureIdFrom(final Measure measure) {
+        return MeasureAdapter.MeasureId.fromMeasure(measureProvider, measure);
     }
 }

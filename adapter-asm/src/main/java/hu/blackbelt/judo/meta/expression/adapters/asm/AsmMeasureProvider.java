@@ -144,11 +144,6 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
         return measure instanceof BaseMeasure;
     }
 
-    @Override
-    public boolean equals(final Measure left, final Measure right) {
-        return EcoreUtil.equals(left, right);
-    }
-
     <T> Stream<T> getMeasureElement(final Class<T> clazz) {
         final Iterable<Notifier> asmContents = resourceSet::getAllContents;
         return StreamSupport.stream(asmContents.spliterator(), true)
