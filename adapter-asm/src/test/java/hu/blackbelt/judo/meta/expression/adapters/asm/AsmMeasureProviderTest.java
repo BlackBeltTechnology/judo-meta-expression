@@ -9,7 +9,6 @@ import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
-import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.junit.Assert;
@@ -20,6 +19,7 @@ import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -88,7 +88,7 @@ public class AsmMeasureProviderTest {
     public void testBaseMeasuresOfBaseMeasure() {
         final Measure length = getMeasureByName("Length").get();
 
-        Assert.assertThat(measureProvider.getBaseMeasures(length), is(ECollections.singletonEMap(length, 1)));
+        Assert.assertThat(measureProvider.getBaseMeasures(length), is(Collections.singletonMap(length, 1)));
     }
 
     @Test
@@ -99,12 +99,12 @@ public class AsmMeasureProviderTest {
         final Measure time = getMeasureByName("Time").get();
         final Measure force = getMeasureByName("Force").get();
 
-        Assert.assertThat(measureProvider.getBaseMeasures(area), is(ECollections.singletonEMap(length, 2)));
-        Assert.assertThat(measureProvider.getBaseMeasures(force).entrySet(), is(ECollections.asEMap(ImmutableMap.of(
+        Assert.assertThat(measureProvider.getBaseMeasures(area), is(Collections.singletonMap(length, 2)));
+        Assert.assertThat(measureProvider.getBaseMeasures(force), is(ImmutableMap.of(
                 mass, 1,
                 length, 1,
                 time, -2
-        )).entrySet()));
+        )));
     }
 
     @Test

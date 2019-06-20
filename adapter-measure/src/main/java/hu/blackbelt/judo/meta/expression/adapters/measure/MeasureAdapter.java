@@ -11,11 +11,13 @@ import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EMap;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +48,7 @@ public class MeasureAdapter<M, U, T> {
     /**
      * Cache of dimensions (map of base measured with exponents).
      */
-    final EMap<EMap<M, Integer>, M> dimensions = ECollections.asEMap(new ConcurrentHashMap<>());
+    final Map<EMap<M, Integer>, M> dimensions = new ConcurrentHashMap<>();
 
     public MeasureAdapter(@NonNull final MeasureProvider<M, U> measureProvider, @NonNull final MeasureSupport<T, U> measureSupport, @NonNull final ModelAdapter modelAdapter) {
         this.measureProvider = measureProvider;
@@ -56,7 +58,7 @@ public class MeasureAdapter<M, U, T> {
         measureProvider.setMeasureChangeHandler(new MeasureChangeAdapter());
 
         dimensions.putAll(measureProvider.getMeasures()
-                .collect(Collectors.toMap(m -> measureProvider.getBaseMeasures(m), m -> m)));
+                .collect(Collectors.toMap(m -> getBaseMeasures(m), m -> m)));
     }
 
     /**
@@ -209,15 +211,18 @@ public class MeasureAdapter<M, U, T> {
         if (numericExpression instanceof NumericAttribute) {
             return getUnit(numericExpression)
                     .map(u -> getMeasure(u))
-                    .map(m -> measureProvider.getBaseMeasures(m));
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof MeasuredDecimal) {
             return getUnit(numericExpression)
                     .map(u -> getMeasure(u))
-                    .map(m -> measureProvider.getBaseMeasures(m));
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof MeasuredInteger) {
             return getUnit(numericExpression)
                     .map(u -> getMeasure(u))
-                    .map(m -> measureProvider.getBaseMeasures(m));
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof DecimalAritmeticExpression) {
             return getDimensionOfDecimalAritmeticExpression((DecimalAritmeticExpression) numericExpression);
         } else if (numericExpression instanceof IntegerAritmeticExpression) {
@@ -239,7 +244,7 @@ public class MeasureAdapter<M, U, T> {
         } else if (numericExpression instanceof TimestampDifferenceExpression) {
             final Optional<M> durationMeasure = getDurationMeasure();
             if (durationMeasure.isPresent()) {
-                return Optional.of(ECollections.asEMap(Collections.singletonMap(durationMeasure.get(), 1)));
+                return Optional.of(ECollections.singletonEMap(durationMeasure.get(), 1));
             } else {
                 log.error("No base measure is defined for temporal expressions");
                 return Optional.empty();
@@ -396,7 +401,7 @@ public class MeasureAdapter<M, U, T> {
         }
 
         if (measures.size() == 1) {
-            return Optional.ofNullable(measureProvider.getBaseMeasures(measures.iterator().next()));
+            return getDimensionOfMeasure(measures.iterator().next());
         } else {
             return Optional.empty();
         }
@@ -406,43 +411,97 @@ public class MeasureAdapter<M, U, T> {
 
         @Override
         public void measureAdded(final M measure) {
-            if (measureProvider.isBaseMeasure(measure)) {
-                log.trace("Base measure added: {}", measure);
-                dimensions.put(ECollections.asEMap(Collections.singletonMap(measure, 1)), measure);
-            } else {
-                log.trace("Derived measure added: {}", measure);
-                dimensions.put(measureProvider.getBaseMeasures(measure), measure);
+            final EMap<M, Integer> key = getBaseMeasures(measure);
+            if (dimensions.containsKey(key)) {
+                log.error("Unable to add measure {}, dimension is already defined: {}", measure, key);
+                throw new IllegalArgumentException("Dimension is already defined");
             }
-            prettyPrintDimensions();
+            dimensions.put(key, measure);
+            log.trace("Measure added: {}", measure);
+            prettyPrintDimensions(dimensions);
         }
 
         @Override
         public void measureChanged(final M measure) {
             if (!measureProvider.isBaseMeasure(measure)) {
-                log.trace("Derived measure changed: {}", measure);
                 measureRemoved(measure);
                 measureAdded(measure);
+                log.trace("Derived measure changed: {}", measure);
+                prettyPrintDimensions(dimensions);
             }
         }
 
         @Override
         public void measureRemoved(final M measure) {
+            final boolean removed;
             if (measureProvider.isBaseMeasure(measure)) {
-                log.trace("Base measure removed: {}", measure);
-                dimensions.entrySet().removeIf(e -> measureProvider.equals(e.getValue(), measure));
+                removed = dimensions.entrySet().removeIf(e -> measureProvider.equals(e.getValue(), measure));
             } else {
-                log.trace("Derived measure removed: {}", measure);
-                dimensions.entrySet().removeIf(e -> measureProvider.equals(e.getValue(), measure));
+                removed = dimensions.entrySet().removeIf(e -> measureProvider.equals(e.getValue(), measure));
             }
-            prettyPrintDimensions();
+            if (!removed) {
+                log.warn("Measure is not removed: {}", measure);
+            } else {
+                log.trace("Measure removed: {}", measure);
+            }
+            prettyPrintDimensions(dimensions);
         }
 
-        private void prettyPrintDimensions() {
-            if (log.isTraceEnabled()) {
-                log.trace("Dimensions:\n{}", dimensions.entrySet().stream().map(e -> "  - " + e.getValue() + ":\n" +
-                        e.getKey().entrySet().stream().map(k -> "    * " + k.getKey() + " ^ " + k.getValue()).collect(Collectors.joining("\n"))
-                ).collect(Collectors.joining("\n")));
-            }
+    }
+
+    void prettyPrintDimensions(final Map<EMap<M, Integer>, M> dimensions) {
+        if (log.isTraceEnabled()) {
+            log.trace("Dimensions:\n{}", dimensions.entrySet().stream().map(e -> "  - " + e.getValue() + ":\n" +
+                    e.getKey().entrySet().stream().map(k -> "    * " + k.getKey() + " ^ " + k.getValue()).collect(Collectors.joining("\n"))
+            ).collect(Collectors.joining("\n")));
         }
+    }
+
+    private EMap<M, Integer> getBaseMeasures(final M measure) {
+        if (measureProvider.isBaseMeasure(measure)) {
+            return ECollections.singletonEMap(measure, 1);
+        } else {
+            return ECollections.asEMap(resolveBaseMeasures(measure)
+                    .entrySet().stream()
+                    .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().intValue())));
+        }
+    }
+
+    private EMap<M, AtomicInteger> resolveBaseMeasures(final M measure) {
+        final EMap<M, AtomicInteger> baseMeasures = new BasicEMap<>();
+
+        measureProvider.getBaseMeasures(measure).forEach((base, exponent) -> {
+            if (measureProvider.isBaseMeasure(base)) {
+                if (baseMeasures.containsKey(base)) {
+                    baseMeasures.get(base).addAndGet(exponent);
+                } else {
+                    baseMeasures.put(base, new AtomicInteger(exponent));
+                }
+            } else {
+                resolveBaseMeasures(base).forEach(derived -> {
+                    final M derivedBase = derived.getKey();
+                    final AtomicInteger derivedExponent = derived.getValue();
+
+                    if (baseMeasures.containsKey(derivedBase)) {
+                        baseMeasures.get(derivedBase).addAndGet(exponent * derivedExponent.intValue());
+                    } else {
+                        baseMeasures.put(derivedBase, new AtomicInteger(exponent * derivedExponent.intValue()));
+                    }
+                });
+            }
+        });
+
+        if (log.isTraceEnabled()) {
+            log.trace("Dimension of {}:\n{}", measure, baseMeasures.entrySet().stream().map(e -> "  - " + e.getKey() + " ^ " + e.getValue().intValue()).collect(Collectors.joining("\n")));
+        }
+
+        return baseMeasures;
+    }
+
+    private Optional<EMap<M, Integer>> getDimensionOfMeasure(final M measure) {
+        return dimensions.entrySet().parallelStream()
+                .filter(e -> measureProvider.equals(e.getValue(), measure))
+                .map(e -> e.getKey())
+                .findAny();
     }
 }

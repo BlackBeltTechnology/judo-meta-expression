@@ -36,7 +36,7 @@ public class MeasureAdapterTest {
     private DummyMeasureProvider measureProvider = new DummyMeasureProvider();
     private MeasureSupport<Object, Unit> measureSupport;
     private ModelAdapter modelAdapter;
-    private MeasureAdapter measureAdapter;
+    private MeasureAdapter<Measure, Unit, ?> measureAdapter;
 
     @BeforeEach
     public void setUp() {
@@ -81,11 +81,11 @@ public class MeasureAdapterTest {
 
     @Test
     public void testRefreshDimensions() {
-        final EMap<EMap<Measure, Integer>, Measure> dimensions = measureAdapter.dimensions;
+        final Map<EMap<Measure, Integer>, Measure> dimensions = measureAdapter.dimensions;
 
         Assert.assertThat(dimensions.size(), is(6));
 
-        final EMap<EMap<Measure, Integer>, Measure> expected = ECollections.asEMap(new HashMap<>());
+        final Map<EMap<Measure, Integer>, Measure> expected = new HashMap<>();
         expected.put(ECollections.singletonEMap(measureProvider.getTime(), 1), measureProvider.getTime());
         expected.put(ECollections.singletonEMap(measureProvider.getLength(), 1), measureProvider.getLength());
         expected.put(ECollections.singletonEMap(measureProvider.getMass(), 1), measureProvider.getMass());
@@ -97,7 +97,7 @@ public class MeasureAdapterTest {
         velocityBase.put(measureProvider.getTime(), -1);
         expected.put(velocityBase, measureProvider.getVelocity());
 
-        Assert.assertTrue(dimensions.containsAll(expected));
+        Assert.assertThat(dimensions, is(expected));
     }
 
     @Test
@@ -260,7 +260,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(multiplication));
-        Assert.assertThat(measureAdapter.getDimension(multiplication), is(Optional.of(measureProvider.getBaseMeasures(measureProvider.getArea()))));
+        Assert.assertThat(measureAdapter.getDimension(multiplication).get().map(), is(measureProvider.getBaseMeasures(measureProvider.getArea())));
 
         final NumericExpression multiplication2 = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -291,7 +291,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(multiplication2));
-        Assert.assertThat(measureAdapter.getDimension(multiplication2), is(Optional.of(measureProvider.getBaseMeasures(measureProvider.getVolume()))));
+        Assert.assertThat(measureAdapter.getDimension(multiplication2).get().map(), is(measureProvider.getBaseMeasures(measureProvider.getVolume())));
 
         final NumericExpression divisionByScalar = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -468,7 +468,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(multiplication));
-        Assert.assertThat(measureAdapter.getDimension(multiplication), is(Optional.of(measureProvider.getBaseMeasures(measureProvider.getArea()))));
+        Assert.assertThat(measureAdapter.getDimension(multiplication).get().map(), is(measureProvider.getBaseMeasures(measureProvider.getArea())));
 
         final NumericExpression multiplication2 = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -499,7 +499,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(multiplication2));
-        Assert.assertThat(measureAdapter.getDimension(multiplication2), is(Optional.of(measureProvider.getBaseMeasures(measureProvider.getVolume()))));
+        Assert.assertThat(measureAdapter.getDimension(multiplication2).get().map(), is(measureProvider.getBaseMeasures(measureProvider.getVolume())));
 
         final NumericExpression divisionByScalar = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
