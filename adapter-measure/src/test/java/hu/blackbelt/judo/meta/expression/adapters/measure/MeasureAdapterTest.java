@@ -10,6 +10,8 @@ import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EMap;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +44,6 @@ public class MeasureAdapterTest {
         measureSupport = mock(MeasureSupport.class);
 
         measureAdapter = new MeasureAdapter(measureProvider, measureSupport, modelAdapter);
-        measureAdapter.refreshDimensions();
     }
 
     @AfterEach
@@ -80,47 +81,47 @@ public class MeasureAdapterTest {
 
     @Test
     public void testRefreshDimensions() {
-        final Map<Map<Measure, Integer>, Measure> dimensions = measureAdapter.dimensions;
+        final EMap<EMap<Measure, Integer>, Measure> dimensions = measureAdapter.dimensions;
 
         Assert.assertThat(dimensions.size(), is(6));
 
-        final Map<Map<Measure, Integer>, Measure> expected = new HashMap<>();
-        expected.put(Collections.singletonMap(measureProvider.getTime(), 1), measureProvider.getTime());
-        expected.put(Collections.singletonMap(measureProvider.getLength(), 1), measureProvider.getLength());
-        expected.put(Collections.singletonMap(measureProvider.getMass(), 1), measureProvider.getMass());
-        expected.put(Collections.singletonMap(measureProvider.getLength(), 2), measureProvider.getArea());
-        expected.put(Collections.singletonMap(measureProvider.getLength(), 3), measureProvider.getVolume());
+        final EMap<EMap<Measure, Integer>, Measure> expected = ECollections.asEMap(new HashMap<>());
+        expected.put(ECollections.singletonEMap(measureProvider.getTime(), 1), measureProvider.getTime());
+        expected.put(ECollections.singletonEMap(measureProvider.getLength(), 1), measureProvider.getLength());
+        expected.put(ECollections.singletonEMap(measureProvider.getMass(), 1), measureProvider.getMass());
+        expected.put(ECollections.singletonEMap(measureProvider.getLength(), 2), measureProvider.getArea());
+        expected.put(ECollections.singletonEMap(measureProvider.getLength(), 3), measureProvider.getVolume());
 
-        final Map<Measure, Integer> velocityBase = new HashMap<>();
+        final EMap<Measure, Integer> velocityBase = ECollections.asEMap(new HashMap<>());
         velocityBase.put(measureProvider.getLength(), 1);
         velocityBase.put(measureProvider.getTime(), -1);
         expected.put(velocityBase, measureProvider.getVelocity());
 
-        Assert.assertThat(dimensions, is(expected));
+        Assert.assertTrue(dimensions.containsAll(expected));
     }
 
     @Test
     public void testIsMeasuredMeasuredInteger() {
         final NumericExpression numericExpressionWithoutMeasure = newMeasuredIntegerBuilder().withUnitName("kg").withValue(BigInteger.ONE).build();
         Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithoutMeasure));
-        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithoutMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithoutMeasure), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
 
         final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
         final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
         Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithMeasure));
-        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithMeasure), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
     }
 
     @Test
     public void testIsMeasuredMeasuredDecimal() {
         final NumericExpression numericExpressionWithoutMeasure = newMeasuredDecimalBuilder().withUnitName("kg").withValue(BigDecimal.ONE).build();
         Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithoutMeasure));
-        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithoutMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithoutMeasure), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
 
         final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
         final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
         Assert.assertTrue(measureAdapter.isMeasured(numericExpressionWithMeasure));
-        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithMeasure), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(numericExpressionWithMeasure), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
     }
 
     @Test
@@ -203,7 +204,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(addition));
-        Assert.assertThat(measureAdapter.getDimension(addition), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(addition), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
 
         final NumericExpression subtraction = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -221,7 +222,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(subtraction));
-        Assert.assertThat(measureAdapter.getDimension(subtraction), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(subtraction), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
 
         final NumericExpression multiplicationWithScalar = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -238,7 +239,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(multiplicationWithScalar));
-        Assert.assertThat(measureAdapter.getDimension(multiplicationWithScalar), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(multiplicationWithScalar), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
 
         final NumericExpression multiplication = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -320,9 +321,9 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(divisionByScalar));
-        Assert.assertThat(measureAdapter.getDimension(divisionByScalar), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(divisionByScalar), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
         Assert.assertTrue(measureAdapter.isMeasured(reciprocal));
-        Assert.assertThat(measureAdapter.getDimension(reciprocal), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), -1))));
+        Assert.assertThat(measureAdapter.getDimension(reciprocal), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), -1))));
 
         final NumericExpression modulo = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -340,7 +341,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(modulo));
-        Assert.assertThat(measureAdapter.getDimension(modulo), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(modulo), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
 
         final NumericExpression division1 = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newMeasuredIntegerBuilder()
@@ -358,7 +359,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(division1));
-        Assert.assertThat(measureAdapter.getDimension(division1), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(division1), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
 
         final NumericExpression division2 = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -376,7 +377,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertFalse(measureAdapter.isMeasured(division2));
-        Assert.assertThat(measureAdapter.getDimension(division2), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(division2), is(Optional.of(ECollections.emptyEMap())));
     }
 
     @Test
@@ -411,7 +412,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(addition));
-        Assert.assertThat(measureAdapter.getDimension(addition), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(addition), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
 
         final NumericExpression subtraction = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -429,7 +430,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(subtraction));
-        Assert.assertThat(measureAdapter.getDimension(subtraction), is(Optional.of(Collections.singletonMap(measureProvider.getMass(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(subtraction), is(Optional.of(ECollections.singletonEMap(measureProvider.getMass(), 1))));
 
         final NumericExpression multiplicationWithScalar = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -446,7 +447,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(multiplicationWithScalar));
-        Assert.assertThat(measureAdapter.getDimension(multiplicationWithScalar), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(multiplicationWithScalar), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
 
         final NumericExpression multiplication = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -528,9 +529,9 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(divisionByScalar));
-        Assert.assertThat(measureAdapter.getDimension(divisionByScalar), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(divisionByScalar), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
         Assert.assertTrue(measureAdapter.isMeasured(reciprocal));
-        Assert.assertThat(measureAdapter.getDimension(reciprocal), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), -1))));
+        Assert.assertThat(measureAdapter.getDimension(reciprocal), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), -1))));
 
         final NumericExpression division1 = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newMeasuredIntegerBuilder()
@@ -548,7 +549,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(division1));
-        Assert.assertThat(measureAdapter.getDimension(division1), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(division1), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
 
         final NumericExpression division2 = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -566,7 +567,7 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertFalse(measureAdapter.isMeasured(division2));
-        Assert.assertThat(measureAdapter.getDimension(division2), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(division2), is(Optional.of(ECollections.emptyEMap())));
     }
 
     @Test
@@ -584,10 +585,10 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertFalse(measureAdapter.isMeasured(scalarOpposite));
-        Assert.assertThat(measureAdapter.getDimension(scalarOpposite), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(scalarOpposite), is(Optional.of(ECollections.emptyEMap())));
 
         Assert.assertTrue(measureAdapter.isMeasured(measuredOpposite));
-        Assert.assertThat(measureAdapter.getDimension(measuredOpposite), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(measuredOpposite), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
     }
 
     @Test
@@ -605,10 +606,10 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertFalse(measureAdapter.isMeasured(scalarOpposite));
-        Assert.assertThat(measureAdapter.getDimension(scalarOpposite), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(scalarOpposite), is(Optional.of(ECollections.emptyEMap())));
 
         Assert.assertTrue(measureAdapter.isMeasured(measuredOpposite));
-        Assert.assertThat(measureAdapter.getDimension(measuredOpposite), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(measuredOpposite), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
     }
 
     public void testIsMeasuredIntegerAggregatedExpression() {
@@ -635,10 +636,10 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertFalse(measureAdapter.isMeasured(scalar));
-        Assert.assertThat(measureAdapter.getDimension(scalar), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(scalar), is(Optional.of(ECollections.emptyEMap())));
 
         Assert.assertTrue(measureAdapter.isMeasured(measured));
-        Assert.assertThat(measureAdapter.getDimension(measured), is(Optional.of(Collections.singletonMap(measureProvider.getLength(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(measured), is(Optional.of(ECollections.singletonEMap(measureProvider.getLength(), 1))));
     }
 
     public void testIsMeasuredIntegerSwitchExpression() {
@@ -661,18 +662,18 @@ public class MeasureAdapterTest {
                 .build();
 
         Assert.assertTrue(measureAdapter.isMeasured(duration));
-        Assert.assertThat(measureAdapter.getDimension(duration), is(Optional.of(Collections.singletonMap(measureProvider.getTime(), 1))));
+        Assert.assertThat(measureAdapter.getDimension(duration), is(Optional.of(ECollections.singletonEMap(measureProvider.getTime(), 1))));
     }
 
     @Test
     public void testIsMeasuredNonMeasuredConstant() {
         final NumericExpression integerExpression = newIntegerConstantBuilder().withValue(BigInteger.ONE).build();
         Assert.assertFalse(measureAdapter.isMeasured(integerExpression));
-        Assert.assertThat(measureAdapter.getDimension(integerExpression), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(integerExpression), is(Optional.of(ECollections.emptyEMap())));
 
         final NumericExpression decimalExpression = newDecimalConstantBuilder().withValue(BigDecimal.ONE).build();
         Assert.assertFalse(measureAdapter.isMeasured(decimalExpression));
-        Assert.assertThat(measureAdapter.getDimension(decimalExpression), is(Optional.of(Collections.emptyMap())));
+        Assert.assertThat(measureAdapter.getDimension(decimalExpression), is(Optional.of(ECollections.emptyEMap())));
     }
 
     @Test

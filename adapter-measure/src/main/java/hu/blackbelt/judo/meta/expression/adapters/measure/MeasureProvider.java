@@ -1,7 +1,8 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
+import org.eclipse.emf.common.util.EMap;
+
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -46,7 +47,7 @@ public interface MeasureProvider<M, U> {
      * @param measure measure
      * @return base measures with exponents
      */
-    Map<M, Integer> getBaseMeasures(M measure);
+    EMap<M, Integer> getBaseMeasures(M measure);
 
     /**
      * Get units of a given measure.

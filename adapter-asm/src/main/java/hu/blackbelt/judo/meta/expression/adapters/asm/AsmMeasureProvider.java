@@ -6,6 +6,8 @@ import hu.blackbelt.judo.meta.measure.*;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -44,12 +46,12 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+    public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
         if (measure instanceof DerivedMeasure) {
             final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
-            return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
+            return ECollections.asEMap(derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent())));
         } else {
-            return Collections.singletonMap(measure, 1);
+            return ECollections.singletonEMap(measure, 1);
         }
     }
 

@@ -2,6 +2,8 @@ package hu.blackbelt.judo.meta.expression.adapters.measure;
 
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EMap;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -105,18 +107,18 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+    public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
         if (velocity.equals(measure)) {
-            final Map<Measure, Integer> base = new HashMap<>();
+            final EMap<Measure, Integer> base = ECollections.asEMap(new HashMap<>());
             base.put(length, 1);
             base.put(time, -1);
             return base;
         } else if (area.equals(measure)) {
-            return Collections.singletonMap(length, 2);
+            return ECollections.singletonEMap(length, 2);
         } else if (volume.equals(measure)) {
-            return Collections.singletonMap(length, 3);
+            return ECollections.singletonEMap(length, 3);
         } else {
-            return Collections.singletonMap(measure, 1);
+            return ECollections.singletonEMap(measure, 1);
         }
     }
 
