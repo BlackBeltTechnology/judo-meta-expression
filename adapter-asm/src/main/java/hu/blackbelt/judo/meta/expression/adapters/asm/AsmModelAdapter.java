@@ -29,6 +29,9 @@ import java.util.stream.StreamSupport;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
+/**
+ * Model adapter for ASM models.
+ */
 @Slf4j
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
 

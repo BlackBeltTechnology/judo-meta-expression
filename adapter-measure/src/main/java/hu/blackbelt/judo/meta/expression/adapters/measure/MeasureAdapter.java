@@ -373,6 +373,9 @@ public class MeasureAdapter<M, U, T> {
         }
     }
 
+    /**
+     * Internal measure change handler to keeps dimension cache in sync with measure provider.
+     */
     private class MeasureChangeAdapter implements MeasureChangedHandler<M> {
 
         @Override

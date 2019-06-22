@@ -15,6 +15,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * Measure provider for measure metamodel that is used runtime (with ASM models).
+ */
 @Slf4j
 public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 

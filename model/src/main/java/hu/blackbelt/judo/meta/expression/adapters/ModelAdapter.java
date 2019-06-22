@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Expression model adapter.
+ * Expression model adapter. This interface is used to evaluate expressions on specific metamodels.
  *
  * @param <NE>  namespace element
  * @param <P>   primitive
