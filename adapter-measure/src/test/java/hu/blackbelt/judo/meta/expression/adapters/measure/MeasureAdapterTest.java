@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
+import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
@@ -7,24 +8,33 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
+import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
+import hu.blackbelt.judo.meta.expression.operator.DecimalComparator;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
+import hu.blackbelt.judo.meta.expression.operator.IntegerComparator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,21 +42,44 @@ import static org.mockito.Mockito.when;
 public class MeasureAdapterTest {
 
     private DummyMeasureProvider measureProvider = new DummyMeasureProvider();
-    private MeasureSupport<Object, Unit> measureSupport;
     private ModelAdapter modelAdapter;
     private MeasureAdapter<Measure, Unit, ?> measureAdapter;
+
+    private final Map<String, Unit> attributeUnits = new TreeMap<>();
 
     @BeforeEach
     public void setUp() {
         modelAdapter = mock(ModelAdapter.class);
-        measureSupport = mock(MeasureSupport.class);
 
-        measureAdapter = new MeasureAdapter(measureProvider, measureSupport, modelAdapter);
+        Mockito.doAnswer(invocationOnMock -> {
+            final Object[] args = invocationOnMock.getArguments();
+            final NumericExpression numericExpression = (NumericExpression) args[0];
+
+            if (numericExpression instanceof NumericAttribute) {
+                final String attributeName = ((NumericAttribute) numericExpression).getAttributeName();
+                return Optional.ofNullable(attributeUnits.get(attributeName));
+            } else if (numericExpression instanceof MeasuredDecimal) {
+                final MeasuredDecimal measuredDecimal = (MeasuredDecimal) numericExpression;
+                return measureAdapter.getUnit(measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
+                        measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
+                        measuredDecimal.getUnitName());
+            } else if (numericExpression instanceof MeasuredInteger) {
+                final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
+                return measureAdapter.getUnit(measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getNamespace()) : Optional.empty(),
+                        measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName()) : Optional.empty(),
+                        measuredInteger.getUnitName());
+            } else {
+                return Optional.empty();
+            }
+        }).when(modelAdapter).getUnit(any(NumericExpression.class));
+
+        measureAdapter = new MeasureAdapter(measureProvider, modelAdapter);
     }
 
     @AfterEach
     public void tearDown() {
         measureAdapter = null;
+        attributeUnits.clear();
     }
 
     @Test
@@ -88,7 +121,7 @@ public class MeasureAdapterTest {
 
         expected.put(Collections.singletonMap(measureIdFrom(measureProvider.getTime()), 1), measureIdFrom(measureProvider.getTime()));
         expected.put(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1), measureIdFrom(measureProvider.getLength()));
-        expected.put(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1),measureIdFrom(measureProvider.getMass()));
+        expected.put(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1), measureIdFrom(measureProvider.getMass()));
         expected.put(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 2), measureIdFrom(measureProvider.getArea()));
         expected.put(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 3), measureIdFrom(measureProvider.getVolume()));
 
@@ -160,12 +193,8 @@ public class MeasureAdapterTest {
         when(modelAdapter.get(personType)).thenReturn(Optional.of(person));
         when(modelAdapter.get(orderItemType)).thenReturn(Optional.of(orderItem));
 
-        when(measureSupport.getUnit(person, "weight"))
-                .thenReturn(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny());
-        when(measureSupport.getUnit(orderItem, "daysLeftToShip"))
-                .thenReturn(measureProvider.getTime().getUnits().parallelStream().filter(u -> Objects.equals(u.getName(), "day")).findAny());
-        when(measureSupport.getUnit(orderItem, "quantity"))
-                .thenReturn(Optional.empty());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("daysLeftToShip", measureProvider.getTime().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "d")).findAny().get());
 
         Assert.assertTrue(measureAdapter.isMeasured(weight));
         Assert.assertTrue(measureAdapter.isMeasured(daysLeftToShip));
@@ -179,14 +208,10 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        when(measureSupport.getUnit(pkg, "weight"))
-                .thenReturn(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny());
-        when(measureSupport.getUnit(pkg, "height"))
-                .thenReturn(measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny());
-        when(measureSupport.getUnit(pkg, "width"))
-                .thenReturn(measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny());
-        when(measureSupport.getUnit(pkg, "length"))
-                .thenReturn(measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("height", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("width", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("length", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
         final NumericExpression addition = newIntegerAritmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -387,14 +412,10 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        when(measureSupport.getUnit(pkg, "weight"))
-                .thenReturn(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny());
-        when(measureSupport.getUnit(pkg, "height"))
-                .thenReturn(measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny());
-        when(measureSupport.getUnit(pkg, "width"))
-                .thenReturn(measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny());
-        when(measureSupport.getUnit(pkg, "length"))
-                .thenReturn(measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("height", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("width", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("length", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
         final NumericExpression addition = newDecimalAritmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -612,12 +633,62 @@ public class MeasureAdapterTest {
         Assert.assertThat(measureAdapter.getDimension(measuredOpposite).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
     }
 
+    @Test
     public void testIsMeasuredIntegerAggregatedExpression() {
-        // TODO
+        final TypeName packageType = newTypeNameBuilder().withNamespace("dummy").withName("Package").build();
+        final Object pkg = new Object();
+
+        when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+
+        final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
+        final CollectionExpression allPackages = newImmutableCollectionBuilder()
+                .withElementName(packageType)
+                .withIteratorVariable(packageInstance)
+                .build();
+
+        final NumericExpression sum = newIntegerAggregatedExpressionBuilder()
+                .withCollectionExpression(allPackages)
+                .withExpression(newIntegerAttributeBuilder()
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(packageInstance)
+                                .withReferenceName("self")
+                                .build())
+                        .withAttributeName("weight")
+                        .build())
+                .build();
+
+        Assert.assertTrue(measureAdapter.isMeasured(sum));
+        Assert.assertThat(measureAdapter.getDimension(sum).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1)));
     }
 
+    @Test
     public void testIsMeasuredDecimalAggregatedExpression() {
-        // TODO
+        final TypeName packageType = newTypeNameBuilder().withNamespace("dummy").withName("Package").build();
+        final Object pkg = new Object();
+
+        when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+
+        final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
+        final CollectionExpression allPackages = newImmutableCollectionBuilder()
+                .withElementName(packageType)
+                .withIteratorVariable(packageInstance)
+                .build();
+
+        final NumericExpression sum = newDecimalAggregatedExpressionBuilder()
+                .withCollectionExpression(allPackages)
+                .withExpression(newDecimalAttributeBuilder()
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(packageInstance)
+                                .withReferenceName("self")
+                                .build())
+                        .withAttributeName("weight")
+                        .build())
+                .build();
+
+        Assert.assertTrue(measureAdapter.isMeasured(sum));
+        Assert.assertThat(measureAdapter.getDimension(sum).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1)));
     }
 
     @Test
@@ -642,12 +713,106 @@ public class MeasureAdapterTest {
         Assert.assertThat(measureAdapter.getDimension(measured).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
     }
 
+    @Test
     public void testIsMeasuredIntegerSwitchExpression() {
-        // TODO
+        final TypeName packageType = newTypeNameBuilder().withNamespace("dummy").withName("Object").build();
+        final Object pkg = new Object();
+
+        when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
+        attributeUnits.put("a", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "m")).findAny().get());
+        attributeUnits.put("b", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+
+        final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
+
+        final NumericExpression min = newIntegerSwitchExpressionBuilder()
+                .withCases(newSwitchCaseBuilder()
+                        .withCondition(newIntegerComparisonBuilder()
+                                .withLeft(newIntegerAttributeBuilder()
+                                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                                .withVariable(packageInstance)
+                                                .withReferenceName("self")
+                                                .build())
+                                        .withAttributeName("a")
+                                        .build())
+                                .withOperator(IntegerComparator.LESS_THAN)
+                                .withRight(newIntegerAttributeBuilder()
+                                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                                .withVariable(packageInstance)
+                                                .withReferenceName("self")
+                                                .build())
+                                        .withAttributeName("b")
+                                        .build())
+                                .build())
+                        .withExpression(newIntegerAttributeBuilder()
+                                .withObjectExpression(newObjectVariableReferenceBuilder()
+                                        .withVariable(packageInstance)
+                                        .withReferenceName("self")
+                                        .build())
+                                .withAttributeName("a")
+                                .build()))
+                .withDefaultExpression(
+                        newIntegerAttributeBuilder()
+                                .withObjectExpression(newObjectVariableReferenceBuilder()
+                                        .withVariable(packageInstance)
+                                        .withReferenceName("self")
+                                        .build())
+                                .withAttributeName("b")
+                                .build())
+                .build();
+
+        Assert.assertTrue(measureAdapter.isMeasured(min));
+        Assert.assertThat(measureAdapter.getDimension(min).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
     }
 
+    @Test
     public void testIsMeasuredDecimalSwitchExpression() {
-        // TODO
+        final TypeName packageType = newTypeNameBuilder().withNamespace("dummy").withName("Object").build();
+        final Object pkg = new Object();
+
+        when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
+        attributeUnits.put("a", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "m")).findAny().get());
+        attributeUnits.put("b", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+
+        final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
+
+        final NumericExpression min = newDecimalSwitchExpressionBuilder()
+                .withCases(newSwitchCaseBuilder()
+                        .withCondition(newDecimalComparisonBuilder()
+                                .withLeft(newDecimalAttributeBuilder()
+                                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                                .withVariable(packageInstance)
+                                                .withReferenceName("self")
+                                                .build())
+                                        .withAttributeName("a")
+                                        .build())
+                                .withOperator(DecimalComparator.LESS_THAN)
+                                .withRight(newDecimalAttributeBuilder()
+                                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                                .withVariable(packageInstance)
+                                                .withReferenceName("self")
+                                                .build())
+                                        .withAttributeName("b")
+                                        .build())
+                                .build())
+                        .withExpression(newDecimalAttributeBuilder()
+                                .withObjectExpression(newObjectVariableReferenceBuilder()
+                                        .withVariable(packageInstance)
+                                        .withReferenceName("self")
+                                        .build())
+                                .withAttributeName("a")
+                                .build()))
+                .withDefaultExpression(
+                        newDecimalAttributeBuilder()
+                                .withObjectExpression(newObjectVariableReferenceBuilder()
+                                        .withVariable(packageInstance)
+                                        .withReferenceName("self")
+                                        .build())
+                                .withAttributeName("b")
+                                .build())
+                .build();
+
+        Assert.assertTrue(measureAdapter.isMeasured(min));
+        Assert.assertThat(measureAdapter.getDimension(min).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
     }
 
     @Test
@@ -677,68 +842,11 @@ public class MeasureAdapterTest {
     }
 
     @Test
-    public void testGetUnitOfNumericAttribute() {
-        final TypeName personType = newTypeNameBuilder().withNamespace("dummy").withName("Person").build();
-
-        final Instance personInstance = newInstanceBuilder().withElementName(personType).build();
-
-        final NumericExpression weight = newDecimalAttributeBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(personInstance)
-                        .withReferenceName("self")
-                        .build())
-                .withAttributeName("weight")
-                .build();
-
-        final Object person = new Object();
-
-        when(modelAdapter.get(personType)).thenReturn(Optional.of(person));
-
-        when(measureSupport.getUnit(person, "weight"))
-                .thenReturn(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny());
-
-        final Optional<Unit> unit = measureAdapter.getUnit(weight);
-        Assert.assertThat(unit, is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-    }
-
-    @Test
-    public void testGetUnitOfMeasuredInteger() {
-        final NumericExpression numericExpressionWithoutMeasure = newMeasuredIntegerBuilder().withUnitName("kg").withValue(BigInteger.ONE).build();
-        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithoutMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-
-        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
-        final NumericExpression numericExpressionWithMeasure = newMeasuredIntegerBuilder().withMeasure(massName).withUnitName("kg").withValue(BigInteger.ONE).build();
-        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-
-        final MeasureName invalidMassName = newMeasureNameBuilder().withNamespace("custom").withName("Mass").build();
-        final NumericExpression numericExpressionWithInvalidMeasure = newMeasuredIntegerBuilder().withMeasure(invalidMassName).withUnitName("kg").withValue(BigInteger.ONE).build();
-        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidMeasure).isPresent());
-
-        final NumericExpression numericExpressionWithInvalidUnit = newMeasuredIntegerBuilder().withUnitName("μg").withValue(BigInteger.ONE).build();
-        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidUnit).isPresent());
-    }
-
-    @Test
-    public void testGetUnitOfMeasuredDecimal() {
-        final NumericExpression numericExpressionWithoutMeasure = newMeasuredDecimalBuilder().withUnitName("kg").withValue(BigDecimal.ONE).build();
-        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithoutMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-
-        final MeasureName massName = newMeasureNameBuilder().withNamespace("base").withName("Mass").build();
-        final NumericExpression numericExpressionWithMeasure = newMeasuredDecimalBuilder().withMeasure(massName).withUnitName("kg").withValue(BigDecimal.ONE).build();
-        Assert.assertThat(measureAdapter.getUnit(numericExpressionWithMeasure), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-
-        final MeasureName invalidMassName = newMeasureNameBuilder().withNamespace("custom").withName("Mass").build();
-        final NumericExpression numericExpressionWithInvalidMeasure = newMeasuredDecimalBuilder().withMeasure(invalidMassName).withUnitName("kg").withValue(BigDecimal.ONE).build();
-        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidMeasure).isPresent());
-
-        final NumericExpression numericExpressionWithInvalidUnit = newMeasuredDecimalBuilder().withUnitName("μg").withValue(BigDecimal.ONE).build();
-        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithInvalidUnit).isPresent());
-    }
-
-    @Test
-    public void testGetUnitOfNonMeasured() {
-        final NumericExpression numericExpressionWithoutMeasure = newIntegerConstantBuilder().withValue(BigInteger.ONE.ONE).build();
-        Assert.assertFalse(measureAdapter.getUnit(numericExpressionWithoutMeasure).isPresent());
+    public void testGetUnit() {
+        Assert.assertThat(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "kg"), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+        Assert.assertThat(measureAdapter.getUnit(Optional.of("base"), Optional.of("Mass"), "kg"), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+        Assert.assertFalse(measureAdapter.getUnit(Optional.of("custom"), Optional.of("Mass"), "kg").isPresent());
+        Assert.assertFalse(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "μg").isPresent());
     }
 
     private MeasureAdapter.MeasureId measureIdFrom(final Measure measure) {

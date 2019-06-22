@@ -2,17 +2,18 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureSupport;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.measure.BaseMeasure;
 import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.Assert;
@@ -24,10 +25,12 @@ import org.mockito.Mockito;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 
 public class AsmModelAdapterDimensionTest {
 
@@ -40,7 +43,22 @@ public class AsmModelAdapterDimensionTest {
         final ResourceSet resourceSet = MeasureModelLoader.createMeasureResourceSet();
         resource = resourceSet.createResource(URI.createURI("urn:measure.judo-meta-measure"));
         measureProvider = new AsmMeasureProvider(resourceSet);
-        measureAdapter = new MeasureAdapter<>(measureProvider, Mockito.mock(MeasureSupport.class), Mockito.mock(ModelAdapter.class));
+
+        final ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
+
+        Mockito.doAnswer(invocationOnMock -> {
+            final Object[] args = invocationOnMock.getArguments();
+            if (args[0] instanceof MeasuredDecimal) {
+                final MeasuredDecimal measuredDecimal = (MeasuredDecimal) args[0];
+                return measureAdapter.getUnit(measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
+                        measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
+                        measuredDecimal.getUnitName());
+            } else {
+                throw new IllegalStateException("Not supported by mock");
+            }
+        }).when(modelAdapter).getUnit(any(NumericExpression.class));
+
+        measureAdapter = new MeasureAdapter<>(measureProvider, modelAdapter);
     }
 
     @AfterEach
@@ -65,12 +83,17 @@ public class AsmModelAdapterDimensionTest {
 
         // base measure is added
         resource.getContents().add(length);
-        Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m").build()).get(),
-                is(Collections.singletonMap(measureIdFrom(length), 1)));
+        try {
+            Assert.assertThat(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m").build()).get(),
+                    is(Collections.singletonMap(measureIdFrom(length), 1)));
 
-        // test cleanup
-        resource.getContents().remove(length);
-        Assert.assertFalse(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m").build()).isPresent());
+            // test cleanup
+            resource.getContents().remove(length);
+            Assert.assertFalse(measureAdapter.getDimension(newMeasuredDecimalBuilder().withValue(BigDecimal.ONE).withUnitName("m").build()).isPresent());
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
     @Test

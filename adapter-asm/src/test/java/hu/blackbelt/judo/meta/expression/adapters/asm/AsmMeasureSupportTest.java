@@ -3,10 +3,6 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureSupport;
-import hu.blackbelt.judo.meta.measure.Measure;
-import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -30,8 +26,7 @@ public class AsmMeasureSupportTest {
 
     private MeasureModel measureModel;
     private ResourceSet asmResourceSet;
-    private MeasureProvider<Measure, Unit> measureProvider;
-    private MeasureSupport<EClass, Unit> measureSupport;
+    private AsmModelAdapter modelAdapter;
 
     private EClass product;
     private EDataType doubleType;
@@ -77,26 +72,25 @@ public class AsmMeasureSupportTest {
 
         asmResource.getContents().addAll(Arrays.asList(stringType, doubleType, product));
 
-        measureProvider = new AsmMeasureProvider(measureModel.getResourceSet());
-        measureSupport = new AsmMeasureSupport(asmResourceSet, measureProvider);
+        modelAdapter = new AsmModelAdapter(asmResourceSet, measureModel.getResourceSet());
     }
 
     @AfterEach
     public void tearDown() {
         measureModel = null;
         product = null;
-        measureProvider = null;
+        modelAdapter = null;
     }
 
     @Test
     public void testGetUnitOfNonMeasuredAttribute() {
-        Assert.assertFalse(measureSupport.getUnit(product, "discount").isPresent());
+        Assert.assertFalse(modelAdapter.getUnit(product, "discount").isPresent());
     }
 
     @Test
     public void testGetUnitOfMeasuredAttribute() {
-        Assert.assertTrue(measureSupport.getUnit(product, "weight").isPresent());
-        Assert.assertTrue(measureSupport.getUnit(product, "height").isPresent());
+        Assert.assertTrue(modelAdapter.getUnit(product, "weight").isPresent());
+        Assert.assertTrue(modelAdapter.getUnit(product, "height").isPresent());
     }
 
     @Test
@@ -116,21 +110,21 @@ public class AsmMeasureSupportTest {
         asmUtils.getExtensionAnnotation(product.getEStructuralFeature("width"), true).get().getDetails().put("unit", "m");
         asmUtils.getExtensionAnnotation(product.getEStructuralFeature("width"), true).get().getDetails().put("measure", "measures.Length");
 
-        Assert.assertFalse(measureSupport.getUnit(product, "vat").isPresent());          // EUR is not defined as unit
-        Assert.assertFalse(measureSupport.getUnit(product, "netWeight").isPresent());    // unit belongs to another measure
-        Assert.assertFalse(measureSupport.getUnit(product, "grossWeight").isPresent());  // measure name is not matching expected pattern
-        Assert.assertFalse(measureSupport.getUnit(product, "width").isPresent());        // measure name is invalid
+        Assert.assertFalse(modelAdapter.getUnit(product, "vat").isPresent());          // EUR is not defined as unit
+        Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());    // unit belongs to another measure
+        Assert.assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());  // measure name is not matching expected pattern
+        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // measure name is invalid
     }
 
     @Test
     public void testGetUnitOfNonNumericAttribute() {
-        Assert.assertFalse(measureSupport.getUnit(product, "url").isPresent());          // attribute is not numeric
+        Assert.assertFalse(modelAdapter.getUnit(product, "url").isPresent());          // attribute is not numeric
     }
 
     @Test
     public void getGetUnitOfNonExistingAttribute() {
-        Assert.assertFalse(measureSupport.getUnit(product, "width").isPresent());        // attribute is not defined
-        Assert.assertFalse(measureSupport.getUnit(product, "unitPrice").isPresent());    // annotation is added without 'unit' key
+        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // attribute is not defined
+        Assert.assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());    // annotation is added without 'unit' key
     }
 
     private File srcDir() {

@@ -30,7 +30,7 @@ public class MeasureAdapter<M, U, T> {
     /**
      * Measure adapter that is used to resolve (object) types of numeric expressions.
      */
-    private final ModelAdapter modelAdapter;
+    private final ModelAdapter<?, ?, ?, ?, ?, ?, M, U> modelAdapter;
 
     /**
      * Measure provider.
@@ -38,18 +38,12 @@ public class MeasureAdapter<M, U, T> {
     private final MeasureProvider<M, U> measureProvider;
 
     /**
-     * Measure support of underlying data model. It can be used to resolve unit of an attribute.
-     */
-    private final MeasureSupport<T, U> measureSupport;
-
-    /**
      * Cache of dimensions (map of base measured with exponents).
      */
     final Map<Map<MeasureId, Integer>, MeasureId> dimensions = new ConcurrentHashMap<>();
 
-    public MeasureAdapter(@NonNull final MeasureProvider<M, U> measureProvider, @NonNull final MeasureSupport<T, U> measureSupport, @NonNull final ModelAdapter modelAdapter) {
+    public MeasureAdapter(@NonNull final MeasureProvider<M, U> measureProvider, @NonNull final ModelAdapter modelAdapter) {
         this.measureProvider = measureProvider;
-        this.measureSupport = measureSupport;
         this.modelAdapter = modelAdapter;
 
         measureProvider.setMeasureChangeHandler(new MeasureChangeAdapter());
@@ -141,51 +135,29 @@ public class MeasureAdapter<M, U, T> {
     }
 
     /**
-     * Get unit of a numeric expression.
+     * Get unit by name or symbol. Unit of a given measure returned if measure is specified.
      *
-     * @param numericExpression numeric expression
+     * @param measureNamespace measure namespace
+     * @param measureName      measure name
+     * @param unitNameOrSymbol unit name or symbol
      * @return unit
      */
-    public Optional<U> getUnit(final NumericExpression numericExpression) {
-        if (numericExpression instanceof NumericAttribute) {
-            return measureSupport.getUnit((T) (((NumericAttribute) numericExpression).getObjectExpression().getObjectType(modelAdapter)), ((NumericAttribute) numericExpression).getAttributeName());
-        } else if (numericExpression instanceof MeasuredDecimal) {
-            final MeasuredDecimal measuredDecimal = (MeasuredDecimal) numericExpression;
-            final Optional<M> measure;
-            if (measuredDecimal.getMeasure() != null) {
-                measure = measureProvider.getMeasure(measuredDecimal.getMeasure().getNamespace(), measuredDecimal.getMeasure().getName());
-            } else {
-                measure = Optional.empty();
-            }
-            if (measuredDecimal.getMeasure() != null && !measure.isPresent()) {
-                log.error("Invalid measure: {}::{}", measuredDecimal.getMeasure().getNamespace(), measuredDecimal.getMeasure().getName());
-                return Optional.empty();
-            }
-            final Optional<U> unit = measureProvider.getUnitByNameOrSymbol(measure, measuredDecimal.getUnitName());
-            if (!unit.isPresent()) {
-                log.error("Invalid unit: {}", measuredDecimal.getUnitName());
-            }
-            return unit;
-        } else if (numericExpression instanceof MeasuredInteger) {
-            final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
-            final Optional<M> measure;
-            if (measuredInteger.getMeasure() != null) {
-                measure = measureProvider.getMeasure(measuredInteger.getMeasure().getNamespace(), measuredInteger.getMeasure().getName());
-            } else {
-                measure = Optional.empty();
-            }
-            if (measuredInteger.getMeasure() != null && !measure.isPresent()) {
-                log.error("Invalid measure: {}::{}", measuredInteger.getMeasure().getNamespace(), measuredInteger.getMeasure().getName());
-                return Optional.empty();
-            }
-            final Optional<U> unit = measureProvider.getUnitByNameOrSymbol(measure, measuredInteger.getUnitName());
-            if (!unit.isPresent()) {
-                log.error("Invalid unit: {}", measuredInteger.getUnitName());
-            }
-            return unit;
+    public Optional<U> getUnit(final Optional<String> measureNamespace, final Optional<String> measureName, final String unitNameOrSymbol) {
+        final Optional<M> measure;
+        if (measureName.isPresent()) {
+            measure = measureProvider.getMeasure(measureNamespace.orElse(null), measureName.get());
         } else {
+            measure = Optional.empty();
+        }
+        if (measureName.isPresent() && !measure.isPresent()) {
+            log.error("Invalid measure: {}::{}", measureNamespace.orElse(null), measureName.get());
             return Optional.empty();
         }
+        final Optional<U> unit = measureProvider.getUnitByNameOrSymbol(measure, unitNameOrSymbol);
+        if (!unit.isPresent()) {
+            log.error("Invalid unit: {}", unitNameOrSymbol);
+        }
+        return unit;
     }
 
     /**
@@ -207,17 +179,17 @@ public class MeasureAdapter<M, U, T> {
      */
     public Optional<Map<MeasureId, Integer>> getDimension(final NumericExpression numericExpression) {
         if (numericExpression instanceof NumericAttribute) {
-            return getUnit(numericExpression)
+            return modelAdapter.getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof MeasuredDecimal) {
-            return getUnit(numericExpression)
+            return modelAdapter.getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof MeasuredInteger) {
-            return getUnit(numericExpression)
+            return modelAdapter.getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());

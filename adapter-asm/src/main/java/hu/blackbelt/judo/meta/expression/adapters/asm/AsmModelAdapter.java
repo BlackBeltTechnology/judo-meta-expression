@@ -8,7 +8,9 @@ import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureSupport;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
+import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.measure.*;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
@@ -19,9 +21,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
 @Slf4j
@@ -29,9 +34,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     private static final String NAMESPACE_SEPARATOR = ".";
 
+    private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
+
+    private static final String MEASURE_NAME_KEY = "measure";
+    private static final String UNIT_NAME_KEY = "unit";
+
     private final ResourceSet asmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureSupport<EClass, Unit> measureSupport;
     private final MeasureAdapter measureAdapter;
 
     private final AsmUtils asmUtils;
@@ -41,9 +50,8 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
         asmUtils = new AsmUtils(asmResourceSet);
         measureProvider = new AsmMeasureProvider(measureResourceSet);
-        measureSupport = new AsmMeasureSupport(asmResourceSet, measureProvider);
 
-        measureAdapter = new MeasureAdapter<>(measureProvider, measureSupport, this);
+        measureAdapter = new MeasureAdapter<>(measureProvider, this);
     }
 
     @Override
@@ -187,7 +195,24 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<Unit> getUnit(final NumericExpression numericExpression) {
-        return measureAdapter.getUnit(numericExpression);
+        if (numericExpression instanceof NumericAttribute) {
+            final EClass objectType = (EClass) ((NumericAttribute) numericExpression).getObjectExpression().getObjectType(this);
+            final String attributeName = ((NumericAttribute) numericExpression).getAttributeName();
+
+            return getUnit(objectType, attributeName);
+        } else if (numericExpression instanceof MeasuredDecimal) {
+            final MeasuredDecimal measuredDecimal = (MeasuredDecimal) numericExpression;
+            return measureAdapter.getUnit(measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
+                    measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
+                    measuredDecimal.getUnitName());
+        } else if (numericExpression instanceof MeasuredInteger) {
+            final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
+            return measureAdapter.getUnit(measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getNamespace()) : Optional.empty(),
+                    measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName()) : Optional.empty(),
+                    measuredInteger.getUnitName());
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -199,5 +224,58 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         final Iterable<Notifier> asmContents = asmResourceSet::getAllContents;
         return StreamSupport.stream(asmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
+    }
+
+    Optional<Unit> getUnit(final EClass objectType, final String attributeName) {
+        final Optional<Optional<Unit>> unit = objectType.getEAllAttributes().stream()
+                .filter(a -> Objects.equals(a.getName(), attributeName))
+                .map(a -> getUnit(a))
+                .findAny();
+        if (unit.isPresent()) {
+            return unit.get();
+        } else {
+            log.error("Attribute not found: {}", attributeName);
+            return Optional.empty();
+        }
+    }
+
+    Optional<Unit> getUnit(final EAttribute attribute) {
+        if (asmUtils.isNumeric(attribute.getEAttributeType())) {
+            final Optional<EAnnotation> annotation = asmUtils.getExtensionAnnotation(attribute, false);
+            if (annotation.isPresent()) {
+                final String measureNameAsString = annotation.get().getDetails().get(MEASURE_NAME_KEY);
+                final Optional<MeasureName> measureName = parseMeasureName(measureNameAsString);
+                if (!measureName.isPresent() && measureNameAsString != null) {
+                    log.error("Failed to parse measure name: {}", measureNameAsString);
+                    return Optional.empty();
+                }
+                final Optional<Measure> measure = measureName.isPresent() ? measureProvider.getMeasure(measureName.get().getNamespace(), measureName.get().getName()) : Optional.empty();
+                if (!measure.isPresent() && measureNameAsString != null) {
+                    log.error("Measure is defined but not resolved: {}", measureNameAsString);
+                    return Optional.empty();
+                }
+                return measureProvider.getUnitByNameOrSymbol(measure, annotation.get().getDetails().get(UNIT_NAME_KEY));
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<MeasureName> parseMeasureName(final String name) {
+        if (name == null) {
+            return Optional.empty();
+        } else {
+            final Matcher m = MEASURE_NAME_PATTERN.matcher(name);
+            if (m.matches()) {
+                return Optional.of(newMeasureNameBuilder()
+                        .withNamespace(m.group(1))
+                        .withName(m.group(2))
+                        .build());
+            } else {
+                return Optional.empty();
+            }
+        }
     }
 }

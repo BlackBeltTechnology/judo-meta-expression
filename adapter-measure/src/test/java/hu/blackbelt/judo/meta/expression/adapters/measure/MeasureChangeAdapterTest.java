@@ -25,7 +25,6 @@ import static org.mockito.Mockito.mock;
 public class MeasureChangeAdapterTest {
 
     private MeasureProvider<Measure, Unit> measureProvider;
-    private MeasureSupport<Object, Unit> measureSupport;
     private ModelAdapter modelAdapter;
     private MeasureAdapter measureAdapter;
 
@@ -52,9 +51,8 @@ public class MeasureChangeAdapterTest {
         }).when(measureProvider).getMeasureNamespace(any(Measure.class));
 
         modelAdapter = mock(ModelAdapter.class);
-        measureSupport = mock(MeasureSupport.class);
 
-        measureAdapter = new MeasureAdapter(measureProvider, measureSupport, modelAdapter);
+        measureAdapter = new MeasureAdapter(measureProvider, modelAdapter);
     }
 
     @AfterEach

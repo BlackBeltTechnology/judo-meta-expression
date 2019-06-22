@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureSupport;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -40,7 +39,7 @@ public class AsmMeasureProviderTest {
                 "1.0.0");
         measureProvider = new AsmMeasureProvider(measureModel.getResourceSet());
 
-        measureAdapter = new MeasureAdapter<>(measureProvider, Mockito.mock(MeasureSupport.class), Mockito.mock(ModelAdapter.class));
+        measureAdapter = new MeasureAdapter<>(measureProvider, Mockito.mock(ModelAdapter.class));
     }
 
     @AfterEach
