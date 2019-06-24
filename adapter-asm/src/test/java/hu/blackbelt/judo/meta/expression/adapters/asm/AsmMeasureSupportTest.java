@@ -5,7 +5,6 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -21,7 +20,6 @@ import java.util.Arrays;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
-@Slf4j
 public class AsmMeasureSupportTest {
 
     private MeasureModel measureModel;

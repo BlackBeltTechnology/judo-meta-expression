@@ -19,6 +19,10 @@ package "Measure" {
     [Measure metamodel]
 }
 
+package "PSM" {
+    [PSM metamodel]
+}
+
 package "adapter-measure" {
     ModelAdapter <-- [MeasureAdapter]
     [MeasureAdapter] ..> [Expression metamodel]
@@ -38,5 +42,14 @@ package "adapter-asm" {
     [AsmMeasureProvider] ..> [Measure metamodel]
 }
 
-----
+package "adapter-osm" {
+    MeasureProvider -- [PsmMeasureProvider]
+    [PsmModelAdapter] -- ModelAdapter
+    [PsmModelAdapter] ..> [PSM metamodel]
+    [PsmModelAdapter] *--> [PsmMeasureProvider]
+    [PsmModelAdapter] *--> [MeasureAdapter]
+    [PsmMeasureProvider] --> MeasureChangeHandler : "<<lazy>>"
+    [PsmMeasureProvider] ..> [PSM metamodel]
+}
 
+----
