@@ -136,12 +136,12 @@ public class PsmMeasureProviderTest {
         log.info("Testing: isDurationSupportingAddition...");
         final Unit second = getUnitByName("millisecond").get();
         final Unit metre = getUnitByName("metre").get();
-        final Unit halfDay = getUnitByName("halfDay").get(); //TODO: check, b\c halfDay not existing in asmmodel or psmmodel but measuremodel (but we are using psmmodel for measuremodel)
+        final Unit halfDay = getUnitByName("halfDay").get();
         final Unit month = getUnitByName("month").get();
 
         Assert.assertTrue(measureProvider.isDurationSupportingAddition(second));
         Assert.assertFalse(measureProvider.isDurationSupportingAddition(metre));
-        Assert.assertFalse(measureProvider.isDurationSupportingAddition(halfDay)); //TODO: check
+        Assert.assertFalse(measureProvider.isDurationSupportingAddition(halfDay));
         Assert.assertFalse(measureProvider.isDurationSupportingAddition(month));
     }
 
@@ -151,22 +151,22 @@ public class PsmMeasureProviderTest {
         final Optional<Measure> length = getMeasureByName("Length");
         final Optional<Unit> metre = getUnitByName("metre");
         final Optional<Measure> time = getMeasureByName("Time");
-        final Optional<Unit> halfDay = getUnitByName("halfDay");  //TODO: check
+        final Optional<Unit> halfDay = getUnitByName("halfDay");
 
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(length, "metre"), is(metre));
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "metre"), is(metre));
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(length, "m"), is(metre));
         Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "m"), is(metre));
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(time, "halfDay"), is(halfDay)); //TODO: check
+        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(time, "halfDay"), is(halfDay));
         Assert.assertFalse(measureProvider.getUnitByNameOrSymbol(time, null).isPresent()); // units are not compared by symbol if is it not defined
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "halfDay"), is(halfDay)); //TODO: check
+        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "halfDay"), is(halfDay));
         Assert.assertFalse(measureProvider.getUnitByNameOrSymbol(Optional.empty(), null).isPresent()); // nothing is defined
     }
 
     @Test
     public void testGetMeasures() {
         log.info("Testing: getMeasures...");
-        Assert.assertThat(measureProvider.getMeasures().count(), is(29L)); //TODO: ask hwat da hek
+        Assert.assertThat(measureProvider.getMeasures().count(), is(29L));
 
     }
 
