@@ -51,21 +51,21 @@ public class PsmMeasureSupportTest {
 
         doubleType = newNumericTypeBuilder()
                 .withName("Integer")
-                .withScale(18)
-                .withPrecision(7)
+                .withScale(7)
+                .withPrecision(18)
                 .build();
 
         kgType = newMeasuredTypeBuilder()
                 .withName("kg")
-                .withPrecision(18)
-                .withScale(7)
+                .withPrecision(7)
+                .withScale(18)
                 .withStoreUnit(getMeasureElement(Unit.class).filter(u -> "kg".equals(u.getSymbol())).findAny().get())
                 .build();
 
         cmType = newMeasuredTypeBuilder()
                 .withName("cm")
-                .withPrecision(18)
-                .withScale(7)
+                .withPrecision(7)
+                .withScale(18)
                 .withStoreUnit(getMeasureElement(Unit.class).filter(u -> "cm".equals(u.getSymbol())).findAny().get())
                 .build();
 
