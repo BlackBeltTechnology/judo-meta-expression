@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.junit.Assert;
@@ -21,8 +22,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 public class AsmMeasureProviderTest {
 
@@ -149,13 +151,17 @@ public class AsmMeasureProviderTest {
     }
 
     private Optional<Measure> getMeasureByName(final String measureName) {
-        return measureProvider.getMeasures()
+        final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;
+        return StreamSupport.stream(measureContents.spliterator(), true)
+                .filter(e -> Measure.class.isAssignableFrom(e.getClass())).map(e -> (Measure) e)
                 .filter(m -> measureName.equals(m.getName()))
                 .findAny();
     }
 
     private Optional<Unit> getUnitByName(final String unitName) {
-        return measureProvider.getMeasures()
+        final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;
+        return StreamSupport.stream(measureContents.spliterator(), true)
+                .filter(e -> Measure.class.isAssignableFrom(e.getClass())).map(e -> (Measure) e)
                 .map(m -> m.getUnits().parallelStream().filter(u -> unitName.equals(u.getName())).findAny())
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .findAny();
