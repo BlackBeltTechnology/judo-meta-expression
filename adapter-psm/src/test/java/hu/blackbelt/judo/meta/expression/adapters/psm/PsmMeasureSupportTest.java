@@ -18,9 +18,11 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.*;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.*;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 
 public class PsmMeasureSupportTest {
 

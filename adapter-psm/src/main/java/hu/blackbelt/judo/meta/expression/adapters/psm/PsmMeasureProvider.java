@@ -82,7 +82,6 @@ public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
         }
     }
 
-    //TODO: check
     private Measure getMeasure(final Unit unit) {
         return getMeasures()
                 .filter(m -> getUnits(m).contains(unit))

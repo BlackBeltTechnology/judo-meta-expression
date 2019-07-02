@@ -170,6 +170,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isMeasured(NumericExpression numericExpression) {
+        //ASM: return measureAdapter.getDimension(numericExpression);
         return false;
     }
 
