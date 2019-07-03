@@ -3,6 +3,12 @@ package hu.blackbelt.judo.meta.expression.adapters.psm;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
+import hu.blackbelt.judo.meta.expression.constant.util.builder.IntegerConstantBuilder;
+import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredDecimalBuilder;
+import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredIntegerBuilder;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -72,7 +78,7 @@ public class PsmModelAdapterTest {
 
     @Test
     public void testGetTypeName() {
-        log.info("Testing: getTypeName(Namespace)...");
+        log.info("Testing: getTypeName(NE): TypeName");
 
         Optional<TypeName> categoryTypeName = modelAdapter.getTypeName(getEntityTypeByName("Category").get());
 
@@ -83,7 +89,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testGetNamespaceElementByTypeName() {
-        log.info("Testing: get(Typename): NamespaceElement...");
+        log.info("Testing: get(TypeName): NE");
         final TypeName orderTypeName = newTypeNameBuilder()
                 .withNamespace("northwind::entities")
                 .withName("Order")
@@ -107,7 +113,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testGetMeasureByMeasureName() {
-        log.info("Testing: get(MeasureName)...");
+        log.info("Testing: get(MeasureName): Opt<Measure>");
         final MeasureName measureName = newMeasureNameBuilder()
                 .withNamespace("northwind::measures")
                 .withName("Mass")
@@ -121,7 +127,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testIsObjectType() {
-        log.info("Testing: boolean isObjectType(NamespaceElement)...");
+        log.info("Testing: isObjectType(NamespaceElement): boolean");
 
         EntityType entityType = newEntityTypeBuilder().withName("EntityType").build();
         StringType stringType = TypeBuilders.newStringTypeBuilder().withName("String").withMaxLength(-3).build();
@@ -132,7 +138,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testGetReference() {
-        log.info("Testing: Optional(RefTypEl) getReference(ET, String)...");
+        log.info("Testing: getReference(ET, String): Opt<RefTypEl>");
 
         Optional<EntityType> entityType = getEntityTypeByName("Category");
         Optional<Relation> productsRelation = entityType.get().getRelations().stream().filter(r -> "products".equals(r.getName())).findAny();
@@ -144,8 +150,10 @@ public class PsmModelAdapterTest {
         Assert.assertThat(modelAdapter.getReference(entityType.get(), "store"), is(Optional.empty()));
     }
 
+    //TODO
+    //@Test
     void testIsCollection() {
-        log.info("Testing: boolean isCollection(ReferenceExpression)...");
+        log.info("Testing: isCollection(ReferenceExpression): boolean");
 
         Optional<EntityType> orderEntity = getEntityTypeByName("Order");
 
@@ -158,7 +166,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testGetTarget() {
-        log.debug("Testing: EntityType getTarget(RTE)...");
+        log.debug("Testing: getTarget(RTE): EntityType");
         Optional<EntityType> containerEntityType = getEntityTypeByName("Category");
         Optional<Relation> productsRelation = containerEntityType.get().getRelations().stream().filter(r -> "products".equals(r.getName())).findAny();
         Optional<EntityType> targetEntityType = getEntityTypeByName("Product");
@@ -171,7 +179,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testGetAttribute() {
-        log.debug("Testing: Optional<PTE> getAttribute(ET, attributeName)...");
+        log.debug("Testing: getAttribute(ET, attributeName): Opt<PTE>");
 
         Optional<EntityType> entityType = getEntityTypeByName("Category");
         Optional<Attribute> categoryNameAttribute = entityType.get().getAttributes().stream().filter(a -> "categoryName".equals(a.getName())).findAny();
@@ -184,7 +192,7 @@ public class PsmModelAdapterTest {
 
     @Test
     void testGetAttributeType() {
-        log.debug("Testing: Optional<? extends Primitive> getAttributeType(EntityType clazz, String attributeName)...");
+        log.debug("Testing: getAttributeType(EntityType clazz, String attributeName): Optional<? extends Primitive>");
 
         Optional<EntityType> entityType = getEntityTypeByName("Category");
         Optional<PrimitiveTypedElement> primitiveTypedElement = getPrimitiveTypedElementByName("categoryName");
@@ -196,9 +204,10 @@ public class PsmModelAdapterTest {
         );
     }
 
+    //TODO: check
     @Test
     void testGetSuperTypes() {
-        log.debug("Testing: Coll<? ext ET> getSuperTypes(ET)...");
+        log.debug("Testing: getSuperTypes(ET): Coll<? ext ET>");
 
         Optional<EntityType> childEntity = getEntityTypeByName("Company");
         Optional<EntityType> superEntity = getEntityTypeByName("Customer");
@@ -212,8 +221,9 @@ public class PsmModelAdapterTest {
         Assert.assertTrue(negtestEntity.isPresent());
         Assert.assertFalse(modelAdapter.getSuperTypes(childEntity.get()).contains(negtestEntity.get()));
         Assert.assertFalse(modelAdapter.getSuperTypes(negtestEntity.get()).contains(superEntity.get()));
-    } //TODO: endcheck
+    }
 
+    //TODO: delete for being unneeded
     @Test
     void testPrimitiveTypeChecks() {
         log.debug("Testing: isNumeric, isInteger, isDecimal, etc...");
@@ -225,16 +235,13 @@ public class PsmModelAdapterTest {
 
         Assert.assertTrue(modelAdapter.isString(phone));
         Assert.assertFalse(modelAdapter.isNumeric(phone));
-
-        //TODO: ask if not dumdum
-        //then, TODO: isNumeric, isInteger(?), isDecimal, isBoolean, isEnumeration, isDate, isTimestamp, isCustom
-        //TODO: ask: isCustom
     }
 
+    //TODO: ask why isMeasure(NumExpr) { return false } in PsmEntityModelAdapter;
     //@Test
     void testIsMeasured() {
-        log.debug("Testing: boolean isMeasured(NumericExpression)...");
-        //TODO: ask why isMeasure(NumExpr) { return false } in PsmEntityModelAdapter;
+        log.debug("Testing: isMeasured(NumericExpression): boolean");
+
     }
 
     @Test
@@ -242,7 +249,6 @@ public class PsmModelAdapterTest {
         log.debug("Testing: boolean contains(EnumType, memberName)");
 
         Optional<EnumerationType> countries = getPsmElement(EnumerationType.class).filter(e -> "Countries".equals(e.getName())).findAny();
-
         Assert.assertTrue(countries.isPresent());
         Assert.assertTrue(modelAdapter.contains(countries.get(), "HU"));
         Assert.assertFalse(modelAdapter.contains(countries.get(), "MS"));
@@ -252,6 +258,7 @@ public class PsmModelAdapterTest {
         Assert.assertFalse(modelAdapter.contains(titles.get(), "HU"));
     }
 
+    //TODO: negtest?
     @Test
     void testGetDurationMeasure() {
         log.debug("Testing: Opt<Measure> getDurationMeasure()...");
@@ -261,7 +268,7 @@ public class PsmModelAdapterTest {
         Assert.assertTrue(time.isPresent());
         Assert.assertTrue(day.isPresent());
         Assert.assertTrue(modelAdapter.getDurationMeasure().get().getUnits().contains(day.get()));
-        //TODO: negtest?
+
         //Optional<Unit> halfDay = time.get().getUnits().stream().filter(u -> "halfDay".equals(u.getName())).findAny();
         //Assert.assertTrue(halfDay.isPresent());
         //Assert.assertFalse(modelAdapter.getDurationMeasure().get().getUnits().contains(halfDay.get())); // is true, should be false
@@ -282,47 +289,95 @@ public class PsmModelAdapterTest {
         Assert.assertFalse(modelAdapter.isDurationSupportingAddition(halfDay.get()));
     }
 
+    //TODO
     //@Test
     void testGetMeasure() {
-        //TODO
+        log.debug("Testing: Opt<Measure> getMeasure(NumExpr)...");
     }
 
-
-
-
-
-
-
-
-
-
-    //@Test
+    //TODO: checkAll & check...
+    @Test
     void testGetUnit() {
         log.debug("Testing: Opt<Unit> getUnit(NumExpr)...");
 
-        //NumericExpression numericExpression = NumericBuilders.new.
+        //IntegerAttribute -> Numeric Expression
+/*
+        IntegerAttribute integerAttribute = IntegerAttributeBuilder.create()
+                .withAttributeName(
+                        "quantityPerUnit"
+                ).withObjectExpression(
+                        //ObjectFilterExpressionBuilder.create().build() //@TODO: ...this
+                        //ObjectExpression (EntityTypeosdi)
+                ).build();
+
+        Assert.assertTrue(PH_Attribute.isPresent());
+        Assert.assertThat(modelAdapter.getUnit(integerAttribute).get(), is(PH_Attribute.get());
+*/
+
+
+        //MeasuredDecimal -> NumericExpression
+        Optional<Unit> inch = getPsmElement(Unit.class).filter(u -> "inch".equals(u.getName())).findAny();
+        Assert.assertTrue(inch.isPresent());
+
+        MeasuredDecimal measuredDecimal = MeasuredDecimalBuilder.create()
+                .withUnitName(
+                        "inch" //@TODO: ...This
+                ).withMeasure(
+                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("Length").build()
+                ).build();
+        Assert.assertThat(modelAdapter.getUnit(measuredDecimal).get(), is(inch.get()));
+
+        //@TODO: ...This
+        //incorrect measure namespace
+        MeasuredDecimal negtest_measuredDecimal = MeasuredDecimalBuilder.create()
+                .withUnitName(
+                        "inch"
+                ).withMeasure(
+                        newMeasureNameBuilder().withNamespace("northwind::entities").withName("Length").build()
+                ).build();
+        Assert.assertThat(modelAdapter.getUnit(negtest_measuredDecimal), is(Optional.empty()));
+
+        //@TODO: ...This
+        //incorrect measure name
+        MeasuredDecimal negtest2_measuredDecimal = MeasuredDecimalBuilder.create()
+                .withUnitName(
+                        "inch"
+                ).withMeasure(
+                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("asd").build()
+                ).build();
+        Assert.assertThat(modelAdapter.getUnit(negtest2_measuredDecimal), is(Optional.empty()));
+
+        //MeasuredInteger -> NumericExpression
+        Optional<Unit> kilogram = getPsmElement(Unit.class).filter(u -> "kilogram".equals(u.getName())).findAny();
+        MeasuredInteger measuredInteger = MeasuredIntegerBuilder.create()
+                .withUnitName(
+                        "kilogram"
+                ).withMeasure(
+                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("Mass").build()
+                ).build();
+
+
+        Assert.assertTrue(kilogram.isPresent());
+        Assert.assertThat(modelAdapter.getUnit(measuredInteger).get(), is(kilogram.get()));
+
+        //negtest
+        IntegerConstant integerConstant = IntegerConstantBuilder.create().build();
+        Assert.assertThat(modelAdapter.getUnit(integerConstant), is(Optional.empty()));
 
         /*
-        log.debug("Testing: Opt<Unit> getUnit(Attribute)");
         Optional<Attribute> weight = getPsmElement(Attribute.class).filter(a -> "weight".equals(a.getName())).findAny();
+        Optional<Unit> unitOfWeight =
+
         Assert.assertTrue(weight.isPresent());
         Assert.assertThat(modelAdapter.);
-         */
+        */
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    //TODO
+    //@Test
     void testGetDimension() {
-        //TODO
+        log.debug("Testing: Opt<Map<Measure,Integer>> getDimension(NumExpr)...");
+
     }
 
     private Optional<EntityType> getEntityTypeByName(final String entityTypeName) {

@@ -5,6 +5,7 @@ import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +66,12 @@ public class PsmMeasureProviderTest {
     void testGetMeasureNamespace() {
         log.info("Testing: getMeasureNamespace...");
         final Optional<Measure> mass = getMeasureByName("Mass");
+        final Optional<Measure> negtest = getMeasureByName("negtest");
+        final Measure negtestMeasure = MeasureBuilders.newMeasureBuilder().withName("NegtestMeasure").build();
 
         Assert.assertTrue(mass.isPresent());
         Assert.assertThat(measureProvider.getMeasureNamespace(mass.get()), is("northwind::measures"));
+        Assert.assertTrue(measureProvider.getMeasureNamespace(negtestMeasure) == null);
     }
 
     @Test
