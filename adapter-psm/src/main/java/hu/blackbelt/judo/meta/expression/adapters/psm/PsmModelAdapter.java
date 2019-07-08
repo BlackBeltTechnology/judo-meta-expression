@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
@@ -115,7 +116,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Collection<? extends EntityType> getSuperTypes(EntityType clazz) {
-        return clazz.getSuperTypes();
+        return PsmUtils.getAllSuperEntityTypes(clazz);
     }
 
     @Override
@@ -170,8 +171,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isMeasured(NumericExpression numericExpression) {
-        //ASM: return measureAdapter.getDimension(numericExpression);
-        return false;
+        return measureAdapter.isMeasured(numericExpression);
     }
 
     @Override
@@ -204,8 +204,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
             //-------------------
         } else if (numericExpression instanceof MeasuredDecimal) {
             final MeasuredDecimal measuredDecimal = (MeasuredDecimal) numericExpression;
-            return measureAdapter.getUnit(measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
+            return measureAdapter.getUnit(
+                    measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
+
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
+
                     measuredDecimal.getUnitName());
         } else if (numericExpression instanceof MeasuredInteger) {
             final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
@@ -250,30 +253,6 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     /**
-     * Get namespace of a given namespace element.
-     *
-     * @param namespaceElement namespace element
-     * @return namespace of namespace element
-     */
-    private Optional<Namespace> getNamespaceOfNamespaceElement(final NamespaceElement namespaceElement) {
-        return getPsmElement(Namespace.class)
-                .filter(ns -> ns.getElements().contains(namespaceElement))
-                .findAny();
-    }
-
-    /**
-     * Get namespace of a given package.
-     *
-     * @param pkg package
-     * @return namespace of the package
-     */
-    private Optional<Namespace> getNamespaceOfPackage(final Package pkg) {
-        return getPsmElement(Namespace.class)
-                .filter(ns -> ns.getPackages().contains(pkg))
-                .findAny();
-    }
-
-    /**
      * Get fully qualified name of a given namespace.
      *
      * @param namespace namespace
@@ -282,16 +261,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     private String getNamespaceFQName(final Namespace namespace) {
         final Optional<Namespace> containerNamespace;
         if (namespace instanceof Package) {
-            containerNamespace = getNamespaceOfPackage((Package) namespace);
+            containerNamespace = PsmUtils.getNamespaceOfPackage((Package) namespace);
         } else {
             containerNamespace = Optional.empty();
         }
 
         return (containerNamespace.isPresent() ? getNamespaceFQName(containerNamespace.get()) + NAMESPACE_SEPARATOR : "") + namespace.getName();
-    }
-
-    private String getNamespaceElementFQName(final NamespaceElement namespaceElement) {
-        final Optional<Namespace> namespace = getNamespaceOfNamespaceElement(namespaceElement);
-        return (namespace.isPresent() ? getNamespaceFQName(namespace.get()) + "." : "") + namespaceElement.getName();
     }
 }

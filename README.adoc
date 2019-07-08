@@ -42,7 +42,7 @@ package "adapter-asm" {
     [AsmMeasureProvider] ..> [Measure metamodel]
 }
 
-package "adapter-osm" {
+package "adapter-psm" {
     MeasureProvider -- [PsmMeasureProvider]
     [PsmModelAdapter] -- ModelAdapter
     [PsmModelAdapter] ..> [PSM metamodel]

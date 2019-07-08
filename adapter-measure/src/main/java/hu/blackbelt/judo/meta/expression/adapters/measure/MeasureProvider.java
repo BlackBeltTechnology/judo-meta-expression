@@ -57,7 +57,7 @@ public interface MeasureProvider<M, U> {
     Collection<U> getUnits(M measure);
 
     /**
-     * Check if a given unit is duration supporting addition (ie. second, day, etc.).
+     * Check if a given unit is duration supporting addition to timestamp (ie. second, day, etc.).
      * <p>
      * Month and year is not additive!
      *

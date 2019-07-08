@@ -125,7 +125,7 @@ public class MeasureAdapter<M, U, T> {
     }
 
     /**
-     * Get duration measure that supports adding system duration units (ie. ms, s, min, etc.).
+     * Get duration measure that supports addition to timestamp (ie. ms, s, min, etc.).
      *
      * @return duration measure
      */

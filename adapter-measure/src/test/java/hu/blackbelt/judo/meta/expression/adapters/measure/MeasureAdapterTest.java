@@ -26,12 +26,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newDecimalComparisonBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newIntegerComparisonBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
@@ -841,8 +842,10 @@ public class MeasureAdapterTest {
         Assert.assertThat(measureAdapter.getDimension(decimalExpression), is(Optional.of(Collections.emptyMap())));
     }
 
+    //TODO kieg: perc & méter as 'm', egyikkel táv-e, másikkal idő-e (measure név is) (op- a: min b: meter) //getName(..)
     @Test
     public void testGetUnit() {
+        //Assert.assertThat(measureAdapter.getUnit());
         Assert.assertThat(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "kg"), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
         Assert.assertThat(measureAdapter.getUnit(Optional.of("base"), Optional.of("Mass"), "kg"), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
         Assert.assertFalse(measureAdapter.getUnit(Optional.of("custom"), Optional.of("Mass"), "kg").isPresent());

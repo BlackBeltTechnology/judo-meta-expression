@@ -82,7 +82,7 @@
 
         <emf-builder-generator-version>0.0.1.develop_54</emf-builder-generator-version>
 
-        <judo-meta-psm-version>1.0.1.develop_263</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.1.develop_276</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
         <judo-meta-asm-version>1.0.0-develop-50</judo-meta-asm-version>
