@@ -1,7 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.psm;
 
 import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -11,7 +10,6 @@ import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +31,7 @@ public class PsmMeasureProviderTest {
     private PsmModel psmModel;
     private MeasureProvider<Measure, Unit> measureProvider;
 
-    private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
+    //private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -66,7 +64,6 @@ public class PsmMeasureProviderTest {
     void testGetMeasureNamespace() {
         log.info("Testing: getMeasureNamespace...");
         final Optional<Measure> mass = getMeasureByName("Mass");
-        final Optional<Measure> negtest = getMeasureByName("negtest");
         final Measure negtestMeasure = MeasureBuilders.newMeasureBuilder().withName("NegtestMeasure").build();
 
         Assert.assertTrue(mass.isPresent());
@@ -173,14 +170,6 @@ public class PsmMeasureProviderTest {
         Assert.assertThat(measureProvider.getMeasures().count(), is(29L));
 
     }
-
-    /* TODO: remove if tested elsewhere
-    @Test
-    public void testSetMeasureChangeHandler() {
-
-
-    }
-     */
 
     private Optional<Measure> getMeasureByName(final String measureName) {
         final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;

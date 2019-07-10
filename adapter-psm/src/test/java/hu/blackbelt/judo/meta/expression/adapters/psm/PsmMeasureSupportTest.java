@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.adapters.psm;
 
 import com.google.common.collect.ImmutableList;
+import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -10,8 +11,10 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
@@ -34,6 +37,8 @@ public class PsmMeasureSupportTest {
     private Primitive doubleType;
     private Primitive kgType;
     private Primitive cmType;
+
+    private PsmUtils psmUtils;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -89,6 +94,49 @@ public class PsmMeasureSupportTest {
         measureModel = null;
         product = null;
         modelAdapter = null;
+    }
+
+    @Test
+    public void testGetUnitOfNonMeasuredAttribute() {
+        Assert.assertFalse(modelAdapter.getUnit(product, "discount").isPresent());
+    }
+
+    @Test
+    public void testGetUnitOfMeasuredAttribute() {
+        Assert.assertTrue(modelAdapter.getUnit(product, "weight").isPresent());
+        Assert.assertTrue(modelAdapter.getUnit(product, "height").isPresent());
+    }
+
+    //@Test
+    public void testGetUnitOfAttributeWithUnknownUnit() {
+        product.getAttributes().addAll(ImmutableList.of(
+           newAttributeBuilder().withName("vat").withDataType(doubleType).build(),
+           newAttributeBuilder().withName("netWeight").withDataType(doubleType).build(),
+           newAttributeBuilder().withName("grossWeight").withDataType(doubleType).build(),
+           newAttributeBuilder().withName("width").withDataType(doubleType).build()
+        ));
+
+        //TODO
+        /* plasheholshter for shome schpooky shtuff */
+        /* plasheholshter for shome schpooky shtuff */
+        /* plasheholshter for shome schpooky shtuff */
+        /* plasheholshter for shome schpooky shtuff */
+
+        Assert.assertFalse(modelAdapter.getUnit(product, "var").isPresent());
+        Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());
+        Assert.assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());
+        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());
+    }
+
+    @Test
+    public void testGetUnitOfNonNumericAttribute() {
+        Assert.assertFalse(modelAdapter.getUnit(product, "url").isPresent()); //NOT NUMERIC >:[
+    }
+
+    @Test
+    public void testGetUnitOfNonExistingAttribute() {
+        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // attribute is not defined
+        Assert.assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());    // annotation is added without 'unit' key
     }
 
     <T> Stream<T> getMeasureElement(final Class<T> clazz) {
