@@ -43,7 +43,6 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
-
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
     private final MeasureAdapter measureAdapter;

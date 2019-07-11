@@ -144,6 +144,7 @@ public class PsmModelAdapterTest {
         Assert.assertFalse(modelAdapter.isObjectType(stringType));
     }
 
+
     @Test
     void testGetReference() {
         log.info("Testing: getReference(ET, String): Opt<RefTypEl>");

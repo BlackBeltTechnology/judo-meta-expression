@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -32,15 +33,18 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEEnumBuilder;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.instanceOf;
 
 @Slf4j
 public class AsmModelAdapterTest {
 
     private MeasureModel measureModel;
     private AsmModel asmModel;
+    private AsmUtils asmUtils;
 
     private ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter;
 
@@ -56,6 +60,7 @@ public class AsmModelAdapterTest {
                 "test",
                 "1.0.0");
         modelAdapter = new AsmModelAdapter(asmModel.getResourceSet(), measureModel.getResourceSet());
+        asmUtils = new AsmUtils(asmModel.getResourceSet());
     }
 
     @AfterEach
@@ -85,6 +90,33 @@ public class AsmModelAdapterTest {
     //@Test
     public void testGet() {
         //TODO: check if needed
+        final TypeName orderTypeName = newTypeNameBuilder()
+                .withNamespace("northwind.entities")
+                .withName("Order")
+                .build();
+
+
+        final Optional<? extends EClassifier> orderEClassifier = modelAdapter.get(orderTypeName);
+        Assert.assertTrue(orderEClassifier.isPresent());
+        Assert.assertThat(orderEClassifier.get(), instanceOf(EClass.class));
+        Assert.assertThat(orderEClassifier.get().getName(), is("Order"));
+        Assert.assertThat(asmUtils.getPackageFQName(orderEClassifier.get().getEPackage()), is("northwind.entities"));
+
+
+
+        final TypeName negtest_name_TypeName = newTypeNameBuilder()
+                .withNamespace("northwind::entities")
+                .withName("negtest")
+                .build();
+        final Optional<? extends EClassifier> negtest_name_NamespaceElement = modelAdapter.get(negtest_name_TypeName);
+        Assert.assertThat(negtest_name_NamespaceElement.isPresent(), is(Boolean.FALSE));
+
+        //TODO: remove b\c not needed?
+        final TypeName negtest_namespace_TypeName = newTypeNameBuilder()
+                .withNamespace("northwind::negtest")
+                .withName("negtest")
+                .build();
+        Assert.assertTrue(modelAdapter.get(negtest_namespace_TypeName) == null);
     }
 
     @Test
