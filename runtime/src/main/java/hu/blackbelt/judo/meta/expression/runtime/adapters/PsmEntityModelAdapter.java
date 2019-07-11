@@ -1,18 +1,15 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
-import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
-import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
-import hu.blackbelt.judo.meta.psm.measure.DurationType;
-import hu.blackbelt.judo.meta.psm.measure.DurationUnit;
-import hu.blackbelt.judo.meta.psm.measure.Measure;
-import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
-import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.measure.*;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
@@ -27,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
 @Slf4j
 public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
@@ -131,7 +128,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     @Override
     public Collection<? extends EntityType> getSuperTypes(final EntityType clazz) {
-        return clazz.getSuperTypes();
+        return clazz.getSuperEntityTypes();
     }
 
     @Override
@@ -199,12 +196,12 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
         final Iterable<Notifier> contents = resourceSet::getAllContents;
         return StreamSupport.stream(contents.spliterator(), false)
                 .filter(e -> e instanceof Measure).map(e -> (Measure) e)
-                .filter(m -> m.getUnits().stream().anyMatch(u -> isSupportingAddition(u)))
+                .filter(m -> m.getUnits().stream().anyMatch(u -> isDurationSupportingAddition(u)))
                 .findAny();
     }
 
     @Override
-    public boolean isSupportingAddition(final Unit unit) {
+    public boolean isDurationSupportingAddition(final Unit unit) {
         if (unit instanceof DurationUnit) {
             return (unit instanceof DurationUnit) && DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getUnitType());
         } else {
@@ -309,7 +306,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
                 );
                 return Collections.unmodifiableMap(base);
             } else {
-                return ImmutableMap.of(measure, 1);
+                return Collections.singletonMap(measure, 1);
             }
         }
 
@@ -320,7 +317,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
         @Override
         boolean isSupportingAddition(final Unit unit) {
-            return PsmEntityModelAdapter.this.isSupportingAddition(unit);
+            return PsmEntityModelAdapter.this.isDurationSupportingAddition(unit);
         }
 
         @Override

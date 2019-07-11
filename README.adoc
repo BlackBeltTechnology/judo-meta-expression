@@ -1,2 +1,55 @@
-# judo-meta-expression
+# Overview of modules
 
+[[expression-modules]]
+.Expression modules
+[plantuml, expression-modules-overview, alt="Overview of expression modules"]
+----
+
+package "Expression" {
+  [Expression metamodel]
+
+  interface ModelAdapter
+}
+
+package "ASM" {
+    [ASM metamodel]
+}
+
+package "Measure" {
+    [Measure metamodel]
+}
+
+package "PSM" {
+    [PSM metamodel]
+}
+
+package "adapter-measure" {
+    ModelAdapter <-- [MeasureAdapter]
+    [MeasureAdapter] ..> [Expression metamodel]
+    [MeasureAdapter] --> MeasureProvider
+    [MeasureAdapter] *--> [MeasureChangeAdapter]
+    [MeasureChangeAdapter] -- MeasureChangeHandler
+}
+
+package "adapter-asm" {
+    MeasureProvider -- [AsmMeasureProvider]
+    [AsmModelAdapter] -- ModelAdapter
+    [AsmModelAdapter] ..> [ASM metamodel]
+    [AsmModelAdapter] ..> [Measure metamodel]
+    [AsmModelAdapter] *--> [AsmMeasureProvider]
+    [AsmModelAdapter] *--> [MeasureAdapter]
+    [AsmMeasureProvider] --> MeasureChangeHandler : "<<lazy>>"
+    [AsmMeasureProvider] ..> [Measure metamodel]
+}
+
+package "adapter-psm" {
+    MeasureProvider -- [PsmMeasureProvider]
+    [PsmModelAdapter] -- ModelAdapter
+    [PsmModelAdapter] ..> [PSM metamodel]
+    [PsmModelAdapter] *--> [PsmMeasureProvider]
+    [PsmModelAdapter] *--> [MeasureAdapter]
+    [PsmMeasureProvider] --> MeasureChangeHandler : "<<lazy>>"
+    [PsmMeasureProvider] ..> [PSM metamodel]
+}
+
+----

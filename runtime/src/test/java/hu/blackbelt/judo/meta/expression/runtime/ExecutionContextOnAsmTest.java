@@ -3,7 +3,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
-import hu.blackbelt.judo.meta.expression.runtime.adapters.AsmModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModelLoader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
