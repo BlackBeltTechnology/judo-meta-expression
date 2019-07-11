@@ -84,6 +84,11 @@ public class PsmMeasureSupportTest {
                         newAttributeBuilder().withName("height").withDataType(cmType).build()
                 )).build();
 
+        psmUtils = new PsmUtils();
+
+        //TODO
+
+
         psmResource.getContents().addAll(Arrays.asList(stringType, doubleType, product));
 
         modelAdapter = new PsmModelAdapter(psmResourceSet, measureModel.getResourceSet());
@@ -117,26 +122,22 @@ public class PsmMeasureSupportTest {
         ));
 
         //TODO
-        /* plasheholshter for shome schpooky shtuff */
-        /* plasheholshter for shome schpooky shtuff */
-        /* plasheholshter for shome schpooky shtuff */
-        /* plasheholshter for shome schpooky shtuff */
 
-        Assert.assertFalse(modelAdapter.getUnit(product, "var").isPresent());
-        Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());
-        Assert.assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());
-        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());
+        Assert.assertFalse(modelAdapter.getUnit(product, "vat").isPresent());           // EUR not defined as unit
+        Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());     // unit belongs to another measure
+        Assert.assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());   // measure name not matching expected pattern
+        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());         // measure name invalid
     }
 
     @Test
     public void testGetUnitOfNonNumericAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "url").isPresent()); //NOT NUMERIC >:[
+        Assert.assertFalse(modelAdapter.getUnit(product, "url").isPresent());           //NOT NUMERIC >:[
     }
 
     @Test
     public void testGetUnitOfNonExistingAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // attribute is not defined
-        Assert.assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());    // annotation is added without 'unit' key
+        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());         // attribute is not defined
+        Assert.assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());     // annotation is added without 'unit' key
     }
 
     <T> Stream<T> getMeasureElement(final Class<T> clazz) {
