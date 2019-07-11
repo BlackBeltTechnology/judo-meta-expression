@@ -1,17 +1,15 @@
 package hu.blackbelt.judo.meta.expression.runtime.adapters;
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
-import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
-import hu.blackbelt.judo.meta.psm.measure.DurationType;
-import hu.blackbelt.judo.meta.psm.measure.DurationUnit;
-import hu.blackbelt.judo.meta.psm.measure.Measure;
-import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
-import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.measure.*;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
@@ -26,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
 @Slf4j
 public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
@@ -130,7 +128,7 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     @Override
     public Collection<? extends EntityType> getSuperTypes(final EntityType clazz) {
-        return clazz.getSuperTypes();
+        return clazz.getSuperEntityTypes();
     }
 
     @Override
