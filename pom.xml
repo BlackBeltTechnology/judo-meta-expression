@@ -85,7 +85,7 @@
         <judo-meta-psm-version>1.0.1.develop_277</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.0.0-develop-50</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.develop_70</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-measure-version>1.0.1.develop_27</judo-meta-measure-version>
@@ -153,6 +153,14 @@
             <plugin>
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-versions-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
             </plugin>
         </plugins>
         

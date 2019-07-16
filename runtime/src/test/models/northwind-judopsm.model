@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="northwind">
+<namespace:Model xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:accesspoint="http://blackbelt.hu/judo/meta/psm/accesspoint" xmlns:data="http://blackbelt.hu/judo/meta/psm/data" xmlns:derived="http://blackbelt.hu/judo/meta/psm/derived" xmlns:measure="http://blackbelt.hu/judo/meta/psm/measure" xmlns:namespace="http://blackbelt.hu/judo/meta/psm/namespace" xmlns:service="http://blackbelt.hu/judo/meta/psm/service" xmlns:type="http://blackbelt.hu/judo/meta/psm/type" xmi:id="_vbf8wINkEeiLE-B2bbL0fg" name="demo">
   <elements xsi:type="accesspoint:AccessPoint" xmi:id="_X9vDsEZlEemHs64O5EYsyQ" name="internalAP">
     <exposedGraphs xmi:id="_hanN0EZlEemHs64O5EYsyQ" name="ordersAssignedToEmployee" mappedTransferObjectType="_ETGEYCVQEemLpvUY7MQgng" selector="_EuQ5MCYbEemLpvUY7MQgng">
       <cardinality xmi:id="_-JpZwJmWEempZtzZV59LpQ" upper="-1"/>
@@ -448,18 +448,18 @@
     </elements>
     <elements xsi:type="derived:StaticNavigation" xmi:id="_EuQ5MCYbEemLpvUY7MQgng" name="ordersAssignedToEmployee" target="_-H4RoINkEeiLE-B2bbL0fg">
       <cardinality xmi:id="_KCnuwCYbEemLpvUY7MQgng" upper="-1"/>
-      <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="northwind::entities::Employee.orders"/>
+      <getterExpression xmi:id="_cFwiQDneEemsDIfvozHEKg" expression="demo::entities::Employee.orders"/>
     </elements>
     <elements xsi:type="derived:StaticNavigation" xmi:id="_vA7SgEZlEemHs64O5EYsyQ" name="allProducts" target="_6XH80INkEeiLE-B2bbL0fg">
       <cardinality xmi:id="_WlEJsEvNEemBn-SJ5OPvtg" upper="-1"/>
-      <getterExpression xmi:id="_a_OA0EvNEemBn-SJ5OPvtg" expression="northwind::entities::Product"/>
+      <getterExpression xmi:id="_a_OA0EvNEemBn-SJ5OPvtg" expression="demo::entities::Product"/>
     </elements>
     <elements xsi:type="derived:StaticNavigation" xmi:id="_xeUiAEZlEemHs64O5EYsyQ" name="allCategories" target="_43ZPcINkEeiLE-B2bbL0fg">
       <cardinality xmi:id="_Xu2cQEvNEemBn-SJ5OPvtg" upper="-1"/>
-      <getterExpression xmi:id="_dyTMcEvNEemBn-SJ5OPvtg" expression="northwind::entities::Category"/>
+      <getterExpression xmi:id="_dyTMcEvNEemBn-SJ5OPvtg" expression="demo::entities::Category"/>
     </elements>
     <elements xsi:type="derived:StaticData" xmi:id="_r7S1QE7fEemZHbZiENeSGg" name="totalNumberOfOrders" dataType="_SZ-GUIUcEeipmMyz9cMCRA" required="true">
-      <getterExpression xmi:id="_yldAIE7fEemZHbZiENeSGg" expression="0 // COUNT(northwind::entities::Order)"/>
+      <getterExpression xmi:id="_yldAIE7fEemZHbZiENeSGg" expression="0 // COUNT(demo::entities::Order)"/>
     </elements>
   </packages>
   <packages xmi:id="__cC14CVPEemLpvUY7MQgng" name="services">

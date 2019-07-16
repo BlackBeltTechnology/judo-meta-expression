@@ -19,7 +19,7 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 abstract class MinimalExpressionFactory {
 
     static List<EObject> createMinimalExpression() {
-        final MeasureName measureName = newMeasureNameBuilder().withNamespace("northwind.measures").withName("Mass").build();
+        final MeasureName measureName = newMeasureNameBuilder().withNamespace("demo::measures").withName("Mass").build();
 
         return ImmutableList.of(
                 newIntegerConstantBuilder().withValue(BigInteger.valueOf(10)).build(),

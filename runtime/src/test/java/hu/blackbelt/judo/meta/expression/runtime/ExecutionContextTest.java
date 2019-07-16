@@ -6,7 +6,6 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.*;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
-import static hu.blackbelt.epsilon.runtime.execution.contexts.ProgramParameter.programParameterBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
 
 abstract class ExecutionContextTest {
@@ -53,10 +51,6 @@ abstract class ExecutionContextTest {
         executionContext.executeProgram(
                 evlExecutionContextBuilder()
                         .source("validations/expression.evl")
-                        .parameters(ImmutableList.of(programParameterBuilder()
-                                .name("extendedMetadataURI")
-                                .value(AsmUtils.extendedMetadataUri)
-                                .build()))
                         .expectedErrors(getExpectedErrors())
                         .expectedWarnings(getExpectedWarnings())
                         .build());

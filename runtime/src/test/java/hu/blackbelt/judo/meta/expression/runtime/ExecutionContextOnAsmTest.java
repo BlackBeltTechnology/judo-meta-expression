@@ -55,7 +55,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         URIHandler uriHandler = new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), targetDir().getAbsolutePath());
 
         final File modelFile = new File(srcDir(), "test/models/northwind-asm.model");
-        final ResourceSet asmModelResourceSet = AsmModelLoader.createAsmResourceSet(uriHandler, new AsmModelLoader.LocalAsmPackageRegistration());
+        final ResourceSet asmModelResourceSet = AsmModelLoader.createAsmResourceSet(uriHandler);
         asmModelResourceSet.setURIConverter(new ModelFileBasedUriConverter(modelFile));
         AsmModelLoader.loadAsmModel(asmModelResourceSet,
                 URI.createURI(modelFile.getAbsolutePath()),"test","1.0.0");

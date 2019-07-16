@@ -83,7 +83,7 @@ public class AsmModelAdapterTest {
 
         Assert.assertTrue(categoryTypeName.isPresent());
         Assert.assertThat(categoryTypeName.get().getName(), is("Category")); //TODO: check, seems kinda silly (+psm)
-        Assert.assertThat(categoryTypeName.get().getNamespace(), is("northwind.entities"));
+        Assert.assertThat(categoryTypeName.get().getNamespace(), is("demo.entities"));
         //TODO: negtest maaaaybe? (+psm)
     }
 
@@ -91,7 +91,7 @@ public class AsmModelAdapterTest {
     public void testGet() {
         //TODO: check if needed
         final TypeName orderTypeName = newTypeNameBuilder()
-                .withNamespace("northwind.entities")
+                .withNamespace("demo.entities")
                 .withName("Order")
                 .build();
 
@@ -100,12 +100,12 @@ public class AsmModelAdapterTest {
         Assert.assertTrue(orderEClassifier.isPresent());
         Assert.assertThat(orderEClassifier.get(), instanceOf(EClass.class));
         Assert.assertThat(orderEClassifier.get().getName(), is("Order"));
-        Assert.assertThat(asmUtils.getPackageFQName(orderEClassifier.get().getEPackage()), is("northwind.entities"));
+        Assert.assertThat(asmUtils.getPackageFQName(orderEClassifier.get().getEPackage()), is("demo.entities"));
 
 
 
         final TypeName negtest_name_TypeName = newTypeNameBuilder()
-                .withNamespace("northwind::entities")
+                .withNamespace("demo::entities")
                 .withName("negtest")
                 .build();
         final Optional<? extends EClassifier> negtest_name_NamespaceElement = modelAdapter.get(negtest_name_TypeName);
@@ -113,7 +113,7 @@ public class AsmModelAdapterTest {
 
         //TODO: remove b\c not needed?
         final TypeName negtest_namespace_TypeName = newTypeNameBuilder()
-                .withNamespace("northwind::negtest")
+                .withNamespace("demo::negtest")
                 .withName("negtest")
                 .build();
         Assert.assertTrue(modelAdapter.get(negtest_namespace_TypeName) == null);
@@ -255,7 +255,7 @@ public class AsmModelAdapterTest {
                 .withUnitName(
                         "inch"
                 ).withMeasure(
-                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("Length").build()
+                        newMeasureNameBuilder().withNamespace("demo::measures").withName("Length").build()
                 ).build();
         Assert.assertThat(modelAdapter.getUnit(inchMeasuredDecimal).get(), is(inch.get()));
         //--------------------------
@@ -271,7 +271,7 @@ public class AsmModelAdapterTest {
         MeasuredInteger integerAttribute = newMeasuredIntegerBuilder()
                 .withUnitName("TODO")
                 .withMeasure(
-                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("TODO").build()
+                        newMeasureNameBuilder().withNamespace("demo::measures").withName("TODO").build()
                 ).build();
         Assert.assertFalse(modelAdapter.getUnit(integerAttribute).isPresent());
         Assert.assertThat(modelAdapter.getUnit(integerAttribute), is(Optional.empty()));
@@ -281,7 +281,7 @@ public class AsmModelAdapterTest {
                 .withUnitName(
                         "kilogram"
                 ).withMeasure(
-                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("Mass").build()
+                        newMeasureNameBuilder().withNamespace("demo::measures").withName("Mass").build()
                 ).build();
 
 

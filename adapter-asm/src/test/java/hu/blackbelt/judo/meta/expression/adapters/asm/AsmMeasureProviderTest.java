@@ -55,7 +55,7 @@ public class AsmMeasureProviderTest {
         final Optional<Measure> length = getMeasureByName("Length");
 
         Assert.assertTrue(length.isPresent());
-        Assert.assertThat(measureProvider.getMeasureNamespace(length.get()), is("northwind.measures"));
+        Assert.assertThat(measureProvider.getMeasureNamespace(length.get()), is("demo::measures"));
     }
 
     @Test
@@ -70,11 +70,11 @@ public class AsmMeasureProviderTest {
 
     @Test
     public void testGetMeasure() {
-        final Optional<Measure> length = measureProvider.getMeasure("northwind.measures", "Length");
+        final Optional<Measure> length = measureProvider.getMeasure("demo::measures", "Length");
 
-        final Optional<Measure> invalidName = measureProvider.getMeasure("northwind.measures", "Price");
-        final Optional<Measure> invalidNamespace = measureProvider.getMeasure("demo.measures", "Length");
-        final Optional<Measure> invalidNameAndNamespace = measureProvider.getMeasure("demo.measures", "Price");
+        final Optional<Measure> invalidName = measureProvider.getMeasure("demo::measures", "Price");
+        final Optional<Measure> invalidNamespace = measureProvider.getMeasure("invalid::measures", "Length");
+        final Optional<Measure> invalidNameAndNamespace = measureProvider.getMeasure("demo::measures", "Price");
 
         final Optional<Measure> expectedLength = getMeasureByName("Length");
 

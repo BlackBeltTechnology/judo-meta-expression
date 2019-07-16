@@ -54,7 +54,7 @@ public class PsmEntityModelAdapterTest {
     @Test
     void testGet() {
         final TypeName typeName = newTypeNameBuilder()
-                .withNamespace("northwind.entities")
+                .withNamespace("demo.entities")
                 .withName("Order")
                 .build();
 

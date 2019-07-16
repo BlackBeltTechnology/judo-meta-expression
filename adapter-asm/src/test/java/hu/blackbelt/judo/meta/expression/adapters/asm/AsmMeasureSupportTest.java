@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModelLoader;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -63,10 +64,9 @@ public class AsmMeasureSupportTest {
 
         asmUtils = new AsmUtils(asmResourceSet);
 
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("unitPrice"), true).get().getDetails().put("currency", "EUR");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("weight"), true).get().getDetails().put("unit", "kg");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("height"), true).get().getDetails().put("unit", "cm");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("height"), true).get().getDetails().put("measure", "northwind.measures.Length");
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("unitPrice"), "constraints", ImmutableMap.of("currency", "EUR"));
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("weight"), "constraints", ImmutableMap.of("unit", "kg"));
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("height"), "constraints", ImmutableMap.of("unit", "cm", "measure", "demo.measures.Length"));
 
         asmResource.getContents().addAll(Arrays.asList(stringType, doubleType, product));
 
@@ -100,13 +100,10 @@ public class AsmMeasureSupportTest {
                 newEAttributeBuilder().withName("width").withEType(doubleType).build()
         ));
 
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("vat"), true).get().getDetails().put("unit", "EUR");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("netWeight"), true).get().getDetails().put("unit", "kg");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("netWeight"), true).get().getDetails().put("measure", "northwind.measures.Length");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("grossWeight"), true).get().getDetails().put("unit", "kg");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("grossWeight"), true).get().getDetails().put("measure", "Length");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("width"), true).get().getDetails().put("unit", "m");
-        asmUtils.getExtensionAnnotation(product.getEStructuralFeature("width"), true).get().getDetails().put("measure", "measures.Length");
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("vat"), "constraints", ImmutableMap.of("unit", "EUR"));
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("netWeight"), "constraints", ImmutableMap.of("unit", "kg", "measure", "demo::measures.Length"));
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("grossWeight"), "constraints", ImmutableMap.of("unit", "kg", "measure", "Length"));
+        asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("width"), "constraints", ImmutableMap.of("unit", "m", "measure", "measures::Length"));
 
         Assert.assertFalse(modelAdapter.getUnit(product, "vat").isPresent());          // EUR is not defined as unit
         Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());    // unit belongs to another measure

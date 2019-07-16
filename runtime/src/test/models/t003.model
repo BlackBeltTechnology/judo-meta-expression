@@ -116,7 +116,7 @@
       </right>
     </expression>
   </n:DecimalAggregatedExpression>
-  <expr:TypeName xmi:id="_qw0SUCSyEemLpvUY7MQgng" name="Employee" namespace="northwind.entities"/>
-  <expr:TypeName xmi:id="_kB3RkCSzEemLpvUY7MQgng" name="Order" namespace="northwind.entities"/>
-  <expr:TypeName xmi:id="_EQiYgCS0EemLpvUY7MQgng" name="OrderDetail" namespace="northwind.entities"/>
+  <expr:TypeName xmi:id="_qw0SUCSyEemLpvUY7MQgng" name="Employee" namespace="demo::entities"/>
+  <expr:TypeName xmi:id="_kB3RkCSzEemLpvUY7MQgng" name="Order" namespace="demo::entities"/>
+  <expr:TypeName xmi:id="_EQiYgCS0EemLpvUY7MQgng" name="OrderDetail" namespace="demo::entities"/>
 </xmi:XMI>

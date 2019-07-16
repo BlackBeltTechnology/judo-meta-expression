@@ -45,7 +45,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
         final Resource expressionResource = expressionModelResourceSet.createResource(
                 URI.createURI(createdSourceModelName));
 
-        final TypeName orderType = newTypeNameBuilder().withNamespace("northwind.entities").withName("Order").build();
+        final TypeName orderType = newTypeNameBuilder().withNamespace("demo::entities").withName("Order").build();
 
         final ObjectVariable order = newInstanceBuilder()
                 .withElementName(orderType)

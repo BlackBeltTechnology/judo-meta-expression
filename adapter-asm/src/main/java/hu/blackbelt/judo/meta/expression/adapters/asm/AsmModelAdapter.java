@@ -35,12 +35,9 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 @Slf4j
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
 
-    private static final String NAMESPACE_SEPARATOR = ".";
+    private static final String NAMESPACE_SEPARATOR = "::";
 
     private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
-
-    private static final String MEASURE_NAME_KEY = "measure";
-    private static final String UNIT_NAME_KEY = "unit";
 
     private final ResourceSet asmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
@@ -68,7 +65,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     @Override
     public Optional<? extends EClassifier> get(final TypeName elementName) {
         final Optional<EPackage> namespace = getAsmElement(EPackage.class)
-                .filter(p -> Objects.equals(asmUtils.getPackageFQName(p), elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR)))
+                .filter(p -> Objects.equals(AsmUtils.getPackageFQName(p), elementName.getNamespace().replace(NAMESPACE_SEPARATOR, ".")))
                 .findAny();
 
         if (namespace.isPresent()) {
@@ -244,20 +241,25 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     Optional<Unit> getUnit(final EAttribute attribute) {
         if (asmUtils.isNumeric(attribute.getEAttributeType())) {
-            final Optional<EAnnotation> annotation = asmUtils.getExtensionAnnotation(attribute, false);
-            if (annotation.isPresent()) {
-                final String measureNameAsString = annotation.get().getDetails().get(MEASURE_NAME_KEY);
-                final Optional<MeasureName> measureName = parseMeasureName(measureNameAsString);
-                if (!measureName.isPresent() && measureNameAsString != null) {
-                    log.error("Failed to parse measure name: {}", measureNameAsString);
-                    return Optional.empty();
+            final Optional<String> unitNameOrSymbol = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "unit", false);
+            final Optional<String> measureFqName = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "measure", false);
+            if (unitNameOrSymbol.isPresent()) {
+                if (measureFqName.isPresent()) {
+                    final Optional<MeasureName> measureName = measureFqName.isPresent() ? parseMeasureName(measureFqName.get()) : Optional.empty();
+                    if (!measureName.isPresent()) {
+                        log.error("Failed to parse measure name: {}", measureFqName.get());
+                        return Optional.empty();
+                    }
+                    final String replacedMeasureName = measureName.get().getNamespace().replace(".", NAMESPACE_SEPARATOR);
+                    final Optional<Measure> measure = measureName.isPresent() ? measureProvider.getMeasure(replacedMeasureName, measureName.get().getName()) : Optional.empty();
+                    if (!measure.isPresent() && measureName.isPresent()) {
+                        log.error("Measure is defined but not resolved: namespace={}, name={}", replacedMeasureName, measureName.get().getName());
+                        return Optional.empty();
+                    }
+                    return measureProvider.getUnitByNameOrSymbol(measure, unitNameOrSymbol.get());
+                } else {
+                    return measureProvider.getUnitByNameOrSymbol(Optional.empty(), unitNameOrSymbol.get());
                 }
-                final Optional<Measure> measure = measureName.isPresent() ? measureProvider.getMeasure(measureName.get().getNamespace(), measureName.get().getName()) : Optional.empty();
-                if (!measure.isPresent() && measureNameAsString != null) {
-                    log.error("Measure is defined but not resolved: {}", measureNameAsString);
-                    return Optional.empty();
-                }
-                return measureProvider.getUnitByNameOrSymbol(measure, annotation.get().getDetails().get(UNIT_NAME_KEY));
             } else {
                 return Optional.empty();
             }

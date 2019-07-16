@@ -60,7 +60,7 @@ public class AsmEntityModelAdapterTest {
     @Test
     void testGet() {
         final TypeName typeName = newTypeNameBuilder()
-                .withNamespace("northwind.entities")
+                .withNamespace("demo::entities")
                 .withName("Order")
                 .build();
 

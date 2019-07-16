@@ -118,6 +118,9 @@ public class PsmEntityModelAdapter implements ModelAdapter<NamespaceElement, Pri
 
     @Override
     public Optional<? extends PrimitiveTypedElement> getAttribute(final EntityType clazz, final String attributeName) {
+        if (clazz == null) {
+            log.error("Invalid class");
+        }
         return Optional.ofNullable(clazz.getAttribute(attributeName));
     }
 
