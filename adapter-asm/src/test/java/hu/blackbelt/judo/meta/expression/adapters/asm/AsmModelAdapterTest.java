@@ -82,14 +82,13 @@ public class AsmModelAdapterTest {
         Optional<TypeName> categoryTypeName = modelAdapter.getTypeName(getEClassByName("Category").get());
 
         Assert.assertTrue(categoryTypeName.isPresent());
-        Assert.assertThat(categoryTypeName.get().getName(), is("Category")); //TODO: check, seems kinda silly (+psm)
+        Assert.assertThat(categoryTypeName.get().getName(), is("Category"));
         Assert.assertThat(categoryTypeName.get().getNamespace(), is("northwind.entities"));
-        //TODO: negtest maaaaybe? (+psm)
     }
 
-    //@Test
+    //TODO: check if needed
+    @Test
     public void testGet() {
-        //TODO: check if needed
         final TypeName orderTypeName = newTypeNameBuilder()
                 .withNamespace("northwind.entities")
                 .withName("Order")
@@ -110,13 +109,6 @@ public class AsmModelAdapterTest {
                 .build();
         final Optional<? extends EClassifier> negtest_name_NamespaceElement = modelAdapter.get(negtest_name_TypeName);
         Assert.assertThat(negtest_name_NamespaceElement.isPresent(), is(Boolean.FALSE));
-
-        //TODO: remove b\c not needed?
-        final TypeName negtest_namespace_TypeName = newTypeNameBuilder()
-                .withNamespace("northwind::negtest")
-                .withName("negtest")
-                .build();
-        Assert.assertTrue(modelAdapter.get(negtest_namespace_TypeName) == null);
     }
 
     @Test
@@ -203,12 +195,11 @@ public class AsmModelAdapterTest {
         Assert.assertFalse(modelAdapter.isDurationSupportingAddition(halfDay.get()));
     }
 
-    //TODO
+    //TODO: fix
     //@Test
     void testGetUnit() {
         TypeName type = modelAdapter.getTypeName(getEClassByName("Product").get()).get();
         Instance instance = newInstanceBuilder().withElementName(type).build();
-        //EClass eClass = newEClassBuilder().withName("Product")..build();
 
         Optional<Unit> kilogram = getUnitByName("kilogram");
         NumericAttribute numericAttribute = newIntegerAttributeBuilder()
@@ -220,6 +211,7 @@ public class AsmModelAdapterTest {
                                 .build()
                 )
                 .build();
+        //TODO: ...here
         Assert.assertTrue(modelAdapter.getUnit(numericAttribute).isPresent());
         Assert.assertThat(modelAdapter.getUnit(numericAttribute).get(), is(kilogram.get()));
 
