@@ -6,17 +6,17 @@
     
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
-        <artifactId>judo-meta-expression-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
     
-    <artifactId>judo-meta-expression-adapter-asm</artifactId>
+    <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
     <packaging>bundle</packaging>
     
-    <name>JUDO expression metamodel ASM adapter</name>
-    <description>Judo Architecture Specific Expression Metamodel adapter for ASM</description>
-    
+    <name>Judo :: Expression :: Model :: ASM Model adapter</name>
+    <description>Judo Expression ASM Model adapter</description>
+
     <build>
         <plugins>
             <!-- Creating Judo bundle -->
@@ -48,18 +48,8 @@
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-expression-model</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-expression-adapter-measure</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-measure-runtime</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>

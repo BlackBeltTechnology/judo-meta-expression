@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-	<description>To install these features, point Eclipse at this site.</description>
-	<!-- JBoss Tools as Nightly Build Update Site -->
-	<category-def label="Judo Expression Metamodel Update Site" name="site">
-		<description>Judo Expression Metamodel Update Site: contains all features in this build.</description>
-	</category-def>
-	<feature id="judo-meta-expression-feature"><category name="site" /></feature>
+   <description>
+      To install these features, point Eclipse at this site.
+   </description>
+   <feature id="hu.blackbelt.judo.meta.expression.feature">
+      <category name="site"/>
+   </feature>
+   <category-def name="site" label="Judo Expression Model Update Site">
+      <description>
+         Judo Expression Model Update Site: contains all features in this build.
+      </description>
+   </category-def>
 </site>
