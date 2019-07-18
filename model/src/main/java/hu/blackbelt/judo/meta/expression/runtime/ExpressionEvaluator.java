@@ -1,24 +1,28 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.collection.*;
-import hu.blackbelt.judo.meta.expression.constant.*;
+import hu.blackbelt.judo.meta.expression.AttributeSelector;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.VariableReference;
+import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
+import hu.blackbelt.judo.meta.expression.collection.ImmutableCollection;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EMap;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Slf4j
 public class ExpressionEvaluator {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ExpressionEvaluator.class);
     private final Set<Expression> allExpressions = new HashSet<>();
 
     private final EMap<Expression, ReferenceExpression> lambdaContainers = ECollections.asEMap(new ConcurrentHashMap<>());

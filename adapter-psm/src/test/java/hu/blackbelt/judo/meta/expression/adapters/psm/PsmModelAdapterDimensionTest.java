@@ -14,7 +14,7 @@ import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
+import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import org.eclipse.emf.common.util.URI;
@@ -44,7 +44,8 @@ public class PsmModelAdapterDimensionTest {
 
     @BeforeEach
     public void setUp() {
-        final ResourceSet resourceSet = PsmModelLoader.createPsmResourceSet();
+
+        final ResourceSet resourceSet  = PsmModelResourceSupport.createPsmResourceSet();
         resource = resourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
         measureProvider = new PsmMeasureProvider(resourceSet);
 

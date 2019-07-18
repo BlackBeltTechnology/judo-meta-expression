@@ -7,7 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
+import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.createExpressionResourceSet;
 
 class MinimalAsmTest extends ExecutionContextOnAsmTest {
 

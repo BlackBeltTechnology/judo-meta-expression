@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.loadArgumentsBuilder;
+
 class OrderAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
@@ -22,13 +24,10 @@ class OrderAsmTest extends ExecutionContextOnAsmTest {
     }
 
     protected Resource getExpressionResource() throws Exception {
-        final ResourceSet expressionModelResourceSet = ExpressionModelLoader.createExpressionResourceSet();
-        ExpressionModelLoader.loadExpressionModel(expressionModelResourceSet,
-                URI.createURI(new File(srcDir(), "test/models/t003.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
-
-        return expressionModelResourceSet.getResources().get(0);
+        return ExpressionModel.loadExpressionModel(loadArgumentsBuilder()
+                .uri(URI.createFileURI(new File("test/model/t003.model").getAbsolutePath()))
+                .name("test")
+                .build()).getResourceSet().getResources().get(0);
     }
 
     @Test

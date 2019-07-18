@@ -5,7 +5,7 @@ import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
+import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
@@ -24,6 +24,7 @@ import java.util.stream.StreamSupport;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.loadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 
@@ -42,12 +43,13 @@ public class PsmMeasureSupportTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        measureModel = PsmModelLoader.loadPsmModel(
-                URI.createURI(new File(srcDir(), "test/models/psm.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
+        measureModel = PsmModel.loadPsmModel(loadArgumentsBuilder()
+                .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
+                .name("test")
+                .build());
 
-        psmResourceSet = PsmModelLoader.createPsmResourceSet();
+
+        psmResourceSet = PsmModelResourceSupport.createPsmResourceSet();
         final Resource psmResource = psmResourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
 
         final Primitive stringType = newStringTypeBuilder()
@@ -144,14 +146,5 @@ public class PsmMeasureSupportTest {
         final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;
         return StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
-    }
-
-    private File srcDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.*;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModelLoader.createExpressionResourceSet;
+import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.createExpressionResourceSet;
 
 abstract class ExecutionContextTest {
 

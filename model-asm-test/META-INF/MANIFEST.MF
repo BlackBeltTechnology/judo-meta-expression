@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: hu.blackbelt.judo.meta.expression.model.test.asm;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -24,3 +23,8 @@ Import-Package: org.junit;version="4.12.0",
  org.junit.jupiter.api;version="5.0.0",
  org.junit.jupiter.api.function;version="5.0.0",
  org.slf4j;version="1.7.2"
+Bundle-ClassPath: .,
+ target/dependency/hu.blackbelt.judo.meta.expression.model.adapter.measure.jar,
+ target/dependency/hu.blackbelt.judo.meta.expression.model.adapter.asm.jar,
+ target/dependency/judo-meta-measure-runtime.jar,
+ target/dependency/judo-meta-asm.jar

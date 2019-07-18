@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.loadArgumentsBuilder;
 
 class FullAsmTest extends ExecutionContextOnAsmTest {
 
@@ -22,13 +25,10 @@ class FullAsmTest extends ExecutionContextOnAsmTest {
     }
 
     protected Resource getExpressionResource() throws Exception {
-        final ResourceSet expressionModelResourceSet = ExpressionModelLoader.createExpressionResourceSet();
-        ExpressionModelLoader.loadExpressionModel(expressionModelResourceSet,
-                URI.createURI(new File(srcDir(), "test/models/t002.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
-
-        return expressionModelResourceSet.getResources().get(0);
+        return ExpressionModel.loadExpressionModel(loadArgumentsBuilder()
+                .uri(URI.createFileURI(new File("test/model/t002.model").getAbsolutePath()))
+                .name("test")
+                .build()).getResourceSet().getResources().get(0);
     }
 
     @Test

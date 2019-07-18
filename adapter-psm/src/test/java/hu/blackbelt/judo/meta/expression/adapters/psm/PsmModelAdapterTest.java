@@ -16,7 +16,6 @@ import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import hu.blackbelt.judo.meta.psm.type.StringType;
@@ -40,6 +39,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.loadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
@@ -55,10 +55,12 @@ public class PsmModelAdapterTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        psmModel = PsmModelLoader.loadPsmModel(
-                URI.createURI(new File(srcDir(), "test/models/psm.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
+
+        psmModel = PsmModel.loadPsmModel(loadArgumentsBuilder()
+                .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
+                .name("test")
+                .build());
+
         measureModel = psmModel;
 
         modelAdapter = new PsmModelAdapter(psmModel.getResourceSet(), measureModel.getResourceSet());
@@ -67,15 +69,6 @@ public class PsmModelAdapterTest {
     @AfterEach
     public void tearDown() {
         modelAdapter = null;
-    }
-
-    private File srcDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
     }
 
     @Test

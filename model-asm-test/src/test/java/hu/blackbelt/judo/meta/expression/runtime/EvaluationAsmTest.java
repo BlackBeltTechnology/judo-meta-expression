@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.operator.*;
+import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -39,7 +40,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
     }
 
     protected Resource getExpressionResource() {
-        final ResourceSet expressionModelResourceSet = ExpressionModelLoader.createExpressionResourceSet();
+        final ResourceSet expressionModelResourceSet = ExpressionModelResourceSupport.createExpressionResourceSet();
 
         final String createdSourceModelName = "urn:expression.judo-meta-expression";
         final Resource expressionResource = expressionModelResourceSet.createResource(

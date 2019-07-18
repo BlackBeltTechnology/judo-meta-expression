@@ -6,7 +6,6 @@ import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModelLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
@@ -22,6 +21,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.loadArgumentsBuilder;
 import static org.hamcrest.CoreMatchers.is;
 
 @Slf4j
@@ -35,10 +35,11 @@ public class PsmMeasureProviderTest {
 
     @BeforeEach
     public void setUp() throws IOException {
-        psmModel = PsmModelLoader.loadPsmModel(
-                URI.createURI(new File(srcDir(), "test/models/psm.model").getAbsolutePath()),
-                "test",
-                "1.0.0");
+        psmModel = PsmModel.loadPsmModel(loadArgumentsBuilder()
+                .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
+                .name("test")
+                .build());
+
         measureProvider = new PsmMeasureProvider(psmModel.getResourceSet());
         measureModel = psmModel;
         //TODO: uncomment after implementing PsmModelAdapter
@@ -49,15 +50,6 @@ public class PsmMeasureProviderTest {
     public void tearDown() {
         psmModel = null;
         measureProvider = null;
-    }
-
-    private File srcDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
     }
 
     @Test
