@@ -6,11 +6,11 @@ import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.measure.*;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,12 +20,12 @@ import java.util.stream.StreamSupport;
 /**
  * Measure provider for measure metamodel that is used by PSM models.
  */
-@Slf4j
 public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
 
     private static final String NAMESPACE_SEPARATOR = "::";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmMeasureProvider.class);
 
     private final ResourceSet resourceSet;
 

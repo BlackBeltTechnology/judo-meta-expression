@@ -2,12 +2,19 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureChangedHandler;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.measure.*;
-import lombok.extern.slf4j.Slf4j;
+import hu.blackbelt.judo.meta.measure.BaseMeasure;
+import hu.blackbelt.judo.meta.measure.DerivedMeasure;
+import hu.blackbelt.judo.meta.measure.DurationType;
+import hu.blackbelt.judo.meta.measure.DurationUnit;
+import hu.blackbelt.judo.meta.measure.Measure;
+import hu.blackbelt.judo.meta.measure.MeasurePackage;
+import hu.blackbelt.judo.meta.measure.Unit;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,10 +24,10 @@ import java.util.stream.StreamSupport;
 /**
  * Measure provider for measure metamodel that is used runtime (with ASM models).
  */
-@Slf4j
 public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmMeasureProvider.class);
 
     private final ResourceSet resourceSet;
 

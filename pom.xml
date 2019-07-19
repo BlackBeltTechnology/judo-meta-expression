@@ -82,7 +82,6 @@
 
 		<epsilon-runtime-version>1.2.0.develop_99</epsilon-runtime-version>
 		<epsilon-runtime-eclipse-version>1.2.0.develop_00004</epsilon-runtime-eclipse-version>
-		<epsilon-maven-plugin-version>1.2.0_develop-62</epsilon-maven-plugin-version>
 
 		<src.dir>src/main</src.dir>
 
@@ -110,13 +109,13 @@
 		<xpand-version>2.0.0</xpand-version>
 
         
-        <judo-meta-psm-version>1.0.0.feature_JNG_85_Refactor_00012</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.feature_JNG_85_Refactor_00015</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0.develop_70</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.feature_JNG_86_Refactor_00003</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
-        <judo-meta-measure-version>1.0.1.develop_27</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.feature_JNG_87_Refactor_00003</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 	</properties>
 
@@ -548,22 +547,22 @@
 			<dependency>
 				<groupId>hu.blackbelt.judo.meta</groupId>
 				<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
 			</dependency>
             <dependency>
 				<groupId>hu.blackbelt.judo.meta</groupId>
 				<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
             </dependency>
             <dependency>
 				<groupId>hu.blackbelt.judo.meta</groupId>
 				<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
             </dependency>
             <dependency>
 				<groupId>hu.blackbelt.judo.meta</groupId>
 				<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+				<version>${project.version}</version>
             </dependency>
             
             <dependency>
@@ -571,17 +570,17 @@
                 <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
                 <version>${judo-meta-psm-version}</version>
             </dependency>
-            
-            <!-- TODO: Replace with the new version -->
+
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-asm</artifactId>
-                <version>${judo-meta-asm-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>judo-meta-measure-runtime</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                 <version>${judo-meta-measure-version}</version>
+            </dependency>
+            
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                <version>${judo-meta-asm-version}</version>
             </dependency>
         </dependencies>
 	</dependencyManagement>
@@ -750,8 +749,11 @@
                 <module>adapter-measure</module>
                 <module>adapter-asm</module>
                 <module>adapter-psm</module>
+                <module>model-test</module>
+                <!--
                 <module>model-asm-test</module>
                 <module>model-psm-test</module>
+                -->
                 <module>osgi</module>
                 <module>feature</module>
                 <module>site</module>

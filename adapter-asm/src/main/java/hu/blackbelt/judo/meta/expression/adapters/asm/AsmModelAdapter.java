@@ -11,11 +11,14 @@ import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
-import hu.blackbelt.judo.meta.measure.*;
-import lombok.extern.slf4j.Slf4j;
+import hu.blackbelt.judo.meta.expression.util.builder.TypeNameBuilder;
+import hu.blackbelt.judo.meta.measure.Measure;
+import hu.blackbelt.judo.meta.measure.Unit;
+
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.Map;
@@ -32,10 +35,10 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 /**
  * Model adapter for ASM models.
  */
-@Slf4j
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
 
     private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 

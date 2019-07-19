@@ -9,8 +9,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,9 +23,9 @@ import java.util.stream.Collectors;
  * @param <U> unit type (in metamodel)
  * @param <T> object type (in metamodel)
  */
-@Slf4j
 public class MeasureAdapter<M, U, T> {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapter.class);
     /**
      * Measure adapter that is used to resolve (object) types of numeric expressions.
      */
@@ -42,7 +41,7 @@ public class MeasureAdapter<M, U, T> {
      */
     final Map<Map<MeasureId, Integer>, MeasureId> dimensions = new ConcurrentHashMap<>();
 
-    public MeasureAdapter(@NonNull final MeasureProvider<M, U> measureProvider, @NonNull final ModelAdapter modelAdapter) {
+    public MeasureAdapter(final MeasureProvider<M, U> measureProvider, final ModelAdapter modelAdapter) {
         this.measureProvider = measureProvider;
         this.modelAdapter = modelAdapter;
 
@@ -480,8 +479,6 @@ public class MeasureAdapter<M, U, T> {
     /**
      * Measure ID used internally.
      */
-    @lombok.Data
-    @lombok.AllArgsConstructor
     public static class MeasureId {
 
         /**
@@ -492,8 +489,12 @@ public class MeasureAdapter<M, U, T> {
         /**
          * Name of measure.
          */
-        @NonNull
         private String name;
+
+        public MeasureId(String namespace, String name) {
+            this.namespace = namespace;
+            this.name = name;
+        }
 
         public static <M, U> MeasureId fromMeasure(final MeasureProvider<M, U> measureProvider, M measure) {
             return new MeasureId(measureProvider.getMeasureNamespace(measure), measureProvider.getMeasureName(measure));
@@ -501,6 +502,51 @@ public class MeasureAdapter<M, U, T> {
 
         public String toString() {
             return namespace + "::" + name;
+        }
+
+        public String getNamespace() {
+            return this.namespace;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setNamespace(String namespace) {
+            this.namespace = namespace;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean equals(final Object o) {
+            if (o == this) return true;
+            if (!(o instanceof MeasureAdapter.MeasureId)) return false;
+            final MeasureId other = (MeasureId) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$namespace = this.getNamespace();
+            final Object other$namespace = other.getNamespace();
+            if (this$namespace == null ? other$namespace != null : !this$namespace.equals(other$namespace))
+                return false;
+            final Object this$name = this.getName();
+            final Object other$name = other.getName();
+            if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
+            return true;
+        }
+
+        protected boolean canEqual(final Object other) {
+            return other instanceof MeasureAdapter.MeasureId;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $namespace = this.getNamespace();
+            result = result * PRIME + ($namespace == null ? 43 : $namespace.hashCode());
+            final Object $name = this.getName();
+            result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+            return result;
         }
     }
 }
