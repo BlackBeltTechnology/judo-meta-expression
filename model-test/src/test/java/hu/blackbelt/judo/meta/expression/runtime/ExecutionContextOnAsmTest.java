@@ -65,6 +65,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
 
         AsmModel.loadAsmModel(AsmModel.LoadArguments.loadArgumentsBuilder()
                 .uri(URI.createFileURI(modelFile.getAbsolutePath()))
+                .resourceSet(Optional.of(asmModelResourceSet))
                 .name("test")
                 .build());
 

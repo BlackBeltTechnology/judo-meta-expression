@@ -564,29 +564,72 @@
 				<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
 				<version>${project.version}</version>
             </dependency>
-            
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-                <version>${judo-meta-psm-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-                <version>${judo-meta-measure-version}</version>
-            </dependency>
-            
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-                <version>${judo-meta-asm-version}</version>
-            </dependency>
         </dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-		<dependency>
+        <!-- As described in https://stackoverflow.com/questions/27046544/building-a-p2-repository-by-resolving-tycho-features-from-a-maven-repository -->
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+            <version>${judo-meta-psm-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+            <version>${judo-meta-psm-version}</version>
+            <classifier>p2metadata</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+            <version>${judo-meta-psm-version}</version>
+            <classifier>p2artifacts</classifier>
+            <type>xml</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+            <version>${judo-meta-measure-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+            <version>${judo-meta-measure-version}</version>
+            <classifier>p2metadata</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+            <version>${judo-meta-measure-version}</version>
+            <classifier>p2artifacts</classifier>
+            <type>xml</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+            <version>${judo-meta-asm-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+            <version>${judo-meta-asm-version}</version>
+            <classifier>p2metadata</classifier>
+            <type>xml</type>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+            <version>${judo-meta-asm-version}</version>
+            <classifier>p2artifacts</classifier>
+            <type>xml</type>
+        </dependency>
+
+        <dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>20.0</version>

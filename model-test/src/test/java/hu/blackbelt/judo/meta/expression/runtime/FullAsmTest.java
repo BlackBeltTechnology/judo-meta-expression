@@ -26,7 +26,7 @@ class FullAsmTest extends ExecutionContextOnAsmTest {
 
     protected Resource getExpressionResource() throws Exception {
         return ExpressionModel.loadExpressionModel(loadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("test/model/t002.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("src/test/model/t002.model").getAbsolutePath()))
                 .name("test")
                 .build()).getResourceSet().getResources().get(0);
     }
