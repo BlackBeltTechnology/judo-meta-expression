@@ -950,7 +950,25 @@
                                         <include>*.jar</include>
                                     </includes>
                                 </fileSet>
-								<fileSet>
+                                <fileSet>
+                                    <directory>${basedir}/adapter-measure/target</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </fileSet>
+                                <fileSet>
+                                    <directory>${basedir}/adapter-psm/target</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </fileSet>
+                                <fileSet>
+                                    <directory>${basedir}/adapter-asm/target</directory>
+                                    <includes>
+                                        <include>*.jar</include>
+                                    </includes>
+                                </fileSet>
+                                <fileSet>
 									<directory>${basedir}/model-test/target</directory>
 									<includes>
 										<include>*.jar</include>
