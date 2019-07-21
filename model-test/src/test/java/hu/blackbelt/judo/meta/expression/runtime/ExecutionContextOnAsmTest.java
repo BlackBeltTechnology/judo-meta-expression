@@ -32,6 +32,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
             modelContexts.add(wrappedEmfModelContextBuilder()
                     .log(log)
                     .name("NORTHWIND")
+                    .validateModel(false)
                     .aliases(ImmutableList.of("ASM"))
                     .resource(asm)
                     .build());
@@ -41,6 +42,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
             modelContexts.add(wrappedEmfModelContextBuilder()
                     .log(log)
                     .name("NORTHWIND_MEASURES")
+                    .validateModel(false)
                     .aliases(ImmutableList.of("MEASURES"))
                     .resource(measures)
                     .build());
@@ -49,6 +51,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         modelContexts.add(wrappedEmfModelContextBuilder()
                 .log(log)
                 .name("TEST")
+                .validateModel(false)
                 .aliases(ImmutableList.of("EXPR"))
                 .resource(getExpressionResource())
                 .build());

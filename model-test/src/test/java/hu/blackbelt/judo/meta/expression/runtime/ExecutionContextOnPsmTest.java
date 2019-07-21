@@ -29,6 +29,7 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
             modelContexts.add(wrappedEmfModelContextBuilder()
                     .log(log)
                     .name("NORTHWIND")
+                    .validateModel(false)
                     .aliases(ImmutableList.of("JUDOPSM"))
                     .resource(psm)
                     .build());
@@ -37,6 +38,7 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
         modelContexts.add(wrappedEmfModelContextBuilder()
                 .log(log)
                 .name("TEST")
+                .validateModel(false)
                 .aliases(ImmutableList.of("EXPR"))
                 .resource(getExpressionResource())
                 .build());

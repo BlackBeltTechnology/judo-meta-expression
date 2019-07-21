@@ -30,7 +30,7 @@
 							*
 						</Import-Package>
 						<Export-Package>
-                            meta/${mdoelName};version=${project.version},
+                            meta/expression;version=${project.version},
                             hu.blackbelt.judo.meta.expression*;version=${project.version},
                         </Export-Package>
 						<Include-Resource>{maven-resources},meta/expression=../model/model</Include-Resource>

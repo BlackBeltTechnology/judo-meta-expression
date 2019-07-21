@@ -54,11 +54,6 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/epsilon/updates/</url>
 		</repository>
-		<repository>
-			<id>orbit</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20190226160451/repository</url>
-		</repository>
 	</repositories>
 
 	<properties>
@@ -492,6 +487,14 @@
 					<artifactId>maven-gpg-plugin</artifactId>
 					<version>1.6</version>
 				</plugin>
+
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>3.0.0-M3</version>
+					<configuration>
+						<argLine>-Dfile.encoding=UTF-8</argLine>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -549,7 +552,25 @@
 				<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-            <dependency>
+			<dependency>
+				<groupId>hu.blackbelt.judo.meta</groupId>
+				<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>hu.blackbelt.judo.meta</groupId>
+				<artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>hu.blackbelt.judo.meta</groupId>
+				<artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
 				<groupId>hu.blackbelt.judo.meta</groupId>
 				<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
 				<version>${project.version}</version>
@@ -572,7 +593,6 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-            <version>${judo-meta-psm-version}</version>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
@@ -592,7 +612,6 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
@@ -612,7 +631,6 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-            <version>${judo-meta-asm-version}</version>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>

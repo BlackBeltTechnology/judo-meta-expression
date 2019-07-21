@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Optional;
 
+@Disabled
 class FullPsmTest extends ExecutionContextOnPsmTest {
 
     @BeforeEach
@@ -34,7 +36,7 @@ class FullPsmTest extends ExecutionContextOnPsmTest {
 
         ExpressionModel expressionModel = ExpressionModel.loadExpressionModel(loadArgumentsBuilder()
                 .resourceSet(Optional.of(expressionResourceSet))
-                .uri(URI.createFileURI(new File("src/test/model/t002.expression").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("src/test/model/t002.model").getAbsolutePath()))
                 .name("test")
                 .build());
 

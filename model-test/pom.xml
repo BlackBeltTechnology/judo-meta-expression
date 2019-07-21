@@ -10,9 +10,75 @@
 		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>hu.blackbelt.judo.meta.expression.model.test</artifactId>
-	<packaging>eclipse-test-plugin</packaging>
+	<!-- <packaging>eclipse-test-plugin</packaging> -->
 
 	<name>Judo :: Expression :: Model :: Eclipse test plugin</name>
 	<description>Judo Expression Model eclipse test plugin</description>
 
+
+	<dependencies>
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.epsilon</groupId>
+			<artifactId>epsilon-runtime-execution</artifactId>
+			<version>${epsilon-runtime-version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-core</artifactId>
+			<version>1.5.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-emf</artifactId>
+			<version>1.5.1</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
 </project>

@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.osgi;
 
 import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleCallback;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import hu.blackbelt.osgi.utils.osgi.api.BundleUtil;

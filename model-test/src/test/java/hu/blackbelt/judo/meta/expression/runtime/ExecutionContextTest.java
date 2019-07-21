@@ -69,24 +69,6 @@ abstract class ExecutionContextTest {
         executionContext.close();
     }
 
-    protected File scriptDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src/main/epsilon");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
-    }
-
-    protected File srcDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
-    }
-
     protected List<String> getMetaModels() {
         return ImmutableList.of();
     }

@@ -54,10 +54,13 @@ public class ExpressionValidationTest {
                 .modelContexts(ImmutableList.of(
                         wrappedEmfModelContextBuilder()
                                 .log(log)
-                                .name("EXPRESSION")
+                                .name("EXPR")
                                 .resource(expressionResource)
                                 .build()))
-                .injectContexts(ImmutableMap.of("expressionUtils", expressionUtils))
+                .injectContexts(ImmutableMap.of(
+                        "evaluator", new ExpressionEvaluator(),
+                        "expressionUtils", expressionUtils
+                ))
                 .build();
     }
 
