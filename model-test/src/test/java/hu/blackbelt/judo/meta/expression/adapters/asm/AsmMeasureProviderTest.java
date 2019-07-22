@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.LoadArgumentsBuilder;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -13,7 +12,6 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -96,7 +94,7 @@ public class AsmMeasureProviderTest {
     public void testBaseMeasuresOfBaseMeasure() {
         final Measure length = getMeasureByName("Length").get();
 
-        assertThat(measureProvider.getBaseMeasures(length), is(Collections.singletonMap(length, 1)));
+        assertThat(measureProvider.getBaseMeasures(length).map(), is(Collections.singletonMap(length, 1)));
     }
 
     @Test
@@ -107,8 +105,8 @@ public class AsmMeasureProviderTest {
         final Measure time = getMeasureByName("Time").get();
         final Measure force = getMeasureByName("Force").get();
 
-        assertThat(measureProvider.getBaseMeasures(area), is(Collections.singletonMap(length, 2)));
-        assertThat(measureProvider.getBaseMeasures(force), is(ImmutableMap.of(
+        assertThat(measureProvider.getBaseMeasures(area).map(), is(Collections.singletonMap(length, 2)));
+        assertThat(measureProvider.getBaseMeasures(force).map(), is(ImmutableMap.of(
                 mass, 1,
                 length, 1,
                 time, -2

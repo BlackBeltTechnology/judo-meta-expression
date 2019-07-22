@@ -12,6 +12,9 @@ import hu.blackbelt.judo.meta.measure.Unit;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.slf4j.Logger;
@@ -53,18 +56,18 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+    public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
         if (measure instanceof DerivedMeasure) {
             final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
-            return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
+            return ECollections.asEMap(derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent())));
         } else {
-            return Collections.singletonMap(measure, 1);
+            return ECollections.singletonEMap(measure, 1);
         }
     }
 
     @Override
-    public Collection<Unit> getUnits(final Measure measure) {
-        return measure.getUnits();
+    public EList<Unit> getUnits(final Measure measure) {
+        return ECollections.asEList(measure.getUnits());
     }
 
     @Override
@@ -93,6 +96,11 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public Stream<Measure> getMeasures() {
         return getMeasureElement(Measure.class);
+    }
+
+    @Override
+    public Stream<Unit> getUnits() {
+        return getMeasureElement(Unit.class);
     }
 
     @Override

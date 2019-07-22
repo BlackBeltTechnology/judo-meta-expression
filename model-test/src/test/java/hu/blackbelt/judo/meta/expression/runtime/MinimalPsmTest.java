@@ -5,12 +5,10 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 
-@Disabled
 class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
     @BeforeEach

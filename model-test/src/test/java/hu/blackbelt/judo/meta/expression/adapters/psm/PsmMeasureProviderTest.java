@@ -97,7 +97,7 @@ public class PsmMeasureProviderTest {
     public void testBaseMeasuresOfBaseMeasure() {
         final Measure length = getMeasureByName("Length").get();
 
-        Assert.assertThat(measureProvider.getBaseMeasures(length), is(Collections.singletonMap(length, 1)));
+        Assert.assertThat(measureProvider.getBaseMeasures(length).map(), is(Collections.singletonMap(length, 1)));
     }
 
     @Test
@@ -108,8 +108,8 @@ public class PsmMeasureProviderTest {
         final Measure time = getMeasureByName("Time").get();
         final Measure force = getMeasureByName("Force").get();
 
-        Assert.assertThat(measureProvider.getBaseMeasures(area), is(Collections.singletonMap(length, 2)));
-        Assert.assertThat(measureProvider.getBaseMeasures(force), is(ImmutableMap.of(
+        Assert.assertThat(measureProvider.getBaseMeasures(area).map(), is(Collections.singletonMap(length, 2)));
+        Assert.assertThat(measureProvider.getBaseMeasures(force).map(), is(ImmutableMap.of(
                 mass, 1,
                 length, 1,
                 time, -2

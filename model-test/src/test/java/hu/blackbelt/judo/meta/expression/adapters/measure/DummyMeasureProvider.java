@@ -2,6 +2,10 @@ package hu.blackbelt.judo.meta.expression.adapters.measure;
 
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
 import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -105,24 +109,24 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+    public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
         if (velocity.equals(measure)) {
             final Map<Measure, Integer> base = new HashMap<>();
             base.put(length, 1);
             base.put(time, -1);
-            return base;
+            return ECollections.asEMap(base);
         } else if (area.equals(measure)) {
-            return Collections.singletonMap(length, 2);
+            return ECollections.singletonEMap(length, 2);
         } else if (volume.equals(measure)) {
-            return Collections.singletonMap(length, 3);
+            return ECollections.singletonEMap(length, 3);
         } else {
-            return Collections.singletonMap(measure, 1);
+            return ECollections.singletonEMap(measure, 1);
         }
     }
 
     @Override
-    public Collection<Unit> getUnits(final Measure measure) {
-        return measure.getUnits();
+    public EList<Unit> getUnits(final Measure measure) {
+        return new BasicEList<>(measure.getUnits());
     }
 
     @Override
@@ -150,6 +154,11 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public Stream<Measure> getMeasures() {
         return measures.stream();
+    }
+
+    @Override
+    public Stream<Unit> getUnits() {
+        return measures.stream().flatMap(m -> m.getUnits().stream());
     }
 
     public Measure getLength() {
