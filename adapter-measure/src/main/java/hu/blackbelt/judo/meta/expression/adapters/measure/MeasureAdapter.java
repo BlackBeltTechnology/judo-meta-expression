@@ -9,8 +9,6 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -234,14 +232,10 @@ public class MeasureAdapter<M, U, T> {
      * @return measure
      */
     M getMeasure(final U unit) {
-        if (unit instanceof EObject) {
-            return (M) measureProvider.getUnits().filter(u -> EcoreUtil.equals((EObject)u, (EObject) unit)).map(u -> ((EObject)u).eContainer()).findAny().get();
-        } else {
-            return measureProvider.getMeasures()
-                    .filter(m -> measureProvider.getUnits(m).contains(unit))
-                    .findAny()
-                    .orElse(null);
-        }
+        return measureProvider.getMeasures()
+                .filter(m -> measureProvider.getUnits(m).contains(unit))
+                .findAny()
+                .orElse(null);
     }
 
     private Optional<Map<MeasureId, Integer>> getDimensionOfIntegerAritmeticExpression(final IntegerAritmeticExpression integerAritmeticExpression) {

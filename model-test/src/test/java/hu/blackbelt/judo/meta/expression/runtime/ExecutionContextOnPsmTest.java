@@ -15,8 +15,8 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
 
     void setUp() throws Exception {
-        final Resource psm = getPsmResource();
-        final Resource measures = getMeasureResource();
+        final Resource psm = getMeasureResource();
+        final Resource measures = psm;
 
         modelAdapter = new PsmModelAdapter(psm.getResourceSet(), measures.getResourceSet());
 
@@ -39,18 +39,8 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
                 .build());
     }
 
-    protected Resource getPsmResource() throws IOException  {
-        return PsmModel.loadPsmModel(PsmModel.LoadArguments.loadArgumentsBuilder()
-        		//.resourceSet(Optional.of(psmModelResourceSet))
-                .uri(URI.createFileURI(new File("src/test/model/northwind-judopsm.model").getAbsolutePath()))
-                .name("test")
-                .build()).getResourceSet().getResources().get(0);
-    }
-
-
     protected Resource getMeasureResource() throws IOException  {
         return PsmModel.loadPsmModel(PsmModel.LoadArguments.loadArgumentsBuilder()
-        		//.resourceSet(Optional.of(measureModelResourceSet))
                 .uri(URI.createFileURI(new File("src/test/model/northwind-judopsm.model").getAbsolutePath()))
                 .name("measures")
                 .build()).getResourceSet().getResources().get(0);

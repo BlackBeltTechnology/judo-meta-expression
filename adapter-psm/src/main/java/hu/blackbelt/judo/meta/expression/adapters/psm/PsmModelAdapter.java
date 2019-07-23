@@ -47,6 +47,12 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     private final MeasureProvider<Measure, Unit> measureProvider;
     private final MeasureAdapter measureAdapter;
 
+    /**
+     * Create PSM model adapter for expressions.
+     *
+     * @param psmResourceSet     PSM resource set
+     * @param measureResourceSet PSM resource set containing measures (must be the one that PSM resource is referencing)
+     */
     public PsmModelAdapter(final ResourceSet psmResourceSet, final ResourceSet measureResourceSet) {
         this.psmResourceSet = psmResourceSet;
 
