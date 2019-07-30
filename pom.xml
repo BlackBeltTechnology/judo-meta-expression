@@ -43,19 +43,6 @@
         </developer>
     </developers>
 
-	<repositories>
-		<repository>
-			<id>eclipse</id>
-			<layout>p2</layout>
-			<url>${eclipse-p2-base}</url>
-		</repository>
-		<repository>
-			<id>epsilon</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/epsilon/updates/</url>
-		</repository>
-	</repositories>
-
 	<properties>
         <project-shortname>judo-meta-expression</project-shortname>
         <project-repositoryId>BlackBeltTechnology/judo-meta-expression</project-repositoryId>
@@ -104,13 +91,13 @@
 		<xpand-version>2.0.0</xpand-version>
 
         
-        <judo-meta-psm-version>1.0.0.feature_JNG_85_Refactor_00015</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.feature_JNG_85_Refactor_00016</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0.feature_JNG_86_Refactor_00003</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.feature_JNG_86_Refactor_00008</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
-        <judo-meta-measure-version>1.0.0.feature_JNG_87_Refactor_00003</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.feature_JNG_87_Refactor_00004</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 	</properties>
 
@@ -128,7 +115,13 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<pomDependencies>consider</pomDependencies>
+                    <target>
+                        <artifact>
+                            <groupId>hu.blackbelt.judo.meta</groupId>
+                            <artifactId>hu.blackbelt.judo.meta.expression.targetdefinition</artifactId>
+                            <version>${project.version}</version>
+                        </artifact>
+                    </target>
 					<environments>
 						<environment>
 							<os>linux</os>
@@ -597,55 +590,11 @@
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-            <version>${judo-meta-psm-version}</version>
-            <classifier>p2metadata</classifier>
-            <type>xml</type>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-            <version>${judo-meta-psm-version}</version>
-            <classifier>p2artifacts</classifier>
-            <type>xml</type>
-        </dependency>
-        
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
-            <classifier>p2metadata</classifier>
-            <type>xml</type>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
-            <classifier>p2artifacts</classifier>
-            <type>xml</type>
-        </dependency>
-        
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-            <version>${judo-meta-asm-version}</version>
-            <classifier>p2metadata</classifier>
-            <type>xml</type>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-            <version>${judo-meta-asm-version}</version>
-            <classifier>p2artifacts</classifier>
-            <type>xml</type>
         </dependency>
 
         <dependency>
@@ -807,6 +756,7 @@
                 </property>
             </activation>
             <modules>
+                <module>targetdefinition</module>
                 <module>model</module>
                 <module>adapter-measure</module>
                 <module>adapter-asm</module>
