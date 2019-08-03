@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.loadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static org.hamcrest.CoreMatchers.is;
 
 public class PsmMeasureProviderTest {
@@ -35,7 +35,7 @@ public class PsmMeasureProviderTest {
 
     @BeforeEach
     public void setUp() throws IOException {
-        psmModel = PsmModel.loadPsmModel(loadArgumentsBuilder()
+        psmModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
                 .name("test")
                 .build());

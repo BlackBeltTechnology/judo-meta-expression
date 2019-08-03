@@ -1,4 +1,4 @@
-package hu.blackbelt.judo.meta.expression.runtime;
+package hu.blackbelt.judo.eclipse.expression;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;

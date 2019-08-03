@@ -25,12 +25,15 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.loadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEEnumBuilder;
 import static org.hamcrest.CoreMatchers.*;
@@ -47,15 +50,13 @@ public class AsmModelAdapterTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        measureModel = MeasureModel.loadMeasureModel(loadArgumentsBuilder()
+        measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
-                .name("measure")
-                .build());
+                .name("measure"));
 
-        asmModel = AsmModel.loadAsmModel(AsmModel.LoadArguments.loadArgumentsBuilder()
+        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/asm.model").getAbsolutePath()))
-                .name("asm")
-                .build());
+                .name("asm"));
 
         modelAdapter = new AsmModelAdapter(asmModel.getResourceSet(), measureModel.getResourceSet());
         asmUtils = new AsmUtils(asmModel.getResourceSet());

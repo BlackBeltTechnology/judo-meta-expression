@@ -25,6 +25,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.loadExpressionModel;
+
 @Component(immediate = true)
 @Slf4j
 public class ExpressionModelBundleTracker {
@@ -82,16 +85,13 @@ public class ExpressionModelBundleTracker {
                         if (versionRange.includes(bundleContext.getBundle().getVersion())) {
                             // Unpack model
                             try {
-                                        ExpressionModel expressionModel = ExpressionModel.loadExpressionModel(
-                                        ExpressionModel.LoadArguments.loadArgumentsBuilder()
-                                                .uriHandler(Optional.of(new BundleURIHandler("urn", "", trackedBundle)))
-                                                .uri(URI.createURI(params.get("file")))
+                                        ExpressionModel expressionModel = loadExpressionModel(expressionLoadArgumentsBuilder()
+                                                .uriHandler(new BundleURIHandler(trackedBundle.getSymbolicName(), "", trackedBundle))
+                                                .uri(URI.createURI(trackedBundle.getSymbolicName() + ":" + params.get("file")))
                                                 .name(params.get(ExpressionModel.NAME))
-                                                .version(Optional.of(trackedBundle.getVersion().toString()))
-                                                .checksum(Optional.ofNullable(params.get(ExpressionModel.CHECKSUM)))
-                                                .acceptedMetaVersionRange(Optional.of(versionRange.toString()))
-                                                .build()
-                                );
+                                                .version(trackedBundle.getVersion().toString())
+                                                .checksum(Optional.ofNullable(params.get(ExpressionModel.CHECKSUM)).orElse("notset"))
+                                                .acceptedMetaVersionRange(Optional.of(versionRange.toString()).orElse("[0,99)")));
 
                                 log.info("Registering Expression model: " + expressionModel);
 

@@ -1,8 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.epsilon.runtime.execution.impl.NioFilesystemnRelativePathURIHandlerImpl;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
@@ -11,15 +9,17 @@ import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.util.Optional;
 
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 
 abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
 
@@ -66,11 +66,10 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         final ResourceSet asmModelResourceSet = AsmModelResourceSupport.createAsmResourceSet();
         asmModelResourceSet.setURIConverter(new ModelFileBasedUriConverter(modelFile));
 
-        AsmModel.loadAsmModel(AsmModel.LoadArguments.loadArgumentsBuilder()
+        loadAsmModel(asmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(modelFile.getAbsolutePath()))
-                .resourceSet(Optional.of(asmModelResourceSet))
-                .name("test")
-                .build());
+                .resourceSet(asmModelResourceSet)
+                .name("test"));
 
         return asmModelResourceSet.getResources().get(0);
     }
@@ -78,11 +77,10 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
     protected Resource getMeasureResouce() throws IOException  {
         final ResourceSet measureModelResourceSet = MeasureModelResourceSupport.createMeasureResourceSet();
 
-        MeasureModel.loadMeasureModel(MeasureModel.LoadArguments.loadArgumentsBuilder()
-        		.resourceSet(Optional.of(measureModelResourceSet))
+        loadMeasureModel(measureLoadArgumentsBuilder()
+        		.resourceSet(measureModelResourceSet)
                 .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
-                .name("test")
-                .build());
+                .name("test"));
         
         return measureModelResourceSet.getResources().get(0);
     }

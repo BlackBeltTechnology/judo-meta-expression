@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.loadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.loadExpressionModel;
 
 class FullAsmTest extends ExecutionContextOnAsmTest {
 
@@ -23,7 +24,7 @@ class FullAsmTest extends ExecutionContextOnAsmTest {
     }
 
     protected Resource getExpressionResource() throws Exception {
-        return ExpressionModel.loadExpressionModel(loadArgumentsBuilder()
+        return loadExpressionModel(expressionLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/t002.model").getAbsolutePath()))
                 .name("test")
                 .build()).getResourceSet().getResources().get(0);

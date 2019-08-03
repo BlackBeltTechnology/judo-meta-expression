@@ -6,7 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.loadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.loadExpressionModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,7 @@ class FullPsmTest extends ExecutionContextOnPsmTest {
 
     @Override
     protected Resource getExpressionResource() throws IOException {
-        return ExpressionModel.loadExpressionModel(loadArgumentsBuilder()
+        return loadExpressionModel(expressionLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/t002.model").getAbsolutePath()))
                 .name("test")
                 .build()).getResourceSet().getResources().get(0);

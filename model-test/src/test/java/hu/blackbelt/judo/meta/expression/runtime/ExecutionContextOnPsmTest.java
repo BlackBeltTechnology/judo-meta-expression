@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.IOException;
 
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.loadPsmModel;
 
 abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
 
@@ -40,10 +42,10 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
     }
 
     protected Resource getMeasureResource() throws IOException  {
-        return PsmModel.loadPsmModel(PsmModel.LoadArguments.loadArgumentsBuilder()
+        return loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/northwind-judopsm.model").getAbsolutePath()))
-                .name("measures")
-                .build()).getResourceSet().getResources().get(0);
+                .name("measures"))
+                .getResourceSet().getResources().get(0);
     }
 
 }

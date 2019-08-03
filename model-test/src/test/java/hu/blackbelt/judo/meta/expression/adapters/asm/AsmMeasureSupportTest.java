@@ -18,7 +18,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;
 
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.loadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
 public class AsmMeasureSupportTest {
@@ -35,10 +36,9 @@ public class AsmMeasureSupportTest {
     @BeforeEach
     public void setUp() throws Exception {
 
-        measureModel = MeasureModel.loadMeasureModel(loadArgumentsBuilder()
+        measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
-                .name("test")
-                .build());
+                .name("test"));
 
         asmResourceSet = AsmModelResourceSupport.createAsmResourceSet();
         final Resource asmResource = asmResourceSet.createResource(URI.createURI("urn:asm.judo-meta-asm"));

@@ -23,7 +23,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.loadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.hamcrest.CoreMatchers.*;
@@ -39,10 +40,9 @@ public class AsmMeasureProviderTest {
     @BeforeEach
     public void setUp() throws IOException {
     	
-        measureModel = MeasureModel.loadMeasureModel(loadArgumentsBuilder()
+        measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
-                .name("test")
-                .build());
+                .name("test"));
 
         measureProvider = new AsmMeasureProvider(measureModel.getResourceSet());
 
