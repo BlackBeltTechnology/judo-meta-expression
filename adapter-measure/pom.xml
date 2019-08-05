@@ -6,55 +6,33 @@
     
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
-        <artifactId>judo-meta-expression-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
     
-    <artifactId>judo-meta-expression-adapter-measure</artifactId>
-    <packaging>bundle</packaging>
+    <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
+    <packaging>eclipse-plugin</packaging>
     
-    <name>JUDO expression metamodel measure adapter</name>
-    <description>Judo Architecture Specific Expression Metamodel adapter for measures</description>
-    
-    <build>
-        <plugins>
-            <!-- Creating Judo bundle -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.3.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <obrRepository>NONE</obrRepository>
-                    <instructions>
-                        <Import-Package>
-                            !lombok,
-                            org.osgi.framework;version="[1.8,2.0)",
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            hu.blackbelt.judo.meta.expression.adapters.measure*;version=${project.version}
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    <name>Judo :: Expression :: Model :: Measure Model adapter</name>
+    <description>Judo Expression PSM Model adapter</description>
+
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-expression-model</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+            <version>${judo-meta-asm-version}</version>
         </dependency>
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-            <scope>test</scope>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+            <version>${judo-meta-measure-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
+
 </project>

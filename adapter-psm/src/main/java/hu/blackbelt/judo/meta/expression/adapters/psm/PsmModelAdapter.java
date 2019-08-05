@@ -23,9 +23,9 @@ import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.Map;
@@ -39,14 +39,20 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 /**
  * Model adapter for PSM models.
  */
-@Slf4j
 public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
     private final MeasureAdapter measureAdapter;
 
+    /**
+     * Create PSM model adapter for expressions.
+     *
+     * @param psmResourceSet     PSM resource set
+     * @param measureResourceSet PSM resource set containing measures (must be the one that PSM resource is referencing)
+     */
     public PsmModelAdapter(final ResourceSet psmResourceSet, final ResourceSet measureResourceSet) {
         this.psmResourceSet = psmResourceSet;
 

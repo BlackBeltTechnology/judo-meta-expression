@@ -2,12 +2,22 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureChangedHandler;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.measure.*;
-import lombok.extern.slf4j.Slf4j;
+import hu.blackbelt.judo.meta.measure.BaseMeasure;
+import hu.blackbelt.judo.meta.measure.DerivedMeasure;
+import hu.blackbelt.judo.meta.measure.DurationType;
+import hu.blackbelt.judo.meta.measure.DurationUnit;
+import hu.blackbelt.judo.meta.measure.Measure;
+import hu.blackbelt.judo.meta.measure.MeasurePackage;
+import hu.blackbelt.judo.meta.measure.Unit;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,10 +27,10 @@ import java.util.stream.StreamSupport;
 /**
  * Measure provider for measure metamodel that is used runtime (with ASM models).
  */
-@Slf4j
 public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmMeasureProvider.class);
 
     private final ResourceSet resourceSet;
 
@@ -46,18 +56,18 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+    public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
         if (measure instanceof DerivedMeasure) {
             final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
-            return derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent()));
+            return ECollections.asEMap(derivedMeasure.getTerms().stream().collect(Collectors.toMap(t -> t.getBaseMeasure(), t -> t.getExponent())));
         } else {
-            return Collections.singletonMap(measure, 1);
+            return ECollections.singletonEMap(measure, 1);
         }
     }
 
     @Override
-    public Collection<Unit> getUnits(final Measure measure) {
-        return measure.getUnits();
+    public EList<Unit> getUnits(final Measure measure) {
+        return ECollections.asEList(measure.getUnits());
     }
 
     @Override
@@ -86,6 +96,11 @@ public class AsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public Stream<Measure> getMeasures() {
         return getMeasureElement(Measure.class);
+    }
+
+    @Override
+    public Stream<Unit> getUnits() {
+        return getMeasureElement(Unit.class);
     }
 
     @Override

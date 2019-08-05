@@ -1,7 +1,8 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
-import java.util.Collection;
-import java.util.Map;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
+
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -46,7 +47,7 @@ public interface MeasureProvider<M, U> {
      * @param measure measure
      * @return base measures with exponents
      */
-    Map<M, Integer> getBaseMeasures(M measure);
+    EMap<M, Integer> getBaseMeasures(M measure);
 
     /**
      * Get units of a given measure.
@@ -54,7 +55,7 @@ public interface MeasureProvider<M, U> {
      * @param measure measure
      * @return collection of units
      */
-    Collection<U> getUnits(M measure);
+    EList<U> getUnits(M measure);
 
     /**
      * Check if a given unit is duration supporting addition to timestamp (ie. second, day, etc.).
@@ -81,6 +82,13 @@ public interface MeasureProvider<M, U> {
      * @return all measures
      */
     Stream<M> getMeasures();
+
+    /**
+     * Get stream of all units.
+     *
+     * @return all units
+     */
+    Stream<U> getUnits();
 
     /**
      * Check if a measure is base (or derived) measure.

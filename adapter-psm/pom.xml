@@ -6,67 +6,23 @@
     
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
-        <artifactId>judo-meta-expression-parent</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>..</relativePath>
+        <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
+
+    <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
+    <packaging>eclipse-plugin</packaging>
     
-    <artifactId>judo-meta-expression-adapter-psm</artifactId>
-    <packaging>bundle</packaging>
-    
-    <name>JUDO expression metamodel PSM adapter</name>
-    <description>Judo Architecture Specific Expression Metamodel adapter for PSM</description>
-    
-    <build>
-        <plugins>
-            <!-- Creating Judo bundle -->
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.3.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <obrRepository>NONE</obrRepository>
-                    <instructions>
-                        <Import-Package>
-                            !lombok,
-                            org.osgi.framework;version="[1.8,2.0)",
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            hu.blackbelt.judo.meta.expression.adapters.psm*;version=${project.version}
-                        </Export-Package>
-                    </instructions>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    <name>Judo :: Expression :: Model :: PSM Model adapter</name>
+    <description>Judo Expression PSM Model adapter</description>
+
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-expression-model</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-expression-adapter-measure</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>judo-meta-psm-runtime</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-            <scope>test</scope>
+            <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
+
 </project>

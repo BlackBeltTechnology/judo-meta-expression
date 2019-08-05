@@ -6,11 +6,15 @@ import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.measure.*;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
-import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.slf4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,12 +24,12 @@ import java.util.stream.StreamSupport;
 /**
  * Measure provider for measure metamodel that is used by PSM models.
  */
-@Slf4j
 public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
 
     private static final String NAMESPACE_SEPARATOR = "::";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmMeasureProvider.class);
 
     private final ResourceSet resourceSet;
 
@@ -60,12 +64,14 @@ public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     //TODO: check
     @Override
-    public Map<Measure, Integer> getBaseMeasures(final Measure measure) {
+    public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
         if (measure instanceof DerivedMeasure) {
             final DerivedMeasure derivedMeasure = (DerivedMeasure) measure;
             final Map<Measure, Integer> base = new ConcurrentHashMap<>();
             derivedMeasure.getTerms()
-                    .forEach(t -> getBaseMeasures(getMeasure(t.getUnit())).forEach((m, exponent) -> {
+                    .forEach(t -> getBaseMeasures(getMeasure(t.getUnit())).forEach(e -> {
+                                final Measure m = e.getKey();
+                                final Integer exponent = e.getValue();
                                 final int currentExponent = base.getOrDefault(getMeasure(t.getUnit()), 0);
                                 final int calculatedBaseExponent = exponent * t.getExponent();
                                 final int newExponent = currentExponent + calculatedBaseExponent;
@@ -76,9 +82,9 @@ public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
                                 }
                             })
                     );
-            return Collections.unmodifiableMap(base);
+            return ECollections.asEMap(base);
         } else {
-            return Collections.singletonMap(measure, 1);
+            return ECollections.singletonEMap(measure, 1);
         }
     }
 
@@ -89,8 +95,8 @@ public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     }
 
     @Override
-    public Collection<Unit> getUnits(Measure measure) {
-        return measure.getUnits();
+    public EList<Unit> getUnits(Measure measure) {
+        return new BasicEList<>(measure.getUnits());
     }
 
     @Override
@@ -119,6 +125,11 @@ public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public Stream<Measure> getMeasures() {
         return getPsmElement(Measure.class);
+    }
+
+    @Override
+    public Stream<Unit> getUnits() {
+        return getPsmElement(Unit.class);
     }
 
     @Override
