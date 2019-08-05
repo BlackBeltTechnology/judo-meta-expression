@@ -46,6 +46,8 @@ public class PsmMeasureSupportTest {
         measureModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
                 .name("test")
+                // TODO: check model
+                .validateModel(false)
                 .build());
 
 

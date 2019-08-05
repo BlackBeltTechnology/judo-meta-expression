@@ -101,8 +101,9 @@ public class ExpressionModelBundleTracker {
 
                             } catch (IOException e) {
                                 log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId());
-                            }
-                        }
+                            } catch (ExpressionModel.ExpressionValidationException e) {
+                                log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
+                            }                        }
                     }
                 }
             }

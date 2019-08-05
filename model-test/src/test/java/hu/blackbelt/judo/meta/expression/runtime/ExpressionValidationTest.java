@@ -29,7 +29,6 @@ public class ExpressionValidationTest {
 
     private static final Logger log = LoggerFactory.getLogger(ExpressionValidationTest.class);
     private final String createdSourceModelName = "urn:Expression.model";
-    private Resource expressionResource;
     private ExecutionContext executionContext;
     ExpressionModelResourceSupport expressionModelSupport;
 
@@ -38,13 +37,13 @@ public class ExpressionValidationTest {
     @BeforeEach
     void setUp() {
 
-        expressionModelSupport = expressionModelResourceSupportBuilder().build();
-        expressionResource = expressionModelSupport.getResourceSet().createResource(
-                URI.createFileURI(createdSourceModelName));
+        expressionModelSupport = expressionModelResourceSupportBuilder()
+                .uri(URI.createFileURI(createdSourceModelName))
+                .build();
 
         Log log = new Slf4jLog();
 
-        expressionUtils = new ExpressionUtils(expressionResource.getResourceSet(), false);
+        expressionUtils = new ExpressionUtils(expressionModelSupport.getResourceSet(), false);
 
         // Execution context
         executionContext = executionContextBuilder()
@@ -55,19 +54,13 @@ public class ExpressionValidationTest {
                         wrappedEmfModelContextBuilder()
                                 .log(log)
                                 .name("EXPR")
-                                .resource(expressionResource)
+                                .resource(expressionModelSupport.getResource())
                                 .build()))
                 .injectContexts(ImmutableMap.of(
                         "evaluator", new ExpressionEvaluator(),
                         "expressionUtils", expressionUtils
                 ))
                 .build();
-    }
-
-    @AfterEach
-    void tearDown() {
-        executionContext = null;
-        expressionResource = null;
     }
 
     @Test

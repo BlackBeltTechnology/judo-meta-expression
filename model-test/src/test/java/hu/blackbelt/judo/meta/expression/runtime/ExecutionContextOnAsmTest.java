@@ -74,7 +74,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         return asmModelResourceSet.getResources().get(0);
     }
 
-    protected Resource getMeasureResouce() throws IOException  {
+    protected Resource getMeasureResouce() throws IOException, MeasureModel.MeasureValidationException {
         final ResourceSet measureModelResourceSet = MeasureModelResourceSupport.createMeasureResourceSet();
 
         loadMeasureModel(measureLoadArgumentsBuilder()

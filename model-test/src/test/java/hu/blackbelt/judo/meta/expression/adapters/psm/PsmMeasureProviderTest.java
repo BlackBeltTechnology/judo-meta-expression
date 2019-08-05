@@ -34,10 +34,12 @@ public class PsmMeasureProviderTest {
     //private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
 
     @BeforeEach
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, PsmModel.PsmValidationException {
         psmModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
                 .name("test")
+                // TODO: check model
+                .validateModel(false)
                 .build());
 
         measureProvider = new PsmMeasureProvider(psmModel.getResourceSet());

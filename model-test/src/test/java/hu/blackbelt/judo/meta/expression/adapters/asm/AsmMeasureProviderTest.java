@@ -38,7 +38,7 @@ public class AsmMeasureProviderTest {
     private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
 
     @BeforeEach
-    public void setUp() throws IOException {
+    public void setUp() throws IOException, MeasureModel.MeasureValidationException {
     	
         measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))

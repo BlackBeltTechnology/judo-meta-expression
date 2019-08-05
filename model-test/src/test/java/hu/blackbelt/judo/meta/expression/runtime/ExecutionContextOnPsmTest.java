@@ -41,7 +41,7 @@ abstract class ExecutionContextOnPsmTest extends ExecutionContextTest {
                 .build());
     }
 
-    protected Resource getMeasureResource() throws IOException  {
+    protected Resource getMeasureResource() throws IOException, PsmModel.PsmValidationException {
         return loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/northwind-judopsm.model").getAbsolutePath()))
                 .name("measures"))

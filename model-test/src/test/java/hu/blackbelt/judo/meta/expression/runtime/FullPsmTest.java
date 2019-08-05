@@ -25,10 +25,12 @@ class FullPsmTest extends ExecutionContextOnPsmTest {
     }
 
     @Override
-    protected Resource getExpressionResource() throws IOException {
+    protected Resource getExpressionResource() throws IOException, ExpressionModel.ExpressionValidationException {
         return loadExpressionModel(expressionLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/t002.model").getAbsolutePath()))
                 .name("test")
+                // TODO: check mdoel
+                .validateModel(false)
                 .build()).getResourceSet().getResources().get(0);
     }
 

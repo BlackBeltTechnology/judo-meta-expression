@@ -62,8 +62,8 @@
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-		<epsilon-runtime-version>1.2.0.develop_99</epsilon-runtime-version>
-		<epsilon-runtime-eclipse-version>1.2.0.develop_00004</epsilon-runtime-eclipse-version>
+		<epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
+		<epsilon-runtime-eclipse-version>1.2.0.develop_00005</epsilon-runtime-eclipse-version>
 
 		<src.dir>src/main</src.dir>
 
@@ -72,8 +72,8 @@
 		<tycho-version>1.4.0</tycho-version>
 		<eclipse-p2-base>http://download.eclipse.org/releases/2019-03</eclipse-p2-base>
 
-        <emf-genmodel-generator-version>1.0.0.develop_00016</emf-genmodel-generator-version>
-		<judo-genmodel-generator-version>1.0.0-SNAPSHOT</judo-genmodel-generator-version>
+		<emf-genmodel-generator-version>1.0.0.develop_00017</emf-genmodel-generator-version>
+		<judo-genmodel-generator-version>1.0.0.develop_00009</judo-genmodel-generator-version>
 
 		<!-- Xtend / Xcore -->
 		<emf-version>2.18.0</emf-version>
@@ -93,13 +93,13 @@
 		<emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 		<epsilon-version>1.5.1</epsilon-version>
         
-        <judo-meta-psm-version>1.0.0-SNAPSHOT</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00297</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0-SNAPSHOT</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.develop_00089</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
-        <judo-meta-measure-version>1.0.0-SNAPSHOT</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00035</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 	</properties>
 
