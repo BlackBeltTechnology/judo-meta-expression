@@ -63,7 +63,7 @@
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
 		<epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
-		<epsilon-runtime-eclipse-version>1.2.0.develop_00005</epsilon-runtime-eclipse-version>
+		<epsilon-runtime-eclipse-version>1.2.0.develop_00009</epsilon-runtime-eclipse-version>
 
 		<src.dir>src/main</src.dir>
 
@@ -93,7 +93,7 @@
 		<emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 		<epsilon-version>1.5.1</epsilon-version>
         
-        <judo-meta-psm-version>1.0.0.develop_00297</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00303</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
         <judo-meta-asm-version>1.0.0.develop_00089</judo-meta-asm-version>
@@ -158,6 +158,17 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+			</plugin>
+
 		</plugins>
 
 		<pluginManagement>
@@ -466,6 +477,51 @@
 				</plugin>
 
 				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-source-plugin</artifactId>
+					<version>${tycho-version}</version>
+
+					<executions>
+						<execution>
+							<id>plugin-source</id>
+							<goals>
+								<goal>plugin-source</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-source-feature-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<executions>
+						<execution>
+							<id>source-feature</id>
+							<phase>package</phase>
+							<goals>
+								<goal>source-feature</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<executions>
+						<execution>
+							<id>attach-p2-metadata</id>
+							<phase>package</phase>
+							<goals>
+								<goal>p2-metadata</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
 					<groupId>org.sonatype.plugins</groupId>
 					<artifactId>nexus-staging-maven-plugin</artifactId>
 					<version>1.6.8</version>
@@ -595,6 +651,20 @@
 			<version>1.7.21</version>
 			<scope>test</scope>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-core</artifactId>
+			<version>${epsilon-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.epsilon</groupId>
+			<artifactId>epsilon-emf</artifactId>
+			<version>${epsilon-version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>

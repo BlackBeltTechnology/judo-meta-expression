@@ -4,11 +4,28 @@
       To install these features, point Eclipse at this site.
    </description>
    <feature id="hu.blackbelt.judo.meta.expression.feature">
-      <category name="site"/>
+      <category name="expression"/>
    </feature>
-   <category-def name="site" label="Judo Expression Model Update Site">
+   <category-def name="expression" label="Judo Expression Model">
       <description>
          Judo Expression Model Update Site: contains all features in this build.
       </description>
    </category-def>
+
+   <feature id="hu.blackbelt.judo.meta.expression.feature.source">
+      <category name="expression_source"/>
+   </feature>
+   <category-def name="expression_source" label="Judo Expression Model Source">
+      <description>
+         Judo Expression Model source code.
+      </description>
+   </category-def>
+
+   <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
+   <!-- The tycho plugin 1.5.0 will fix it -->
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/1.2.0.develop_00009" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.develop_00089" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.develop_00297" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.develop_00035" enabled="true" />
+
 </site>
