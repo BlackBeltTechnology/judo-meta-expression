@@ -93,13 +93,13 @@
 		<emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 		<epsilon-version>1.5.1</epsilon-version>
         
-        <judo-meta-psm-version>1.0.0.develop_00306</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00309</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0.develop_00090</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.develop_00093</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
-        <judo-meta-measure-version>1.0.0.develop_00037</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00040</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 	</properties>
 
@@ -651,20 +651,7 @@
 			<version>1.7.21</version>
 			<scope>test</scope>
 		</dependency>
-
-
-		<dependency>
-			<groupId>org.eclipse.epsilon</groupId>
-			<artifactId>epsilon-core</artifactId>
-			<version>${epsilon-version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.epsilon</groupId>
-			<artifactId>epsilon-emf</artifactId>
-			<version>${epsilon-version}</version>
-		</dependency>
-
+		
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
