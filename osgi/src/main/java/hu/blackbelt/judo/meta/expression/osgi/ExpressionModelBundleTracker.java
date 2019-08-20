@@ -1,12 +1,10 @@
 package hu.blackbelt.judo.meta.expression.osgi;
 
-import hu.blackbelt.epsilon.runtime.osgi.BundleURIHandler;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleCallback;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import hu.blackbelt.osgi.utils.osgi.api.BundleUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.emf.common.util.URI;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -16,6 +14,9 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,15 +25,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.loadExpressionModel;
+import static java.util.Optional.ofNullable;
 
 @Component(immediate = true)
 @Slf4j
+@Designate(ocd = ExpressionModelBundleTracker.TrackerConfig.class)
 public class ExpressionModelBundleTracker {
 
     public static final String EXPRESSION_MODELS = "Expression-Models";
+
+    @ObjectClassDefinition(name="Expression Model Bundle Tracker")
+    public @interface TrackerConfig {
+        @AttributeDefinition(
+                name = "Tags",
+                description = "Which tags are on the loaded model when there is no one defined in bundle"
+        )
+        String tags() default "";
+    }
 
     @Reference
     BundleTrackerManager bundleTrackerManager;
@@ -41,8 +55,11 @@ public class ExpressionModelBundleTracker {
 
     Map<String, ExpressionModel> expressionModels = new HashMap<>();
 
+    TrackerConfig config;
+
     @Activate
-    public void activate(final ComponentContext componentContext) {
+    public void activate(final ComponentContext componentContext, final TrackerConfig trackerConfig) {
+        this.config = trackerConfig;
         bundleTrackerManager.registerBundleCallback(this.getClass().getName(),
                 new ExpressionRegisterCallback(componentContext.getBundleContext()),
                 new ExpressionUnregisterCallback(),
@@ -85,13 +102,13 @@ public class ExpressionModelBundleTracker {
                         if (versionRange.includes(bundleContext.getBundle().getVersion())) {
                             // Unpack model
                             try {
-                                        ExpressionModel expressionModel = loadExpressionModel(expressionLoadArgumentsBuilder()
-                                                .uriHandler(new BundleURIHandler(trackedBundle.getSymbolicName(), "", trackedBundle))
-                                                .uri(URI.createURI(trackedBundle.getSymbolicName() + ":" + params.get("file")))
-                                                .name(params.get(ExpressionModel.NAME))
-                                                .version(trackedBundle.getVersion().toString())
-                                                .checksum(Optional.ofNullable(params.get(ExpressionModel.CHECKSUM)).orElse("notset"))
-                                                .acceptedMetaVersionRange(Optional.of(versionRange.toString()).orElse("[0,99)")));
+                                ExpressionModel expressionModel = loadExpressionModel(expressionLoadArgumentsBuilder()
+                                        .inputStream(trackedBundle.getEntry(params.get("file")).openStream())
+                                        .name(params.get(ExpressionModel.NAME))
+                                        .version(trackedBundle.getVersion().toString())
+                                        .checksum(Optional.ofNullable(params.get(ExpressionModel.CHECKSUM)).orElse("notset"))
+                                        .tags(Stream.of(ofNullable(params.get(ExpressionModel.TAGS)).orElse(config.tags()).split(",")).collect(Collectors.toSet()))
+                                        .acceptedMetaVersionRange(Optional.of(versionRange.toString()).orElse("[0,99)")));
 
                                 log.info("Registering Expression model: " + expressionModel);
 
@@ -99,11 +116,10 @@ public class ExpressionModelBundleTracker {
                                 expressionModels.put(key, expressionModel);
                                 expressionModelRegistrations.put(key, modelServiceRegistration);
 
-                            } catch (IOException e) {
-                                log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId());
-                            } catch (ExpressionModel.ExpressionValidationException e) {
-                                log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
-                            }                        }
+                            } catch (IOException | ExpressionModel.ExpressionValidationException e) {
+                                log.error("Could not load Psm model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
+                            }
+                        }
                     }
                 }
             }

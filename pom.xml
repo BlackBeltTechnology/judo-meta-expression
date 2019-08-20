@@ -72,8 +72,8 @@
 		<tycho-version>1.4.0</tycho-version>
 		<eclipse-p2-base>http://download.eclipse.org/releases/2019-03</eclipse-p2-base>
 
-		<emf-genmodel-generator-version>1.0.0.develop_00019</emf-genmodel-generator-version>
-		<judo-genmodel-generator-version>1.0.0.develop_00011</judo-genmodel-generator-version>
+		<emf-genmodel-generator-version>1.0.0.develop_00021</emf-genmodel-generator-version>
+		<judo-genmodel-generator-version>1.0.0.develop_00015</judo-genmodel-generator-version>
 
 		<!-- Xtend / Xcore -->
 		<emf-version>2.18.0</emf-version>
@@ -93,13 +93,13 @@
 		<emf-mapping-ecore2xml>2.11.0</emf-mapping-ecore2xml>
 		<epsilon-version>1.5.1</epsilon-version>
         
-        <judo-meta-psm-version>1.0.0.develop_00311</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00313</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0.develop_00096</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.develop_00099</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
-        <judo-meta-measure-version>1.0.0.develop_00042</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00044</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
 	</properties>
 
