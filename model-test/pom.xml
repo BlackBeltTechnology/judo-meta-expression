@@ -10,10 +10,9 @@
 		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>hu.blackbelt.judo.meta.expression.model.test</artifactId>
-	<!-- <packaging>eclipse-test-plugin</packaging> -->
 
-	<name>Judo :: Expression :: Model :: Eclipse test plugin</name>
-	<description>Judo Expression Model eclipse test plugin</description>
+	<name>Judo :: Expression :: Model :: Test</name>
+	<description>Judo Expression Test</description>
 
 
 	<dependencies>
