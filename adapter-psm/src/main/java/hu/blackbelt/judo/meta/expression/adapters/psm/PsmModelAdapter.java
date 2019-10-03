@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
+import hu.blackbelt.judo.meta.psm.data.Containment;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
@@ -24,13 +25,18 @@ import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -272,5 +278,14 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         }
 
         return (containerNamespace.isPresent() ? getNamespaceFQName(containerNamespace.get()) + NAMESPACE_SEPARATOR : "") + namespace.getName();
+    }
+
+    @Override
+    public EList<EntityType> getContainerTypesOf(final EntityType entityType) {
+        // TODO - change getRelations to getAllRelations
+        return ECollections.asEList(getPsmElement(EntityType.class)
+                .filter(container -> container.getRelations().stream().anyMatch(c -> (c instanceof Containment) && EcoreUtil.equals(c.getTarget(), entityType)))
+                .flatMap(container -> Stream.concat(PsmUtils.getAllSuperEntityTypes(container).stream(), Collections.singleton(container).stream()))
+                .collect(Collectors.toList()));
     }
 }

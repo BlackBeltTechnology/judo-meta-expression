@@ -2,7 +2,7 @@
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:enum="http://blackbelt.hu/judo/meta/expression/enumeration" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string" xmlns:t="http://blackbelt.hu/judo/meta/expression/temporal">
   <c:CollectionNavigationFromObjectExpression xmi:id="_PTM5kOGpEeiNLd-ce3MxwA" referenceName="addresses">
     <objectExpression xsi:type="o:ObjectFilterExpression" xmi:id="_oYxUEONPEeiRKu0rpEAR6w">
-      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" name="c" referenceName="customer">
+      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_g7rMIOGpEeiNLd-ce3MxwA" referenceName="customer" name="c">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
           <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw">
             <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
@@ -144,7 +144,7 @@
         <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_UnvhIPb5Eei6VpsqfFnFTg">
           <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_WQK3gPb5Eei6VpsqfFnFTg" name="prod" elementName="_jECy8OvSEeicoeazcHGCBw"/>
           <condition xsi:type="l:ObjectComparison" xmi:id="_ZESk8Pb5Eei6VpsqfFnFTg">
-            <left xsi:type="o:ObjectNavigationExpression" xmi:id="_Z_wHoPb5Eei6VpsqfFnFTg" name="" referenceName="category">
+            <left xsi:type="o:ObjectNavigationExpression" xmi:id="_Z_wHoPb5Eei6VpsqfFnFTg" referenceName="category" name="">
               <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_azqQ0Pb5Eei6VpsqfFnFTg" variable="_WQK3gPb5Eei6VpsqfFnFTg"/>
             </left>
             <right xsi:type="o:ObjectVariableReference" xmi:id="_d2rV4Pb5Eei6VpsqfFnFTg" variable="_INUn0Pb5Eei6VpsqfFnFTg"/>
@@ -218,10 +218,14 @@
     <startTimestamp xsi:type="const:TimestampConstant" xmi:id="_V46J8CSfEemLpvUY7MQgng" value="2019-01-02 03:04:05.678+01:00 [Europe/Budapest]"/>
     <endTimestamp xsi:type="const:TimestampConstant" xmi:id="_WQtl8CSfEemLpvUY7MQgng" value="2019-01-30 15:57:08.123+01:00 [Europe/Budapest]"/>
   </t:TimestampDifferenceExpression>
+  <o:ContainerExpression xmi:id="_wFGJYOXTEemuZNeTONnm3g" elementName="_s9EE8OGqEeiNLd-ce3MxwA">
+    <objectExpression xsi:type="const:Instance" xmi:id="_-m16kOXeEemuZNeTONnm3g" name="self" elementName="_6yb10OXTEemuZNeTONnm3g"/>
+  </o:ContainerExpression>
   <expr:TypeName xmi:id="_9eABUOaEEeiefp-kRHrgiQ" name="InternationalAddress" namespace="demo.entities"/>
   <expr:TypeName xmi:id="_1H5BMOKCEeiNLd-ce3MxwA" name="InternationalOrder" namespace="demo.entities"/>
   <expr:TypeName xmi:id="_s9EE8OGqEeiNLd-ce3MxwA" name="Order" namespace="demo::entities"/>
   <expr:TypeName xmi:id="_jECy8OvSEeicoeazcHGCBw" name="Product" namespace="demo::entities"/>
   <expr:TypeName xmi:id="_LxfSIPb5Eei6VpsqfFnFTg" name="Category" namespace="demo::entities"/>
+  <expr:TypeName xmi:id="_6yb10OXTEemuZNeTONnm3g" name="OrderDetail" namespace="demo::entities"/>
   <expr:MeasureName xmi:id="_7VLCACSdEemLpvUY7MQgng" name="Mass" namespace="Template::measures"/>
 </xmi:XMI>

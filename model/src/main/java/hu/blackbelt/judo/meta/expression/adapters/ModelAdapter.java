@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.adapters;
 
 import hu.blackbelt.judo.meta.expression.*;
+import org.eclipse.emf.common.util.EList;
 
 import java.util.Collection;
 import java.util.Map;
@@ -229,4 +230,12 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
      * @return map if base measured with exponents
      */
     Optional<Map<M, Integer>> getDimension(NumericExpression numericExpression);
+
+    /**
+     * Get all element names that can be used as container of clazz.
+     *
+     * @param clazz containment class
+     * @return all possible container classes
+     */
+    EList<C> getContainerTypesOf(C clazz);
 }
