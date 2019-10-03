@@ -67,6 +67,6 @@ context EXPR!ContainerExpression {
         guard: self.objectExpression.satisfiesAll("Resolved")
         
         check: modelAdapter.getContainerTypesOf(self.objectExpression.getObjectType(modelAdapter)).exists(typeName | typeName == modelAdapter.get(self.elementName).orElse(null))
-        message: "Invalid container type of: " + self + " - " + self.elementName.name + "+" + self.elementName.namespace + "###" + modelAdapter.getContainerTypesOf(self.objectExpression.getObjectType(modelAdapter))
+        message: "Invalid container type of: " + self
     }
 }
