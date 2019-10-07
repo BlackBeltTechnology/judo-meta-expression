@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.epsilon.evl.emf.validation,
  org.eclipse.ui.ide,
- com.google.guava
+ com.google.guava,
+ hu.blackbelt.epsilon.runtime.execution,
+ org.eclipse.epsilon.common
 Export-Package: hu.blackbelt.judo.meta.expression,
  hu.blackbelt.judo.meta.expression.adapters,
  hu.blackbelt.judo.meta.expression.collection,
