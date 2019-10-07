@@ -117,6 +117,7 @@
         
         <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
+        <log4j.configuration>log4j.properties</log4j.configuration>
 	</properties>
 
 	<build>
@@ -562,6 +563,9 @@
 					<configuration>
 						<argLine>-Dfile.encoding=UTF-8</argLine>
 						<trimStackTrace>false</trimStackTrace>
+						<systemPropertyVariables>
+							<log4j.configuration>${log4j.configuration}</log4j.configuration>
+						</systemPropertyVariables>
 					</configuration>
 				</plugin>
 			</plugins>
