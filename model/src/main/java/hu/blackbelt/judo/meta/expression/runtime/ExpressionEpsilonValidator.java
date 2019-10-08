@@ -6,6 +6,8 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonMap;
 
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
