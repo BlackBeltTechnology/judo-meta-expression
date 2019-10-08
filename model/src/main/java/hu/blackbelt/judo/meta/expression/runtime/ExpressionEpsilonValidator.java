@@ -23,7 +23,7 @@ public class ExpressionEpsilonValidator {
 
 	public static void validateExpression(Log log, ExpressionModel expressionModel, URI scriptRoot)
 			throws ScriptExecutionException, URISyntaxException {
-		validateMeasure(log, expressionModel, scriptRoot, emptyList(), emptyList());
+		validateExpression(log, expressionModel, scriptRoot, emptyList(), emptyList());
 	}
 
 	public static void validateExpression(Log log, ExpressionModel expressionModel, URI scriptRoot,
