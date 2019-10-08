@@ -1,5 +1,8 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +46,9 @@ public class ExpressionBundleITest {
 
     @Inject
     BundleContext bundleContext;
+    
+    @Inject
+    ExpressionModel expressionModel;
 
     @Configuration
     public Option[] config() throws FileNotFoundException {
@@ -116,5 +122,21 @@ public class ExpressionBundleITest {
         assertEquals(Bundle.ACTIVE, getBundle(bundleContext, HU_BLACKBELT_JUDO_META_EXPRESSION_MODEL_ADAPTER_MEASURE)
                 .getState());
 
+    }
+    
+    
+    //should be renamed bundlevalidation?
+    @Test
+    public void testModelValidation() {
+        StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
+        try {
+            ExpressionEpsilonValidator.validateExpression(logger,
+                    expressionModel,
+                    ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+
+        } catch (Exception e) {
+            log.log(LogService.LOG_ERROR, logger.getBuffer());
+            assertFalse(true);
+        }
     }
 }
