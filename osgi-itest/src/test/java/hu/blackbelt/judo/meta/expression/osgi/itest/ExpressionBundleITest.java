@@ -126,7 +126,7 @@ public class ExpressionBundleITest {
     
     
     //should be renamed bundlevalidation?
-    @Test
+    /*@Test
     public void testModelValidation() {
         StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
         try {
@@ -138,5 +138,5 @@ public class ExpressionBundleITest {
             log.log(LogService.LOG_ERROR, logger.getBuffer());
             assertFalse(true);
         }
-    }
+    }*/
 }
