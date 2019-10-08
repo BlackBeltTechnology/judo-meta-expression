@@ -109,7 +109,7 @@
 		<apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
 		<pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.develop_00325</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00396</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
         <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
@@ -118,6 +118,13 @@
         <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
+
+		<!-- For tests -->
+		<northwind-model-version>1.0.0-SNAPSHOT</northwind-model-version>
+		<judo-tatami-version>1.0.0-SNAPSHOT</judo-tatami-version>
+
+			<!--1.0.0.1570546427_bf729bbbb5b9c09f5de28b1df6353917c8b6b06d_develop</judo-tatami-version> -->
+
 	</properties>
 
 	<build>

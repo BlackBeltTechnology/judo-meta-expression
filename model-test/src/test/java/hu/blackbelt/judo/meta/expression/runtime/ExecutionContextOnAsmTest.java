@@ -59,7 +59,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
 
     protected Resource getAsmResource() throws Exception {
         // Set our custom handler
-        final File modelFile = new File("src/test/model/northwind-asm.model");
+        final File modelFile = new File("target/test-classes/model/northwind-asm.model");
 
 //    	URIHandler uriHandler = new NioFilesystemnRelativePathURIHandlerImpl("urn", FileSystems.getDefault(), modelFile.getParentFile().getAbsolutePath());
 
@@ -79,7 +79,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
 
         loadMeasureModel(measureLoadArgumentsBuilder()
         		.resourceSet(measureModelResourceSet)
-                .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-measure.model").getAbsolutePath()))
                 .name("test"));
         
         return measureModelResourceSet.getResources().get(0);

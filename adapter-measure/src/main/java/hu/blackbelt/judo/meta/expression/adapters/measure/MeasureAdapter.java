@@ -48,7 +48,7 @@ public class MeasureAdapter<M, U, T> {
         measureProvider.setMeasureChangeHandler(new MeasureChangeAdapter());
 
         dimensions.putAll(measureProvider.getMeasures()
-                .collect(Collectors.toMap(m -> getBaseMeasures(m), m -> MeasureId.fromMeasure(measureProvider, m))));
+                .collect(Collectors.toMap(m -> getBaseMeasures(m), m -> MeasureId.fromMeasure(measureProvider, m), (m1, m2) -> m1)));
     }
 
     /**
