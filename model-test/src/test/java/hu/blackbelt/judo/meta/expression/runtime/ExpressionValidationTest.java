@@ -33,7 +33,7 @@ public class ExpressionValidationTest {
                 .build();
         
         expressionModel = ExpressionModel.buildExpressionModel()
-        		.expressionModelResourceSupport(expressionModelSupport)
+        		//.expressionModelResourceSupport(expressionModelSupport)
                 .uri(URI.createURI(createdSourceModelName))
                 .name("test")
                 .build();

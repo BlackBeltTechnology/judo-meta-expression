@@ -29,11 +29,21 @@ public class ExpressionEpsilonValidator {
 	public static void validateExpression(Log log, ExpressionModel expressionModel, URI scriptRoot,
 			Collection<String> expectedErrors, Collection<String> expectedWarnings)
 			throws ScriptExecutionException, URISyntaxException {
-		ExecutionContext executionContext = executionContextBuilder().log(log)
-				.resourceSet(expressionModel.getResourceSet()).metaModels(emptyList())
-				.modelContexts(Arrays.asList(wrappedEmfModelContextBuilder().log(log).name("EXPRESSION")
-						.validateModel(false).resource(expressionModel.getResource()).build()))
-				.injectContexts(singletonMap("expressionUtils", new ExpressionUtils())).build();
+		
+		ExecutionContext executionContext = executionContextBuilder()
+                .log(log)
+                .resourceSet(expressionModel.getResourceSet())
+                .metaModels(emptyList())
+                .modelContexts(Arrays.asList(
+                        wrappedEmfModelContextBuilder()
+                                .log(log)
+                                .name("EXPR")
+                                .resource(expressionModel.getResource())
+                                .validateModel(false)
+                                .build()))
+                .injectContexts(singletonMap("evaluator", new ExpressionEvaluator()))
+                .injectContexts(singletonMap("expressionUtils", new ExpressionUtils()))
+                .build();
 
 		try {
 // run the model / metadata loading

@@ -287,6 +287,13 @@
             <version>${judo-meta-measure-version}</version>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
