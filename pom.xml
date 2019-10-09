@@ -120,8 +120,8 @@
         <log4j.configuration>log4j.properties</log4j.configuration>
 
 		<!-- For tests -->
-		<northwind-model-version>1.0.0.feature_JNG_357_FixingMeasures_00002</northwind-model-version>
-		<judo-tatami-version>1.0.0.1570582681_11cd0c5506b11c4230d7d1221ab852dd2badabac_feature_JNG_379_FixingSequentialFlow</judo-tatami-version>
+		<northwind-model-version>1.0.0.develop_00145</northwind-model-version>
+		<judo-tatami-version>1.0.0.1570583960_51893cf42f62d747b951ec198803cdc3ca03d7fc_develop</judo-tatami-version>
 
 	</properties>
 
