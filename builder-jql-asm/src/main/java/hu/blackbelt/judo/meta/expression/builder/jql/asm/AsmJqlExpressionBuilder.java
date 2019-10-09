@@ -76,8 +76,7 @@ public class AsmJqlExpressionBuilder {
         }
 
         final Instance instance = entityInstances.get(entityType);
-        //final Expression expression = transformJqlToExpression(jqlParser.parseString(expressionAsString));
-        final Expression expression = transformJqlToExpression(null);
+        final Expression expression = transformJqlToExpression(jqlParser.parseString(expressionAsString));
 
         if (expression == null || (expression instanceof DataExpression)) {
             return (DataExpression) expression;
