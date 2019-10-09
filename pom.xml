@@ -114,6 +114,9 @@
         
         <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
+
+		<judo-meta-jql-version>1.0.0.develop_00046</judo-meta-jql-version>
+		<judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
         
         <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
@@ -773,7 +776,10 @@
                 <module>model</module>
                 <module>adapter-measure</module>
                 <module>adapter-asm</module>
-                <module>adapter-psm</module>
+				<module>adapter-psm</module>
+				<module>builder-jql</module>
+				<module>builder-jql-asm</module>
+				<module>builder-jql-asm-test</module>
                 <module>model-test</module>
                 <!--
                 <module>model-asm-test</module>
