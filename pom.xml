@@ -115,15 +115,13 @@
         <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
         
-        <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00055</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
 		<!-- For tests -->
-		<northwind-model-version>1.0.0-SNAPSHOT</northwind-model-version>
-		<judo-tatami-version>1.0.0-SNAPSHOT</judo-tatami-version>
-
-			<!--1.0.0.1570546427_bf729bbbb5b9c09f5de28b1df6353917c8b6b06d_develop</judo-tatami-version> -->
+		<northwind-model-version>1.0.0.feature_JNG_357_FixingMeasures_00002</northwind-model-version>
+		<judo-tatami-version>1.0.0.1570582681_11cd0c5506b11c4230d7d1221ab852dd2badabac_feature_JNG_379_FixingSequentialFlow</judo-tatami-version>
 
 	</properties>
 
