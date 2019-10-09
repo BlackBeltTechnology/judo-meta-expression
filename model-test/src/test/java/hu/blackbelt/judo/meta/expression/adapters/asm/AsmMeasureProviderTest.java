@@ -41,7 +41,7 @@ public class AsmMeasureProviderTest {
     public void setUp() throws IOException, MeasureModel.MeasureValidationException {
     	
         measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-measure.model").getAbsolutePath()))
                 .name("test"));
 
         measureProvider = new AsmMeasureProvider(measureModel.getResourceSet());
@@ -124,12 +124,12 @@ public class AsmMeasureProviderTest {
     public void testIsDurationSupportingAddition() {
         final Unit second = getUnitByName("millisecond").get();
         final Unit metre = getUnitByName("metre").get();
-        final Unit halfDay = getUnitByName("halfDay").get();
+        final Unit microsecond = getUnitByName("microsecond").get();
         final Unit month = getUnitByName("month").get();
 
         assertTrue(measureProvider.isDurationSupportingAddition(second));
         assertFalse(measureProvider.isDurationSupportingAddition(metre));
-        assertFalse(measureProvider.isDurationSupportingAddition(halfDay));
+        assertFalse(measureProvider.isDurationSupportingAddition(microsecond));
         assertFalse(measureProvider.isDurationSupportingAddition(month));
     }
 

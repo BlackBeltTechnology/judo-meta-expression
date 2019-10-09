@@ -36,7 +36,7 @@ public class PsmMeasureProviderTest {
     @BeforeEach
     public void setUp() throws IOException, PsmModel.PsmValidationException {
         psmModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
                 .name("test")
                 // TODO: check model
                 .validateModel(false)
@@ -61,7 +61,7 @@ public class PsmMeasureProviderTest {
         final Measure negtestMeasure = MeasureBuilders.newMeasureBuilder().withName("NegtestMeasure").build();
 
         Assert.assertTrue(mass.isPresent());
-        Assert.assertThat(measureProvider.getMeasureNamespace(mass.get()), is("northwind::measures"));
+        Assert.assertThat(measureProvider.getMeasureNamespace(mass.get()), is("demo::measures"));
         Assert.assertTrue(measureProvider.getMeasureNamespace(negtestMeasure) == null);
     }
 
@@ -80,11 +80,11 @@ public class PsmMeasureProviderTest {
     @Test
     void testGetMeasure() {
         log.info("Testing: getMeasure...");
-        final Optional<Measure> length = measureProvider.getMeasure("northwind::measures", "Length");
+        final Optional<Measure> length = measureProvider.getMeasure("demo::measures", "Length");
 
-        final Optional<Measure> invalidName = measureProvider.getMeasure("northwind::measures", "Price");
-        final Optional<Measure> invalidNamespace = measureProvider.getMeasure("demo::measures", "Length");
-        final Optional<Measure> invalidNameAndNamespace = measureProvider.getMeasure("demo::measures", "Price");
+        final Optional<Measure> invalidName = measureProvider.getMeasure("demo::measures", "Price");
+        final Optional<Measure> invalidNamespace = measureProvider.getMeasure("northwind::measures", "Length");
+        final Optional<Measure> invalidNameAndNamespace = measureProvider.getMeasure("northwind::measures", "Price");
 
         final Optional<Measure> expectedLength = getMeasureByName("Length");
 
@@ -131,12 +131,12 @@ public class PsmMeasureProviderTest {
         log.info("Testing: isDurationSupportingAddition...");
         final Unit second = getUnitByName("millisecond").get();
         final Unit metre = getUnitByName("metre").get();
-        final Unit halfDay = getUnitByName("halfDay").get();
+        final Unit microsecond = getUnitByName("microsecond").get();
         final Unit month = getUnitByName("month").get();
 
         Assert.assertTrue(measureProvider.isDurationSupportingAddition(second));
         Assert.assertFalse(measureProvider.isDurationSupportingAddition(metre));
-        Assert.assertFalse(measureProvider.isDurationSupportingAddition(halfDay));
+        Assert.assertFalse(measureProvider.isDurationSupportingAddition(microsecond));
         Assert.assertFalse(measureProvider.isDurationSupportingAddition(month));
     }
 
