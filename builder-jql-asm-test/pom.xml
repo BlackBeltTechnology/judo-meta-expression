@@ -46,7 +46,7 @@
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm</artifactId>
+            <artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
             <version>${project.version}</version>
         </dependency>
 

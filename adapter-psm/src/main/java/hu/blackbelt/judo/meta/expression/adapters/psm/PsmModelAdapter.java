@@ -2,7 +2,6 @@ package hu.blackbelt.judo.meta.expression.adapters.psm;
 
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
@@ -25,6 +24,8 @@ import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.slf4j.Logger;
 
@@ -32,6 +33,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -106,6 +108,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isCollectionReference(ReferenceTypedElement reference) {
+        return reference.isCollection();
+    }
+
+    @Override
     public EntityType getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
     }
@@ -113,6 +120,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Optional<? extends PrimitiveTypedElement> getAttribute(EntityType clazz, String attributeName) {
         return Optional.ofNullable(clazz.getAttribute(attributeName));
+    }
+
+    @Override
+    public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
+        return Optional.ofNullable(attribute.getDataType());
     }
 
     @Override
@@ -250,6 +262,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Optional<Map<Measure, Integer>> getDimension(NumericExpression numericExpression) {
         return measureAdapter.getDimension(numericExpression);
+    }
+
+    @Override
+    public EList<EntityType> getAllClasses() {
+        return ECollections.asEList(getPsmElement(EntityType.class).collect(Collectors.toList()));
     }
 
     <T> Stream<T> getPsmElement(final Class<T> clazz) {
