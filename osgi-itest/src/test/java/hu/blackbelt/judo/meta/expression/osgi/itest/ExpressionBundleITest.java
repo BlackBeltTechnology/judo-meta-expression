@@ -1,6 +1,8 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
+import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
@@ -19,6 +21,7 @@ import org.osgi.service.log.LogService;
 
 import javax.inject.Inject;
 import java.io.*;
+import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.*;
 import static org.junit.Assert.*;
@@ -125,18 +128,22 @@ public class ExpressionBundleITest {
     }
     
     
-    @Test
+    /*@Test
     public void testModelValidation() {
-        /*StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
-        bundleContext.
+        StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
+        
+        List<ModelContext> modelContexts;
+        ModelAdapter modelAdapter;
+        
         try {
             ExpressionEpsilonValidator.validateExpression(logger,
-                    expressionModel,
-                    ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+            		modelContexts,
+                    ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(),
+                    modelAdapter);
 
         } catch (Exception e) {
             log.log(LogService.LOG_ERROR, logger.getBuffer());
             assertFalse(true);
-        }*/
-    }
+        }
+    }*/
 }
