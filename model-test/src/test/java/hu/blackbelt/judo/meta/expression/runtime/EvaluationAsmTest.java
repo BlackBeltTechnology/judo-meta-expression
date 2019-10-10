@@ -219,7 +219,6 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .withVariable(di)
                         .build())
                 .withAttributeName("categoryName")
-                .withAlias("categoryName")
                 .build();
 
 //        final StringExpression discountedProductName = newStringAttributeBuilder()
