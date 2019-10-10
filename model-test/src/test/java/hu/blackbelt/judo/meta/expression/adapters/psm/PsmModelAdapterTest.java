@@ -254,7 +254,6 @@ public class PsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -266,7 +265,6 @@ public class PsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -278,7 +276,6 @@ public class PsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();

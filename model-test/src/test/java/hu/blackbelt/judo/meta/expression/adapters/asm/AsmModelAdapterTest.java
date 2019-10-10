@@ -215,7 +215,6 @@ public class AsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -227,7 +226,6 @@ public class AsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -239,7 +237,6 @@ public class AsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
