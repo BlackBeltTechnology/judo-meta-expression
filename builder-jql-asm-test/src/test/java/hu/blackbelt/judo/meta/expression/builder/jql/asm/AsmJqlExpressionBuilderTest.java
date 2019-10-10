@@ -89,58 +89,66 @@ public class AsmJqlExpressionBuilderTest {
         expressionModelResourceSupport = null;
     }
 
+    private void validateExpressions(final Resource expressionResource) throws Exception {
+        final List<ModelContext> modelContexts = Arrays.asList(
+                wrappedEmfModelContextBuilder()
+                        .log(log)
+                        .name("NORTHWIND")
+                        .validateModel(false)
+                        .aliases(ImmutableList.of("ASM"))
+                        .resource(asmResource)
+                        .build(),
+                wrappedEmfModelContextBuilder()
+                        .log(log)
+                        .name("NORTHWIND_MEASURES")
+                        .validateModel(false)
+                        .aliases(ImmutableList.of("MEASURES"))
+                        .resource(measureResource)
+                        .build(),
+                wrappedEmfModelContextBuilder()
+                        .log(log)
+                        .name("TEST")
+                        .validateModel(false)
+                        .aliases(ImmutableList.of("EXPR"))
+                        .resource(expressionResource)
+                        .build()
+        );
+
+        // Execution context
+        ExecutionContext executionContext = executionContextBuilder()
+                .log(log)
+                .resourceSet(expressionResource.getResourceSet())
+                .metaModels(Collections.emptyList())
+                .modelContexts(modelContexts)
+                .injectContexts(ImmutableMap.of(
+                        "evaluator", new ExpressionEvaluator(),
+                        "modelAdapter", modelAdapter))
+                .build();
+
+        // run the model / metadata loading
+        executionContext.load();
+
+        // Validation script
+        executionContext.executeProgram(
+                evlExecutionContextBuilder()
+                        .source(new File("../model/src/main/epsilon/validations/expression.evl").toURI())
+                        .expectedErrors(Collections.emptyList())
+                        .expectedWarnings(Collections.emptyList())
+                        .build());
+
+        executionContext.commit();
+        executionContext.close();
+    }
+
     private Expression createExpression(final EClass clazz, final String jqlExpressionAsString) throws Exception {
+        return createExpression(clazz, jqlExpressionAsString, true);
+    }
+
+    private Expression createExpression(final EClass clazz, final String jqlExpressionAsString, final boolean validate) throws Exception {
         final Expression expression = asmJqlExpressionBuilder.createExpression(clazz, jqlExpressionAsString);
 
-        if (expression != null) {
-            final List<ModelContext> modelContexts = Arrays.asList(
-                    wrappedEmfModelContextBuilder()
-                            .log(log)
-                            .name("NORTHWIND")
-                            .validateModel(false)
-                            .aliases(ImmutableList.of("ASM"))
-                            .resource(asmResource)
-                            .build(),
-                    wrappedEmfModelContextBuilder()
-                            .log(log)
-                            .name("NORTHWIND_MEASURES")
-                            .validateModel(false)
-                            .aliases(ImmutableList.of("MEASURES"))
-                            .resource(measureResource)
-                            .build(),
-                    wrappedEmfModelContextBuilder()
-                            .log(log)
-                            .name("TEST")
-                            .validateModel(false)
-                            .aliases(ImmutableList.of("EXPR"))
-                            .resource(expression.eResource())
-                            .build()
-            );
-
-            // Execution context
-            ExecutionContext executionContext = executionContextBuilder()
-                    .log(log)
-                    .resourceSet(expression.eResource().getResourceSet())
-                    .metaModels(Collections.emptyList())
-                    .modelContexts(modelContexts)
-                    .injectContexts(ImmutableMap.of(
-                            "evaluator", new ExpressionEvaluator(),
-                            "modelAdapter", modelAdapter))
-                    .build();
-
-            // run the model / metadata loading
-            executionContext.load();
-
-            // Validation script
-            executionContext.executeProgram(
-                    evlExecutionContextBuilder()
-                            .source(new File("../model/src/main/epsilon/validations/expression.evl").toURI())
-                            .expectedErrors(Collections.emptyList())
-                            .expectedWarnings(Collections.emptyList())
-                            .build());
-
-            executionContext.commit();
-            executionContext.close();
+        if (validate && expression != null) {
+            validateExpressions(expression.eResource());
         }
 
         return expression;
@@ -152,8 +160,7 @@ public class AsmJqlExpressionBuilderTest {
         final Expression expression = createExpression(order, "self.orderDate");
         assertNotNull(expression);
 
-        final JqlExpressionBuilder.BindingContext bindingContext = new JqlExpressionBuilder.BindingContext("orderDate", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER);
-        asmJqlExpressionBuilder.createBinding(bindingContext, order, expression);
+        asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("orderDate", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, expression);
 
         log.info("Order date: " + expression);
     }
@@ -164,8 +171,7 @@ public class AsmJqlExpressionBuilderTest {
         final Expression expression = createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
 
-        final JqlExpressionBuilder.BindingContext bindingContext = new JqlExpressionBuilder.BindingContext("categories", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER);
-        asmJqlExpressionBuilder.createBinding(bindingContext, order, expression);
+        asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categories", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, expression);
 
         log.info("Order categories: " + expression);
     }
@@ -175,5 +181,98 @@ public class AsmJqlExpressionBuilderTest {
         final Expression expression = createExpression(null, "2*3");
         log.info("Simple arithmetic operation: " + expression);
         assertNotNull(expression);
+    }
+
+    @Test
+    void testSimpleDaoTest() throws Exception {
+        final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
+        final EClass internationalOrder = asmUtils.all(EClass.class).filter(c -> "InternationalOrder".equals(c.getName())).findAny().get();
+        final EClass orderDetail = asmUtils.all(EClass.class).filter(c -> "OrderDetail".equals(c.getName())).findAny().get();
+        final EClass product = asmUtils.all(EClass.class).filter(c -> "Product".equals(c.getName())).findAny().get();
+        final EClass category = asmUtils.all(EClass.class).filter(c -> "Category".equals(c.getName())).findAny().get();
+        final EClass company = asmUtils.all(EClass.class).filter(c -> "Company".equals(c.getName())).findAny().get();
+        final EClass shipper = asmUtils.all(EClass.class).filter(c -> "Shipper".equals(c.getName())).findAny().get();
+
+        assertNotNull(order);
+        assertNotNull(internationalOrder);
+        assertNotNull(orderDetail);
+        assertNotNull(product);
+        assertNotNull(category);
+        assertNotNull(company);
+        assertNotNull(shipper);
+
+        final Expression orderOrderDetails = createExpression(order, "self.orderDetails", false);
+        final Expression orderCategories = createExpression(order, "self.orderDetails.product.category", false);
+        final Expression orderShipperName = createExpression(order, "self.shipper.companyName", false);
+        final Expression orderShipper = createExpression(order, "self.shipper", false);
+        final Expression orderOrderDate = createExpression(order, "self.orderDate", false);
+        assertNotNull(orderOrderDetails);
+        assertNotNull(orderCategories);
+        assertNotNull(orderShipperName);
+        assertNotNull(orderShipper);
+        assertNotNull(orderOrderDate);
+
+        final Expression internationalOrderCustomsDescription = createExpression(internationalOrder, "self.customsDescription", false);
+        final Expression internationalOrderExciseTax = createExpression(internationalOrder, "self.exciseTax", false);
+        assertNotNull(internationalOrderCustomsDescription);
+        assertNotNull(internationalOrderExciseTax);
+
+        final Expression productCategory = createExpression(product, "self.category", false);
+        final Expression productProductName = createExpression(product, "self.productName", false);
+        final Expression productUnitPrice = createExpression(product, "self.unitPrice", false);
+        assertNotNull(productCategory);
+        assertNotNull(productProductName);
+        assertNotNull(productUnitPrice);
+
+        final Expression companyCompanyName = createExpression(shipper, "self.companyName", false);
+        assertNotNull(companyCompanyName);
+
+        final Expression categoryProducts = createExpression(category, "self.products", false);
+        final Expression categoryCategoryName = createExpression(category, "self.categoryName", false);
+        assertNotNull(categoryProducts);
+        assertNotNull(categoryCategoryName);
+
+        final Expression orderDetailProduct = createExpression(orderDetail, "self.product", false);
+        final Expression orderDetailCategory = createExpression(orderDetail, "self.category", false);
+        final Expression orderDetailProductName = createExpression(orderDetail, "self.productName", false);
+        final Expression orderDetailUnitPrice = createExpression(orderDetail, "self.unitPrice", false);
+        final Expression orderDetailQuantity = createExpression(orderDetail, "self.quantity", false);
+        final Expression orderDetailDiscount = createExpression(orderDetail, "self.discount", false);
+        final Expression orderDetailPrice = createExpression(orderDetail, "self.quantity * self.unitPrice * (1 - self.discount)", false);
+        assertNotNull(orderDetailProduct);
+        assertNotNull(orderDetailCategory);
+        assertNotNull(orderDetailProductName);
+        assertNotNull(orderDetailUnitPrice);
+        assertNotNull(orderDetailQuantity);
+        assertNotNull(orderDetailDiscount);
+        assertNotNull(orderDetailPrice);
+
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("items", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderOrderDetails));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categories", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderCategories));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("shipperName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, orderShipperName));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("shipper", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderShipper));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("orderDate", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, orderOrderDate));
+
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("customsDescription", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), internationalOrder, internationalOrderCustomsDescription));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("exciseTax", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), internationalOrder, internationalOrderExciseTax));
+
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("category", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), product, productCategory));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("productName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), product, productProductName));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("unitPrice", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), product, productUnitPrice));
+
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("companyName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), company, companyCompanyName));
+
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("products", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), category, categoryProducts));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("companyName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), category, categoryCategoryName));
+
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("product", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailProduct));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("category", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailCategory));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("productName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailProductName));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("unitPrice", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailUnitPrice));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("quantity", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailQuantity));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("discount", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailDiscount));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("price", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailPrice));
+
+        validateExpressions(expressionModelResourceSupport.getResource());
     }
 }
