@@ -20,7 +20,7 @@ class FullAsmTest extends ExecutionContextOnAsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     protected Resource getExpressionResource() throws Exception {
@@ -34,6 +34,9 @@ class FullAsmTest extends ExecutionContextOnAsmTest {
 
     @Test
     void test() throws Exception {
-        execute();
+    	ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

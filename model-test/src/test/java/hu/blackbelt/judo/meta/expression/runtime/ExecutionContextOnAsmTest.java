@@ -1,7 +1,12 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import com.google.common.collect.ImmutableList;
+
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
@@ -13,7 +18,8 @@ import org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
@@ -21,11 +27,17 @@ import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadA
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 
-abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
+abstract class ExecutionContextOnAsmTest {
 
+	final Log log = new Slf4jLog();
+
+    ModelAdapter modelAdapter;
+    
+    List<ModelContext> modelContexts = new ArrayList<>();
+    
     void setUp() throws Exception {
         final Resource asm = getAsmResource();
-        final Resource measures = getMeasureResouce();
+        final Resource measures = getMeasureResource();
         modelAdapter = new AsmModelAdapter(asm.getResourceSet(), measures.getResourceSet());
 
         if (asm != null) {
@@ -74,7 +86,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
         return asmModelResourceSet.getResources().get(0);
     }
 
-    protected Resource getMeasureResouce() throws IOException, MeasureModel.MeasureValidationException {
+    protected Resource getMeasureResource() throws IOException, MeasureModel.MeasureValidationException {
         final ResourceSet measureModelResourceSet = MeasureModelResourceSupport.createMeasureResourceSet();
 
         loadMeasureModel(measureLoadArgumentsBuilder()
@@ -123,4 +135,7 @@ abstract class ExecutionContextOnAsmTest extends ExecutionContextTest {
             return normalize(result);
         }
     }
+    
+    protected abstract Resource getExpressionResource() throws Exception;
+
 }

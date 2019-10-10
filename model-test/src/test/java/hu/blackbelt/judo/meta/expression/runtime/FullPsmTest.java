@@ -21,7 +21,7 @@ class FullPsmTest extends ExecutionContextOnPsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     @Override
@@ -29,13 +29,15 @@ class FullPsmTest extends ExecutionContextOnPsmTest {
         return loadExpressionModel(expressionLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/t002.model").getAbsolutePath()))
                 .name("test")
-                // TODO: check mdoel
                 .validateModel(false)
                 .build()).getResourceSet().getResources().get(0);
     }
 
     @Test
     void test() throws Exception {
-        execute();
+        ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

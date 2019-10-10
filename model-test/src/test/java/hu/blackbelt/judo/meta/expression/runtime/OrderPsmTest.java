@@ -20,7 +20,7 @@ class OrderPsmTest extends ExecutionContextOnPsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     protected Resource getExpressionResource() throws Exception {
@@ -34,6 +34,9 @@ class OrderPsmTest extends ExecutionContextOnPsmTest {
 
     @Test
     void test() throws Exception {
-        execute();
+    	ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

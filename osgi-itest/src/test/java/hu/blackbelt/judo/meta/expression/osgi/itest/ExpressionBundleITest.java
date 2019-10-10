@@ -49,9 +49,6 @@ public class ExpressionBundleITest {
 
     @Inject
     BundleContext bundleContext;
-    
-    /*@Inject
-    ExpressionModel expressionModel;*/
 
     @Configuration
     public Option[] config() throws FileNotFoundException {
@@ -90,8 +87,7 @@ public class ExpressionBundleITest {
                 mavenBundle(maven()
                         .groupId(HU_BLACKBELT_JUDO_META)
                         .artifactId(HU_BLACKBELT_JUDO_META_EXPRESSION_MODEL_ADAPTER_MEASURE)
-                        .versionAsInProject())//,
-                //getProvisonModelBundle()
+                        .versionAsInProject())
 
         );
     }
@@ -128,33 +124,11 @@ public class ExpressionBundleITest {
 
     }
     
-    /*public Option getProvisonModelBundle() throws FileNotFoundException {
-        return provision(
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_EXPRESSION_OSGI),
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_ASM_OSGI),
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_PSM_OSGI),
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_MEASURE_OSGI),
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_EXPRESSION_MODEL_ADAPTER_ASM),
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_EXPRESSION_MODEL_ADAPTER_PSM),
-                getExpressionModelBundle(HU_BLACKBELT_JUDO_META_EXPRESSION_MODEL_ADAPTER_MEASURE)
-        );
-    }
-
-    private InputStream getExpressionModelBundle(String constant) throws FileNotFoundException {
-        return bundle()
-                .add( "model/" + constant + ".judo-meta-esm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-esm.model")))
-                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
-                .set( Constants.BUNDLE_SYMBOLICNAME, constant + "-esm" )
-                //set( Constants.IMPORT_PACKAGE, "meta/psm;version=\"" + getConfiguration(META_PSM_IMPORT_RANGE) +"\"")
-                .set( "Esm-Models", "file=model/" + constant + ".judo-meta-esm;version=1.0.0;name=" + constant + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
-                .build( withBnd());
-    }
-    
     
     @Test
     public void testModelValidation() {
-        StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
+        /*StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
+        bundleContext.
         try {
             ExpressionEpsilonValidator.validateExpression(logger,
                     expressionModel,
@@ -163,6 +137,6 @@ public class ExpressionBundleITest {
         } catch (Exception e) {
             log.log(LogService.LOG_ERROR, logger.getBuffer());
             assertFalse(true);
-        }
-    }*/
+        }*/
+    }
 }
