@@ -12,6 +12,8 @@ Automatic-Module-Name: hu.blackbelt.judo.meta.expression.builder.jql.asm
 Import-Package: hu.blackbelt.judo.meta.asm.runtime,
  hu.blackbelt.judo.meta.expression,
  hu.blackbelt.judo.meta.expression.adapters,
+ hu.blackbelt.judo.meta.expression.binding,
+ hu.blackbelt.judo.meta.expression.binding.util.builder,
  hu.blackbelt.judo.meta.expression.collection,
  hu.blackbelt.judo.meta.expression.collection.util.builder,
  hu.blackbelt.judo.meta.expression.constant,

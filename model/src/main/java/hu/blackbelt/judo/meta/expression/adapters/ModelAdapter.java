@@ -62,12 +62,12 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
     Optional<? extends RTE> getReference(C clazz, String referenceName);
 
     /**
-     * Check multiplicity of a reference expression.
+     * Check multiplicity of a reference selector.
      *
-     * @param referenceExpression reference expression
+     * @param referenceSelector reference selector
      * @return <code>true</code> if reference expression is collection, <code>false</code> otherwise
      */
-    boolean isCollection(ReferenceExpression referenceExpression);
+    boolean isCollection(ReferenceSelector referenceSelector);
 
     /**
      * Get target (object) type of a reference.

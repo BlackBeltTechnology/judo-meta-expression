@@ -3,7 +3,6 @@ package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.DecimalExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
@@ -12,10 +11,11 @@ import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.binding.Binding;
+import hu.blackbelt.judo.meta.expression.binding.BindingRole;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
-import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 import hu.blackbelt.judo.meta.jql.jqldsl.BooleanLiteral;
@@ -31,7 +31,6 @@ import hu.blackbelt.judo.meta.measure.Unit;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -39,14 +38,17 @@ import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.*;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomAttributeBuilder;
@@ -67,7 +69,7 @@ public class AsmJqlExpressionBuilder {
 
     private static final String SELF_NAME = "self";
 
-    private final ExpressionModelResourceSupport expressionModelResourceSupport;
+    private final Resource expressionResource;
     private final AsmUtils asmUtils;
     private final ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter;
 
@@ -75,11 +77,9 @@ public class AsmJqlExpressionBuilder {
 
     private final JqlParser jqlParser = new JqlParser();
 
-    public AsmJqlExpressionBuilder(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet, final ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter, final URI uri) {
+    public AsmJqlExpressionBuilder(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet, final Resource expressionResource, final ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter) {
         this.modelAdapter = modelAdapter;
-        expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
-                .uri(uri)
-                .build();
+        this.expressionResource = expressionResource;
 
         asmUtils = new AsmUtils(asmResourceSet);
 
@@ -100,70 +100,73 @@ public class AsmJqlExpressionBuilder {
                             .withName(SELF_NAME)
                             .build();
 
-                    expressionModelResourceSupport.addContent(typeName);
-                    expressionModelResourceSupport.addContent(self);
+                    expressionResource.getContents().addAll(Arrays.asList(typeName, self));
                     entityInstances.put(entityType, self);
                 });
     }
 
     /**
-     * Create and return attribute binding for a given entity type.
+     * Create and return expression of a given JQL string.
      *
      * @param entityType            entity type
-     * @param jqlExpressionAsString JQLexpression to process
-     * @return data expression of attribute
+     * @param jqlExpressionAsString JQL expression as string
+     * @return expression
      */
-    public DataExpression createAttributeBinding(final EClass entityType, final String jqlExpressionAsString, final EvaluationContext context) {
-        return createAttributeBinding(entityType, jqlParser.parseString(jqlExpressionAsString), context);
+    public Expression createExpression(final EClass entityType, String jqlExpressionAsString) {
+        final hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
+        return createExpression(entityType, jqlExpression);
     }
 
     /**
-     * Create and return attribute binding for a given entity type.
+     * Create and return expression of a given JQL expression.
      *
      * @param entityType    entity type
-     * @param jqlExpression JQL expression to process
-     * @return data expression of attribute
+     * @param jqlExpression JQL expression
+     * @return expression
      */
-    public DataExpression createAttributeBinding(final EClass entityType, final hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, final EvaluationContext context) {
+    public Expression createExpression(final EClass entityType, hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression) {
         final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
         final Expression expression = transformJqlToExpression(jqlExpression, instance != null ? ECollections.singletonEList(instance) : ECollections.emptyEList());
 
-        if (expression == null || (expression instanceof DataExpression)) {
-            return (DataExpression) expression;
-        } else {
-            log.error("Invalid data expression (entity type: {}, feature: {}", AsmUtils.getClassifierFQName(entityType), context.getFeatureName());
-            return null;
-        }
+        log.debug("Expression created: {}", expression);
+        expressionResource.getContents().add(expression);
+
+        return expression;
     }
 
     /**
-     * Create and return attribute binding for a given entity type.
+     * Create binding of a given expression.
      *
-     * @param entityType            entity type
-     * @param jqlExpressionAsString JQLexpression to process
-     * @return data expression of attribute
+     * @param bindingContext binding context
+     * @param expression     expression
+     * @return expression binding
      */
-    public ReferenceExpression createRelationBinding(final EClass entityType, final String jqlExpressionAsString, final EvaluationContext context) {
-        return createRelationBinding(entityType, jqlParser.parseString(jqlExpressionAsString), context);
-    }
-
-    /**
-     * Create and return relation binding for a given entity type.
-     *
-     * @param entityType    entity type
-     * @param jqlExpression JQL expression to process
-     * @return reference expression of relation
-     */
-    public ReferenceExpression createRelationBinding(final EClass entityType, final hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, final EvaluationContext context) {
-        final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
-        final Expression expression = transformJqlToExpression(jqlExpression, instance != null ? ECollections.singletonEList(instance) : ECollections.emptyEList());
-
-        if (expression == null || (expression instanceof ReferenceExpression)) {
-            return (ReferenceExpression) expression;
+    public Binding createBinding(final BindingContext bindingContext, final Expression expression) {
+        final EStructuralFeature feature = bindingContext.getFeature();
+        final Instance instance = entityInstances.get(feature.getEContainingClass());
+        final Binding binding;
+        if (feature instanceof EAttribute) {
+            binding = newAttributeBindingBuilder()
+                    .withExpression(expression)
+                    .withTypeName(instance.getElementName())
+                    .withAttributeName(feature.getName())
+                    .withRole(bindingContext.isSetter() ? BindingRole.SETTER : BindingRole.GETTER)
+                    .build();
+        } else if (feature instanceof EReference) {
+            binding = newReferenceBindingBuilder()
+                    .withExpression(expression)
+                    .withTypeName(instance.getElementName())
+                    .withReferenceName(feature.getName())
+                    .withRole(bindingContext.isSetter() ? BindingRole.SETTER : BindingRole.GETTER)
+                    .build();
         } else {
-            log.error("Invalid reference expression (entity type: {}, feature: {}", AsmUtils.getClassifierFQName(entityType), context.getFeatureName());
-            return null;
+            throw new IllegalStateException("Unsupported feature");
         }
+
+        log.debug("Binding created for expression: {}", expression);
+        expressionResource.getContents().add(binding);
+
+        return binding;
     }
 
     private Expression transformJqlToExpression(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, final EList<ObjectVariable> variables) {
@@ -407,19 +410,18 @@ public class AsmJqlExpressionBuilder {
         }
     }
 
-    public static class EvaluationContext {
+    public static class BindingContext {
 
-        private final String featureName;
-
+        private final EStructuralFeature feature;
         private final boolean setter;
 
-        public EvaluationContext(final String featureName, final boolean setter) {
-            this.featureName = featureName;
+        public BindingContext(final EStructuralFeature feature, final boolean setter) {
+            this.feature = feature;
             this.setter = setter;
         }
 
-        public String getFeatureName() {
-            return featureName;
+        public EStructuralFeature getFeature() {
+            return feature;
         }
 
         public boolean isSetter() {

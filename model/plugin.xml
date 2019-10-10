@@ -195,4 +195,19 @@
             type="judo-meta-expression-temporal"
             class="hu.blackbelt.judo.meta.expression.temporal.util.TemporalResourceFactoryImpl"/>
    </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/binding"
+            class="hu.blackbelt.judo.meta.expression.binding.BindingPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-binding"
+            class="hu.blackbelt.judo.meta.expression.binding.util.BindingResourceFactoryImpl"/>
+   </extension>
 </plugin>

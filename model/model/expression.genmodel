@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/hu.blackbelt.judo.meta.expression.model/src-gen" modelPluginID="hu.blackbelt.judo.meta.expression.model"
-    modelName="Expression" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    testsDirectory="" importerID="org.eclipse.emf.importer.ecore" featureDelegation="Dynamic"
-    complianceLevel="8.0" copyrightFields="false" operationReflection="true" importOrganizing="true"
-    oSGiCompatible="true">
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/hu.blackbelt.judo.meta.expression.model/src-gen"
+    modelPluginID="hu.blackbelt.judo.meta.expression.model" modelName="Expression"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" testsDirectory=""
+    importerID="org.eclipse.emf.importer.ecore" featureDelegation="Dynamic" complianceLevel="8.0"
+    copyrightFields="false" operationReflection="true" importOrganizing="true" oSGiCompatible="true">
   <foreignModel>expression.ecore</foreignModel>
   <genPackages prefix="Expression" basePackage="hu.blackbelt.judo.meta" resource="XMI"
       disposableProviderFactory="true" dataTypeConverters="true" extensibleProviderFactory="true"
@@ -78,16 +78,17 @@
           body="return getCollectionExpression().getVariableName();"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//ReferenceExpression">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ReferenceExpression/referenceName"/>
       <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getObjectType">
         <genParameters ecoreParameter="expression.ecore#//ReferenceExpression/getObjectType/modelAdapter"/>
       </genOperations>
       <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getVariableName"/>
-      <genOperations ecoreOperation="expression.ecore#//ReferenceExpression/getReference">
-        <genParameters ecoreParameter="expression.ecore#//ReferenceExpression/getReference/modelAdapter"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ReferenceSelector/referenceName"/>
+      <genOperations ecoreOperation="expression.ecore#//ReferenceSelector/getReference">
+        <genParameters ecoreParameter="expression.ecore#//ReferenceSelector/getReference/modelAdapter"/>
       </genOperations>
     </genClasses>
-    <genClasses image="false" ecoreClass="expression.ecore#//ReferenceSelector"/>
     <genClasses image="false" ecoreClass="expression.ecore#//CustomExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//DateExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//TimestampExpression"/>
@@ -901,6 +902,28 @@
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/toString"
             body="return &quot;(&quot; + getEndTimestamp() + &quot; - &quot; + getStartTimestamp() + &quot;)&quot;;"/>
+      </genClasses>
+    </nestedGenPackages>
+    <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
+        dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
+        fileExtensions="judo-meta-expression-binding" ecorePackage="expression.ecore#//binding">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//binding/BindingRole">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/BindingRole/getter"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/BindingRole/setter"/>
+      </genEnums>
+      <genClasses image="false" ecoreClass="expression.ecore#//binding/Binding">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//binding/Binding/expression"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//binding/Binding/typeName"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//binding/AttributeBinding">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//binding/AttributeBinding/attributeName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//binding/AttributeBinding/role"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//binding/ReferenceBinding">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//binding/ReferenceBinding/referenceName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//binding/ReferenceBinding/role"/>
       </genClasses>
     </nestedGenPackages>
   </genPackages>

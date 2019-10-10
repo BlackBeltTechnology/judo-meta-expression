@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.adapters.psm;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
@@ -100,8 +101,8 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isCollection(ReferenceExpression referenceExpression) {
-        return ((ReferenceTypedElement) referenceExpression.getReference(this)).isCollection();
+    public boolean isCollection(ReferenceSelector referenceSelector) {
+        return ((ReferenceTypedElement) referenceSelector.getReference(this)).isCollection();
     }
 
     @Override

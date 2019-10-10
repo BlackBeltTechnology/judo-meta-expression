@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
@@ -97,8 +98,8 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public boolean isCollection(final ReferenceExpression referenceExpression) {
-        return ((EReference) referenceExpression.getReference(this)).isMany();
+    public boolean isCollection(final ReferenceSelector referenceSelector) {
+        return ((EReference) referenceSelector.getReference(this)).isMany();
     }
 
     @Override
