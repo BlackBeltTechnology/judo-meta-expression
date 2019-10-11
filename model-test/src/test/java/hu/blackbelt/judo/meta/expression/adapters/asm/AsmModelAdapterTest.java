@@ -82,7 +82,7 @@ public class AsmModelAdapterTest {
 
         assertTrue(categoryTypeName.isPresent());
         assertThat(categoryTypeName.get().getName(), is("Category")); //TODO: check, seems kinda silly (+psm)
-        assertThat(categoryTypeName.get().getNamespace(), is("demo.entities"));
+        assertThat(categoryTypeName.get().getNamespace(), is("demo::entities"));
         //TODO: negtest maaaaybe? (+psm)
     }
 

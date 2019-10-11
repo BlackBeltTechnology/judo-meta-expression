@@ -233,8 +233,8 @@ public class AsmJqlExpressionBuilderTest {
         assertNotNull(categoryCategoryName);
 
         final Expression orderDetailProduct = createExpression(orderDetail, "self.product", false);
-        final Expression orderDetailCategory = createExpression(orderDetail, "self.category", false);
-        final Expression orderDetailProductName = createExpression(orderDetail, "self.productName", false);
+        final Expression orderDetailCategory = createExpression(orderDetail, "self.product.category", false);
+        final Expression orderDetailProductName = createExpression(orderDetail, "self.product.productName", false);
         final Expression orderDetailUnitPrice = createExpression(orderDetail, "self.unitPrice", false);
         final Expression orderDetailQuantity = createExpression(orderDetail, "self.quantity", false);
         final Expression orderDetailDiscount = createExpression(orderDetail, "self.discount", false);
@@ -247,7 +247,7 @@ public class AsmJqlExpressionBuilderTest {
         assertNotNull(orderDetailDiscount);
         assertNotNull(orderDetailPrice);
 
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("items", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderOrderDetails));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("orderDetails", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderOrderDetails));
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categories", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderCategories));
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("shipperName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, orderShipperName));
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("shipper", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderShipper));
@@ -263,7 +263,7 @@ public class AsmJqlExpressionBuilderTest {
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("companyName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), company, companyCompanyName));
 
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("products", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), category, categoryProducts));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("companyName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), category, categoryCategoryName));
+        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categoryName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), category, categoryCategoryName));
 
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("product", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailProduct));
         assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("category", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailCategory));
