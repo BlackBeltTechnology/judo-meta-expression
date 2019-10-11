@@ -97,6 +97,16 @@
                                     <value>$1${judo-meta-measure-version}"/&gt;</value>
                                 </replacement>
 
+                                <!-- JQL Model -->
+                                <replacement>
+                                    <token>(hu.blackbelt.judo.meta.jql.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+                                    <value>$1${judo-meta-jql-version}"/&gt;</value>
+                                </replacement>
+                                <replacement>
+                                    <token>(judo-meta-jql\/)(.*)(\"\/&gt;)</token>
+                                    <value>$1${judo-meta-jql-version}"/&gt;</value>
+                                </replacement>
+
                             </replacements>
                             <regex>true</regex>
                         </configuration>
