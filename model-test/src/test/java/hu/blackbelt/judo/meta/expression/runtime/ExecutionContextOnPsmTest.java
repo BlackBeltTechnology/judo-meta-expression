@@ -30,7 +30,7 @@ abstract class ExecutionContextOnPsmTest {
 
     void setUp() throws Exception {
         
-    	final Resource psm = getMeasureResource();
+    	final Resource psm = getPsmResource();
     	final Resource measures = psm;
     	
     	modelAdapter = new PsmModelAdapter(psm.getResourceSet(), measures.getResourceSet());
@@ -54,10 +54,12 @@ abstract class ExecutionContextOnPsmTest {
                 .build());
     }
 
-    protected Resource getMeasureResource() throws IOException, PsmModel.PsmValidationException {
+    protected Resource getPsmResource() throws IOException, PsmModel.PsmValidationException {
         return loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
                 .name("measures"))
+                .uri(URI.createFileURI(new File("src/test/model/northwind-judopsm.model").getAbsolutePath()))
+                .name("NORTHWIND"))
                 .getResourceSet().getResources().get(0);
     }
     

@@ -3,8 +3,10 @@ package hu.blackbelt.judo.meta.expression.osgi.itest;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.psm.PsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +21,14 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
 
+import com.google.common.collect.ImmutableList;
+
 import javax.inject.Inject;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
+import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.*;
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
@@ -44,6 +50,8 @@ public class ExpressionBundleITest {
     public static final String HU_BLACKBELT_JUDO_META_PSM_OSGI = "hu.blackbelt.judo.meta.psm.osgi";
     public static final String HU_BLACKBELT_JUDO_META_ASM_OSGI = "hu.blackbelt.judo.meta.asm.osgi";
 
+    private static final String DEMO_PSM = "northwind-psm";
+    private static final String DEMO_EXPRESSION = "t002";
     @Inject
     LogService log;
 
@@ -52,6 +60,12 @@ public class ExpressionBundleITest {
 
     @Inject
     BundleContext bundleContext;
+    
+    @Inject
+    PsmModel psmModel;
+    
+    @Inject
+    ExpressionModel expressionModel;
 
     @Configuration
     public Option[] config() throws FileNotFoundException {
@@ -90,7 +104,8 @@ public class ExpressionBundleITest {
                 mavenBundle(maven()
                         .groupId(HU_BLACKBELT_JUDO_META)
                         .artifactId(HU_BLACKBELT_JUDO_META_EXPRESSION_MODEL_ADAPTER_MEASURE)
-                        .versionAsInProject())
+                        .versionAsInProject()),
+                getProvisonModelBundle()
 
         );
     }
@@ -127,13 +142,57 @@ public class ExpressionBundleITest {
 
     }
     
+    public Option getProvisonModelBundle() throws FileNotFoundException {
+        return provision(
+                getPsmModelBundle(),
+                getExpressionModelBundle()
+        );
+    }
+
     
-    /*@Test
+    private InputStream getPsmModelBundle() throws FileNotFoundException {
+        return bundle()
+                .add( "model/" + DEMO_PSM + ".judo-meta-psm",
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-psm.model")))
+                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
+                .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_PSM + "-psm" )
+                .set( "Psm-Models", "file=model/" + DEMO_PSM + ".judo-meta-psm;version=1.0.0;name=" + DEMO_PSM + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .build( withBnd());
+    }
+    
+    private InputStream getExpressionModelBundle() throws FileNotFoundException {
+        return bundle()
+                .add( "model/" + DEMO_EXPRESSION + ".judo-meta-expression",
+                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "t002.model")))
+                .set( Constants.BUNDLE_MANIFESTVERSION, "2")
+                .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_EXPRESSION + "-expression" )
+                .set( "Expression-Models", "file=model/" + DEMO_EXPRESSION + ".judo-meta-expression;version=1.0.0;name=" + DEMO_EXPRESSION + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .build( withBnd());
+    }
+    
+    @Test
     public void testModelValidation() {
         StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
         
-        List<ModelContext> modelContexts;
-        ModelAdapter modelAdapter;
+        List<ModelContext> modelContexts = new ArrayList<>();
+        
+        modelContexts.add(wrappedEmfModelContextBuilder()
+                    .log(logger)
+                    .name("NORTHWIND")
+                    .validateModel(false)
+                    .aliases(ImmutableList.of("JUDOPSM"))
+                    .resource(psmModel.getResource())
+                    .build());
+        
+        modelContexts.add(wrappedEmfModelContextBuilder()
+                    .log(logger)
+                    .name("TEST")
+                    .validateModel(false)
+                    .aliases(ImmutableList.of("EXPR"))
+                    .resource(expressionModel.getResource())
+                    .build());
+        
+        ModelAdapter modelAdapter = new PsmModelAdapter(psmModel.getResourceSet(), psmModel.getResourceSet());
         
         try {
             ExpressionEpsilonValidator.validateExpression(logger,
@@ -145,5 +204,5 @@ public class ExpressionBundleITest {
             log.log(LogService.LOG_ERROR, logger.getBuffer());
             assertFalse(true);
         }
-    }*/
+    }
 }
