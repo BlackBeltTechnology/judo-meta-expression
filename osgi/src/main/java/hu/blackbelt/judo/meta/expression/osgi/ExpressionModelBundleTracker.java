@@ -117,7 +117,7 @@ public class ExpressionModelBundleTracker {
                                 expressionModelRegistrations.put(key, modelServiceRegistration);
 
                             } catch (IOException | ExpressionModel.ExpressionValidationException e) {
-                                log.error("Could not load Psm model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
+                                log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
                             }
                         }
                     }
