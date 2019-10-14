@@ -63,7 +63,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
         return getAsmElement(EPackage.class)
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
-                .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns)).withName(namespaceElement.getName()).build())
+                .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
                 .findAny();
     }
 
