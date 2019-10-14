@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.AttributeBinding;
 import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
@@ -56,10 +57,26 @@ public class AsmJqlExtractor implements JqlExtractor {
                         log.trace("Extracting JQL expressions of entity type {}", AsmUtils.getClassifierFQName(entityType));
                     }
 
+                    final Optional<TypeName> typeName = builder.getTypeName(entityType);
+
+                    if (!typeName.isPresent()) {
+                        throw new IllegalStateException("Illegal type name");
+                    }
+
                     entityType.getEAttributes()
                             .forEach(attribute -> {
-                                final boolean hasGetterBinding = all(expressionResourceSet, AttributeBinding.class).anyMatch(b -> b.getRole() == AttributeBindingRole.GETTER && Objects.equals(b.getAttributeName(), attribute.getName()));
-                                final boolean hasSetterBinding = all(expressionResourceSet, AttributeBinding.class).anyMatch(b -> b.getRole() == AttributeBindingRole.SETTER && Objects.equals(b.getAttributeName(), attribute.getName()));
+                                final boolean hasGetterBinding = all(expressionResourceSet, AttributeBinding.class)
+                                        .anyMatch(b -> b.getTypeName() != null &&
+                                                Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                b.getRole() == AttributeBindingRole.GETTER &&
+                                                Objects.equals(b.getAttributeName(), attribute.getName()));
+                                final boolean hasSetterBinding = all(expressionResourceSet, AttributeBinding.class)
+                                        .anyMatch(b -> b.getTypeName() != null &&
+                                                Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                b.getRole() == AttributeBindingRole.SETTER &&
+                                                Objects.equals(b.getAttributeName(), attribute.getName()));
 
                                 final JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(attribute.getName(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER);
                                 final JqlExpressionBuilder.BindingContext setterBindingContext = new JqlExpressionBuilder.BindingContext(attribute.getName(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.SETTER);
@@ -75,22 +92,27 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (!hasGetterBinding) {
                                             builder.createBinding(getterBindingContext, entityType, expression);
                                         } else {
-                                            log.debug("Getter expression already extracted for attribute: {}",  attribute);
+                                            log.debug("Getter expression already extracted for attribute: {}", attribute);
                                         }
                                         if (!hasSetterBinding) {
                                             builder.createBinding(setterBindingContext, entityType, expression);
                                         } else {
-                                            log.debug("Setter expression already extracted for attribute: {}",  attribute);
+                                            log.debug("Setter expression already extracted for attribute: {}", attribute);
                                         }
                                     } else {
-                                        log.debug("Getter and setter expressions already extracted for attribute: {}",  attribute);
+                                        log.debug("Getter and setter expressions already extracted for attribute: {}", attribute);
                                     }
                                 } else {
                                     if (log.isTraceEnabled()) {
                                         log.trace("  - extracting JQL expressions of data property: {}", AsmUtils.getAttributeFQName(attribute));
                                     }
 
-                                    final boolean hasDefaultBinding = all(expressionResourceSet, AttributeBinding.class).anyMatch(b -> b.getRole() == AttributeBindingRole.DEFAULT && Objects.equals(b.getAttributeName(), attribute.getName()));
+                                    final boolean hasDefaultBinding = all(expressionResourceSet, AttributeBinding.class)
+                                            .anyMatch(b -> b.getTypeName() != null &&
+                                                    Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                    Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                    b.getRole() == AttributeBindingRole.DEFAULT &&
+                                                    Objects.equals(b.getAttributeName(), attribute.getName()));
 
                                     final JqlExpressionBuilder.BindingContext defaultBindingContext = new JqlExpressionBuilder.BindingContext(attribute.getName(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.DEFAULT);
 
@@ -115,7 +137,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of getter attribute is not specified, skipped expression: {}", getterJql.get());
                                         }
                                     } else {
-                                        log.debug("Getter expression already extracted for data property: {}",  attribute);
+                                        log.debug("Getter expression already extracted for data property: {}", attribute);
                                     }
 
                                     if (!hasSetterBinding) {
@@ -132,7 +154,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of setter attribute is not specified, skipped expression: {}", setterJql.get());
                                         }
                                     } else {
-                                        log.debug("Setter expression already extracted for data property: {}",  attribute);
+                                        log.debug("Setter expression already extracted for data property: {}", attribute);
                                     }
 
                                     if (!hasDefaultBinding) {
@@ -149,15 +171,25 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of default attribute is not specified, skipped expression: {}", defaultJql.get());
                                         }
                                     } else {
-                                        log.debug("Default expression already extracted for data property: {}",  attribute);
+                                        log.debug("Default expression already extracted for data property: {}", attribute);
                                     }
                                 }
                             });
 
                     entityType.getEReferences()
                             .forEach(reference -> {
-                                final boolean hasGetterBinding = all(expressionResourceSet, ReferenceBinding.class).anyMatch(b -> b.getRole() == ReferenceBindingRole.GETTER && Objects.equals(b.getReferenceName(), reference.getName()));
-                                final boolean hasSetterBinding = all(expressionResourceSet, ReferenceBinding.class).anyMatch(b -> b.getRole() == ReferenceBindingRole.SETTER && Objects.equals(b.getReferenceName(), reference.getName()));
+                                final boolean hasGetterBinding = all(expressionResourceSet, ReferenceBinding.class)
+                                        .anyMatch(b -> b.getTypeName() != null &&
+                                                Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                b.getRole() == ReferenceBindingRole.GETTER &&
+                                                Objects.equals(b.getReferenceName(), reference.getName()));
+                                final boolean hasSetterBinding = all(expressionResourceSet, ReferenceBinding.class)
+                                        .anyMatch(b -> b.getTypeName() != null &&
+                                                Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                b.getRole() == ReferenceBindingRole.SETTER &&
+                                                Objects.equals(b.getReferenceName(), reference.getName()));
 
                                 final JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER);
                                 final JqlExpressionBuilder.BindingContext setterBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.SETTER);
@@ -173,23 +205,33 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (!hasGetterBinding) {
                                             builder.createBinding(getterBindingContext, entityType, expression);
                                         } else {
-                                            log.debug("Getter expression already extracted for relation: {}",  reference);
+                                            log.debug("Getter expression already extracted for relation: {}", reference);
                                         }
                                         if (!hasSetterBinding) {
                                             builder.createBinding(setterBindingContext, entityType, expression);
                                         } else {
-                                            log.debug("Setter expression already extracted for relation: {}",  reference);
+                                            log.debug("Setter expression already extracted for relation: {}", reference);
                                         }
                                     } else {
-                                        log.debug("Getter and setter expressions already extracted for relation: {}",  reference);
+                                        log.debug("Getter and setter expressions already extracted for relation: {}", reference);
                                     }
                                 } else {
                                     if (log.isTraceEnabled()) {
                                         log.trace("  - extracting JQL expressions of navigation property: {}", AsmUtils.getReferenceFQName(reference));
                                     }
 
-                                    final boolean hasDefaultBinding = all(expressionResourceSet, ReferenceBinding.class).anyMatch(b -> b.getRole() == ReferenceBindingRole.DEFAULT && Objects.equals(b.getReferenceName(), reference.getName()));
-                                    final boolean hasRangeBinding = all(expressionResourceSet, ReferenceBinding.class).anyMatch(b -> b.getRole() == ReferenceBindingRole.RANGE && Objects.equals(b.getReferenceName(), reference.getName()));
+                                    final boolean hasDefaultBinding = all(expressionResourceSet, ReferenceBinding.class)
+                                            .anyMatch(b -> b.getTypeName() != null &&
+                                                    Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                    Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                    b.getRole() == ReferenceBindingRole.DEFAULT &&
+                                                    Objects.equals(b.getReferenceName(), reference.getName()));
+                                    final boolean hasRangeBinding = all(expressionResourceSet, ReferenceBinding.class)
+                                            .anyMatch(b -> b.getTypeName() != null &&
+                                                    Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                    Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                    b.getRole() == ReferenceBindingRole.RANGE &&
+                                                    Objects.equals(b.getReferenceName(), reference.getName()));
 
                                     final JqlExpressionBuilder.BindingContext defaultBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.DEFAULT);
                                     final JqlExpressionBuilder.BindingContext rangeBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.RANGE);
@@ -217,7 +259,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of getter reference is not specified, skipped expression: {}", getterJql.get());
                                         }
                                     } else {
-                                        log.debug("Getter expression already extracted for navigation property: {}",  reference);
+                                        log.debug("Getter expression already extracted for navigation property: {}", reference);
                                     }
 
                                     if (!hasSetterBinding) {
@@ -234,7 +276,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of setter reference is not specified, skipped expression: {}", setterJql.get());
                                         }
                                     } else {
-                                        log.debug("Setter expression already extracted for navigation property: {}",  reference);
+                                        log.debug("Setter expression already extracted for navigation property: {}", reference);
                                     }
 
                                     if (!hasDefaultBinding) {
@@ -251,7 +293,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of default reference is not specified, skipped expression: {}", defaultJql.get());
                                         }
                                     } else {
-                                        log.debug("Default expression already extracted for navigation property: {}",  reference);
+                                        log.debug("Default expression already extracted for navigation property: {}", reference);
                                     }
 
                                     if (!hasRangeBinding) {
@@ -268,7 +310,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of range reference is not specified, skipped expression: {}", rangeJql.get());
                                         }
                                     } else {
-                                        log.debug("Range expression already extracted for navigation property: {}",  reference);
+                                        log.debug("Range expression already extracted for navigation property: {}", reference);
                                     }
                                 }
                             });

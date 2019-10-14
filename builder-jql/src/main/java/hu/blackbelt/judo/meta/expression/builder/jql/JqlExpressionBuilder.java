@@ -87,7 +87,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
         this.expressionResource = expressionResource;
 
         modelAdapter.getAllClasses().forEach(clazz -> {
-            final TypeName typeName = modelAdapter.getTypeName(clazz).get();
+            final TypeName typeName = getTypeName(clazz).get();
 
             if (!all(expressionResource.getResourceSet(), TypeName.class)
                     .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
@@ -118,6 +118,16 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
             entityInstances.put(clazz, self);
         });
+    }
+
+    /**
+     * Get type name of a given class (ASM/PSM/ESM model element).
+     *
+     * @param clazz entity type of data model
+     * @return type name (expression metamodel element)
+     */
+    public Optional<TypeName> getTypeName(final C clazz) {
+        return modelAdapter.getTypeName(clazz);
     }
 
     /**
