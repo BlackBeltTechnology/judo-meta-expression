@@ -878,9 +878,16 @@
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-binding" ecorePackage="expression.ecore#//binding">
-      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//binding/BindingRole">
-        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/BindingRole/getter"/>
-        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/BindingRole/setter"/>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//binding/AttributeBindingRole">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/AttributeBindingRole/getter"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/AttributeBindingRole/setter"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/AttributeBindingRole/default"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//binding/ReferenceBindingRole">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/ReferenceBindingRole/getter"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/ReferenceBindingRole/setter"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/ReferenceBindingRole/default"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//binding/ReferenceBindingRole/range"/>
       </genEnums>
       <genClasses image="false" ecoreClass="expression.ecore#//binding/Binding">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
