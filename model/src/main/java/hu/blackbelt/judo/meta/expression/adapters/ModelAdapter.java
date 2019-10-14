@@ -22,7 +22,8 @@ import java.util.Optional;
 public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     /**
-     * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model).
+     * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
+     * won't be added to any resource.
      *
      * @param namespaceElement namespace element
      * @return type name

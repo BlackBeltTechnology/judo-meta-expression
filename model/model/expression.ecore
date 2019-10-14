@@ -1444,17 +1444,24 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="attributeName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1"
-          eType="#//binding/BindingRole"/>
+          eType="#//binding/AttributeBindingRole"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ReferenceBinding" eSuperTypes="#//binding/Binding">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="referenceName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1"
-          eType="#//binding/BindingRole"/>
+          eType="#//binding/ReferenceBindingRole"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" name="BindingRole">
+    <eClassifiers xsi:type="ecore:EEnum" name="AttributeBindingRole">
       <eLiterals name="getter"/>
       <eLiterals name="setter" value="1"/>
+      <eLiterals name="default" value="2"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ReferenceBindingRole">
+      <eLiterals name="getter"/>
+      <eLiterals name="setter" value="1"/>
+      <eLiterals name="default" value="2"/>
+      <eLiterals name="range" value="3"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>
