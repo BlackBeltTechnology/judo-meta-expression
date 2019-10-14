@@ -57,7 +57,7 @@ public class PsmModelAdapterTest {
     public void setUp() throws Exception {
 
         psmModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
                 .name("test")
                 // TODO: check model
                 .validateModel(false)
@@ -81,14 +81,14 @@ public class PsmModelAdapterTest {
 
         assertTrue(categoryTypeName.isPresent());
         assertThat(categoryTypeName.get().getName(), is("Category"));
-        assertThat(categoryTypeName.get().getNamespace(), is("northwind::entities"));
+        assertThat(categoryTypeName.get().getNamespace(), is("demo::entities"));
     }
 
     @Test
     void testGetNamespaceElementByTypeName() {
         log.info("Testing: get(TypeName): NE");
         final TypeName orderTypeName = newTypeNameBuilder()
-                .withNamespace("northwind::entities")
+                .withNamespace("demo::entities")
                 .withName("Order")
                 .build();
 
@@ -97,10 +97,10 @@ public class PsmModelAdapterTest {
         assertTrue(orderNamespaceElement.isPresent());
         assertThat(orderNamespaceElement.get(), instanceOf(EntityType.class));
         assertThat(orderNamespaceElement.get().getName(), is("Order"));
-        assertThat(getNamespaceFQName(PsmUtils.getNamespaceOfNamespaceElement(orderNamespaceElement.get()).get()), is("northwind::entities"));
+        assertThat(getNamespaceFQName(PsmUtils.getNamespaceOfNamespaceElement(orderNamespaceElement.get()).get()), is("demo::entities"));
 
         final TypeName negtest_name_TypeName = newTypeNameBuilder()
-                .withNamespace("northwind::entities")
+                .withNamespace("demo::entities")
                 .withName("negtest")
                 .build();
         final Optional<? extends NamespaceElement> negtest_name_NamespaceElement = modelAdapter.get(negtest_name_TypeName);
@@ -108,7 +108,7 @@ public class PsmModelAdapterTest {
 
         //TODO: remove b\c not needed?
         final TypeName negtest_namespace_TypeName = newTypeNameBuilder()
-                .withNamespace("northwind::negtest")
+                .withNamespace("demo::negtest")
                 .withName("negtest")
                 .build();
         assertTrue(modelAdapter.get(negtest_namespace_TypeName) == null);
@@ -118,7 +118,7 @@ public class PsmModelAdapterTest {
     void testGetMeasureByMeasureName() {
         log.info("Testing: get(MeasureName): Opt<Measure>");
         final MeasureName measureName = newMeasureNameBuilder()
-                .withNamespace("northwind::measures")
+                .withNamespace("demo::measures")
                 .withName("Mass")
                 .build();
         final Optional<? extends Measure> measure = modelAdapter.get(measureName);
@@ -231,13 +231,13 @@ public class PsmModelAdapterTest {
 
         Optional<Measure> time = getMeasureByName("Time");
         Optional<Unit> day = time.get().getUnits().stream().filter(u -> "day".equals(u.getName())).findAny();
-        Optional<Unit> halfDay = time.get().getUnits().stream().filter(u -> "halfDay".equals(u.getName())).findAny();
+        Optional<Unit> microsecond = time.get().getUnits().stream().filter(u -> "microsecond".equals(u.getName())).findAny();
 
         assertTrue(time.isPresent());
         assertTrue(day.isPresent());
         assertTrue(modelAdapter.isDurationSupportingAddition(day.get()));
-        assertTrue(halfDay.isPresent());
-        assertFalse(modelAdapter.isDurationSupportingAddition(halfDay.get()));
+        assertTrue(microsecond.isPresent());
+        assertFalse(modelAdapter.isDurationSupportingAddition(microsecond.get()));
     }
 
     //TODO: [MeasuredDecimal & MeasuredInteger].getMeasure()==null => return Optional.empty()?
@@ -254,7 +254,6 @@ public class PsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -266,7 +265,6 @@ public class PsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -278,7 +276,6 @@ public class PsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -293,7 +290,7 @@ public class PsmModelAdapterTest {
                 .withUnitName(
                         "inch"
                 ).withMeasure(
-                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("Length").build()
+                        newMeasureNameBuilder().withNamespace("demo::measures").withName("Length").build()
                 ).build();
         assertThat(modelAdapter.getUnit(inchMeasuredDecimal).get(), is(inch.get()));
         //--------------------------
@@ -309,7 +306,7 @@ public class PsmModelAdapterTest {
         MeasuredInteger integerAttribute = newMeasuredIntegerBuilder()
                 .withUnitName("TODO")
                 .withMeasure(
-                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("TODO").build()
+                        newMeasureNameBuilder().withNamespace("demo::measures").withName("TODO").build()
                 ).build();
         assertFalse(modelAdapter.getUnit(integerAttribute).isPresent());
         assertThat(modelAdapter.getUnit(integerAttribute), is(Optional.empty()));
@@ -319,7 +316,7 @@ public class PsmModelAdapterTest {
                 .withUnitName(
                         "kilogram"
                 ).withMeasure(
-                        newMeasureNameBuilder().withNamespace("northwind::measures").withName("Mass").build()
+                        newMeasureNameBuilder().withNamespace("demo::measures").withName("Mass").build()
                 ).build();
 
 

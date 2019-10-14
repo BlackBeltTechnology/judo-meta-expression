@@ -72,8 +72,8 @@
 		<tycho-version>1.4.0</tycho-version>
 		<eclipse-p2-base>http://download.eclipse.org/releases/2019-03</eclipse-p2-base>
 
-		<emf-genmodel-generator-version>1.0.0.develop_00023</emf-genmodel-generator-version>
-		<judo-genmodel-generator-version>1.0.0.develop_00017</judo-genmodel-generator-version>
+		<emf-genmodel-generator-version>1.0.0.develop_00025</emf-genmodel-generator-version>
+		<judo-genmodel-generator-version>1.0.0.develop_00018</judo-genmodel-generator-version>
 
 		<!-- Xtend / Xcore -->
 		<emf-version>2.18.0</emf-version>
@@ -109,14 +109,23 @@
 		<apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
 		<pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.develop_00325</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.develop_00400</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0.develop_00104</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.develop_00128</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
+
+		<judo-meta-jql-version>1.0.0.develop_00050</judo-meta-jql-version>
+		<judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
         
-        <judo-meta-measure-version>1.0.0.develop_00050</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.develop_00058</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
+        <log4j.configuration>log4j.properties</log4j.configuration>
+
+		<!-- For tests -->
+		<northwind-model-version>1.0.0.develop_00145</northwind-model-version>
+		<judo-tatami-version>1.0.0.1570583960_51893cf42f62d747b951ec198803cdc3ca03d7fc_develop</judo-tatami-version>
+
 	</properties>
 
 	<build>
@@ -562,6 +571,9 @@
 					<configuration>
 						<argLine>-Dfile.encoding=UTF-8</argLine>
 						<trimStackTrace>false</trimStackTrace>
+						<systemPropertyVariables>
+							<log4j.configuration>${log4j.configuration}</log4j.configuration>
+						</systemPropertyVariables>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -769,7 +781,10 @@
                 <module>model</module>
                 <module>adapter-measure</module>
                 <module>adapter-asm</module>
-                <module>adapter-psm</module>
+				<module>adapter-psm</module>
+				<module>builder-jql</module>
+				<module>builder-jql-asm</module>
+				<module>builder-jql-asm-test</module>
                 <module>model-test</module>
                 <!--
                 <module>model-asm-test</module>

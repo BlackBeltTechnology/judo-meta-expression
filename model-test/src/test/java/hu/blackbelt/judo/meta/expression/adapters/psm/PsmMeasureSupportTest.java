@@ -44,7 +44,7 @@ public class PsmMeasureSupportTest {
     @BeforeEach
     public void setUp() throws Exception {
         measureModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/psm.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
                 .name("test")
                 // TODO: check model
                 .validateModel(false)

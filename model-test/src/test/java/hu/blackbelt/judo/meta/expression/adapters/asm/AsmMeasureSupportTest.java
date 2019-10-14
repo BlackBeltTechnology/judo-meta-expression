@@ -37,7 +37,7 @@ public class AsmMeasureSupportTest {
     public void setUp() throws Exception {
 
         measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-measure.model").getAbsolutePath()))
                 .name("test"));
 
         asmResourceSet = AsmModelResourceSupport.createAsmResourceSet();

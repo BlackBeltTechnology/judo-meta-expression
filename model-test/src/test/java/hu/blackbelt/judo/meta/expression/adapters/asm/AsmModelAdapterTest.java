@@ -51,12 +51,12 @@ public class AsmModelAdapterTest {
     @BeforeEach
     public void setUp() throws Exception {
         measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/measure.model").getAbsolutePath()))
-                .name("measure"));
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-measure.model").getAbsolutePath()))
+                .name("northwind"));
 
         asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/asm.model").getAbsolutePath()))
-                .name("asm"));
+                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-asm.model").getAbsolutePath()))
+                .name("northwind"));
 
         modelAdapter = new AsmModelAdapter(asmModel.getResourceSet(), measureModel.getResourceSet());
         asmUtils = new AsmUtils(asmModel.getResourceSet());
@@ -82,7 +82,7 @@ public class AsmModelAdapterTest {
 
         assertTrue(categoryTypeName.isPresent());
         assertThat(categoryTypeName.get().getName(), is("Category")); //TODO: check, seems kinda silly (+psm)
-        assertThat(categoryTypeName.get().getNamespace(), is("demo.entities"));
+        assertThat(categoryTypeName.get().getNamespace(), is("demo::entities"));
         //TODO: negtest maaaaybe? (+psm)
     }
 
@@ -193,13 +193,13 @@ public class AsmModelAdapterTest {
     public void testIsDurationSupportingAddition() {
         Optional<Measure> time = getMeasureByName("Time");
         Optional<Unit> day = time.get().getUnits().stream().filter(u -> "day".equals(u.getName())).findAny();
-        Optional<Unit> halfDay = time.get().getUnits().stream().filter(u -> "halfDay".equals(u.getName())).findAny();
+        Optional<Unit> microsecond = time.get().getUnits().stream().filter(u -> "microsecond".equals(u.getName())).findAny();
 
         assertTrue(time.isPresent());
         assertTrue(day.isPresent());
         assertTrue(modelAdapter.isDurationSupportingAddition(day.get()));
-        assertTrue(halfDay.isPresent());
-        assertFalse(modelAdapter.isDurationSupportingAddition(halfDay.get()));
+        assertTrue(microsecond.isPresent());
+        assertFalse(modelAdapter.isDurationSupportingAddition(microsecond.get()));
     }
 
     //TODO
@@ -215,7 +215,6 @@ public class AsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -227,7 +226,6 @@ public class AsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();
@@ -239,7 +237,6 @@ public class AsmModelAdapterTest {
                 .withObjectExpression(
                         newObjectVariableReferenceBuilder()
                                 .withVariable(instance)
-                                .withReferenceName("self")
                                 .build()
                 )
                 .build();

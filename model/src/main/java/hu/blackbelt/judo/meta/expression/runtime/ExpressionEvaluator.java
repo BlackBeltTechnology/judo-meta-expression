@@ -52,7 +52,7 @@ public class ExpressionEvaluator {
                 ReferenceExpression referenceSourceExpression = referenceSource.get();
 
                 while (referenceSourceExpression != null && referenceSourceExpression instanceof VariableReference) {
-                    final ObjectVariable resolved;
+                    final Variable resolved;
 
                     if (referenceSourceExpression instanceof ObjectVariableReference) {
                         resolved = ((ObjectVariableReference) referenceSourceExpression).getVariable();

@@ -3,7 +3,7 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
@@ -65,7 +65,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
         return getAsmElement(EPackage.class)
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
-                .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns)).withName(namespaceElement.getName()).build())
+                .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
                 .findAny();
     }
 
@@ -101,8 +101,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public boolean isCollection(final ReferenceExpression referenceExpression) {
-        return ((EReference) referenceExpression.getReference(this)).isMany();
+    public boolean isCollection(final ReferenceSelector referenceSelector) {
+        return ((EReference) referenceSelector.getReference(this)).isMany();
+    }
+
+    @Override
+    public boolean isCollectionReference(EReference reference) {
+        return reference.isMany();
     }
 
     @Override
@@ -113,6 +118,11 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     @Override
     public Optional<? extends EAttribute> getAttribute(final EClass clazz, final String attributeName) {
         return clazz.getEAllAttributes().stream().filter(r -> Objects.equals(r.getName(), attributeName)).findAny();
+    }
+
+    @Override
+    public Optional<? extends EDataType> getAttributeType(EAttribute attribute) {
+        return Optional.ofNullable(attribute.getEAttributeType());
     }
 
     @Override
@@ -225,6 +235,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     @Override
     public Optional<Map<Measure, Integer>> getDimension(final NumericExpression numericExpression) {
         return measureAdapter.getDimension(numericExpression);
+    }
+
+    @Override
+    public EList<EClass> getAllClasses() {
+        return ECollections.asEList(getAsmElement(EClass.class)
+                .filter(c -> AsmUtils.isEntityType(c))
+                .collect(Collectors.toList()));
     }
 
     <T> Stream<T> getAsmElement(final Class<T> clazz) {

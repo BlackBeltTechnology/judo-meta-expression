@@ -62,6 +62,12 @@
                                     <value>repository-reference location="$2$3${judo-meta-measure-version}"</value>
                                 </replacement>
 
+                                <!-- JQL -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-jql\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-jql-version}"</value>
+                                </replacement>
+
                             </replacements>
                             <regex>true</regex>
                         </configuration>
