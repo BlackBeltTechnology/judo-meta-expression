@@ -249,6 +249,14 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
     Optional<Map<M, Integer>> getDimension(NumericExpression numericExpression);
 
     /**
+     * Get all element names that can be used as container of clazz.
+     *
+     * @param clazz containment class
+     * @return all possible container classes
+     */
+    EList<C> getContainerTypesOf(C clazz);
+
+    /**
      * Get all classes that can be types in expression.
      *
      * @return list of classes

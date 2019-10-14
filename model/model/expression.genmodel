@@ -695,6 +695,19 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//object/ObjectSwitchExpression/elementName"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//object/ContainerExpression">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//object/ContainerExpression/elementName"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ContainerExpression/objectExpression"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ContainerExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ContainerExpression/toString"
+            body="return &quot;CONTAINER(&quot; + getObjectExpression() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ContainerExpression/getObjectType"
+            body="return getElementName().get(modelAdapter);">
+          <genParameters ecoreParameter="expression.ecore#//object/ContainerExpression/getObjectType/modelAdapter"/>
+        </genOperations>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Collection" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

@@ -19,9 +19,11 @@ import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -304,5 +306,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 return Optional.empty();
             }
         }
+    }
+
+    @Override
+    public EList<EClass> getContainerTypesOf(final EClass clazz) {
+        return ECollections.asEList(asmUtils.all(EClass.class)
+                .filter(container -> container.getEAllContainments().stream().anyMatch(c -> EcoreUtil.equals(c.getEReferenceType(), clazz)))
+                .flatMap(container -> Stream.concat(container.getEAllSuperTypes().stream(), Collections.singleton(container).stream()))
+                .collect(Collectors.toList()));
     }
 }
