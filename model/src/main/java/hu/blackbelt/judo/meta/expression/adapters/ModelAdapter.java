@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.adapters;
 
 import hu.blackbelt.judo.meta.expression.*;
+import org.eclipse.emf.common.util.EList;
 
 import java.util.Collection;
 import java.util.Map;
@@ -18,10 +19,11 @@ import java.util.Optional;
  * @param <M>   measure
  * @param <U>   unit
  */
-public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
+public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     /**
-     * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model).
+     * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
+     * won't be added to any resource.
      *
      * @param namespaceElement namespace element
      * @return type name
@@ -62,12 +64,20 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
     Optional<? extends RTE> getReference(C clazz, String referenceName);
 
     /**
-     * Check multiplicity of a reference expression.
+     * Check multiplicity of a reference selector.
      *
-     * @param referenceExpression reference expression
+     * @param referenceSelector reference selector
      * @return <code>true</code> if reference expression is collection, <code>false</code> otherwise
      */
-    boolean isCollection(ReferenceExpression referenceExpression);
+    boolean isCollection(ReferenceSelector referenceSelector);
+
+    /**
+     * Check multiplicity of a reference typed element.
+     *
+     * @param reference reference
+     * @return <code>true</code> if reference is collection, <code>false</code> otherwise
+     */
+    boolean isCollectionReference(RTE reference);
 
     /**
      * Get target (object) type of a reference.
@@ -85,6 +95,14 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
      * @return attribute
      */
     Optional<? extends PTE> getAttribute(C clazz, String attributeName);
+
+    /**
+     * Get (primitive) type of an attribute.
+     *
+     * @param attribute     attribute
+     * @return attribute type
+     */
+    Optional<? extends P> getAttributeType(PTE attribute);
 
     /**
      * Get (primitive) type of an attribute.
@@ -229,4 +247,11 @@ public interface ModelAdapter<NE, P, PTE, E, C, RTE, M, U> {
      * @return map if base measured with exponents
      */
     Optional<Map<M, Integer>> getDimension(NumericExpression numericExpression);
+
+    /**
+     * Get all classes that can be types in expression.
+     *
+     * @return list of classes
+     */
+    EList<C> getAllClasses();
 }
