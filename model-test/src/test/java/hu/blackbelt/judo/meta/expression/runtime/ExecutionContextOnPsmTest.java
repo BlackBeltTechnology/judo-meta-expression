@@ -57,8 +57,6 @@ abstract class ExecutionContextOnPsmTest {
     protected Resource getPsmResource() throws IOException, PsmModel.PsmValidationException {
         return loadPsmModel(psmLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
-                .name("measures"))
-                .uri(URI.createFileURI(new File("src/test/model/northwind-judopsm.model").getAbsolutePath()))
                 .name("NORTHWIND"))
                 .getResourceSet().getResources().get(0);
     }

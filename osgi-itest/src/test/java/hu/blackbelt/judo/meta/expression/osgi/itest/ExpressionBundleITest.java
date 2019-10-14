@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.psm.PsmModelAdapter;
@@ -25,6 +26,7 @@ import com.google.common.collect.ImmutableList;
 
 import javax.inject.Inject;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,7 +173,7 @@ public class ExpressionBundleITest {
     }
     
     @Test
-    public void testModelValidation() {
+    public void testModelValidation() throws ScriptExecutionException, URISyntaxException {
         StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
         
         List<ModelContext> modelContexts = new ArrayList<>();
