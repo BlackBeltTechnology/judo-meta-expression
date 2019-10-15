@@ -19,38 +19,12 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 
-public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, NE, P, PTE, E, C, RTE, M, U> {
+public class JqlMeasuredLiteralTransformer implements JqlExpressionTransformerFunction {
 
-    public JqlMeasuredLiteralTransformer(JqlTransformers<NE, P, PTE, E, C, RTE, M, U> jqlTransformers) {
-        super(jqlTransformers);
-    }
+    private JqlTransformers transformers;
 
-    @Override
-    protected Expression doTransform(MeasuredLiteral measuredLiteral, List<ObjectVariable> variables) {
-        String unitName = getUnitName(measuredLiteral);
-        MeasureName measureName = getMeasureName(measuredLiteral);
-        hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlValue = measuredLiteral.getValue();
-        Expression result;
-        if (jqlValue instanceof IntegerLiteral) {
-            IntegerLiteral integerLiteral = (IntegerLiteral) jqlValue;
-            BigInteger integerValue = integerLiteral.getValue();
-            MeasuredIntegerBuilder builder = newMeasuredIntegerBuilder().withUnitName(unitName).withValue(integerValue);
-            if (measureName != null) {
-                builder = builder.withMeasure(measureName);
-            }
-            result = builder.build();
-        } else if (jqlValue instanceof DecimalLiteral) {
-            BigDecimal decimalValue = ((DecimalLiteral)jqlValue).getValue();
-            MeasuredDecimalBuilder builder = newMeasuredDecimalBuilder().withUnitName(unitName).withValue(decimalValue);
-            if (measureName != null) {
-                builder = builder.withMeasure(measureName);
-            }
-            result = builder.build();
-        } else {
-            throw new IllegalStateException("Invalid type of JQL measured literal: " + measuredLiteral);
-        }
-        return result;
-
+    public JqlMeasuredLiteralTransformer(JqlTransformers transformers) {
+        this.transformers = transformers;
     }
 
     private String getUnitName(MeasuredLiteral measuredLiteral) {
@@ -77,4 +51,34 @@ public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
         }
         return measureName;
     }
+
+    @Override
+    public Expression apply(hu.blackbelt.judo.meta.jql.jqldsl.Expression expression, List<ObjectVariable> variables) {
+        MeasuredLiteral measuredLiteral = (MeasuredLiteral) expression;
+        String unitName = getUnitName(measuredLiteral);
+        MeasureName measureName = getMeasureName(measuredLiteral);
+        hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlValue = measuredLiteral.getValue();
+        Expression result;
+        if (jqlValue instanceof IntegerLiteral) {
+            IntegerLiteral integerLiteral = (IntegerLiteral) jqlValue;
+            BigInteger integerValue = integerLiteral.getValue();
+            MeasuredIntegerBuilder builder = newMeasuredIntegerBuilder().withUnitName(unitName).withValue(integerValue);
+            if (measureName != null) {
+                builder = builder.withMeasure(measureName);
+            }
+            result = builder.build();
+        } else if (jqlValue instanceof DecimalLiteral) {
+            BigDecimal decimalValue = ((DecimalLiteral)jqlValue).getValue();
+            MeasuredDecimalBuilder builder = newMeasuredDecimalBuilder().withUnitName(unitName).withValue(decimalValue);
+            if (measureName != null) {
+                builder = builder.withMeasure(measureName);
+            }
+            result = builder.build();
+        } else {
+            throw new IllegalStateException("Invalid type of JQL measured literal: " + measuredLiteral);
+        }
+        return result;
+
+    }
+
 }

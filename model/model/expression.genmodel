@@ -133,7 +133,7 @@
       <genClasses ecoreClass="expression.ecore#//constant/StringConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/StringConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/StringConstant/toString"
-            body="return &quot;'&quot;+String.valueOf(getValue())+&quot;'&quot;;"/>
+            body="return &quot;'&quot;+String.valueOf(getValue()).replace(&quot;\\&quot;, &quot;\\\\&quot;)+&quot;'&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/Literal">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/Literal/value"/>

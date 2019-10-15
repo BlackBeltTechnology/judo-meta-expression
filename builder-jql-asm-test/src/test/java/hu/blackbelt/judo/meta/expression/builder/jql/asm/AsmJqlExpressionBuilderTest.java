@@ -12,18 +12,14 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -238,10 +234,56 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testConstants() throws Exception {
+        createExpression(null, "1");
+        createExpression(null, "1.2");
+        createExpression(null, "true");
+        createExpression(null, "false");
+        createExpression(null, "'a'");
+        createExpression(null, "\"\"");
+        createExpression(null, "\"b\"");
+        DateConstant dateConstant = (DateConstant) createExpression(null, "`2019-12-31`");
+        createExpression(null, "`2019-12-31T13:52:03 Europe/Budapest`");
+    }
+
+    @Test
     void testSwitchCase() throws Exception {
         createExpression(null, "true ? 1 : 2");
         createExpression(null, "true ? 1 : 2 + 3");
         createExpression(null, "true ? 1.0 : 2.0 + 3");
+
+        EClass order = findBase("Order");
+        createGetterExpression(order, "false ? self.shipper.companyName : 'b'", true, "stringSwitch", ATTRIBUTE);
+    }
+
+    @Test
+    void testStringOperations() throws Exception {
+        EClass category = findBase("Category");
+        createExpression(category, "self.categoryName < 'c'");
+        createExpression(category, "self.categoryName > 'c'");
+        createExpression(category, "self.categoryName <= 'c'");
+        createExpression(category, "self.categoryName >= 'c'");
+        createExpression(category, "self.categoryName = 'c'");
+        createExpression(category, "self.categoryName <> 'c'");
+
+        // Concatenate
+        EClass order = findBase("Order");
+        createExpression(null, "'a'+'b'");
+        createGetterExpression(order, "self.shipper.companyName + self.shipper.companyName", false, "shipperNameConcat", ATTRIBUTE);
+        createGetterExpression(order, "'_' + self.shipper.companyName", false, "shipperNameConcat2", ATTRIBUTE);
+    }
+
+    @Test
+    void testUnaryOperations() throws Exception {
+        createExpression(null, "-1");
+        createExpression(null, "-1.0");
+        createExpression(null, "not true");
+    }
+
+    @Test
+    void testEnums() throws Exception {
+        EClass order = findBase("Order");
+//        createGetterExpression(order, "self.shipAddress.country = demo::Countries#AT ? true : false", true, "countryCheck", ATTRIBUTE);
     }
 
     @Test
@@ -271,11 +313,12 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipper.companyName!position('a') > 0", true, "shipperNamePosition", ATTRIBUTE);
         createGetterExpression(order, "self.shipper.companyName!position(self.shipper.companyName) > 0", true, "shipperNamePosition2", ATTRIBUTE);
 
-        // Concatenate
-        createExpression(null, "'a'+'b'");
-        createGetterExpression(order, "self.shipper.companyName + self.shipper.companyName", false, "shipperNameConcat", ATTRIBUTE);
-        createGetterExpression(order, "'_' + self.shipper.companyName", false, "shipperNameConcat2", ATTRIBUTE);
+        // Replace
+        createGetterExpression(order, "self.shipper.companyName!replace('\\n', '')", true, "shipperNameReplace1", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper.companyName!replace('$', self.shipper.companyName)", true, "shipperNameReplace2", ATTRIBUTE);
 
+        // Trim
+        createGetterExpression(order, "self.shipper.companyName!trim()", true, "shipperTrim", ATTRIBUTE);
     }
 
 }

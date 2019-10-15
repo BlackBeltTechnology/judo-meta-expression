@@ -3,15 +3,13 @@ package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
-import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
-import hu.blackbelt.judo.meta.expression.operator.IntegerComparator;
-import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
 import java.util.List;
 
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newIntegerComparisonBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAritmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAritmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newConcatenateBuilder;
@@ -28,88 +26,102 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
         Expression right = jqlTransformers.transform(binaryOperation.getRightOperand(), variables);
         String operator = binaryOperation.getOperator();
         if ((left instanceof IntegerExpression) && (right instanceof IntegerExpression)) {
-            switch (operator) {
-                case "+":
-                    return newIntegerAritmeticExpressionBuilder()
-                            .withLeft((IntegerExpression) left)
-                            .withOperator(IntegerOperator.ADD)
-                            .withRight((IntegerExpression) right)
-                            .build();
-                case "-":
-                    return newIntegerAritmeticExpressionBuilder()
-                            .withLeft((IntegerExpression) left)
-                            .withOperator(IntegerOperator.SUBSTRACT)
-                            .withRight((IntegerExpression) right)
-                            .build();
-                case "*":
-                    return newIntegerAritmeticExpressionBuilder()
-                            .withLeft((IntegerExpression) left)
-                            .withOperator(IntegerOperator.MULTIPLY)
-                            .withRight((IntegerExpression) right)
-                            .build();
-                case "div":
-                    return newIntegerAritmeticExpressionBuilder()
-                            .withLeft((IntegerExpression) left)
-                            .withOperator(IntegerOperator.DIVIDE)
-                            .withRight((IntegerExpression) right)
-                            .build();
-                case "mod":
-                    return newIntegerAritmeticExpressionBuilder()
-                            .withLeft((IntegerExpression) left)
-                            .withOperator(IntegerOperator.MODULO)
-                            .withRight((IntegerExpression) right)
-                            .build();
-                case "/":
-                    return newDecimalAritmeticExpressionBuilder()
-                            .withLeft((NumericExpression) left)
-                            .withOperator(DecimalOperator.DIVIDE)
-                            .withRight((NumericExpression) right)
-                            .build();
-                case ">":
-                    return newIntegerComparisonBuilder().withLeft((IntegerExpression) left).withOperator(IntegerComparator.GREATER_THAN).withRight((IntegerExpression) right).build();
-                default:
-                    throw new UnsupportedOperationException("Invalid integer operation: " + operator);
-            }
+            return createIntegerOperation((IntegerExpression) left, (IntegerExpression) right, operator);
         } else if ((left instanceof NumericExpression) && (right instanceof NumericExpression)) {
-            switch (operator) {
-                case "+":
-                    return newDecimalAritmeticExpressionBuilder()
-                            .withLeft((NumericExpression) left)
-                            .withOperator(DecimalOperator.ADD)
-                            .withRight((NumericExpression) right)
-                            .build();
-                case "-":
-                    return newDecimalAritmeticExpressionBuilder()
-                            .withLeft((NumericExpression) left)
-                            .withOperator(DecimalOperator.SUBSTRACT)
-                            .withRight((NumericExpression) right)
-                            .build();
-                case "*":
-                    return newDecimalAritmeticExpressionBuilder()
-                            .withLeft((NumericExpression) left)
-                            .withOperator(DecimalOperator.MULTIPLY)
-                            .withRight((NumericExpression) right)
-                            .build();
-                case "/":
-                    return newDecimalAritmeticExpressionBuilder()
-                            .withLeft((NumericExpression) left)
-                            .withOperator(DecimalOperator.DIVIDE)
-                            .withRight((NumericExpression) right)
-                            .build();
-                default:
-                    throw new UnsupportedOperationException("Invalid numeric operation: " + operator);
-            }
+            return createDecimalOperation((NumericExpression) left, (NumericExpression) right, operator);
         } else if (left instanceof StringExpression && right instanceof StringExpression) {
-            switch (operator) {
-                case "+":
-                    return newConcatenateBuilder().withLeft((StringExpression) left).withRight((StringExpression) right).build();
-                default:
-                    throw new UnsupportedOperationException("Invalid string opration: " + operator);
-            }
+            return createStringOperation((StringExpression) left, (StringExpression) right, operator);
         } else if (left instanceof LogicalExpression && right instanceof LogicalExpression) {
-            return null;
+            return createLogicalOperation((LogicalExpression) left, (LogicalExpression) right, operator);
         } else {
             throw new UnsupportedOperationException("Not supported operand types");
         }
     }
+
+    private Expression createLogicalOperation(LogicalExpression left, LogicalExpression right, String operator) {
+        switch (operator) {
+            case "and":
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.AND).build();
+            case "or":
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.OR).build();
+            case "xor":
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.XOR).build();
+            case "implies":
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.IMPLIES).build();
+            default:
+                throw new UnsupportedOperationException("Invalid logical operation: " + operator);
+        }
+    }
+
+    private Expression createStringOperation(StringExpression left, StringExpression right, String operator) {
+        switch (operator) {
+            case "+":
+                return newConcatenateBuilder().withLeft(left).withRight(right).build();
+            case "<":
+                return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.LESS_THAN).build();
+            case ">":
+                return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.GREATER_THAN).build();
+            case "<=":
+                return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.LESS_OR_EQUAL).build();
+            case ">=":
+                return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.GREATER_OR_EQUAL).build();
+            case "=":
+                return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.EQUAL).build();
+            case "<>":
+                return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.NOT_EQUAL).build();
+            default:
+                throw new UnsupportedOperationException("Invalid string operation: " + operator);
+        }
+    }
+
+    private Expression createDecimalOperation(NumericExpression left, NumericExpression right, String operator) {
+        switch (operator) {
+            case "+":
+                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.ADD).build();
+            case "-":
+                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.SUBSTRACT).build();
+            case "*":
+                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.MULTIPLY).build();
+            case "/":
+                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.DIVIDE).build();
+            case "<":
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.LESS_THAN).build();
+            case ">":
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.GREATER_THAN).build();
+            default:
+                throw new UnsupportedOperationException("Invalid numeric operation: " + operator);
+        }
+    }
+
+    private Expression createIntegerOperation(IntegerExpression left, IntegerExpression right, String operator) {
+        switch (operator) {
+            case "+":
+                return newIntegerAritmeticExpressionBuilder().withLeft((IntegerExpression) left).withOperator(IntegerOperator.ADD).withRight((IntegerExpression) right).build();
+            case "-":
+                return newIntegerAritmeticExpressionBuilder().withLeft((IntegerExpression) left).withOperator(IntegerOperator.SUBSTRACT).withRight((IntegerExpression) right).build();
+            case "*":
+                return newIntegerAritmeticExpressionBuilder().withLeft((IntegerExpression) left).withOperator(IntegerOperator.MULTIPLY).withRight((IntegerExpression) right).build();
+            case "div":
+                return newIntegerAritmeticExpressionBuilder().withLeft((IntegerExpression) left).withOperator(IntegerOperator.DIVIDE).withRight((IntegerExpression) right).build();
+            case "mod":
+                return newIntegerAritmeticExpressionBuilder().withLeft((IntegerExpression) left).withOperator(IntegerOperator.MODULO).withRight((IntegerExpression) right).build();
+            case "/":
+                return newDecimalAritmeticExpressionBuilder().withLeft(left).withOperator(DecimalOperator.DIVIDE).withRight(right).build();
+            case "<":
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.LESS_THAN).build();
+            case ">":
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.GREATER_THAN).build();
+            case "<=":
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.LESS_OR_EQUAL).build();
+            case ">=":
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.GREATER_OR_EQUAL).build();
+            case "=":
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.EQUAL).build();
+            case "<>":
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.NOT_EQUAL).build();
+            default:
+                throw new UnsupportedOperationException("Invalid integer operation: " + operator);
+        }
+    }
+
 }

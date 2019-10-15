@@ -539,7 +539,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="body"
-              value="return &quot;'&quot;+String.valueOf(getValue())+&quot;'&quot;;"/>
+              value="return &quot;'&quot;+String.valueOf(getValue()).replace(&quot;\\&quot;, &quot;\\\\&quot;)+&quot;'&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures
@@ -701,8 +701,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="measure"
-          eType="#//MeasureName"
-          containment="true"/>
+          eType="#//MeasureName"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -742,8 +741,7 @@
       <eStructuralFeatures
           xsi:type="ecore:EReference"
           name="measure"
-          eType="#//MeasureName"
-          containment="true"/>
+          eType="#//MeasureName"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -2402,7 +2400,8 @@
           xsi:type="ecore:EReference"
           name="expression"
           lowerBound="1"
-          eType="#//StringExpression"/>
+          eType="#//StringExpression"
+          containment="true"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"

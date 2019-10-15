@@ -56,14 +56,14 @@ context EXPR!Position {
 
 context EXPR!Replace {
     constraint Resolved {
-        check: false
+        check: true
         message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!Trim {
     constraint Resolved {
-        check: false
+        check: true
         message: "Unsupported expression: " + self
     } 
 }

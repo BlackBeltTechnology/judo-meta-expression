@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -39,6 +40,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     private static final String SELF_NAME = "self";
 
+    private MeasureProvider<M, U> measureProvider;
     private final Resource expressionResource;
     private final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
 
@@ -63,6 +65,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
             expressionResource.getContents().addAll(Arrays.asList(typeName, self));
             entityInstances.put(clazz, self);
         });
+
     }
 
     /**
