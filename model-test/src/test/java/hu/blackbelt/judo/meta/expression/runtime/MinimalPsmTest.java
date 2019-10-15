@@ -18,7 +18,7 @@ class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     @Override
@@ -36,6 +36,9 @@ class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
     @Test
     void test() throws Exception {
-        execute();
+    	ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

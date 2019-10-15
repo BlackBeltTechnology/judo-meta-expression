@@ -18,7 +18,7 @@ class MinimalAsmTest extends ExecutionContextOnAsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     @Override
@@ -36,6 +36,9 @@ class MinimalAsmTest extends ExecutionContextOnAsmTest {
 
     @Test
     void test() throws Exception {
-        execute();
+    	ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

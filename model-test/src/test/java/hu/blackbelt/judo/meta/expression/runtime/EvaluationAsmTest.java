@@ -36,7 +36,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     protected Resource getExpressionResource() {
@@ -262,6 +262,9 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
     @Test
     void test() throws Exception {
-        execute();
+    	ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

@@ -20,20 +20,21 @@ class OrderPsmTest extends ExecutionContextOnPsmTest {
 
     @AfterEach
     void tearDown() {
-        super.tearDown();
+        modelContexts.clear();
     }
 
     protected Resource getExpressionResource() throws Exception {
         return loadExpressionModel(expressionLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/t003.model").getAbsolutePath()))
                 .name("test")
-                // TODO: check model
-                .validateModel(false)
                 .build()).getResourceSet().getResources().get(0);
     }
 
     @Test
     void test() throws Exception {
-        execute();
+    	ExpressionEpsilonValidator.validateExpression(log, 
+        		modelContexts ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
+        		modelAdapter);
     }
 }

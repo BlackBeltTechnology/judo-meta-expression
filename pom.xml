@@ -124,7 +124,7 @@
 
 		<!-- For tests -->
 		<northwind-model-version>1.0.0.develop_00145</northwind-model-version>
-		<judo-tatami-version>1.0.0.1570583960_51893cf42f62d747b951ec198803cdc3ca03d7fc_develop</judo-tatami-version>
+		<judo-tatami-version>1.0.0.1571045622_5b27ae6e7b6be503eca08fc6eb7fed52f18980e0_develop</judo-tatami-version>
 
 	</properties>
 
