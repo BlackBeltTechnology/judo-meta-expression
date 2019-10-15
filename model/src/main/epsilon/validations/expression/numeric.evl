@@ -126,14 +126,14 @@ context EXPR!DecimalSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsInteger {
-        guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!IntegerExpression)
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!IntegerExpression)
         
         check: self.expression.isKindOf(EXPR!IntegerExpression)
         message: "Type of switch case expression is not integer: " + self.expression
     }
     
     constraint TypeOfSwitchCaseIsNumeric {
-        guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!DecimalExpression)
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!DecimalExpression)
         
         check: self.expression.isKindOf(EXPR!NumericExpression)
         message: "Type of switch case expression is not numeric: " + self.expression

@@ -84,7 +84,7 @@ context EXPR!StringSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsString {
-        guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!StringExpression)
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!StringExpression)
         
         check: self.expression.isKindOf(EXPR!StringExpression)
         message: "Type of switch case expression is not string: " + self.expression

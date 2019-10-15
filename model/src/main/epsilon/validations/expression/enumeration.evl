@@ -7,6 +7,7 @@ context EXPR!EnumerationAttribute {
     }
 }
 
+/* TODO - fix EVL
 context EXPR!EnumerationComparison {
     constraint BothSidesAreTheSameEnumerations {
     	guard: self.left.satisfiesAll("Resolved") and self.right.satisfiesAll("Resolved") and self.left.getEnumeration(modelAdapter).isDefined() and self.right.getEnumeration(modelAdapter).isDefined()
@@ -28,7 +29,7 @@ context EXPR!EnumerationComparison {
         check: modelAdapter.contains(self.left.getEnumeration(modelAdapter).get(), self.right.value)
         message: "Enumeration " + self.left.getEnumeration(modelAdapter).get().getName() + " (left side) does not contain literal: " + self.right.value + " (right side)"
     }
-}
+} */
 
 context EXPR!EnumerationSwitchExpression {
     constraint Resolved {
@@ -46,7 +47,7 @@ context EXPR!EnumerationSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsEnumeration {
-        guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!EnumerationExpression)
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!EnumerationExpression)
         
         check: self.expression.isKindOf(EXPR!EnumerationExpression)
         message: "Type of switch case expression is not enumeration: " + self.expression

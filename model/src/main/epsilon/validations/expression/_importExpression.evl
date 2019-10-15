@@ -1,5 +1,3 @@
-import "../../operations/expression/expression.eol";
-
 import "attribute.evl";
 import "collection.evl";
 import "constant.evl";

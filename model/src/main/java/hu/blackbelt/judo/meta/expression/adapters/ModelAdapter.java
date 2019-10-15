@@ -22,7 +22,8 @@ import java.util.Optional;
 public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     /**
-     * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model).
+     * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
+     * won't be added to any resource.
      *
      * @param namespaceElement namespace element
      * @return type name
@@ -246,6 +247,14 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
      * @return map if base measured with exponents
      */
     Optional<Map<M, Integer>> getDimension(NumericExpression numericExpression);
+
+    /**
+     * Get all element names that can be used as container of clazz.
+     *
+     * @param clazz containment class
+     * @return all possible container classes
+     */
+    EList<C> getContainerTypesOf(C clazz);
 
     /**
      * Get all classes that can be types in expression.

@@ -61,3 +61,12 @@ context EXPR!CastObject {
         message: "Invalid casting type: " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
     }
 }
+
+context EXPR!ContainerExpression {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
+        check: modelAdapter.getContainerTypesOf(self.objectExpression.getObjectType(modelAdapter)).exists(typeName | typeName == modelAdapter.get(self.elementName).orElse(null))
+        message: "Invalid container type of: " + self
+    }
+}

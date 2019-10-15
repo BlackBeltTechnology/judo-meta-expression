@@ -3,20 +3,26 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
+import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newAttributeBindingBuilder;
 import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
@@ -38,7 +44,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 
-    private static final String SELF_NAME = "self";
+    public static final String SELF_NAME = "self";
 
     private MeasureProvider<M, U> measureProvider;
     private final Resource expressionResource;
@@ -55,17 +61,48 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
         this.expressionResource = expressionResource;
 
         modelAdapter.getAllClasses().forEach(clazz -> {
-            final TypeName typeName = modelAdapter.getTypeName(clazz).get();
+            final TypeName typeName = getTypeName(clazz).get();
 
-            final Instance self = newInstanceBuilder()
-                    .withElementName(typeName)
-                    .withName(SELF_NAME)
-                    .build();
+            if (!all(expressionResource.getResourceSet(), TypeName.class)
+                    .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
+                expressionResource.getContents().add(typeName);
+            } else {
+                if (log.isTraceEnabled()) {
+                    log.trace("  - type name is already added to resource set: {}", clazz);
+                }
+            }
 
-            expressionResource.getContents().addAll(Arrays.asList(typeName, self));
+            Optional<Instance> foundSelf = all(expressionResource.getResourceSet(), Instance.class)
+                    .filter(i -> Objects.equals(i.getName(), SELF_NAME) && EcoreUtil.equals(i.getElementName(), typeName))
+                    .findAny();
+
+            final Instance self;
+            if (!foundSelf.isPresent()) {
+                self = newInstanceBuilder()
+                        .withElementName(typeName)
+                        .withName(SELF_NAME)
+                        .build();
+                expressionResource.getContents().add(self);
+            } else {
+                if (log.isTraceEnabled()) {
+                    log.trace("  - self instance is already added to resource set: {}", clazz);
+                }
+                self = foundSelf.get();
+            }
+
             entityInstances.put(clazz, self);
         });
 
+    }
+
+    /**
+     * Get type name of a given class (ASM/PSM/ESM model element).
+     *
+     * @param clazz entity type of data model
+     * @return type name (expression metamodel element)
+     */
+    public Optional<TypeName> getTypeName(final C clazz) {
+        return modelAdapter.getTypeName(clazz);
     }
 
     /**
@@ -111,34 +148,55 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
     public Binding createBinding(final BindingContext bindingContext, final C entityType, final Expression expression) {
         final Instance instance = entityInstances.get(entityType);
 
-        final hu.blackbelt.judo.meta.expression.binding.BindingRole bindingRole;
-        switch (bindingContext.getRole()) {
-            case GETTER:
-                bindingRole = hu.blackbelt.judo.meta.expression.binding.BindingRole.GETTER;
-                break;
-            case SETTER:
-                bindingRole = hu.blackbelt.judo.meta.expression.binding.BindingRole.SETTER;
-                break;
-            default:
-                throw new IllegalStateException("Unsupported binding role");
-        }
-
         final Binding binding;
         switch (bindingContext.getType()) {
             case ATTRIBUTE:
+                final AttributeBindingRole attributeBindingRole;
+                switch (bindingContext.getRole()) {
+                    case GETTER:
+                        attributeBindingRole = AttributeBindingRole.GETTER;
+                        break;
+                    case SETTER:
+                        attributeBindingRole = AttributeBindingRole.SETTER;
+                        break;
+                    case DEFAULT:
+                        attributeBindingRole = AttributeBindingRole.DEFAULT;
+                        break;
+                    default:
+                        throw new IllegalStateException("Unsupported binding role");
+                }
+
                 binding = newAttributeBindingBuilder()
                         .withExpression(expression)
                         .withTypeName(instance.getElementName())
                         .withAttributeName(bindingContext.getFeatureName())
-                        .withRole(bindingRole)
+                        .withRole(attributeBindingRole)
                         .build();
                 break;
             case RELATION:
+                final ReferenceBindingRole referenceBindingRole;
+                switch (bindingContext.getRole()) {
+                    case GETTER:
+                        referenceBindingRole = ReferenceBindingRole.GETTER;
+                        break;
+                    case SETTER:
+                        referenceBindingRole = ReferenceBindingRole.SETTER;
+                        break;
+                    case DEFAULT:
+                        referenceBindingRole = ReferenceBindingRole.DEFAULT;
+                        break;
+                    case RANGE:
+                        referenceBindingRole = ReferenceBindingRole.RANGE;
+                        break;
+                    default:
+                        throw new IllegalStateException("Unsupported binding role");
+                }
+
                 binding = newReferenceBindingBuilder()
                         .withExpression(expression)
                         .withTypeName(instance.getElementName())
                         .withReferenceName(bindingContext.getFeatureName())
-                        .withRole(bindingRole)
+                        .withRole(referenceBindingRole)
                         .build();
                 break;
             default:
@@ -153,6 +211,12 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     private Expression transformJqlToExpression(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, final EList<ObjectVariable> variables) {
         return jqlTransformers.transform(jqlExpression, variables);
+    }
+
+    static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
+        final Iterable<Notifier> asmContents = resourceSet::getAllContents;
+        return StreamSupport.stream(asmContents.spliterator(), true)
+                .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
 
     public static class BindingContext {
@@ -181,7 +245,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
     }
 
     public enum BindingRole {
-        GETTER, SETTER
+        GETTER, SETTER, DEFAULT, RANGE
     }
 
     public enum BindingType {
