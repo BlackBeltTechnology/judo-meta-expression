@@ -48,10 +48,10 @@ context EXPR!IntegerAritmeticExpression {
     // measured operation is valid
     constraint MeasureIsValid {
     	guard: self.satisfiesAll("Resolved") and not modelAdapter.isMeasured(self) and
-               (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
+               (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	
-        check: modelAdapter.getDimension(self).isPresent() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
+        check: (not modelAdapter.getDimension(self).isPresent() or modelAdapter.getDimension(self).get().isEmpty()) and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
     	message: "Operation of measured expression is invalid: " + self
    	}
 }

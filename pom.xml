@@ -115,7 +115,7 @@
         <judo-meta-asm-version>1.0.0.develop_00128</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-		<judo-meta-jql-version>1.0.0.develop_00050</judo-meta-jql-version>
+		<judo-meta-jql-version>1.0.0.feature_JNG_292_Extend_JQL_Grammar_00032</judo-meta-jql-version>
 		<judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
         
         <judo-meta-measure-version>1.0.0.develop_00058</judo-meta-measure-version>

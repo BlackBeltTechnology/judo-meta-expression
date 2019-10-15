@@ -32,7 +32,12 @@ context EXPR!Length {
     constraint Resolved {
         check: true
         message: "Unsupported expression: " + self
-    } 
+    }
+
+    constraint MeasureIsValid {
+        check: not self.isMeasured(modelAdapter)
+        message: "Unsupported expression: " + self
+    }
 }
 
 context EXPR!SubString {
@@ -51,14 +56,14 @@ context EXPR!Position {
 
 context EXPR!Replace {
     constraint Resolved {
-        check: true
+        check: false
         message: "Unsupported expression: " + self
     } 
 }
 
 context EXPR!Trim {
     constraint Resolved {
-        check: true
+        check: false
         message: "Unsupported expression: " + self
     } 
 }

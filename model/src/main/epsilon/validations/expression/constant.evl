@@ -3,12 +3,22 @@ context EXPR!IntegerConstant {
         check: self.value.isDefined()
         message: "Value of integer constant is not defined: " + self
     }
+
+    constraint MeasureIsValid {   	
+        check: true
+        message: "Measured constant: " + self
+    }
 }
 
 context EXPR!DecimalConstant {
     constraint Resolved {
         check: self.value.isDefined()
         message: "Value of integer constant is not defined: " + self
+    }
+
+    constraint MeasureIsValid {
+        check: true
+        message: "Measured decimal constant: " + self
     }
 }
 

@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
+import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -37,6 +38,8 @@ import java.util.List;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -114,7 +117,6 @@ public class AsmJqlExpressionBuilderTest {
                         .build()
         );
 
-        // Execution context
         ExecutionContext executionContext = executionContextBuilder()
                 .log(log)
                 .resourceSet(expressionResource.getResourceSet())
@@ -144,13 +146,18 @@ public class AsmJqlExpressionBuilderTest {
         return createExpression(clazz, jqlExpressionAsString, true);
     }
 
-    private Expression createExpression(final EClass clazz, final String jqlExpressionAsString, final boolean validate) throws Exception {
-        final Expression expression = asmJqlExpressionBuilder.createExpression(clazz, jqlExpressionAsString);
-
-        if (validate && expression != null) {
+    private Expression createExpression(final EClass clazz, final String jqlExpressionString, final boolean validate) throws Exception {
+        final Expression expression = asmJqlExpressionBuilder.createExpression(clazz, jqlExpressionString);
+        assertNotNull(expression);
+        if (validate) {
             validateExpressions(expression.eResource());
         }
+        return expression;
+    }
 
+    private Expression createGetterExpression(EClass clazz, String jqlExpressionString, boolean validate, String feature, JqlExpressionBuilder.BindingType bindingType) throws Exception {
+        Expression expression = createExpression(clazz, jqlExpressionString, validate);
+        createGetterBinding(clazz, expression, feature, bindingType);
         return expression;
     }
 
@@ -160,7 +167,7 @@ public class AsmJqlExpressionBuilderTest {
         final Expression expression = createExpression(order, "self.orderDate");
         assertNotNull(expression);
 
-        asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("orderDate", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, expression);
+        createGetterBinding(order, expression, "orderDate", ATTRIBUTE);
 
         log.info("Order date: " + expression);
     }
@@ -171,7 +178,7 @@ public class AsmJqlExpressionBuilderTest {
         final Expression expression = createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
 
-        asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categories", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, expression);
+        createGetterBinding(order, expression, "categories", RELATION);
 
         log.info("Order categories: " + expression);
     }
@@ -185,94 +192,90 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testSimpleDaoTest() throws Exception {
-        final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
-        final EClass internationalOrder = asmUtils.all(EClass.class).filter(c -> "InternationalOrder".equals(c.getName())).findAny().get();
-        final EClass orderDetail = asmUtils.all(EClass.class).filter(c -> "OrderDetail".equals(c.getName())).findAny().get();
-        final EClass product = asmUtils.all(EClass.class).filter(c -> "Product".equals(c.getName())).findAny().get();
-        final EClass category = asmUtils.all(EClass.class).filter(c -> "Category".equals(c.getName())).findAny().get();
-        final EClass company = asmUtils.all(EClass.class).filter(c -> "Company".equals(c.getName())).findAny().get();
-        final EClass shipper = asmUtils.all(EClass.class).filter(c -> "Shipper".equals(c.getName())).findAny().get();
+        EClass order = findBase("Order");
+        createGetterExpression(order, "self.orderDetails", false, "orderDetails", RELATION);
+        createGetterExpression(order, "self.orderDetails.product.category", false, "categories", RELATION);
+        createGetterExpression(order, "self.shipper.companyName", false, "shipperName", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper", false, "shipper", RELATION);
+        createGetterExpression(order, "self.orderDate", false, "oderDate", ATTRIBUTE);
 
-        assertNotNull(order);
-        assertNotNull(internationalOrder);
-        assertNotNull(orderDetail);
-        assertNotNull(product);
-        assertNotNull(category);
-        assertNotNull(company);
-        assertNotNull(shipper);
+        EClass internationalOrder = findBase("InternationalOrder");
+        createGetterExpression(internationalOrder, "self.customsDescription", false, "customsDescription", ATTRIBUTE);
+        createGetterExpression(internationalOrder, "self.exciseTax", false, "exciseTax", ATTRIBUTE);
 
-        final Expression orderOrderDetails = createExpression(order, "self.orderDetails", false);
-        final Expression orderCategories = createExpression(order, "self.orderDetails.product.category", false);
-        final Expression orderShipperName = createExpression(order, "self.shipper.companyName", false);
-        final Expression orderShipper = createExpression(order, "self.shipper", false);
-        final Expression orderOrderDate = createExpression(order, "self.orderDate", false);
-        assertNotNull(orderOrderDetails);
-        assertNotNull(orderCategories);
-        assertNotNull(orderShipperName);
-        assertNotNull(orderShipper);
-        assertNotNull(orderOrderDate);
+        EClass product = findBase("Product");
+        createGetterExpression(product, "self.category", false, "category", RELATION);
+        createGetterExpression(product, "self.productName", false, "productName", ATTRIBUTE);
+        createGetterExpression(product, "self.unitPrice", false, "unitPrice", ATTRIBUTE);
 
-        final Expression internationalOrderCustomsDescription = createExpression(internationalOrder, "self.customsDescription", false);
-        final Expression internationalOrderExciseTax = createExpression(internationalOrder, "self.exciseTax", false);
-        assertNotNull(internationalOrderCustomsDescription);
-        assertNotNull(internationalOrderExciseTax);
+        EClass shipper = findBase("Shipper");
+        createGetterExpression(shipper, "self.companyName", false, "companyName", ATTRIBUTE);
 
-        final Expression productCategory = createExpression(product, "self.category", false);
-        final Expression productProductName = createExpression(product, "self.productName", false);
-        final Expression productUnitPrice = createExpression(product, "self.unitPrice", false);
-        assertNotNull(productCategory);
-        assertNotNull(productProductName);
-        assertNotNull(productUnitPrice);
+        EClass category = findBase("Category");
+        createGetterExpression(category, "self.products", false, "products", RELATION);
+        createGetterExpression(category, "self.categoryName", false, "categoryName", ATTRIBUTE);
 
-        final Expression companyCompanyName = createExpression(shipper, "self.companyName", false);
-        assertNotNull(companyCompanyName);
-
-        final Expression categoryProducts = createExpression(category, "self.products", false);
-        final Expression categoryCategoryName = createExpression(category, "self.categoryName", false);
-        assertNotNull(categoryProducts);
-        assertNotNull(categoryCategoryName);
-
-        final Expression orderDetailProduct = createExpression(orderDetail, "self.product", false);
-        final Expression orderDetailCategory = createExpression(orderDetail, "self.product.category", false);
-        final Expression orderDetailProductName = createExpression(orderDetail, "self.product.productName", false);
-        final Expression orderDetailUnitPrice = createExpression(orderDetail, "self.unitPrice", false);
-        final Expression orderDetailQuantity = createExpression(orderDetail, "self.quantity", false);
-        final Expression orderDetailDiscount = createExpression(orderDetail, "self.discount", false);
-        final Expression orderDetailPrice = createExpression(orderDetail, "self.quantity * self.unitPrice * (1 - self.discount)", false);
-        assertNotNull(orderDetailProduct);
-        assertNotNull(orderDetailCategory);
-        assertNotNull(orderDetailProductName);
-        assertNotNull(orderDetailUnitPrice);
-        assertNotNull(orderDetailQuantity);
-        assertNotNull(orderDetailDiscount);
-        assertNotNull(orderDetailPrice);
-
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("orderDetails", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderOrderDetails));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categories", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderCategories));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("shipperName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, orderShipperName));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("shipper", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), order, orderShipper));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("orderDate", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), order, orderOrderDate));
-
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("customsDescription", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), internationalOrder, internationalOrderCustomsDescription));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("exciseTax", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), internationalOrder, internationalOrderExciseTax));
-
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("category", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), product, productCategory));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("productName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), product, productProductName));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("unitPrice", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), product, productUnitPrice));
-
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("companyName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), company, companyCompanyName));
-
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("products", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), category, categoryProducts));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("categoryName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), category, categoryCategoryName));
-
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("product", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailProduct));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("category", JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailCategory));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("productName", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailProductName));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("unitPrice", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailUnitPrice));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("quantity", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailQuantity));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("discount", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailDiscount));
-        assertNotNull(asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext("price", JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER), orderDetail, orderDetailPrice));
+        EClass orderDetail = findBase("OrderDetail");
+        createGetterExpression(orderDetail, "self.product", false, "product", RELATION);
+        createGetterExpression(orderDetail, "self.product.category", false, "category", RELATION);
+        createGetterExpression(orderDetail, "self.product.productName", false, "productName", ATTRIBUTE);
+        createGetterExpression(orderDetail, "self.unitPrice", false,"unitPrice", ATTRIBUTE);
+        createGetterExpression(orderDetail, "self.quantity", false, "quantity", ATTRIBUTE);
+        createGetterExpression(orderDetail, "self.discount", false, "discount", ATTRIBUTE);
+        createGetterExpression(orderDetail, "self.quantity * self.unitPrice * (1 - self.discount)", false, "price", ATTRIBUTE);
 
         validateExpressions(expressionModelResourceSupport.getResource());
     }
+
+    private EClass findBase(String entityName) {
+        return asmUtils.all(EClass.class).filter(c -> entityName.equals(c.getName())).findAny().orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Binding createGetterBinding(EClass base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
+        Binding binding = asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, expression);
+        assertNotNull(binding);
+        return binding;
+    }
+
+    @Test
+    void testSwitchCase() throws Exception {
+        createExpression(null, "true ? 1 : 2");
+        createExpression(null, "true ? 1 : 2 + 3");
+        createExpression(null, "true ? 1.0 : 2.0 + 3");
+    }
+
+    @Test
+    void testMeasures() throws Exception {
+        createExpression(null, "5[demo::measures::Time#min]");
+        createExpression(null, "1.23[min]");
+    }
+
+    @Test
+    void testStringFunctions() throws Exception {
+        EClass order = findBase("Order");
+
+        // LowerCase
+        createGetterExpression(order, "self.shipper.companyName!lowerCase()", true, "shipperNameLower", ATTRIBUTE);
+
+        // UpperCase
+        createGetterExpression(order, "self.shipper.companyName!upperCase()", true, "shipperNameUpper", ATTRIBUTE);
+
+        // Length
+        createGetterExpression(order, "self.shipper.companyName!lowerCase()!length() > 0", true, "shipperNameLowerLength", ATTRIBUTE);
+
+        // SubString
+        createGetterExpression(order, "self.shipper.companyName!substring(1, 4)!length() > 0", true, "shipperNameSubString1", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper.companyName!substring(1, self.shipper.companyName!length()-1)", true, "shipperNameSubStringEnd", ATTRIBUTE);
+
+        // Position
+        createGetterExpression(order, "self.shipper.companyName!position('a') > 0", true, "shipperNamePosition", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper.companyName!position(self.shipper.companyName) > 0", true, "shipperNamePosition2", ATTRIBUTE);
+
+        // Concatenate
+        createExpression(null, "'a'+'b'");
+        createGetterExpression(order, "self.shipper.companyName + self.shipper.companyName", false, "shipperNameConcat", ATTRIBUTE);
+        createGetterExpression(order, "'_' + self.shipper.companyName", false, "shipperNameConcat2", ATTRIBUTE);
+
+    }
+
 }
