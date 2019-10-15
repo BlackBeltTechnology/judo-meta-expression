@@ -36,11 +36,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Model adapter for PSM models.
@@ -269,7 +270,12 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public EList<EntityType> getAllClasses() {
-        return ECollections.asEList(getPsmElement(EntityType.class).collect(Collectors.toList()));
+        return ECollections.asEList(getPsmElement(EntityType.class).collect(toList()));
+    }
+
+    @Override
+    public EList<Measure> getAllMeasures() {
+        return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
 
     <T> Stream<T> getPsmElement(final Class<T> clazz) {
@@ -301,6 +307,14 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         return ECollections.asEList(getPsmElement(EntityType.class)
                 .filter(container -> container.getRelations().stream().anyMatch(c -> (c instanceof Containment) && EcoreUtil.equals(c.getTarget(), entityType)))
                 .flatMap(container -> Stream.concat(PsmUtils.getAllSuperEntityTypes(container).stream(), Collections.singleton(container).stream()))
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
+
+    @Override
+    public Optional<MeasureName> getMeasureName(Measure measure) {
+        return measureProvider.getMeasures()
+                .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
+                .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getSymbol()).build());
+    }
+
 }

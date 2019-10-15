@@ -5,7 +5,6 @@ import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredDecimalBuilder;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredIntegerBuilder;
-import hu.blackbelt.judo.meta.expression.util.builder.MeasureNameBuilder;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.DecimalLiteral;
 import hu.blackbelt.judo.meta.jql.jqldsl.IntegerLiteral;
@@ -13,18 +12,15 @@ import hu.blackbelt.judo.meta.jql.jqldsl.MeasuredLiteral;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 
-public class JqlMeasuredLiteralTransformer implements JqlExpressionTransformerFunction {
+public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, NE, P, PTE, E, C, RTE, M, U> {
 
-    private JqlTransformers transformers;
-
-    public JqlMeasuredLiteralTransformer(JqlTransformers transformers) {
-        this.transformers = transformers;
+    public JqlMeasuredLiteralTransformer(JqlTransformers jqlTransformers) {
+        super(jqlTransformers);
     }
 
     private String getUnitName(MeasuredLiteral measuredLiteral) {
@@ -36,25 +32,11 @@ public class JqlMeasuredLiteralTransformer implements JqlExpressionTransformerFu
     }
 
     private MeasureName getMeasureName(MeasuredLiteral measuredLiteral) {
-        MeasureName measureName;
-        if (measuredLiteral.getType() != null) {
-            List<String> qMeasureNameParts = Arrays.asList(measuredLiteral.getType().split("::"));
-            String unitName = qMeasureNameParts.get(qMeasureNameParts.size() - 1);
-            MeasureNameBuilder measureNameBuilder = newMeasureNameBuilder().withName(unitName);
-            if (qMeasureNameParts.size() > 1) {
-                String namespace = String.join("::", qMeasureNameParts.subList(0, qMeasureNameParts.size() - 1));
-                measureNameBuilder = measureNameBuilder.withNamespace(namespace);
-            }
-            measureName = measureNameBuilder.build();
-        } else {
-            measureName = null;
-        }
-        return measureName;
+        return measuredLiteral.getType() != null ? jqlTransformers.getMeasureNames().get(measuredLiteral.getType()) : null;
     }
 
     @Override
-    public Expression apply(hu.blackbelt.judo.meta.jql.jqldsl.Expression expression, List<ObjectVariable> variables) {
-        MeasuredLiteral measuredLiteral = (MeasuredLiteral) expression;
+    protected Expression doTransform(MeasuredLiteral measuredLiteral, List<ObjectVariable> variables) {
         String unitName = getUnitName(measuredLiteral);
         MeasureName measureName = getMeasureName(measuredLiteral);
         hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlValue = measuredLiteral.getValue();
@@ -78,7 +60,6 @@ public class JqlMeasuredLiteralTransformer implements JqlExpressionTransformerFu
             throw new IllegalStateException("Invalid type of JQL measured literal: " + measuredLiteral);
         }
         return result;
-
     }
 
 }

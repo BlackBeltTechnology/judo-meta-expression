@@ -568,7 +568,10 @@
           name="value"
           lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="enumeration" eType="#//TypeName"/>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="enumeration"
+          eType="#//TypeName"/>
     </eClassifiers>
     <eClassifiers
         xsi:type="ecore:EClass"
@@ -661,7 +664,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="body"
-              value="return getValue() + &quot; [&quot; + getUnitName() + &quot;]&quot;;"/>
+              value="return String.format(&quot;%s[%s%s]&quot;, getValue(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
         </eAnnotations>
       </eOperations>
       <eOperations
@@ -701,7 +704,7 @@
             source="http://www.eclipse.org/emf/2002/GenModel">
           <details
               key="body"
-              value="return getValue() + &quot; [&quot; + getUnitName() + &quot;]&quot;;"/>
+              value="return String.format(&quot;%s[%s%s]&quot;, getValue(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
         </eAnnotations>
       </eOperations>
       <eOperations
@@ -2810,27 +2813,58 @@
           lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ContainerExpression" eSuperTypes="#//ObjectExpression #//variable/ObjectVariable">
-      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
+    <eClassifiers
+        xsi:type="ecore:EClass"
+        name="ContainerExpression"
+        eSuperTypes="#//ObjectExpression #//variable/ObjectVariable">
+      <eOperations
+          name="getOperands"
+          upperBound="-1"
+          eType="#//Expression">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="body"
+              value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
         </eAnnotations>
       </eOperations>
-      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;CONTAINER(&quot; + getObjectExpression() + &quot;)&quot;;"/>
+      <eOperations
+          name="toString"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="body"
+              value="return &quot;CONTAINER(&quot; + getObjectExpression() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
-      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getElementName().get(modelAdapter);"/>
+      <eOperations
+          name="getObjectType"
+          lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations
+            source="http://www.eclipse.org/emf/2002/GenModel">
+          <details
+              key="body"
+              value="return getElementName().get(modelAdapter);"/>
         </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+        <eParameters
+            name="modelAdapter"
+            lowerBound="1"
+            eType="#//ModelAdapter"/>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="elementName"
+          lowerBound="1"
           eType="#//TypeName"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" lowerBound="1"
-          eType="#//ObjectExpression" containment="true"/>
+      <eStructuralFeatures
+          xsi:type="ecore:EReference"
+          name="objectExpression"
+          lowerBound="1"
+          eType="#//ObjectExpression"
+          containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages
@@ -3598,16 +3632,32 @@
           lowerBound="1"
           eType="#//binding/ReferenceBindingRole"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" name="AttributeBindingRole">
-      <eLiterals name="getter"/>
-      <eLiterals name="setter" value="1"/>
-      <eLiterals name="default" value="2"/>
+    <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="AttributeBindingRole">
+      <eLiterals
+          name="getter"/>
+      <eLiterals
+          name="setter"
+          value="1"/>
+      <eLiterals
+          name="default"
+          value="2"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" name="ReferenceBindingRole">
-      <eLiterals name="getter"/>
-      <eLiterals name="setter" value="1"/>
-      <eLiterals name="default" value="2"/>
-      <eLiterals name="range" value="3"/>
+    <eClassifiers
+        xsi:type="ecore:EEnum"
+        name="ReferenceBindingRole">
+      <eLiterals
+          name="getter"/>
+      <eLiterals
+          name="setter"
+          value="1"/>
+      <eLiterals
+          name="default"
+          value="2"/>
+      <eLiterals
+          name="range"
+          value="3"/>
     </eClassifiers>
   </eSubpackages>
 </ecore:EPackage>

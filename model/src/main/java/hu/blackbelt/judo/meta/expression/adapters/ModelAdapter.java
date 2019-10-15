@@ -262,4 +262,13 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
      * @return list of classes
      */
     EList<C> getAllClasses();
+
+    /** Returns all measures that can be used in expression.
+     *
+     * @return list of measures
+     */
+    EList<M> getAllMeasures();
+
+    Optional<MeasureName> getMeasureName(M measure);
+
 }

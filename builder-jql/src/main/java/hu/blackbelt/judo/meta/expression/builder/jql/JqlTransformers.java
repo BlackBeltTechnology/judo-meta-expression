@@ -19,6 +19,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperation
 import hu.blackbelt.judo.meta.expression.string.util.builder.TrimBuilder;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
+import org.eclipse.emf.common.util.EMap;
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -35,9 +36,11 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
     private Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
 
     private ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
+    private Map<String, MeasureName> measureNames;
 
-    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter) {
+    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, Map<String, MeasureName> measureNames) {
         this.modelAdapter = modelAdapter;
+        this.measureNames = measureNames;
         transformers.put(NavigationExpression.class, new JqlNavigationTransformer<>(this));
         transformers.put(BooleanLiteral.class, (jqlExpression, variables) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
         transformers.put(DecimalLiteral.class, (jqlExpression, variables) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
@@ -46,7 +49,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 //        transformers.put(EnumLiteral.class, (jqlExpression, variables) -> {
 //
 //        });
-        transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer(this));
+        transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(BinaryOperation.class, new JqlBinaryOperationTransformer<>(this));
         transformers.put(UnaryOperation.class, new JqlUnaryOperationTransformer<>(this));
         transformers.put(TernaryOperation.class, new JqlTernaryOperationTransformer<>(this));
@@ -91,4 +94,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return modelAdapter;
     }
 
+    public Map<String, MeasureName> getMeasureNames() {
+        return measureNames;
+    }
 }

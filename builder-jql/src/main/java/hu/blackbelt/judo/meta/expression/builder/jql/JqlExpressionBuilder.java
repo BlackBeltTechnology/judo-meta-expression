@@ -1,10 +1,11 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
+import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -20,6 +21,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -51,15 +55,22 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
     private final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
 
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
+    private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
 
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
     public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
-        this.jqlTransformers = new JqlTransformers<>(modelAdapter);
+        this.jqlTransformers = new JqlTransformers<>(modelAdapter, measureNames);
         this.expressionResource = expressionResource;
 
+        addMeasures();
+        addClasses();
+
+    }
+
+    private void addClasses() {
         modelAdapter.getAllClasses().forEach(clazz -> {
             final TypeName typeName = getTypeName(clazz).get();
 
@@ -67,8 +78,8 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
                     .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
                 expressionResource.getContents().add(typeName);
             } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("  - type name is already added to resource set: {}", clazz);
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("  - type name is already added to resource set: {}", clazz);
                 }
             }
 
@@ -84,15 +95,26 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
                         .build();
                 expressionResource.getContents().add(self);
             } else {
-                if (log.isTraceEnabled()) {
-                    log.trace("  - self instance is already added to resource set: {}", clazz);
+                if (LOGGER.isTraceEnabled()) {
+                    LOGGER.trace("  - self instance is already added to resource set: {}", clazz);
                 }
                 self = foundSelf.get();
             }
 
             entityInstances.put(clazz, self);
         });
+    }
 
+    private void addMeasures() {
+        modelAdapter.getAllMeasures().forEach(measure -> {
+            MeasureName measureName = modelAdapter.getMeasureName(measure).get();
+            boolean alreadyAdded = all(expressionResource.getResourceSet(), MeasureName.class)
+                    .anyMatch(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace(), measureName.getNamespace()));
+            if (!alreadyAdded) {
+                expressionResource.getContents().add(measureName);
+                measureNames.put(String.join("::", measureName.getNamespace(), measureName.getName()), measureName);
+            }
+        });
     }
 
     /**

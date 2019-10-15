@@ -29,12 +29,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Model adapter for ASM models.
@@ -67,6 +67,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
                 .findAny();
+    }
+
+    @Override
+    public Optional<MeasureName> getMeasureName(Measure measure) {
+        return measureProvider.getMeasures()
+                .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
+                .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getNamespace()).build());
     }
 
     @Override
@@ -241,7 +248,12 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     public EList<EClass> getAllClasses() {
         return ECollections.asEList(getAsmElement(EClass.class)
                 .filter(c -> AsmUtils.isEntityType(c))
-                .collect(Collectors.toList()));
+                .collect(toList()));
+    }
+
+    @Override
+    public EList<Measure> getAllMeasures() {
+        return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
 
     <T> Stream<T> getAsmElement(final Class<T> clazz) {
@@ -313,6 +325,6 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return ECollections.asEList(asmUtils.all(EClass.class)
                 .filter(container -> container.getEAllContainments().stream().anyMatch(c -> EcoreUtil.equals(c.getEReferenceType(), clazz)))
                 .flatMap(container -> Stream.concat(container.getEAllSuperTypes().stream(), Collections.singleton(container).stream()))
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
 }
