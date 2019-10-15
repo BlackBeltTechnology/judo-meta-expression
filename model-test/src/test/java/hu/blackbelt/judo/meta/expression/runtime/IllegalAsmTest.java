@@ -31,8 +31,6 @@ public class IllegalAsmTest extends ExecutionContextOnAsmTest {
 		return loadExpressionModel(expressionLoadArgumentsBuilder()
                 .uri(URI.createFileURI(new File("src/test/model/t004.model").getAbsolutePath()))
                 .name("test")
-                // TODO: check model
-                .validateModel(false)
                 .build()).getResourceSet().getResources().get(0);
 	}
 	
