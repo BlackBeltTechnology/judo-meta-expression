@@ -1,28 +1,5 @@
 import "expression/_importExpression.evl";
 
-operation displayAllExpressions() {
-    for (expr in EXPR!Expression) {
-        expr.toString().println("Expression: ");
-        if (expr.isKindOf(EXPR!ObjectExpression) or expr.isKindOf(EXPR!CollectionExpression) and expr.getObjectType(modelAdapter).isDefined()) {
-            expr.getObjectType(modelAdapter).name.println(" - OBJECT TYPE of object expression: ");
-        }
-        if (expr.isKindOf(EXPR!NumericExpression) and expr.isMeasured(modelAdapter)) {
-            var measure = modelAdapter.getMeasure(expr).orElse(null);
-            if (measure.isDefined()) {
-                measure.name.println(" - measure: ");
-            } else {
-                "UNKNOWN".println(" - measure: ");
-            }
-        }
-    }
-}
-
-// Utility for EVLs: get switch expression of a given switch case.
-@cached
-operation EXPR!SwitchCase getSwitchExpression() {
-    return EXPR!SwitchExpression.all.selectOne(e | e.cases.contains(self));
-}
-
 // Utility for EVLs: check if dimension is defined for a given numeric expression.
 @cached
 operation EXPR!NumericExpression isDimensionDefined() {
@@ -32,8 +9,6 @@ operation EXPR!NumericExpression isDimensionDefined() {
 
 pre {
     evaluator.init(EXPR!Expression.ALL);
-
-    // displayAllExpressions();
 }
 
 post {

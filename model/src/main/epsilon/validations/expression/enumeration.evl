@@ -46,7 +46,7 @@ context EXPR!EnumerationSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsEnumeration {
-        guard: self.getSwitchExpression().satisfiesAll("Resolved") and self.getSwitchExpression().isKindOf(EXPR!EnumerationExpression)
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!EnumerationExpression)
         
         check: self.expression.isKindOf(EXPR!EnumerationExpression)
         message: "Type of switch case expression is not enumeration: " + self.expression
