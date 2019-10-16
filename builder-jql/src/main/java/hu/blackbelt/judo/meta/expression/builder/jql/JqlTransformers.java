@@ -3,9 +3,11 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.StringExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlEnumLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
@@ -38,24 +40,24 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
     private ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
     private Map<String, MeasureName> measureNames;
 
-    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, Map<String, MeasureName> measureNames) {
+    private Map<String, TypeName> enumTypes;
+
+    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, Map<String, MeasureName> measureNames, Map<String, TypeName> enumTypes) {
         this.modelAdapter = modelAdapter;
         this.measureNames = measureNames;
+        this.enumTypes = enumTypes;
         transformers.put(NavigationExpression.class, new JqlNavigationTransformer<>(this));
         transformers.put(BooleanLiteral.class, (jqlExpression, variables) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
         transformers.put(DecimalLiteral.class, (jqlExpression, variables) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
         transformers.put(IntegerLiteral.class, (jqlExpression, variables) -> newIntegerConstantBuilder().withValue(((IntegerLiteral) jqlExpression).getValue()).build());
         transformers.put(StringLiteral.class, (jqlExpression, variables) -> newStringConstantBuilder().withValue(((StringLiteral) jqlExpression).getValue()).build());
-//        transformers.put(EnumLiteral.class, (jqlExpression, variables) -> {
-//
-//        });
         transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(BinaryOperation.class, new JqlBinaryOperationTransformer<>(this));
         transformers.put(UnaryOperation.class, new JqlUnaryOperationTransformer<>(this));
         transformers.put(TernaryOperation.class, new JqlTernaryOperationTransformer<>(this));
         transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
         transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
-
+        transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
 
         functionTransformers.put("length", (expression, functionCall, variables) -> newLengthBuilder().withExpression((StringExpression)expression).build());
         functionTransformers.put("lowercase", (expression, functionCall, variables) -> newLowerCaseBuilder().withExpression((StringExpression)expression).build());
@@ -97,4 +99,9 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
     public Map<String, MeasureName> getMeasureNames() {
         return measureNames;
     }
+
+    public Map<String, TypeName> getEnumTypes() {
+        return enumTypes;
+    }
+
 }

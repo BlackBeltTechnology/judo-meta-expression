@@ -56,32 +56,35 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
+    private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
 
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
     public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
-        this.jqlTransformers = new JqlTransformers<>(modelAdapter, measureNames);
+        this.jqlTransformers = new JqlTransformers<>(modelAdapter, measureNames, enumTypes);
         this.expressionResource = expressionResource;
 
         addMeasures();
         addClasses();
+        addEnums();
 
+    }
+
+    private void addEnums() {
+        modelAdapter.getAllEnums().forEach(e -> {
+            TypeName enumTypeName = modelAdapter.getEnumerationTypeName(e).get();
+            storeTypeName(e, enumTypeName);
+            enumTypes.put(enumTypeName.getNamespace() + "::" + enumTypeName.getName(), enumTypeName);
+        });
     }
 
     private void addClasses() {
         modelAdapter.getAllClasses().forEach(clazz -> {
             final TypeName typeName = getTypeName(clazz).get();
 
-            if (!all(expressionResource.getResourceSet(), TypeName.class)
-                    .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
-                expressionResource.getContents().add(typeName);
-            } else {
-                if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("  - type name is already added to resource set: {}", clazz);
-                }
-            }
+            storeTypeName(clazz, typeName);
 
             Optional<Instance> foundSelf = all(expressionResource.getResourceSet(), Instance.class)
                     .filter(i -> Objects.equals(i.getName(), SELF_NAME) && EcoreUtil.equals(i.getElementName(), typeName))
@@ -103,6 +106,17 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
             entityInstances.put(clazz, self);
         });
+    }
+
+    private void storeTypeName(Object object, TypeName typeName) {
+        if (!all(expressionResource.getResourceSet(), TypeName.class)
+                .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
+            expressionResource.getContents().add(typeName);
+        } else {
+            if (LOGGER.isTraceEnabled()) {
+                LOGGER.trace("  - type name is already added to resource set: {}", object);
+            }
+        }
     }
 
     private void addMeasures() {

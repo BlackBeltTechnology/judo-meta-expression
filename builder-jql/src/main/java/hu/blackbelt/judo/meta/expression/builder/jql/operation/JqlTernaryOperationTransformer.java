@@ -19,19 +19,29 @@ import hu.blackbelt.judo.meta.jql.jqldsl.TernaryOperation;
 import java.util.*;
 import java.util.function.BiFunction;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampSwitchExpressionBuilder;
+
 public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<TernaryOperation, NE, P, PTE, E, C, RTE, M, U> {
 
     private static final Set<SupportedType> SUPPORTED_TYPES = new HashSet<SupportedType>() {
         {
-            add(new SupportedType(IntegerExpression.class, (thenCase, elseExpression) -> IntegerSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(DecimalExpression.class, (thenCase, elseExpression) -> DecimalSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(CollectionExpression.class, (thenCase, elseExpression) -> CollectionSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(CustomExpression.class, (thenCase, elseExpression) -> CustomSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(EnumerationExpression.class, (thenCase, elseExpression) -> EnumerationSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(DateExpression.class, (thenCase, elseExpression) -> DateSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(ObjectExpression.class, (thenCase, elseExpression) -> ObjectSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(StringExpression.class, (thenCase, elseExpression) -> StringSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(TimestampExpression.class, (thenCase, elseExpression) -> TimestampSwitchExpressionBuilder.create().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(IntegerExpression.class, (thenCase, elseExpression) -> newIntegerSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(DecimalExpression.class, (thenCase, elseExpression) -> newDecimalSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(CollectionExpression.class, (thenCase, elseExpression) -> newCollectionSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(CustomExpression.class, (thenCase, elseExpression) -> newCustomSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(EnumerationExpression.class, (thenCase, elseExpression) -> newEnumerationSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(DateExpression.class, (thenCase, elseExpression) -> newDateSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(ObjectExpression.class, (thenCase, elseExpression) -> newObjectSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(StringExpression.class, (thenCase, elseExpression) -> newStringSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            add(new SupportedType(TimestampExpression.class, (thenCase, elseExpression) -> newTimestampSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
         }
     };
 

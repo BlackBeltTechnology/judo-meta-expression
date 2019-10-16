@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -67,6 +68,11 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
                 .findAny();
+    }
+
+    @Override
+    public Optional<TypeName> getEnumerationTypeName(EEnum enumeration) {
+        return getTypeName(enumeration);
     }
 
     @Override
@@ -250,6 +256,14 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .filter(c -> AsmUtils.isEntityType(c))
                 .collect(toList()));
     }
+
+    @Override
+    public EList<EEnum> getAllEnums() {
+        return ECollections.asEList(getAsmElement(EEnum.class)
+                .filter(e -> AsmUtils.isEnumeration(e))
+                .collect(toList()));
+    }
+
 
     @Override
     public EList<Measure> getAllMeasures() {

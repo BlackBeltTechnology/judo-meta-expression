@@ -283,7 +283,7 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testEnums() throws Exception {
         EClass order = findBase("Order");
-//        createGetterExpression(order, "self.shipAddress.country = demo::Countries#AT ? true : false", true, "countryCheck", ATTRIBUTE);
+        createGetterExpression(order, "self.shipAddress.country = demo::types::Countries#AT", true, "countryCheck", ATTRIBUTE);
     }
 
     @Test

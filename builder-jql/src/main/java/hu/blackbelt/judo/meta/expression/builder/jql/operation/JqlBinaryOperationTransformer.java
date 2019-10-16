@@ -3,10 +3,12 @@ package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.logical.EnumerationComparison;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
+import java.util.Enumeration;
 import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
@@ -33,8 +35,19 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             return createStringOperation((StringExpression) left, (StringExpression) right, operator);
         } else if (left instanceof LogicalExpression && right instanceof LogicalExpression) {
             return createLogicalOperation((LogicalExpression) left, (LogicalExpression) right, operator);
+        } else if (left instanceof EnumerationExpression && right instanceof EnumerationExpression) {
+            return createEnumerationOperation((EnumerationExpression)left, (EnumerationExpression)right, operator);
         } else {
-            throw new UnsupportedOperationException("Not supported operand types");
+            throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
+        }
+    }
+
+    private Expression createEnumerationOperation(EnumerationExpression left, EnumerationExpression right, String operator) {
+        switch (operator) {
+            case "=":
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.EQUAL).build();
+            default:
+                throw new UnsupportedOperationException("Invalid enumeration operation: " + operator);
         }
     }
 

@@ -30,6 +30,8 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
      */
     Optional<TypeName> getTypeName(NE namespaceElement);
 
+    Optional<TypeName> getEnumerationTypeName(E enumeration);
+
     /**
      * Get a namespace element by element name.
      *
@@ -270,5 +272,7 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
     EList<M> getAllMeasures();
 
     Optional<MeasureName> getMeasureName(M measure);
+
+    EList<E> getAllEnums();
 
 }

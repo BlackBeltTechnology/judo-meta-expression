@@ -30,8 +30,9 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
 
     @Override
     public Expression doTransform(hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression jqlExpression, List<ObjectVariable> variables) {
+        String name = jqlExpression.getBase().getName();
         final Optional<ObjectVariable> baseVariable = variables.stream()
-                .filter(v -> Objects.equals(v.getName(), jqlExpression.getBase()))
+                .filter(v -> Objects.equals(v.getName(), name))
                 .findAny();
         if (!baseVariable.isPresent()) {
             throw new IllegalStateException("Base variable " + jqlExpression.getBase() + " not found");

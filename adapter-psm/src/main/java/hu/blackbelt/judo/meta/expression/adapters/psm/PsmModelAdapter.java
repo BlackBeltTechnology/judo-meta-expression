@@ -77,6 +77,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<TypeName> getEnumerationTypeName(EnumerationType enumeration) {
+        return getTypeName(enumeration);
+    }
+
+    @Override
     public Optional<? extends NamespaceElement> get(final TypeName elementName) {
         final Optional<Namespace> namespace = getPsmElement(Namespace.class)
                 .filter(ns -> Objects.equals(getNamespaceFQName(ns), elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR)))
@@ -274,6 +279,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public EList<EnumerationType> getAllEnums() {
+        return ECollections.asEList(getPsmElement(EnumerationType.class).collect(toList()));
+    }
+
+    @Override
     public EList<Measure> getAllMeasures() {
         return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
@@ -316,5 +326,6 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                 .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
                 .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getSymbol()).build());
     }
+
 
 }
