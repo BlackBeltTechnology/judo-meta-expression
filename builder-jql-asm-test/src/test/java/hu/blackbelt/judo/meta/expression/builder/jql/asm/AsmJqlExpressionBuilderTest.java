@@ -8,7 +8,9 @@ import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
+import hu.blackbelt.judo.meta.expression.DecimalExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
@@ -21,6 +23,7 @@ import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.hamcrest.object.IsCompatibleType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,8 +40,9 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AsmJqlExpressionBuilderTest {
 
@@ -145,7 +149,7 @@ public class AsmJqlExpressionBuilderTest {
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString, final boolean validate) throws Exception {
         final Expression expression = asmJqlExpressionBuilder.createExpression(clazz, jqlExpressionString);
-        assertNotNull(expression);
+        assertThat(expression, notNullValue());
         if (validate) {
             validateExpressions(expression.eResource());
         }
@@ -288,11 +292,7 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipAddress.country = #AT", true, "countryCheck2", ATTRIBUTE);
 
         Expression expression = createExpression(null, "1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
-        try {
-            createExpression(null, "true ? demo::types::Countries#AT : demo::types::Titles#MR");
-            fail("Should have thrown Exception");
-        } catch (IllegalArgumentException e) { }
-
+        assertThrows(IllegalArgumentException.class, () -> createExpression(null, "true ? demo::types::Countries#AT : demo::types::Titles#MR"));
     }
 
     @Test
@@ -303,9 +303,11 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testNumericFunctions() throws Exception {
-        createExpression(null, "1.2!round()");
+        Expression roundedConstant = createExpression(null, "1.2!round()");
+        assertThat(roundedConstant, instanceOf(IntegerExpression.class));
         EClass product = findBase("Product");
-        createGetterExpression(product, "self.unitPrice!round()", true, "unitPriceRound", ATTRIBUTE);
+        Expression roundedAttribute  = createGetterExpression(product, "self.unitPrice!round()", true, "unitPriceRound", ATTRIBUTE);
+        assertThat(roundedAttribute, instanceOf(IntegerExpression.class));
     }
 
     @Test
@@ -335,6 +337,15 @@ public class AsmJqlExpressionBuilderTest {
 
         // Trim
         createGetterExpression(order, "self.shipper.companyName!trim()", true, "shipperTrim", ATTRIBUTE);
+
+        // First
+        createGetterExpression(order, "self.shipper.companyName!first(1)", true, "shipperFirst", ATTRIBUTE);
+
+        // Last
+        createGetterExpression(order, "self.shipper.companyName!last(1)", true, "shipperFirst", ATTRIBUTE);
+
+        // Matches
+        createGetterExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')", true, "shipperNameMatches", ATTRIBUTE);
     }
 
 }

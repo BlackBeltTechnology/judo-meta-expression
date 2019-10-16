@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
@@ -149,7 +150,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
      * @return expression
      */
     public Expression createExpression(final C entityType, String jqlExpressionAsString) {
-        final hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
+        final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
         return createExpression(entityType, jqlExpression);
     }
 
@@ -160,7 +161,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
      * @param jqlExpression JQL expression
      * @return expression
      */
-    public Expression createExpression(final C entityType, hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression) {
+    public Expression createExpression(final C entityType, JqlExpression jqlExpression) {
         final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
         final Expression expression = transformJqlToExpression(jqlExpression, instance != null ? ECollections.singletonEList(instance) : ECollections.emptyEList());
 
@@ -245,7 +246,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return binding;
     }
 
-    private Expression transformJqlToExpression(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, final EList<ObjectVariable> variables) {
+    private Expression transformJqlToExpression(JqlExpression jqlExpression, final EList<ObjectVariable> variables) {
         return jqlTransformers.transform(jqlExpression, variables);
     }
 

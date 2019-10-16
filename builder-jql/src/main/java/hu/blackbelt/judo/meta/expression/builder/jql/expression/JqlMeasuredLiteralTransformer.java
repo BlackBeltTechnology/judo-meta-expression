@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredIntegerBu
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.DecimalLiteral;
 import hu.blackbelt.judo.meta.jql.jqldsl.IntegerLiteral;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.MeasuredLiteral;
 
 import java.math.BigDecimal;
@@ -39,7 +40,7 @@ public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
     protected Expression doTransform(MeasuredLiteral measuredLiteral, List<ObjectVariable> variables) {
         String unitName = getUnitName(measuredLiteral);
         MeasureName measureName = getMeasureName(measuredLiteral);
-        hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlValue = measuredLiteral.getValue();
+        JqlExpression jqlValue = measuredLiteral.getValue();
         Expression result;
         if (jqlValue instanceof IntegerLiteral) {
             IntegerLiteral integerLiteral = (IntegerLiteral) jqlValue;

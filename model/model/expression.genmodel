@@ -605,6 +605,28 @@
         <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/toString"
             body="return &quot;CONCAT(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/First">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/First/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/First/length"/>
+        <genOperations ecoreOperation="expression.ecore#//string/First/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getLength());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/First/toString" body="return &quot;FIRST(&quot; + getExpression() + &quot;, &quot; + getLength() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/Last">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Last/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Last/length"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Last/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getLength());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Last/toString" body="return &quot;LAST(&quot; + getExpression() + &quot;, &quot; + getLength() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/Matches">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Matches/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Matches/pattern"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Matches/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Matches/toString"
+            body="return &quot;MATCHES(&quot; + getExpression() + &quot;, &quot; + getPattern() + &quot;)&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

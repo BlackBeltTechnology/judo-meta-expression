@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.DateLiteral;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.TimeStampLiteral;
 
 import java.sql.Timestamp;
@@ -20,7 +21,7 @@ public class JqlTimestampLiteralTransformer implements JqlExpressionTransformerF
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
-    public Expression apply(hu.blackbelt.judo.meta.jql.jqldsl.Expression expression, List<ObjectVariable> variables) {
+    public Expression apply(JqlExpression expression, List<ObjectVariable> variables) {
         TimeStampLiteral timestampLiteral = (TimeStampLiteral) expression;
         return newTimestampConstantBuilder().withValue(timestampLiteral.getValue()).build();
     }

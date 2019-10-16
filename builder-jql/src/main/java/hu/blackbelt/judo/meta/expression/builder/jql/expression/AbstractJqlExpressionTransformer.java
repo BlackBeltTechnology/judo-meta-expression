@@ -5,6 +5,7 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import org.eclipse.emf.common.util.EList;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
 
-public abstract class AbstractJqlExpressionTransformer<T extends hu.blackbelt.judo.meta.jql.jqldsl.Expression, NE, P, PTE, E, C extends NE, RTE, M, U> implements JqlExpressionTransformerFunction {
+public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, NE, P, PTE, E, C extends NE, RTE, M, U> implements JqlExpressionTransformerFunction {
 
     protected final JqlTransformers<NE, P, PTE, E, C, RTE, M, U> jqlTransformers;
 
@@ -29,7 +30,7 @@ public abstract class AbstractJqlExpressionTransformer<T extends hu.blackbelt.ju
         this.jqlTransformers = jqlTransformers;
     }
 
-    public final Expression apply(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, List<ObjectVariable> variables) {
+    public final Expression apply(JqlExpression jqlExpression, List<ObjectVariable> variables) {
         return doTransform((T) jqlExpression, variables);
     }
 

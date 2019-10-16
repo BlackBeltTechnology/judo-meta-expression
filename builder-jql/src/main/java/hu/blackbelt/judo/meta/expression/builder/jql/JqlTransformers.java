@@ -10,9 +10,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlPositionFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
@@ -31,7 +29,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
-    private Map<Class<? extends hu.blackbelt.judo.meta.jql.jqldsl.Expression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
+    private Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
 
     private ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
@@ -63,11 +61,16 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position", new JqlPositionFunctionTransformer(this));
         functionTransformers.put("replace", new JqlReplaceFunctionTransformer(this));
+        functionTransformers.put("first", new JqlIntegerParamStringFunctionTransformer(this,
+                (stringExpression, parameter) -> newFirstBuilder().withExpression(stringExpression).withLength(parameter).build()));
+        functionTransformers.put("last", new JqlIntegerParamStringFunctionTransformer(this,
+                (stringExpression, parameter) -> newLastBuilder().withExpression(stringExpression).withLength(parameter).build()));
+        functionTransformers.put("matches", new JqlMatchesFunctionTransformer(this));
 
         functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());
     }
 
-    public Expression transform(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, List<ObjectVariable> variables) {
+    public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
                 .findAny()
@@ -78,7 +81,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return applyFunctions(jqlExpression, transformedExpression, variables);
     }
 
-    public Expression applyFunctions(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, Expression argument, List<ObjectVariable> variables) {
+    public Expression applyFunctions(JqlExpression jqlExpression, Expression argument, List<ObjectVariable> variables) {
         EList<FunctionCall> functionCalls = jqlExpression.getFunctions();
         Expression result = argument;
         for (FunctionCall functionCall : functionCalls) {
