@@ -8,9 +8,9 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlEnumLiteralTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlPositionFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
@@ -18,19 +18,16 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstrin
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
-import hu.blackbelt.judo.meta.expression.string.util.builder.TrimBuilder;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
-import org.eclipse.emf.common.util.EMap;
 
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 

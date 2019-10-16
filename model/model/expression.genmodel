@@ -140,7 +140,11 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//constant/Literal/enumeration"/>
         <genOperations ecoreOperation="expression.ecore#//constant/Literal/toString"
-            body="return String.valueOf(getValue());"/>
+            body="return java.util.Objects.toString(getEnumeration(), &quot;&quot;) + &quot;#&quot; + String.valueOf(getValue());"/>
+        <genOperations ecoreOperation="expression.ecore#//constant/Literal/getEnumeration"
+            body="return basicGetEnumeration();">
+          <genParameters ecoreParameter="expression.ecore#//constant/Literal/getEnumeration/modelAdapter"/>
+        </genOperations>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/Instance">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"

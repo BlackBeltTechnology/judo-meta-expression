@@ -38,6 +38,7 @@ import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class AsmJqlExpressionBuilderTest {
 
@@ -284,6 +285,14 @@ public class AsmJqlExpressionBuilderTest {
     void testEnums() throws Exception {
         EClass order = findBase("Order");
         createGetterExpression(order, "self.shipAddress.country = demo::types::Countries#AT", true, "countryCheck", ATTRIBUTE);
+        createGetterExpression(order, "self.shipAddress.country = #AT", true, "countryCheck2", ATTRIBUTE);
+
+        Expression expression = createExpression(null, "1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
+        try {
+            createExpression(null, "true ? demo::types::Countries#AT : demo::types::Titles#MR");
+            fail("Should have thrown Exception");
+        } catch (IllegalArgumentException e) { }
+
     }
 
     @Test

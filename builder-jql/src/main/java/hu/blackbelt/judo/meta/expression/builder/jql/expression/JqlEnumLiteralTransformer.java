@@ -24,10 +24,14 @@ public class JqlEnumLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> e
     @Override
     protected Expression doTransform(EnumLiteral jqlExpression, List<ObjectVariable> variables) {
         String value = jqlExpression.getValue();
+        LiteralBuilder builder = newLiteralBuilder().withValue(value);
         QualifiedName type = jqlExpression.getType();
-        String name = type.getName();
-        String namespace = type.getNamespaceElements() != null ? String.join("::", type.getNamespaceElements()) + "::" : "";
-        TypeName enumTypeName = jqlTransformers.getEnumTypes().get(namespace + name);
-        return newLiteralBuilder().withValue(value).withEnumeration(enumTypeName).build();
+        if (type != null) {
+            String name = type.getName();
+            String namespace = type.getNamespaceElements() != null ? String.join("::", type.getNamespaceElements()) + "::" : "";
+            TypeName enumTypeName = jqlTransformers.getEnumTypes().get(namespace + name);
+            builder = builder.withEnumeration(enumTypeName);
+        }
+        return builder.build();
     }
 }
