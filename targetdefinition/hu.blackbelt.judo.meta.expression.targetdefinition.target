@@ -46,20 +46,20 @@
 		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/1.2.0.develop_00011"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="1.0.0.develop_00128"/>
-		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.develop_00128"/>
+		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="1.0.0.20191016_093454_c59b20d_develop"/>
+		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.20191016_093454_c59b20d_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="1.0.0.develop_00400"/>
-		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.develop_00400"/>
+		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="1.0.0.20191016_111430_2790de1_develop"/>
+		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.20191016_111430_2790de1_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="1.0.0.develop_00058"/>
-		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.develop_00058"/>
+		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="1.0.0.20191016_091615_ac02ddf_develop"/>
+		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.20191016_091615_ac02ddf_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.0.develop_00050"/>
-		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/1.0.0.develop_00050"/>
+		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.0.20191016_092449_edf1d62_develop"/>
+		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/1.0.0.20191016_092449_edf1d62_develop"/>
 	  </location>
 
   </locations>

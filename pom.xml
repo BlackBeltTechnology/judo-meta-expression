@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
     <groupId>hu.blackbelt.judo.meta</groupId>
@@ -109,21 +110,21 @@
 		<apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
 		<pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.develop_00400</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191017_070721_62d070c_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
-        <judo-meta-asm-version>1.0.0.develop_00128</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191017_065843_5c67fc0_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-		<judo-meta-jql-version>1.0.0.develop_00050</judo-meta-jql-version>
+		<judo-meta-jql-version>1.0.0.20191016_092449_edf1d62_develop</judo-meta-jql-version>
 		<judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
         
-        <judo-meta-measure-version>1.0.0.develop_00058</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20191017_065900_9a9a2cc_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
 		<!-- For tests -->
-		<northwind-model-version>1.0.0.develop_00145</northwind-model-version>
+		<northwind-model-version>1.0.0.20191016_131856_82fa597_develop</northwind-model-version>
 		<judo-tatami-version>1.0.0.1571045622_5b27ae6e7b6be503eca08fc6eb7fed52f18980e0_develop</judo-tatami-version>
 
 	</properties>
