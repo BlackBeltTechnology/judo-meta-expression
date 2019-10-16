@@ -1,9 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
@@ -20,6 +18,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperati
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
+import org.eclipse.emf.common.util.EList;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newRoundExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
@@ -63,6 +63,8 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position", new JqlPositionFunctionTransformer(this));
         functionTransformers.put("replace", new JqlReplaceFunctionTransformer(this));
+
+        functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());
     }
 
     public Expression transform(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, List<ObjectVariable> variables) {
@@ -70,12 +72,14 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
                 .findAny()
                 .map(Map.Entry::getValue);
-        return foundTransformer
+        Expression transformedExpression = foundTransformer
                 .orElseThrow(() -> new UnsupportedOperationException("Not implemented transformation for " + jqlExpression.getClass()))
                 .apply(jqlExpression, variables);
+        return applyFunctions(jqlExpression, transformedExpression, variables);
     }
 
-    public Expression applyFunctions(Expression argument, List<FunctionCall> functionCalls, List<ObjectVariable> variables) {
+    public Expression applyFunctions(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, Expression argument, List<ObjectVariable> variables) {
+        EList<FunctionCall> functionCalls = jqlExpression.getFunctions();
         Expression result = argument;
         for (FunctionCall functionCall : functionCalls) {
             String functionName = functionCall.getFunction().getName().toLowerCase();

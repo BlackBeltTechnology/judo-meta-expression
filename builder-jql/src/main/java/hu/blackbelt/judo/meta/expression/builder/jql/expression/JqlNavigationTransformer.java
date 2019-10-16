@@ -39,14 +39,12 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
         } else {
             Expression expression = newObjectVariableReferenceBuilder().withVariable(baseVariable.get()).build();
             C navigationBase = (C) baseVariable.get().getObjectType(getModelAdapter());
-            EList<FunctionCall> functionCalls = jqlExpression.getFunctions();
             for (final Feature jqlFeature : jqlExpression.getFeatures()) {
                 final Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
                 final Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
                 if (attribute.isPresent()) {
                     //TODO - handle data expressions that are not attribute selectors (necessary for getters only, setters must be selectors!)
-                    expression = createAttributeSelector(attribute.get(), jqlFeature.getName(), (ObjectExpression) expression, functionCalls);
-                    expression = jqlTransformers.applyFunctions(expression, functionCalls, variables);
+                    expression = createAttributeSelector(attribute.get(), jqlFeature.getName(), (ObjectExpression) expression);
                     navigationBase = null;
                 } else if (reference.isPresent()) {
                     //TODO - handle reference expressions that are not reference selectors (necessary for getters only, setters must be selectors!)

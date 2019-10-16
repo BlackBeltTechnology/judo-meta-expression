@@ -38,7 +38,7 @@ public abstract class AbstractJqlExpressionTransformer<T extends hu.blackbelt.ju
     protected ModelAdapter<NE, P, PTE, E, C, RTE, M, U> getModelAdapter() {
         return jqlTransformers.getModelAdapter();
     }
-    
+
     /**
      * Create attribute selector.
      *
@@ -48,7 +48,7 @@ public abstract class AbstractJqlExpressionTransformer<T extends hu.blackbelt.ju
      * @param functionCalls
      * @return attribute selector
      */
-    protected AttributeSelector createAttributeSelector(final PTE attribute, final String attributeName, final ObjectExpression objectExpression, EList<FunctionCall> functionCalls) {
+    protected AttributeSelector createAttributeSelector(final PTE attribute, final String attributeName, final ObjectExpression objectExpression) {
         final Optional<? extends P> attributeType = getModelAdapter().getAttributeType(attribute);
         if (attributeType.isPresent()) {
             if (getModelAdapter().isBoolean(attributeType.get())) {

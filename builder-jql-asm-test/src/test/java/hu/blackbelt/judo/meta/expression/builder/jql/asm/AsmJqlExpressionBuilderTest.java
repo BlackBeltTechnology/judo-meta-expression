@@ -302,6 +302,13 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testNumericFunctions() throws Exception {
+        createExpression(null, "1.2!round()");
+        EClass product = findBase("Product");
+        createGetterExpression(product, "self.unitPrice!round()", true, "unitPriceRound", ATTRIBUTE);
+    }
+
+    @Test
     void testStringFunctions() throws Exception {
         EClass order = findBase("Order");
 

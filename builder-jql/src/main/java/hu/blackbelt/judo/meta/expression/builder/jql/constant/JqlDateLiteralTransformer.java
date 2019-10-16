@@ -18,8 +18,8 @@ public class JqlDateLiteralTransformer implements JqlExpressionTransformerFuncti
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
-    public Expression apply(hu.blackbelt.judo.meta.jql.jqldsl.Expression expression, List<ObjectVariable> variables) {
-        DateLiteral dateLiteral = (DateLiteral) expression;
+    public Expression apply(hu.blackbelt.judo.meta.jql.jqldsl.Expression jqlExpression, List<ObjectVariable> variables) {
+        DateLiteral dateLiteral = (DateLiteral) jqlExpression;
         try {
             Date dateValue = DATE_FORMAT.parse(dateLiteral.getValue());
             return newDateConstantBuilder().withValue(dateValue).build();
