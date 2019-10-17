@@ -143,6 +143,10 @@ public class AsmJqlExpressionBuilderTest {
         executionContext.close();
     }
 
+    private Expression createExpression(String jqlExpressionAsString) throws Exception {
+        return createExpression(null, jqlExpressionAsString, true);
+    }
+
     private Expression createExpression(final EClass clazz, final String jqlExpressionAsString) throws Exception {
         return createExpression(clazz, jqlExpressionAsString, true);
     }
@@ -252,6 +256,38 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testDateOperations() throws Exception {
+        createExpression(null, "`2019-12-31` < `2020-01-01`");
+        createExpression(null, "`2019-12-31` > `2020-01-01`");
+        createExpression(null, "`2019-12-31` = `2020-01-01`");
+        createExpression(null, "`2019-12-31` <> `2020-01-01`");
+        createExpression(null, "`2019-12-31` <= `2020-01-01`");
+        createExpression(null, "`2019-12-31` >= `2020-01-01`");
+        createExpression(null, "`2019-12-31` + 1");
+        createExpression(null, "`2019-12-31` - 1");
+        createExpression(null, "`2019-12-31`!difference(`2020-01-01`)");
+    }
+
+    @Test
+    void testDecimalOperations() throws Exception {
+        createExpression("1.0 < 3.14");
+        createExpression("1.0 > 3.14");
+        createExpression("1.0 <= 3.14");
+        createExpression("1.0 >= 3.14");
+        createExpression("1.0 = 3.14");
+        createExpression("1.0 <> 3.14");
+        createExpression("1.0 + 3.14");
+        createExpression("1.0 - 3.14");
+        createExpression("1.0 * 3.14");
+        createExpression("1.0 / 3.14");
+        createExpression("1 < 3.14");
+        Expression decimalDivision = createExpression("1 / 2");
+        assertThat(decimalDivision, instanceOf(DecimalExpression.class));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("1.0 mod 2"));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("1.0 div 2"));
+    }
+
+    @Test
     void testSwitchCase() throws Exception {
         createExpression(null, "true ? 1 : 2");
         createExpression(null, "true ? 1 : 2 + 3");
@@ -342,7 +378,7 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipper.companyName!first(1)", true, "shipperFirst", ATTRIBUTE);
 
         // Last
-        createGetterExpression(order, "self.shipper.companyName!last(1)", true, "shipperFirst", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper.companyName!last(1)", true, "Last", ATTRIBUTE);
 
         // Matches
         createGetterExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')", true, "shipperNameMatches", ATTRIBUTE);

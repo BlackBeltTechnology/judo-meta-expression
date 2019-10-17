@@ -37,9 +37,19 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             return createLogicalOperation((LogicalExpression) left, (LogicalExpression) right, operator);
         } else if (left instanceof EnumerationExpression && right instanceof EnumerationExpression) {
             return createEnumerationOperation((EnumerationExpression)left, (EnumerationExpression)right, operator);
+        } else if (left instanceof DateExpression && right instanceof DateExpression) {
+            return createDateOperation((DateExpression) left, (DateExpression) right, operator);
         } else {
             throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
         }
+    }
+
+    private Expression createDateOperation(DateExpression left, DateExpression right, String operator) {
+//        switch (operator) {
+//            case "<":
+//                return newDateComparisonBuilder()
+//        }
+        throw new UnsupportedOperationException("Invalid date operation: " + operator);
     }
 
     private Expression createEnumerationOperation(EnumerationExpression left, EnumerationExpression right, String operator) {
@@ -101,6 +111,14 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.LESS_THAN).build();
             case ">":
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.GREATER_THAN).build();
+            case "<=":
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.LESS_OR_EQUAL).build();
+            case ">=":
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.GREATER_OR_EQUAL).build();
+            case "=":
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.EQUAL).build();
+            case "<>":
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid numeric operation: " + operator);
         }

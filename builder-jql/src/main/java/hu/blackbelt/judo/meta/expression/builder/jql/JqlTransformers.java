@@ -1,7 +1,6 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
@@ -14,17 +13,22 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
+import hu.blackbelt.judo.meta.expression.numeric.IntegerAritmeticExpression;
+import hu.blackbelt.judo.meta.expression.numeric.Length;
+import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newRoundExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
@@ -62,9 +66,19 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("position", new JqlPositionFunctionTransformer(this));
         functionTransformers.put("replace", new JqlReplaceFunctionTransformer(this));
         functionTransformers.put("first", new JqlIntegerParamStringFunctionTransformer(this,
-                (stringExpression, parameter) -> newFirstBuilder().withExpression(stringExpression).withLength(parameter).build()));
+                (stringExpression, parameter) -> newSubStringBuilder()
+                        .withExpression(stringExpression)
+                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build())
+                        .withLength(parameter).build()));
         functionTransformers.put("last", new JqlIntegerParamStringFunctionTransformer(this,
-                (stringExpression, parameter) -> newLastBuilder().withExpression(stringExpression).withLength(parameter).build()));
+                (stringExpression, parameter) -> {
+                    IntegerExpression stringLength = newLengthBuilder().withExpression(EcoreUtil.copy(stringExpression)).build();
+                    IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(stringLength).withRight(EcoreUtil.copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+                    return newSubStringBuilder()
+                            .withExpression(stringExpression)
+                            .withPosition(position)
+                            .withLength(parameter).build();
+                }));
         functionTransformers.put("matches", new JqlMatchesFunctionTransformer(this));
 
         functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());

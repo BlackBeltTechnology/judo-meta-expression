@@ -5,13 +5,11 @@ import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 
 import java.util.List;
 
-import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newPositionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newSubStringBuilder;
 
 public class JqlSubstringFunctionTransformer extends AbstractJqlFunctionTransformer {
