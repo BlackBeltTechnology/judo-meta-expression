@@ -8,6 +8,8 @@ import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
@@ -15,6 +17,7 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAritmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newConcatenateBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAdditionExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAdditionExpressionBuilder;
 
 public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<BinaryOperation, NE, P, PTE, E, C, RTE, M, U> {
 
@@ -36,14 +39,57 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
         } else if (left instanceof LogicalExpression && right instanceof LogicalExpression) {
             return createLogicalOperation((LogicalExpression) left, (LogicalExpression) right, operator);
         } else if (left instanceof EnumerationExpression && right instanceof EnumerationExpression) {
-            return createEnumerationOperation((EnumerationExpression)left, (EnumerationExpression)right, operator);
-        } else if (left instanceof DateExpression && right instanceof DateExpression ) {
+            return createEnumerationOperation((EnumerationExpression) left, (EnumerationExpression) right, operator);
+        } else if (left instanceof DateExpression && right instanceof DateExpression) {
             return createDateOperation((DateExpression) left, (DateExpression) right, operator);
         } else if (left instanceof DateExpression && right instanceof MeasuredInteger || right instanceof DateExpression && left instanceof MeasuredInteger) {
             return createDateAdditionOperation(left, right, operator);
+        } else if (left instanceof TimestampExpression && right instanceof TimestampExpression) {
+            return createTimestampOperation((TimestampExpression) left, (TimestampExpression) right, operator);
+        } else if (left instanceof TimestampExpression && right instanceof MeasuredInteger || right instanceof TimestampExpression && left instanceof MeasuredInteger) {
+            return createTimestampAdditionOperation(left, right, operator);
         }
-            throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
+        throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
+    }
+
+    private Expression createTimestampOperation(TimestampExpression left, TimestampExpression right, String operator) {
+        switch (operator) {
+            case "=":
+                return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
+            case "<>":
+                return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
+            case "<":
+                return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
+            case ">":
+                return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_THAN).build();
+            case "<=":
+                return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
+            case ">=":
+                return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
+            default:
+                throw new UnsupportedOperationException("Invalid timestamp operation: " + operator);
         }
+    }
+
+    private Expression createTimestampAdditionOperation(Expression left, Expression right, String operator) {
+        switch (operator) {
+            case "+": {
+                TimestampExpression timestamp = (TimestampExpression) (left instanceof TimestampExpression ? left : right);
+                MeasuredInteger duration = (MeasuredInteger) (left instanceof MeasuredInteger ? left : right);
+                return newTimestampAdditionExpressionBuilder().withTimestamp(timestamp).withDuration(duration).withOperator(TemporalOperator.ADD).build();
+            }
+            case "-": {
+                if (!(left instanceof TimestampExpression) || !(right instanceof MeasuredInteger)) {
+                    throw new IllegalArgumentException(String.format("Arguments must be timestamp and measured integer, got %s, %s", left, right));
+                }
+                TimestampExpression date = (TimestampExpression) left;
+                MeasuredInteger duration = (MeasuredInteger) right;
+                return newTimestampAdditionExpressionBuilder().withTimestamp(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build();
+            }
+            default:
+                throw new UnsupportedOperationException("Unsupported timestamp operation: " + operator);
+        }
+    }
 
     private Expression createDateAdditionOperation(Expression left, Expression right, String operator) {
         switch (operator) {

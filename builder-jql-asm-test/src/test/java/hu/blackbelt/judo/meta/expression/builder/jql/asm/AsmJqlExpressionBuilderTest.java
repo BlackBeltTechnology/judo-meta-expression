@@ -265,9 +265,23 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(null, "`2019-12-31` <> `2020-01-01`");
         createExpression(null, "`2019-12-31` <= `2020-01-01`");
         createExpression(null, "`2019-12-31` >= `2020-01-01`");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression(null, "`2019-12-31` + 1"));
         createExpression(null, "`2019-12-31` + 1[day]");
         createExpression(null, "1[day] + `2019-12-31`");
         assertThrows(IllegalArgumentException.class, () -> createExpression(null, "1[day] - `2019-12-31`"));
+    }
+
+    @Test
+    void testTimestampOperations() throws Exception {
+        createExpression("`2019-12-31T00:00:00.000+0100`!difference(`2019-12-31T00:00:00.000+0200`)");
+        createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` < `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` = `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` <> `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` <= `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` >= `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` + 1[week]");
+        createExpression("`2019-12-31T00:00:00.000+0100` - 1[day]");
     }
 
     @Test

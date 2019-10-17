@@ -553,6 +553,15 @@
         <genOperations ecoreOperation="expression.ecore#//logical/DateComparison/toString"
             body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//logical/TimestampComparison">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/TimestampComparison/left"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/TimestampComparison/right"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/TimestampComparison/operator"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/TimestampComparison/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/TimestampComparison/toString"
+            body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
