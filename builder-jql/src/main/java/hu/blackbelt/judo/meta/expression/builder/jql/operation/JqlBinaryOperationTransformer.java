@@ -1,20 +1,20 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
-import hu.blackbelt.judo.meta.expression.logical.EnumerationComparison;
+import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
-import java.util.Enumeration;
 import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAritmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAritmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newConcatenateBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAdditionExpressionBuilder;
 
 public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<BinaryOperation, NE, P, PTE, E, C, RTE, M, U> {
 
@@ -37,25 +37,60 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             return createLogicalOperation((LogicalExpression) left, (LogicalExpression) right, operator);
         } else if (left instanceof EnumerationExpression && right instanceof EnumerationExpression) {
             return createEnumerationOperation((EnumerationExpression)left, (EnumerationExpression)right, operator);
-        } else if (left instanceof DateExpression && right instanceof DateExpression) {
+        } else if (left instanceof DateExpression && right instanceof DateExpression ) {
             return createDateOperation((DateExpression) left, (DateExpression) right, operator);
-        } else {
+        } else if (left instanceof DateExpression && right instanceof MeasuredInteger || right instanceof DateExpression && left instanceof MeasuredInteger) {
+            return createDateAdditionOperation(left, right, operator);
+        }
             throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
+        }
+
+    private Expression createDateAdditionOperation(Expression left, Expression right, String operator) {
+        switch (operator) {
+            case "+": {
+                DateExpression date = (DateExpression) (left instanceof DateExpression ? left : right);
+                MeasuredInteger duration = (MeasuredInteger) (left instanceof MeasuredInteger ? left : right);
+                return newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.ADD).build();
+            }
+            case "-": {
+                if (!(left instanceof DateExpression) || !(right instanceof MeasuredInteger)) {
+                    throw new IllegalArgumentException(String.format("Arguments must be date and measured integer, got %s, %s", left, right));
+                }
+                DateExpression date = (DateExpression) left;
+                MeasuredInteger duration = (MeasuredInteger) right;
+                return newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build();
+            }
+            default:
+                throw new UnsupportedOperationException("Unsupported date operation: " + operator);
         }
     }
 
     private Expression createDateOperation(DateExpression left, DateExpression right, String operator) {
-//        switch (operator) {
-//            case "<":
-//                return newDateComparisonBuilder()
-//        }
-        throw new UnsupportedOperationException("Invalid date operation: " + operator);
+        switch (operator) {
+            case "<":
+                return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
+            case ">":
+                return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_THAN).build();
+            case "<=":
+                return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
+            case ">=":
+                return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
+            case "=":
+                return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
+            case "<>":
+                return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
+            default:
+                throw new UnsupportedOperationException("Invalid date operation: " + operator);
+        }
+
     }
 
     private Expression createEnumerationOperation(EnumerationExpression left, EnumerationExpression right, String operator) {
         switch (operator) {
             case "=":
-                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.EQUAL).build();
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
+            case "<>":
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid enumeration operation: " + operator);
         }
@@ -108,17 +143,17 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             case "/":
                 return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.DIVIDE).build();
             case "<":
-                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.LESS_THAN).build();
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
             case ">":
-                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.GREATER_THAN).build();
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_THAN).build();
             case "<=":
-                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.LESS_OR_EQUAL).build();
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
             case ">=":
-                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.GREATER_OR_EQUAL).build();
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
             case "=":
-                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.EQUAL).build();
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
             case "<>":
-                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(DecimalComparator.NOT_EQUAL).build();
+                return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid numeric operation: " + operator);
         }
@@ -139,17 +174,17 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             case "/":
                 return newDecimalAritmeticExpressionBuilder().withLeft(left).withOperator(DecimalOperator.DIVIDE).withRight(right).build();
             case "<":
-                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.LESS_THAN).build();
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
             case ">":
-                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.GREATER_THAN).build();
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_THAN).build();
             case "<=":
-                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.LESS_OR_EQUAL).build();
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
             case ">=":
-                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.GREATER_OR_EQUAL).build();
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
             case "=":
-                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.EQUAL).build();
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
             case "<>":
-                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(IntegerComparator.NOT_EQUAL).build();
+                return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid integer operation: " + operator);
         }

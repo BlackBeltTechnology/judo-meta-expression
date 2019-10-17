@@ -9,7 +9,8 @@ import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 
 import java.util.List;
 
-import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newMatchesBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newMatchesBuilder;
+
 
 public class JqlMatchesFunctionTransformer extends AbstractJqlFunctionTransformer {
 

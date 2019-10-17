@@ -142,6 +142,11 @@ context EXPR!DecimalSwitchExpression {
 }
 
 context EXPR!NumericExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+
     constraint MeasureOfCompleteExpressionIsDefined {
         guard: self.satisfiesAll("Resolved") and evaluator.isLeaf(self) and modelAdapter.isMeasured(self)
         

@@ -205,7 +205,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                                         .build())
                                 .withAttributeName("discount")
                                 .build())
-                        .withOperator(DecimalComparator.GREATER_THAN)
+                        .withOperator(NumericComparator.GREATER_THAN)
                         .withRight(newIntegerConstantBuilder()
                                 .withValue(BigInteger.ZERO)
                                 .build())

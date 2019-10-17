@@ -23,7 +23,6 @@ import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.hamcrest.object.IsCompatibleType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,8 +40,10 @@ import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AsmJqlExpressionBuilderTest {
 
@@ -257,15 +258,16 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testDateOperations() throws Exception {
+        createExpression(null, "`2019-12-31`!difference(`2020-01-01`)");
         createExpression(null, "`2019-12-31` < `2020-01-01`");
         createExpression(null, "`2019-12-31` > `2020-01-01`");
         createExpression(null, "`2019-12-31` = `2020-01-01`");
         createExpression(null, "`2019-12-31` <> `2020-01-01`");
         createExpression(null, "`2019-12-31` <= `2020-01-01`");
         createExpression(null, "`2019-12-31` >= `2020-01-01`");
-        createExpression(null, "`2019-12-31` + 1");
-        createExpression(null, "`2019-12-31` - 1");
-        createExpression(null, "`2019-12-31`!difference(`2020-01-01`)");
+        createExpression(null, "`2019-12-31` + 1[day]");
+        createExpression(null, "1[day] + `2019-12-31`");
+        assertThrows(IllegalArgumentException.class, () -> createExpression(null, "1[day] - `2019-12-31`"));
     }
 
     @Test

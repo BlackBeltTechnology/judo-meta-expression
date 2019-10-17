@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiter
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
@@ -82,6 +83,8 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("matches", new JqlMatchesFunctionTransformer(this));
 
         functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());
+
+        functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
     }
 
     public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {

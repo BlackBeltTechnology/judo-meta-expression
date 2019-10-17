@@ -11,10 +11,9 @@ import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
-import hu.blackbelt.judo.meta.expression.operator.DecimalComparator;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
-import hu.blackbelt.judo.meta.expression.operator.IntegerComparator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -704,7 +703,7 @@ public class MeasureAdapterTest {
                                                 .build())
                                         .withAttributeName("a")
                                         .build())
-                                .withOperator(IntegerComparator.LESS_THAN)
+                                .withOperator(NumericComparator.LESS_THAN)
                                 .withRight(newIntegerAttributeBuilder()
                                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                                 .withVariable(packageInstance)
@@ -751,7 +750,7 @@ public class MeasureAdapterTest {
                                                 .build())
                                         .withAttributeName("a")
                                         .build())
-                                .withOperator(DecimalComparator.LESS_THAN)
+                                .withOperator(NumericComparator.LESS_THAN)
                                 .withRight(newDecimalAttributeBuilder()
                                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                                 .withVariable(packageInstance)
