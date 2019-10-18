@@ -25,9 +25,9 @@
    <!-- The tycho plugin 1.5.0 will fix it -->
    <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
    <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/1.2.0.develop_00011" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.20191016_093454_c59b20d_develop" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.20191016_111430_2790de1_develop" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.20191016_091615_ac02ddf_develop" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.20191017_065843_5c67fc0_develop" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.20191018_135350_491e1a9_develop" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.20191017_065900_9a9a2cc_develop" enabled="true" />
    <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/1.0.0.20191016_092449_edf1d62_develop" enabled="true" />
 
 </site>
