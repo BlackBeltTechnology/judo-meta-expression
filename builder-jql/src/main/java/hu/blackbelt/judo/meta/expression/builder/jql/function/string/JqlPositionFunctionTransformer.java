@@ -20,7 +20,7 @@ public class JqlPositionFunctionTransformer extends AbstractJqlFunctionTransform
     @Override
     public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         StringExpression container = (StringExpression) argument;
-        StringExpression containment = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0), variables);
+        StringExpression containment = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         return newPositionBuilder().withContainer(container).withContainment(containment).build();
     }
 }

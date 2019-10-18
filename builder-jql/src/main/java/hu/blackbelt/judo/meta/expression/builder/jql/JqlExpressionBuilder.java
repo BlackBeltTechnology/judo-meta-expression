@@ -45,7 +45,7 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  * @param <M>   measure
  * @param <U>   unit
  */
-public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
+public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 
@@ -64,7 +64,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
-        this.jqlTransformers = new JqlTransformers<>(modelAdapter, measureNames, enumTypes);
+        this.jqlTransformers = new JqlTransformers<>(modelAdapter, measureNames, enumTypes, expressionResource);
         this.expressionResource = expressionResource;
 
         addMeasures();
@@ -109,13 +109,13 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
         });
     }
 
-    private void storeTypeName(Object object, TypeName typeName) {
+    private void storeTypeName(NE namespaceElement, TypeName typeName) {
         if (!all(expressionResource.getResourceSet(), TypeName.class)
                 .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
             expressionResource.getContents().add(typeName);
         } else {
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("  - type name is already added to resource set: {}", object);
+                LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
             }
         }
     }
@@ -166,7 +166,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
         final Expression expression = transformJqlToExpression(jqlExpression, instance != null ? ECollections.singletonEList(instance) : ECollections.emptyEList());
 
         if (expression != null) {
-            LOGGER.debug("Expression created: {}", expression);
+            LOGGER.info("Expression created: {}", expression);
             expressionResource.getContents().add(expression);
         } else {
             LOGGER.warn("No expression created");
@@ -250,7 +250,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return jqlTransformers.transform(jqlExpression, variables);
     }
 
-    static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
+    public static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
         final Iterable<Notifier> asmContents = resourceSet::getAllContents;
         return StreamSupport.stream(asmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);

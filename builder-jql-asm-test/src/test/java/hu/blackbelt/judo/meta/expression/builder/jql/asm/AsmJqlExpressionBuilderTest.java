@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -180,13 +181,10 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testOrderCategories() throws Exception {
-        final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
-        final Expression expression = createExpression(order, "self.orderDetails.product.category");
+        EClass order = findBase("Order");
+        Expression expression = createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
-
         createGetterBinding(order, expression, "categories", RELATION);
-
-        log.info("Order categories: " + expression);
     }
 
     @Test
@@ -281,7 +279,9 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-12-31T00:00:00.000+0100` <= `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` >= `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` + 1[week]");
-        createExpression("`2019-12-31T00:00:00.000+0100` - 1[day]");
+        createExpression("`2019-12-31T00:00:00.000+0100` - 1[demo::measures::Time#day]");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression(null, "`2019-12-31T00:00:00.000+0100` + 1"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression(null, "1[day] - `2019-12-31T00:00:00.000+0100`"));
     }
 
     @Test
@@ -311,6 +311,16 @@ public class AsmJqlExpressionBuilderTest {
 
         EClass order = findBase("Order");
         createGetterExpression(order, "false ? self.shipper.companyName : 'b'", true, "stringSwitch", ATTRIBUTE);
+    }
+
+    @Test
+    void testCollectionOperations() throws Exception {
+        EClass category = findBase("Category");
+        Expression products = createGetterExpression(category, "self.products", true, "products", RELATION);
+        assertThat(products, instanceOf(CollectionNavigationFromObjectExpression.class));
+
+        createGetterExpression(category, "self=>products!join(p | p.productName, ', ')!length()", true, "productListLength", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(e | e.unitPrice ASC, e.productName DESC)!join(p | p.productName, ', ')", true, "productListOrdered", ATTRIBUTE);
     }
 
     @Test

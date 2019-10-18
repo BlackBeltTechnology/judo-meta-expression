@@ -20,7 +20,7 @@ public class JqlMatchesFunctionTransformer extends AbstractJqlFunctionTransforme
 
     @Override
     public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
-        StringExpression parameter = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0), variables);
+        StringExpression parameter = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         return newMatchesBuilder().withExpression((StringExpression) argument).withPattern(parameter).build();
     }
 }

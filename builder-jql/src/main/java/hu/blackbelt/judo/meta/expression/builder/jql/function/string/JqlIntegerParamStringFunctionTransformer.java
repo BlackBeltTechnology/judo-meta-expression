@@ -24,7 +24,7 @@ public class JqlIntegerParamStringFunctionTransformer implements JqlFunctionTran
     @Override
     public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         StringExpression stringExpression = (StringExpression)argument;
-        Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0), variables);
+        Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         if (!(parameter instanceof IntegerExpression)) {
             throw new IllegalArgumentException("Function parameter must be integer, got: " + parameter);
         }

@@ -23,11 +23,11 @@ public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransfo
     public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         if (argument instanceof DateExpression) {
             DateExpression startDate = (DateExpression) argument;
-            DateExpression endDate = (DateExpression) jqlTransformers.transform(functionCall.getParameters().get(0), variables);
+            DateExpression endDate = (DateExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
             return newDateDifferenceExpressionBuilder().withStartDate(startDate).withEndDate(endDate).build();
         } else if (argument instanceof TimestampExpression) {
             TimestampExpression startTimestamp = (TimestampExpression) argument;
-            TimestampExpression endTimestamp = (TimestampExpression) jqlTransformers.transform(functionCall.getParameters().get(0), variables);
+            TimestampExpression endTimestamp = (TimestampExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
             return newTimestampDifferenceExpressionBuilder().withStartTimestamp(startTimestamp).withEndTimestamp(endTimestamp).build();
         } else {
             throw new IllegalArgumentException(("Unsupported argument type: " + argument));

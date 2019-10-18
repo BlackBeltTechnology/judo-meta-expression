@@ -344,6 +344,11 @@
         <eParameters name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
+      <eOperations name="getVariableName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getIteratorVariable().getName();"/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="iteratorVariable" eType="#//variable/ObjectVariable"
           containment="true"/>
     </eClassifiers>
@@ -1023,13 +1028,13 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;CONCAT(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;CONCAT(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;, &quot; + getSeparator()+&quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="separator" eType="#//StringExpression"
-          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="separator" lowerBound="1"
+          eType="#//StringExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="enumeration" nsURI="http://blackbelt.hu/judo/meta/expression/enumeration"
@@ -1362,11 +1367,6 @@
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return getCollectionExpression() + &quot; as &quot; + getCollectionExpression().getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());"/>
-        </eAnnotations>
-      </eOperations>
-      <eOperations name="getVariableName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getCollectionExpression().getVariableName();"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"

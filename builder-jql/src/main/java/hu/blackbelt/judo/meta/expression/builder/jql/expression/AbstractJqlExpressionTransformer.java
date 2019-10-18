@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newLogicalAttributeBuilder;
@@ -46,7 +47,6 @@ public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, 
      * @param attribute        (transfer) attribute
      * @param attributeName    mapped attribute name
      * @param objectExpression object expression that attribute selector is created in
-     * @param functionCalls
      * @return attribute selector
      */
     protected AttributeSelector createAttributeSelector(final PTE attribute, final String attributeName, final ObjectExpression objectExpression) {

@@ -20,8 +20,8 @@ public class JqlSubstringFunctionTransformer extends AbstractJqlFunctionTransfor
 
     @Override
     public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
-        IntegerExpression position = (IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0), variables);
-        IntegerExpression length = (IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1), variables);
+        IntegerExpression position = (IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
+        IntegerExpression length = (IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), variables);
         return newSubStringBuilder().withExpression((StringExpression)argument).withPosition(position).withLength(length).build();
     }
 }

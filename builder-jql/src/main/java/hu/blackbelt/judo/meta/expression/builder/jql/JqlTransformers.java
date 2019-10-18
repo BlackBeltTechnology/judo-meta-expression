@@ -9,24 +9,24 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlJoinFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSortFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerAritmeticExpression;
-import hu.blackbelt.judo.meta.expression.numeric.Length;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.math.BigInteger;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
@@ -41,11 +41,13 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
     private Map<String, MeasureName> measureNames;
 
     private Map<String, TypeName> enumTypes;
+    private Resource expressionResource;
 
-    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, Map<String, MeasureName> measureNames, Map<String, TypeName> enumTypes) {
+    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, Map<String, MeasureName> measureNames, Map<String, TypeName> enumTypes, Resource expressionResource) {
         this.modelAdapter = modelAdapter;
         this.measureNames = measureNames;
         this.enumTypes = enumTypes;
+        this.expressionResource = expressionResource;
         transformers.put(NavigationExpression.class, new JqlNavigationTransformer<>(this));
         transformers.put(BooleanLiteral.class, (jqlExpression, variables) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
         transformers.put(DecimalLiteral.class, (jqlExpression, variables) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
@@ -85,6 +87,9 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());
 
         functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
+
+        functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
+        functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
     }
 
     public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {
@@ -104,8 +109,16 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         for (FunctionCall functionCall : functionCalls) {
             String functionName = functionCall.getFunction().getName().toLowerCase();
             JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
+            List<ObjectVariable> variablesWithLambdaArgument = new ArrayList<>(variables);
+            String lambdaArgument = functionCall.getLambdaArgument();
+            if (lambdaArgument != null) {
+                CollectionVariable collection = (CollectionVariable) result;
+                // TODO createIterator should contain the logic of getType below
+                ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter());
+                variablesWithLambdaArgument.add(0, iterator);
+            }
             if (functionTransformer != null) {
-                result = functionTransformer.apply(argument, functionCall, variables);
+                result = functionTransformer.apply(result, functionCall, variablesWithLambdaArgument);
             } else {
                 throw new IllegalStateException("Unknown function: " + functionName);
             }
@@ -125,4 +138,8 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return enumTypes;
     }
 
+    public TypeName getTypeName(String namespace, String name) {
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class)
+                .filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().get();
+    }
 }

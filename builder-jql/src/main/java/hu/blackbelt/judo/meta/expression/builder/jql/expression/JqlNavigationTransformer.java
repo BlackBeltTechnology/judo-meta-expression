@@ -5,12 +5,9 @@ import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
-import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
-import org.eclipse.emf.common.util.EList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +45,10 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
                     navigationBase = null;
                 } else if (reference.isPresent()) {
                     //TODO - handle reference expressions that are not reference selectors (necessary for getters only, setters must be selectors!)
+                    String lambdaArgumentName = null;
+                    if (jqlExpression.getFunctions() != null && !jqlExpression.getFunctions().isEmpty()) {
+                            lambdaArgumentName = jqlExpression.getFunctions().get(0).getLambdaArgument();
+                    }
                     expression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) expression);
                     navigationBase = getModelAdapter().getTarget(reference.get());
                 } else {
