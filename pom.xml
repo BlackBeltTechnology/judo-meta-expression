@@ -110,7 +110,7 @@
 		<apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
 		<pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.20191017_070721_62d070c_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191018_135350_491e1a9_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
         
         <judo-meta-asm-version>1.0.0.20191017_065843_5c67fc0_develop</judo-meta-asm-version>
