@@ -68,7 +68,7 @@ context EXPR!CollectionFilterExpression {
 context EXPR!SortExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
-        
+
         check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of sort collection expression is not defined: " + self
     }
@@ -77,7 +77,7 @@ context EXPR!SortExpression {
 context EXPR!SubCollectionExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
-        
+
         check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of subcollection expression is not defined: " + self
     }

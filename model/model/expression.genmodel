@@ -296,7 +296,7 @@
         fileExtensions="judo-meta-expression-numeric" ecorePackage="expression.ecore#//numeric">
       <genClasses ecoreClass="expression.ecore#//numeric/CountExpression">
         <genOperations ecoreOperation="expression.ecore#//numeric/CountExpression/isMeasured"
-            body="return modelAdapter.isMeasured(this);">
+            body="return false;">
           <genParameters ecoreParameter="expression.ecore#//numeric/CountExpression/isMeasured/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//numeric/CountExpression/toString"
@@ -840,6 +840,8 @@
             body="return getCollectionExpression().getObjectType(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//collection/SubCollectionExpression/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//collection/SubCollectionExpression/toString"
+            body="return &quot;LIMIT(&quot;+getCollectionExpression() + &quot;,&quot; + getLength() + &quot;,&quot; + getPosition() +&quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/OrderByItem">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//collection/OrderByItem/expression"/>

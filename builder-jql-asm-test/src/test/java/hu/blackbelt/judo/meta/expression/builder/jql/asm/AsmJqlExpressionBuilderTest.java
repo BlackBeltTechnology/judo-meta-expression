@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.DecimalExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
@@ -43,8 +44,7 @@ import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceS
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AsmJqlExpressionBuilderTest {
 
@@ -319,8 +319,11 @@ public class AsmJqlExpressionBuilderTest {
         Expression products = createGetterExpression(category, "self.products", true, "products", RELATION);
         assertThat(products, instanceOf(CollectionNavigationFromObjectExpression.class));
 
+        createGetterExpression(category, "self=>products!count()", true, "productListCount", RELATION);
         createGetterExpression(category, "self=>products!join(p | p.productName, ', ')!length()", true, "productListLength", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(e | e.unitPrice ASC, e.productName DESC)!join(p | p.productName, ', ')", true, "productListOrdered", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!head(5)", true, "productListHead", RELATION);
+        createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!tail(5)", true, "productListTail", RELATION);
     }
 
     @Test
@@ -361,6 +364,11 @@ public class AsmJqlExpressionBuilderTest {
     void testMeasures() throws Exception {
         createExpression(null, "5[demo::measures::Time#min]");
         createExpression(null, "1.23[min]");
+
+        Expression measuredIntDiv = createExpression(null, "2[min] div 1");
+        assertTrue(modelAdapter.isMeasured((NumericExpression) measuredIntDiv));
+        Expression measuredDecimalRatio = createExpression(null, "2.0[min] / 1[min]");
+        assertFalse(modelAdapter.isMeasured((NumericExpression) measuredDecimalRatio));
     }
 
     @Test

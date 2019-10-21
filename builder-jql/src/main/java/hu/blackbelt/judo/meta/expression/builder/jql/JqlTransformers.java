@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlIntegerParamCollectionFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlJoinFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSortFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
@@ -17,6 +18,8 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperatio
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
+import hu.blackbelt.judo.meta.expression.collection.SubCollectionExpression;
+import hu.blackbelt.judo.meta.expression.numeric.CountExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -32,9 +35,11 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newSubCollectionExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
+import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
@@ -65,10 +70,10 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
         transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
 
-        functionTransformers.put("length", (expression, functionCall, variables) -> newLengthBuilder().withExpression((StringExpression)expression).build());
-        functionTransformers.put("lowercase", (expression, functionCall, variables) -> newLowerCaseBuilder().withExpression((StringExpression)expression).build());
-        functionTransformers.put("uppercase", (expression, functionCall, variables) -> newUpperCaseBuilder().withExpression((StringExpression)expression).build());
-        functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder().withExpression((StringExpression)expression).build());
+        functionTransformers.put("length", (expression, functionCall, variables) -> newLengthBuilder().withExpression((StringExpression) expression).build());
+        functionTransformers.put("lowercase", (expression, functionCall, variables) -> newLowerCaseBuilder().withExpression((StringExpression) expression).build());
+        functionTransformers.put("uppercase", (expression, functionCall, variables) -> newUpperCaseBuilder().withExpression((StringExpression) expression).build());
+        functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder().withExpression((StringExpression) expression).build());
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position", new JqlPositionFunctionTransformer(this));
         functionTransformers.put("replace", new JqlReplaceFunctionTransformer(this));
@@ -79,8 +84,8 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                         .withLength(parameter).build()));
         functionTransformers.put("last", new JqlIntegerParamStringFunctionTransformer(this,
                 (stringExpression, parameter) -> {
-                    IntegerExpression stringLength = newLengthBuilder().withExpression(EcoreUtil.copy(stringExpression)).build();
-                    IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(stringLength).withRight(EcoreUtil.copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+                    IntegerExpression stringLength = newLengthBuilder().withExpression(copy(stringExpression)).build();
+                    IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(stringLength).withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
                     return newSubStringBuilder()
                             .withExpression(stringExpression)
                             .withPosition(position)
@@ -92,6 +97,22 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
         functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
 
+        functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
+        functionTransformers.put("head", new JqlIntegerParamCollectionFunctionTransformer(this,
+                (collectionExpression, parameter) -> newSubCollectionExpressionBuilder()
+                        .withCollectionExpression((OrderedCollectionExpression) collectionExpression)
+                        .withLength(parameter)
+                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build()).build()));
+        functionTransformers.put("tail", new JqlIntegerParamCollectionFunctionTransformer(this,
+                (collectionExpression, parameter) -> {
+                    IntegerExpression length = newCountExpressionBuilder().withCollectionExpression(copy(collectionExpression)).build();
+                    IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(length).withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+
+                    return newSubCollectionExpressionBuilder()
+                            .withCollectionExpression((OrderedCollectionExpression) collectionExpression)
+                            .withLength(parameter)
+                            .withPosition(position).build();
+                }));
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
     }
@@ -117,7 +138,6 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
             String lambdaArgument = functionCall.getLambdaArgument();
             if (lambdaArgument != null) {
                 CollectionVariable collection = (CollectionVariable) result;
-                // TODO createIterator should contain the logic of getType below
                 ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
                 variablesWithLambdaArgument.add(0, iterator);
             }

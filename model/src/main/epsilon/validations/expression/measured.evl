@@ -35,7 +35,7 @@ context EXPR!DecimalAttribute {
 }
 
 context EXPR!IntegerAritmeticExpression {
-	// detected base measures are valid
+	// if result is measured
     constraint MeasureIsValid {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and
                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
@@ -45,13 +45,15 @@ context EXPR!IntegerAritmeticExpression {
         message: "Measure of expression is invalid: " + self
     }
     
-    // measured operation is valid
+    // if result is not measured
     constraint MeasureIsValid {
     	guard: self.satisfiesAll("Resolved") and not modelAdapter.isMeasured(self) and
                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	
-        check: (not modelAdapter.getDimension(self).isPresent() or modelAdapter.getDimension(self).get().isEmpty()) and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        check: (not modelAdapter.getDimension(self).isPresent() or modelAdapter.getDimension(self).get().isEmpty()) and
+                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
+                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	message: "Operation of measured expression is invalid: " + self
    	}
 }
@@ -73,7 +75,9 @@ context EXPR!DecimalAritmeticExpression {
                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	
-        check: modelAdapter.getDimension(self).isPresent() or not self.left.satisfiesAll("MeasureIsValid") or not self.right.satisfiesAll("MeasureIsValid")
+        check: (not modelAdapter.getDimension(self).isPresent() or modelAdapter.getDimension(self).get().isEmpty()) and
+                   (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
+                   (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
     	message: "Operation of measured expression is invalid: " + self
    	}
 }
