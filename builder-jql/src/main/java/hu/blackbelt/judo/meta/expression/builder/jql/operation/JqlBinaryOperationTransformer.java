@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
+import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
@@ -48,8 +49,21 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             return createTimestampOperation((TimestampExpression) left, (TimestampExpression) right, operator);
         } else if (left instanceof TimestampExpression && right instanceof MeasuredInteger || right instanceof TimestampExpression && left instanceof MeasuredInteger) {
             return createTimestampAdditionOperation(left, right, operator);
+        } else if (left instanceof ObjectSelectorExpression && right instanceof ObjectSelectorExpression) {
+            return createObjectSelectorOperation((ObjectSelectorExpression) left, (ObjectSelectorExpression) right, operator);
         }
         throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
+    }
+
+    private Expression createObjectSelectorOperation(ObjectSelectorExpression left, ObjectSelectorExpression right, String operator) {
+        switch (operator) {
+            case "=":
+                return newObjectComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
+            case "<>":
+                return newObjectComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.NOT_EQUAL).build();
+            default:
+                throw new UnsupportedOperationException(String.format("Not supported object selector operation: %s", operator));
+        }
     }
 
     private Expression createTimestampOperation(TimestampExpression left, TimestampExpression right, String operator) {

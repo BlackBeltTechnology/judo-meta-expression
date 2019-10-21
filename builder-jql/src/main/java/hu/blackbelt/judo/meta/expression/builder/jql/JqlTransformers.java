@@ -9,19 +9,12 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlAggregatedExpressionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlIntegerParamCollectionFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlJoinFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSortFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.SubCollectionExpression;
-import hu.blackbelt.judo.meta.expression.numeric.CountExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
@@ -29,15 +22,10 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newSubCollectionExpressionBuilder;
@@ -103,21 +91,8 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
 
         functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
-        functionTransformers.put("head", new JqlIntegerParamCollectionFunctionTransformer(this,
-                (collectionExpression, parameter) -> newSubCollectionExpressionBuilder()
-                        .withCollectionExpression((OrderedCollectionExpression) collectionExpression)
-                        .withLength(parameter)
-                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build()).build()));
-        functionTransformers.put("tail", new JqlIntegerParamCollectionFunctionTransformer(this,
-                (collectionExpression, parameter) -> {
-                    IntegerExpression length = newCountExpressionBuilder().withCollectionExpression(copy(collectionExpression)).build();
-                    IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(length).withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
-
-                    return newSubCollectionExpressionBuilder()
-                            .withCollectionExpression((OrderedCollectionExpression) collectionExpression)
-                            .withLength(parameter)
-                            .withPosition(position).build();
-                }));
+        functionTransformers.put("head", new JqlHeadFunctionTransformer(this));
+        functionTransformers.put("tail", new JqlTailFunctionTransformer(this));
         functionTransformers.put("filter", (expression, functionCall, variables) -> newCollectionFilterExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withCondition((LogicalExpression) transform(functionCall.getParameters().get(0).getExpression(), variables)).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));

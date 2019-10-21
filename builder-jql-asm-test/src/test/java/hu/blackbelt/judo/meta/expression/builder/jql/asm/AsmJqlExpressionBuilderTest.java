@@ -335,9 +335,10 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(category, "self=>products!max(p | p.quantityPerUnit)", true, "highestQty", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sum(p | p.quantityPerUnit)", true, "sumQty", ATTRIBUTE);
         createGetterExpression(category, "self=>products!avg(p | p.quantityPerUnit)", true, "avgQty", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!avg(p | p.unitPrice)", true, "cheapProductsAvgPrice", ATTRIBUTE);
 
-
-
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head()", true, "productHead", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", true, "productTail", ATTRIBUTE);
     }
 
     @Test
@@ -355,6 +356,13 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(null, "'a'+'b'");
         createGetterExpression(order, "self.shipper.companyName + self.shipper.companyName", false, "shipperNameConcat", ATTRIBUTE);
         createGetterExpression(order, "'_' + self.shipper.companyName", false, "shipperNameConcat2", ATTRIBUTE);
+    }
+
+    @Test
+    void testObjectOperations() throws Exception {
+        EClass category = findBase("Category");
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()", true, "productComparison1", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() <> self=>products!sort(p | p.unitPrice)!tail()", true, "productComparison2", ATTRIBUTE);
     }
 
     @Test
