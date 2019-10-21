@@ -340,6 +340,10 @@ public class AsmJqlExpressionBuilderTest {
 
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head()", true, "productHead", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", true, "productTail", ATTRIBUTE);
+
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", true, "productTail", ATTRIBUTE);
+
+        createGetterExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())", true, "containsProduct", ATTRIBUTE);
     }
 
     @Test
@@ -366,9 +370,8 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() <> self=>products!sort(p | p.unitPrice)!tail()", true, "productComparison2", ATTRIBUTE);
 
         EClass orderDetail = findBase("OrderDetail");
-        createGetterExpression(orderDetail, "self.product!kindof(demo::entities::Product)", true, "productType", ATTRIBUTE);
-        assertThrows(EvlScriptExecutionException.class, () ->
-                createGetterExpression(orderDetail, "not self.product!kindof(demo::entities::Category)", true, "productTypeNot", ATTRIBUTE));
+        createGetterExpression(orderDetail, "not self.product!kindof(demo::entities::Product)", true, "productType", ATTRIBUTE);
+        createGetterExpression(orderDetail, "self.product!typeof(demo::entities::Product)", true, "productType", ATTRIBUTE);
 
     }
 

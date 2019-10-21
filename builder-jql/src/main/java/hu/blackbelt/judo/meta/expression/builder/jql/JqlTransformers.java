@@ -30,7 +30,7 @@ import java.util.*;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newInstanceOfExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
@@ -102,12 +102,20 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX));
         functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM));
         functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG));
+        functionTransformers.put("contains", (expression, functionCall, variables) ->
+        {
+            ObjectExpression objectExpression = (ObjectExpression) transform(functionCall.getParameters().get(0).getExpression(), variables);
+            return newContainsExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withObjectExpression(objectExpression).build();
+        });
+
 
         functionTransformers.put("kindof", (expression, functionCall, variables) -> {
-            QualifiedName base  = ((NavigationExpression)functionCall.getParameters().get(0).getExpression()).getBase();
-            String namespace = createQNamespaceString(base);
-            String name = base.getName();
-            return newInstanceOfExpressionBuilder().withObjectExpression((ObjectExpression) expression).withElementName(getTypeName(namespace, name)).build();
+            QualifiedName base = ((NavigationExpression) functionCall.getParameters().get(0).getExpression()).getBase();
+            return newInstanceOfExpressionBuilder().withObjectExpression((ObjectExpression) expression).withElementName(getTypeName(createQNamespaceString(base), base.getName())).build();
+        });
+        functionTransformers.put("typeof", (expression, functionCall, variables) -> {
+            QualifiedName base = ((NavigationExpression) functionCall.getParameters().get(0).getExpression()).getBase();
+            return newTypeOfExpressionBuilder().withObjectExpression((ObjectExpression) expression).withElementName(getTypeName(createQNamespaceString(base), base.getName())).build();
         });
     }
 

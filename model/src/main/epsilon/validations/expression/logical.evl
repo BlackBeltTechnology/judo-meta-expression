@@ -52,8 +52,8 @@ context EXPR!TypeOfExpression {
     constraint ElementTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved") and self.elementName.satisfiesAll("ObjectTypeIsValid")
         
-        check: modelAdapter.getSuperTypes(self.elementName.get(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
-        message: "Element type (" + self.elementName + ") is not " + self.objectExpression.getObjectType(modelAdapter).getName() 
+        check: self.elementName.get(modelAdapter).equals(self.objectExpression.getObjectType(modelAdapter))
+        message: "Element type (" + self.elementName.get(modelAdapter) + ") is not " + self.objectExpression.getObjectType(modelAdapter)
     }
 }
 
