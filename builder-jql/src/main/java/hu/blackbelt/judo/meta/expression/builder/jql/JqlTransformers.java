@@ -108,6 +108,12 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
             return newContainsExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withObjectExpression(objectExpression).build();
         });
 
+        functionTransformers.put("memberof", (expression, functionCall, variables) ->
+        {
+            CollectionExpression collection = (CollectionExpression) transform(functionCall.getParameters().get(0).getExpression(), variables);
+            return newMemberOfExpressionBuilder().withCollectionExpression(collection).withObjectExpression((ObjectExpression) expression).build();
+        });
+
 
         functionTransformers.put("kindof", (expression, functionCall, variables) -> {
             QualifiedName base = ((NavigationExpression) functionCall.getParameters().get(0).getExpression()).getBase();

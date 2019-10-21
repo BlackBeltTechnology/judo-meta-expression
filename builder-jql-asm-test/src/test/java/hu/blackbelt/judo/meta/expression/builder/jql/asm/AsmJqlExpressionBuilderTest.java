@@ -344,6 +344,8 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", true, "productTail", ATTRIBUTE);
 
         createGetterExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())", true, "containsProduct", ATTRIBUTE);
+
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()!memberOf(self=>products)", true, "productMemberOf", ATTRIBUTE);
     }
 
     @Test
