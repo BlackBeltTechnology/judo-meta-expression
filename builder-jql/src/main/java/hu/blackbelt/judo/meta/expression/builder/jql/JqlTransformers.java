@@ -18,6 +18,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperation
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.util.builder.TypeNameBuilder;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
@@ -28,10 +29,11 @@ import java.math.BigInteger;
 import java.util.*;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newSubCollectionExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newInstanceOfExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
@@ -100,6 +102,23 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX));
         functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM));
         functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG));
+
+        functionTransformers.put("kindof", (expression, functionCall, variables) -> {
+            QualifiedName base  = ((NavigationExpression)functionCall.getParameters().get(0).getExpression()).getBase();
+            String namespace = createQNamespaceString(base);
+            String name = base.getName();
+            return newInstanceOfExpressionBuilder().withObjectExpression((ObjectExpression) expression).withElementName(getTypeName(namespace, name)).build();
+        });
+    }
+
+    private String createQNamespaceString(QualifiedName qName) {
+        String qNamespaceString;
+        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
+            qNamespaceString = String.join("::", qName.getNamespaceElements());
+        } else {
+            qNamespaceString = null;
+        }
+        return qNamespaceString;
     }
 
     public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {
@@ -145,6 +164,10 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     public Map<String, TypeName> getEnumTypes() {
         return enumTypes;
+    }
+
+    public TypeName getTypeName(String namespace, String name) {
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().get();
     }
 
 }

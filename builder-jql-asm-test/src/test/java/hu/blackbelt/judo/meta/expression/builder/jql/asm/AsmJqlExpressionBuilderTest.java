@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.EvlScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
@@ -363,6 +364,12 @@ public class AsmJqlExpressionBuilderTest {
         EClass category = findBase("Category");
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()", true, "productComparison1", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() <> self=>products!sort(p | p.unitPrice)!tail()", true, "productComparison2", ATTRIBUTE);
+
+        EClass orderDetail = findBase("OrderDetail");
+        createGetterExpression(orderDetail, "self.product!kindof(demo::entities::Product)", true, "productType", ATTRIBUTE);
+        assertThrows(EvlScriptExecutionException.class, () ->
+                createGetterExpression(orderDetail, "not self.product!kindof(demo::entities::Category)", true, "productTypeNot", ATTRIBUTE));
+
     }
 
     @Test
