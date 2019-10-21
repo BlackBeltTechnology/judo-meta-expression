@@ -79,7 +79,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withReferenceName("orderDetails")
                 .build();
 
-        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter);
+        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter, expressionResource);
 
 //        final CollectionVariable itemsOfDiscountedProducts = newCollectionFilterExpressionBuilder()
 //                .withCollectionExpression(newCollectionVariableReferenceBuilder()
@@ -212,7 +212,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .build())
                 .build();
 
-        final ObjectVariable di = discountedItems.createIterator("di", modelAdapter);
+        final ObjectVariable di = discountedItems.createIterator("di", modelAdapter, expressionResource);
 
         final StringExpression discountedCategoryName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()

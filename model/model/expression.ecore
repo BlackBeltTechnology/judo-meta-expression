@@ -339,10 +339,11 @@
       </eOperations>
       <eOperations name="createIterator" lowerBound="1" eType="#//variable/ObjectVariable">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="setIteratorVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;                    .withElementName((hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get())&#xA;                    .withName(name)&#xA;                    .build());&#xA;return getIteratorVariable();"/>
+          <details key="body" value="&#x9;&#x9;hu.blackbelt.judo.meta.expression.TypeName typeName = (hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get();&#xA;&#x9;&#x9;Iterable&lt;org.eclipse.emf.ecore.EObject> contents = expressionResource::getAllContents;&#xA;&#x9;&#x9;        java.util.stream.Stream&lt;hu.blackbelt.judo.meta.expression.TypeName> typeNameStream = java.util.stream.StreamSupport.stream(contents.spliterator(), true)&#xA;&#x9;&#x9;                .filter(e -> hu.blackbelt.judo.meta.expression.TypeName.class.isAssignableFrom(e.getClass())).map(e -> (hu.blackbelt.judo.meta.expression.TypeName)e);&#xA;&#x9;&#x9;setIteratorVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;&#x9;&#x9;                    .withElementName(typeNameStream.filter(tn -> java.util.Objects.equals(tn.getName(), typeName.getName()) &amp;&amp; java.util.Objects.equals(tn.getNamespace(), typeName.getNamespace())).findAny().get())&#xA;&#x9;&#x9;                    .withName(name)&#xA;&#x9;&#x9;                    .build());&#xA;&#x9;&#x9;return getIteratorVariable();&#xA;"/>
         </eAnnotations>
         <eParameters name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+        <eParameters name="expressionResource" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EResource"/>
       </eOperations>
       <eOperations name="getVariableName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -22,11 +22,15 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
@@ -114,7 +118,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
             if (lambdaArgument != null) {
                 CollectionVariable collection = (CollectionVariable) result;
                 // TODO createIterator should contain the logic of getType below
-                ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter());
+                ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
                 variablesWithLambdaArgument.add(0, iterator);
             }
             if (functionTransformer != null) {
@@ -138,8 +142,4 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return enumTypes;
     }
 
-    public TypeName getTypeName(String namespace, String name) {
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class)
-                .filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().get();
-    }
 }
