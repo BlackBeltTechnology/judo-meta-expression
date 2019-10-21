@@ -319,11 +319,25 @@ public class AsmJqlExpressionBuilderTest {
         Expression products = createGetterExpression(category, "self.products", true, "products", RELATION);
         assertThat(products, instanceOf(CollectionNavigationFromObjectExpression.class));
 
-        createGetterExpression(category, "self=>products!count()", true, "productListCount", RELATION);
+        createGetterExpression(category, "self=>products!count()", true, "productListCount", ATTRIBUTE);
         createGetterExpression(category, "self=>products!join(p | p.productName, ', ')!length()", true, "productListLength", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(e | e.unitPrice ASC, e.productName DESC)!join(p | p.productName, ', ')", true, "productListOrdered", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!head(5)", true, "productListHead", RELATION);
         createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!tail(5)", true, "productListTail", RELATION);
+        createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)", true, "cheapProducts", RELATION);
+        createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!count()", true, "cheapProductsCount", ATTRIBUTE);
+
+        createGetterExpression(category, "self=>products!min(p | p.unitPrice)", true, "cheapestPrice", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!max(p | p.unitPrice)", true, "highestPrice", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sum(p | p.unitPrice)", true, "sumOfPrices", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!avg(p | p.unitPrice)", true, "avgOfPrices", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!min(p | p.quantityPerUnit)", true, "lowestQty", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!max(p | p.quantityPerUnit)", true, "highestQty", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sum(p | p.quantityPerUnit)", true, "sumQty", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!avg(p | p.quantityPerUnit)", true, "avgQty", ATTRIBUTE);
+
+
+
     }
 
     @Test

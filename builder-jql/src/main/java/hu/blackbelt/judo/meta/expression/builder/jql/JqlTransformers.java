@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlAggregatedExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlIntegerParamCollectionFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlJoinFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSortFunctionTransformer;
@@ -20,6 +21,9 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperation
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.SubCollectionExpression;
 import hu.blackbelt.judo.meta.expression.numeric.CountExpression;
+import hu.blackbelt.judo.meta.expression.numeric.IntegerAggregatedExpression;
+import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
+import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -35,6 +39,7 @@ import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newSubCollectionExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
@@ -113,8 +118,13 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                             .withLength(parameter)
                             .withPosition(position).build();
                 }));
+        functionTransformers.put("filter", (expression, functionCall, variables) -> newCollectionFilterExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withCondition((LogicalExpression) transform(functionCall.getParameters().get(0).getExpression(), variables)).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
+        functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN));
+        functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX));
+        functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM));
+        functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG));
     }
 
     public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {
