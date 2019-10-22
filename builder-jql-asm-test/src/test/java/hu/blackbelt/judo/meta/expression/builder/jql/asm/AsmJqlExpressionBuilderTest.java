@@ -8,10 +8,7 @@ import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
-import hu.blackbelt.judo.meta.expression.DecimalExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.IntegerExpression;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
@@ -25,15 +22,16 @@ import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.hamcrest.Description;
+import org.hamcrest.DiagnosingMatcher;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
@@ -42,8 +40,7 @@ import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AsmJqlExpressionBuilderTest {
@@ -195,10 +192,79 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testStaticExpressions() throws Exception {
+        Expression allProducts = createExpression(null, "demo::entities::Product");
+        assertThat(allProducts, instanceOf(CollectionExpression.class));
+        Expression allOrdersCount = createExpression(null, "demo::entities::Order!count()");
+        assertThat(allOrdersCount, instanceOf(IntegerExpression.class));
+        Expression allEmployeeOrders = createExpression(null, "demo::entities::Employee=>orders");
+        assertThat(allEmployeeOrders , instanceOf(CollectionExpression.class));
+        assertThat(allEmployeeOrders, collectionOf("Order"));
+    }
+
+    private Matcher<Expression> collectionOf(String typeName) {
+        return new DiagnosingMatcher<Expression>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("A collection of type with name: ").appendText(typeName);
+            }
+
+            @Override
+            protected boolean matches(Object item, Description mismatchDescription) {
+                boolean result = false;
+                if (item instanceof CollectionExpression) {
+                    CollectionExpression collection = (CollectionExpression) item;
+                    TypeName collectionTypeName = modelAdapter.getTypeName((EClassifier) (collection).getObjectType(modelAdapter)).get();
+                    if (collectionTypeName.getName().equals(typeName)) {
+                        result = true;
+                    } else {
+                        mismatchDescription.appendValue(collectionTypeName.getName());
+                    }
+                } else {
+                    mismatchDescription.appendText("Not a collection: ").appendValue(item);
+                }
+                return result;
+            }
+
+        };
+    }
+
+    private Matcher<Expression> objectOf(String typeName) {
+        return new DiagnosingMatcher<Expression>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("An object of type with name: ").appendText(typeName);
+            }
+
+            @Override
+            protected boolean matches(Object item, Description mismatchDescription) {
+                boolean result = false;
+                if (item instanceof ObjectExpression) {
+                    ObjectExpression oe = (ObjectExpression) item;
+                    TypeName objectTypeName = modelAdapter.getTypeName((EClassifier) (oe).getObjectType(modelAdapter)).get();
+                    if (objectTypeName.getName().equals(typeName)) {
+                        result = true;
+                    } else {
+                        mismatchDescription.appendValue(objectTypeName.getName());
+                    }
+                } else {
+                    mismatchDescription.appendText("Not an object: ").appendValue(item);
+                }
+                return result;
+            }
+
+        };
+    }
+
+    @Test
     void testSimpleDaoTest() throws Exception {
         EClass order = findBase("Order");
         createGetterExpression(order, "self.orderDetails", false, "orderDetails", RELATION);
-        createGetterExpression(order, "self.orderDetails.product.category", false, "categories", RELATION);
+        Expression orderCategories = createGetterExpression(order, "self.orderDetails.product.category", false, "categories", RELATION);
+        assertThat(orderCategories, collectionOf("Category"));
+
         createGetterExpression(order, "self.shipper.companyName", false, "shipperName", ATTRIBUTE);
         createGetterExpression(order, "self.shipper", false, "shipper", RELATION);
         createGetterExpression(order, "self.orderDate", false, "oderDate", ATTRIBUTE);
@@ -240,6 +306,22 @@ public class AsmJqlExpressionBuilderTest {
         assertNotNull(binding);
         return binding;
     }
+
+    @Test
+    void testCast() throws Exception {
+        EClass employee = findBase("Customer");
+        createExpression(employee, "self=>orders!asCollection(demo::entities::InternationalOrder)");
+
+        EClass order = findBase("Order");
+        createExpression(order, "self=>customer!asType(demo::entities::Company)");
+    }
+
+    @Test
+    void testContainer() throws Exception {
+        EClass address = findBase("Address");
+        createExpression(address, "self!container(demo::entities::Customer)");
+    }
+
 
     @Test
     void testConstants() throws Exception {
@@ -317,7 +399,7 @@ public class AsmJqlExpressionBuilderTest {
     void testCollectionOperations() throws Exception {
         EClass category = findBase("Category");
         Expression products = createGetterExpression(category, "self.products", true, "products", RELATION);
-        assertThat(products, instanceOf(CollectionNavigationFromObjectExpression.class));
+        assertThat(products, collectionOf("Product"));
 
         createGetterExpression(category, "self=>products!count()", true, "productListCount", ATTRIBUTE);
         createGetterExpression(category, "self=>products!join(p | p.productName, ', ')!length()", true, "productListLength", ATTRIBUTE);
@@ -337,14 +419,19 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(category, "self=>products!avg(p | p.quantityPerUnit)", true, "avgQty", ATTRIBUTE);
         createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!avg(p | p.unitPrice)", true, "cheapProductsAvgPrice", ATTRIBUTE);
 
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head()", true, "productHead", ATTRIBUTE);
+        Expression productHead = createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head()", true, "productHead", ATTRIBUTE);
+        assertThat(productHead, objectOf("Product"));
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", true, "productTail", ATTRIBUTE);
 
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", true, "productTail", ATTRIBUTE);
-
-        createGetterExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())", true, "containsProduct", ATTRIBUTE);
-
+        Expression containsProduct = createGetterExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())", true, "containsProduct", ATTRIBUTE);
+        assertThat(containsProduct, instanceOf(LogicalExpression.class));
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()!memberOf(self=>products)", true, "productMemberOf", ATTRIBUTE);
+    }
+
+    @Test
+    void testCustomAttributes() throws Exception {
+        EClass category = findBase("Category");
+
     }
 
     @Test

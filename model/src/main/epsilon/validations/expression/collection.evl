@@ -95,7 +95,11 @@ context EXPR!CastCollection {
         guard: self.satisfiesAll("Resolved") and self.collectionExpression.satisfiesAll("Resolved")
         
         check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
-        message: "Invalid casting type: " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
+        message {
+            var collectionType = self.collectionExpression.getObjectType(modelAdapter);
+            var castingType = self.getObjectType(modelAdapter);
+            return "Invalid casting: " + collectionType + " as " + castingType+ ". "+ collectionType + " is not supertype of " + castingType;
+        }
     }
 }
 

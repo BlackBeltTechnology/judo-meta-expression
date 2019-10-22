@@ -11,35 +11,41 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTra
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlMatchesFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlPositionFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
+import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
 import hu.blackbelt.judo.meta.expression.logical.InstanceOfExpression;
 import hu.blackbelt.judo.meta.expression.logical.MemberOfExpression;
 import hu.blackbelt.judo.meta.expression.logical.TypeOfExpression;
+import hu.blackbelt.judo.meta.expression.object.CastObject;
+import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
-import hu.blackbelt.judo.meta.expression.util.builder.TypeNameBuilder;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
-import org.eclipse.core.internal.expressions.InstanceofExpression;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 
 import java.math.BigInteger;
 import java.util.*;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newCastObjectBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newContainerExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
 public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
@@ -67,15 +73,34 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         objectFunctions();
     }
 
+    private static String createQNamespaceString(QualifiedName qName) {
+        String qNamespaceString;
+        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
+            qNamespaceString = String.join("::", qName.getNamespaceElements());
+        } else {
+            qNamespaceString = null;
+        }
+        return qNamespaceString;
+    }
+
     private void objectFunctions() {
         functionTransformers.put("kindof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
-                (expression, parameter) -> newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeName(createQNamespaceString(parameter), parameter.getName())).build(),
+                (expression, parameter) -> newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeNameFromResource(parameter)).build(),
                 (jqlExpression) -> ((NavigationExpression) jqlExpression).getBase()
         ));
         functionTransformers.put("typeof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
-                (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeName(createQNamespaceString(parameter), parameter.getName())).build(),
+                (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeNameFromResource(parameter)).build(),
                 (jqlExpression -> ((NavigationExpression) jqlExpression).getBase())
         ));
+
+        functionTransformers.put("astype", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
+                (expression, parameter) -> newCastObjectBuilder().withElementName(getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
+                jqlExpression -> ((NavigationExpression)jqlExpression).getBase()));
+
+        functionTransformers.put("container", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
+                (expression, parameter) -> newContainerExpressionBuilder().withElementName(getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
+                jqlExpression -> ((NavigationExpression)jqlExpression).getBase()));
+
     }
 
     private void collectionFunctions() {
@@ -94,6 +119,11 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                 (expression, parameter) -> newContainsExpressionBuilder().withCollectionExpression(expression).withObjectExpression(parameter).build()));
         functionTransformers.put("memberof", new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(this,
                 (expression, parameter) -> newMemberOfExpressionBuilder().withCollectionExpression(parameter).withObjectExpression(expression).build()));
+
+        functionTransformers.put("ascollection", new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
+                (expression, parameter) -> newCastCollectionBuilder().withElementName(getTypeNameFromResource(parameter)).withCollectionExpression(expression).build(),
+                jqlExpression -> ((NavigationExpression)jqlExpression).getBase()));
+
     }
 
     private void numericFunctions() {
@@ -147,16 +177,6 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
     }
 
-    private String createQNamespaceString(QualifiedName qName) {
-        String qNamespaceString;
-        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
-            qNamespaceString = String.join("::", qName.getNamespaceElements());
-        } else {
-            qNamespaceString = null;
-        }
-        return qNamespaceString;
-    }
-
     public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
@@ -202,8 +222,12 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         return enumTypes;
     }
 
-    public TypeName getTypeName(String namespace, String name) {
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().get();
+    public TypeName getTypeNameFromResource(QualifiedName qName) {
+        String namespace = createQNamespaceString(qName);
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), qName.getName()) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
     }
 
+    public Resource getExpressionResource() {
+        return expressionResource;
+    }
 }
