@@ -11,14 +11,14 @@ import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newPositionBuilder;
 
-public class JqlPositionFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlPositionFunctionTransformer extends AbstractJqlFunctionTransformer<StringExpression> {
 
     public JqlPositionFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
+    public Expression apply(StringExpression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         StringExpression container = (StringExpression) argument;
         StringExpression containment = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         return newPositionBuilder().withContainer(container).withContainment(containment).build();

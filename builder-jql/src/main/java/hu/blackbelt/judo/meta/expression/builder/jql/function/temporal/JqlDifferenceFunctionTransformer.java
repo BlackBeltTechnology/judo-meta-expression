@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.temporal;
 
+import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.DateExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TimestampExpression;
@@ -13,14 +14,14 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
 
-public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransformer<DataExpression> {
 
     public JqlDifferenceFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
+    public Expression apply(DataExpression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         if (argument instanceof DateExpression) {
             DateExpression startDate = (DateExpression) argument;
             DateExpression endDate = (DateExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);

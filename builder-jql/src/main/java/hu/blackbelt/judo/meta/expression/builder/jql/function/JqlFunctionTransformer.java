@@ -7,8 +7,8 @@ import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import java.util.List;
 
 @FunctionalInterface
-public interface JqlFunctionTransformer {
+public interface JqlFunctionTransformer<B extends Expression> {
 
-    Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables);
+    Expression apply(B argument, FunctionCall functionCall, List<ObjectVariable> variables);
 
 }

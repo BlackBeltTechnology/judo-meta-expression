@@ -24,15 +24,14 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newConcatenateCollectionBuilder;
 
-public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
     public JqlSortFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
-        CollectionExpression collection = (CollectionExpression) argument;
+    public Expression apply(CollectionExpression collection, FunctionCall functionCall, List<ObjectVariable> variables) {
         List<OrderByItem> orderByItems = new ArrayList<>();
         functionCall.getParameters().forEach((param) -> {
                     DataExpression orderByItemExpression = (DataExpression) jqlTransformers.transform(param.getExpression(), variables);

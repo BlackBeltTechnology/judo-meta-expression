@@ -14,16 +14,16 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newReplaceBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newSubStringBuilder;
 
-public class JqlReplaceFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlReplaceFunctionTransformer extends AbstractJqlFunctionTransformer<StringExpression> {
 
     public JqlReplaceFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
+    public Expression apply(StringExpression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         StringExpression pattern = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         StringExpression replacement = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), variables);
-        return newReplaceBuilder().withExpression((StringExpression)argument).withPattern(pattern).withReplacement(replacement).build();
+        return newReplaceBuilder().withExpression(argument).withPattern(pattern).withReplacement(replacement).build();
     }
 }

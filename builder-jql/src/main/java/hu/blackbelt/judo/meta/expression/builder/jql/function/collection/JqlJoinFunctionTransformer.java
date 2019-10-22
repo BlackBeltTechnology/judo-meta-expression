@@ -12,15 +12,14 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
 
-public class JqlJoinFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlJoinFunctionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
     public JqlJoinFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
-        CollectionExpression collection = (CollectionExpression) argument;
+    public Expression apply(CollectionExpression collection, FunctionCall functionCall, List<ObjectVariable> variables) {
         StringExpression text = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         StringExpression separator = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), variables);
         return newConcatenateCollectionBuilder().withCollectionExpression(collection).withExpression(text).withSeparator(separator).build();

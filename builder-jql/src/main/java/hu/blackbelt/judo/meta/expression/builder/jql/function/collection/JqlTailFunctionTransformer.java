@@ -20,17 +20,16 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSelectorExpressionBuilder;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTailFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlTailFunctionTransformer extends AbstractJqlFunctionTransformer<OrderedCollectionExpression> {
 
     public JqlTailFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
-        OrderedCollectionExpression collection = (OrderedCollectionExpression)argument;
+    public Expression apply(OrderedCollectionExpression collection, FunctionCall functionCall, List<ObjectVariable> variables) {
         if (functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) {
-            return newObjectSelectorExpressionBuilder().withCollectionExpression((OrderedCollectionExpression) argument).withOperator(ObjectSelector.TAIL).build();
+            return newObjectSelectorExpressionBuilder().withCollectionExpression(collection).withOperator(ObjectSelector.TAIL).build();
         } else {
             Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
             if (!(parameter instanceof IntegerExpression)) {

@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
-import hu.blackbelt.epsilon.runtime.execution.exceptions.EvlScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
@@ -443,7 +442,7 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipper.companyName!trim()", true, "shipperTrim", ATTRIBUTE);
 
         // First
-        createGetterExpression(order, "self.shipper.companyName!first(1)", true, "shipperFirst", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper.companyName!first(5)", true, "shipperFirst", ATTRIBUTE);
 
         // Last
         createGetterExpression(order, "self.shipper.companyName!last(1)", true, "Last", ATTRIBUTE);

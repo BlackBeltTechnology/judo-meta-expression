@@ -16,23 +16,23 @@ import static hu.blackbelt.judo.meta.expression.collection.util.builder.Collecti
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSelectorExpressionBuilder;
 
-public class JqlHeadFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlHeadFunctionTransformer extends AbstractJqlFunctionTransformer<OrderedCollectionExpression> {
 
     public JqlHeadFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
+    public Expression apply(OrderedCollectionExpression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         if (functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) {
-            return newObjectSelectorExpressionBuilder().withCollectionExpression((OrderedCollectionExpression) argument).withOperator(ObjectSelector.HEAD).build();
+            return newObjectSelectorExpressionBuilder().withCollectionExpression(argument).withOperator(ObjectSelector.HEAD).build();
         } else {
             Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
             if (!(parameter instanceof IntegerExpression)) {
                 throw new IllegalArgumentException("Function parameter must be integer, got: " + parameter);
             }
             return newSubCollectionExpressionBuilder()
-                    .withCollectionExpression((OrderedCollectionExpression) argument)
+                    .withCollectionExpression(argument)
                     .withLength((IntegerExpression) parameter)
                     .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build()).build();
         }

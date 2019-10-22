@@ -9,12 +9,17 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlMeasuredLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
+import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
+import hu.blackbelt.judo.meta.expression.logical.InstanceOfExpression;
+import hu.blackbelt.judo.meta.expression.logical.MemberOfExpression;
+import hu.blackbelt.judo.meta.expression.logical.TypeOfExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
@@ -22,6 +27,7 @@ import hu.blackbelt.judo.meta.expression.util.builder.TypeNameBuilder;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
+import org.eclipse.core.internal.expressions.InstanceofExpression;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
 
@@ -52,19 +58,53 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         this.measureNames = measureNames;
         this.enumTypes = enumTypes;
         this.expressionResource = expressionResource;
-        transformers.put(NavigationExpression.class, new JqlNavigationTransformer<>(this));
-        transformers.put(BooleanLiteral.class, (jqlExpression, variables) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
-        transformers.put(DecimalLiteral.class, (jqlExpression, variables) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
-        transformers.put(IntegerLiteral.class, (jqlExpression, variables) -> newIntegerConstantBuilder().withValue(((IntegerLiteral) jqlExpression).getValue()).build());
-        transformers.put(StringLiteral.class, (jqlExpression, variables) -> newStringConstantBuilder().withValue(((StringLiteral) jqlExpression).getValue()).build());
-        transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
-        transformers.put(BinaryOperation.class, new JqlBinaryOperationTransformer<>(this));
-        transformers.put(UnaryOperation.class, new JqlUnaryOperationTransformer<>(this));
-        transformers.put(TernaryOperation.class, new JqlTernaryOperationTransformer<>(this));
-        transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
-        transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
-        transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
+        literals();
+        operations();
+        stringFunctions();
+        numericFunctions();
+        temporalFunctions();
+        collectionFunctions();
+        objectFunctions();
+    }
 
+    private void objectFunctions() {
+        functionTransformers.put("kindof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
+                (expression, parameter) -> newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeName(createQNamespaceString(parameter), parameter.getName())).build(),
+                (jqlExpression) -> ((NavigationExpression) jqlExpression).getBase()
+        ));
+        functionTransformers.put("typeof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
+                (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeName(createQNamespaceString(parameter), parameter.getName())).build(),
+                (jqlExpression -> ((NavigationExpression) jqlExpression).getBase())
+        ));
+    }
+
+    private void collectionFunctions() {
+        functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
+        functionTransformers.put("head", new JqlHeadFunctionTransformer(this));
+        functionTransformers.put("tail", new JqlTailFunctionTransformer(this));
+        functionTransformers.put("filter", new JqlParameterizedFunctionTransformer<CollectionExpression, LogicalExpression, FilteringExpression>(this,
+                (expression, parameter) -> newCollectionFilterExpressionBuilder().withCollectionExpression(expression).withCondition(parameter).build()));
+        functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
+        functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
+        functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN));
+        functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX));
+        functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM));
+        functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG));
+        functionTransformers.put("contains", new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(this,
+                (expression, parameter) -> newContainsExpressionBuilder().withCollectionExpression(expression).withObjectExpression(parameter).build()));
+        functionTransformers.put("memberof", new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(this,
+                (expression, parameter) -> newMemberOfExpressionBuilder().withCollectionExpression(parameter).withObjectExpression(expression).build()));
+    }
+
+    private void numericFunctions() {
+        functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());
+    }
+
+    private void temporalFunctions() {
+        functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
+    }
+
+    private void stringFunctions() {
         functionTransformers.put("length", (expression, functionCall, variables) -> newLengthBuilder().withExpression((StringExpression) expression).build());
         functionTransformers.put("lowercase", (expression, functionCall, variables) -> newLowerCaseBuilder().withExpression((StringExpression) expression).build());
         functionTransformers.put("uppercase", (expression, functionCall, variables) -> newUpperCaseBuilder().withExpression((StringExpression) expression).build());
@@ -72,12 +112,12 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position", new JqlPositionFunctionTransformer(this));
         functionTransformers.put("replace", new JqlReplaceFunctionTransformer(this));
-        functionTransformers.put("first", new JqlIntegerParamStringFunctionTransformer(this,
+        functionTransformers.put("first", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> newSubStringBuilder()
                         .withExpression(stringExpression)
                         .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build())
                         .withLength(parameter).build()));
-        functionTransformers.put("last", new JqlIntegerParamStringFunctionTransformer(this,
+        functionTransformers.put("last", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> {
                     IntegerExpression stringLength = newLengthBuilder().withExpression(copy(stringExpression)).build();
                     IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(stringLength).withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
@@ -87,42 +127,24 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                             .withLength(parameter).build();
                 }));
         functionTransformers.put("matches", new JqlMatchesFunctionTransformer(this));
+    }
 
-        functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder().withExpression((DecimalExpression) expression).build());
+    private void operations() {
+        transformers.put(BinaryOperation.class, new JqlBinaryOperationTransformer<>(this));
+        transformers.put(UnaryOperation.class, new JqlUnaryOperationTransformer<>(this));
+        transformers.put(TernaryOperation.class, new JqlTernaryOperationTransformer<>(this));
+    }
 
-        functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
-
-        functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
-        functionTransformers.put("head", new JqlHeadFunctionTransformer(this));
-        functionTransformers.put("tail", new JqlTailFunctionTransformer(this));
-        functionTransformers.put("filter", (expression, functionCall, variables) -> newCollectionFilterExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withCondition((LogicalExpression) transform(functionCall.getParameters().get(0).getExpression(), variables)).build());
-        functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
-        functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
-        functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN));
-        functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX));
-        functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM));
-        functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG));
-        functionTransformers.put("contains", (expression, functionCall, variables) ->
-        {
-            ObjectExpression objectExpression = (ObjectExpression) transform(functionCall.getParameters().get(0).getExpression(), variables);
-            return newContainsExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withObjectExpression(objectExpression).build();
-        });
-
-        functionTransformers.put("memberof", (expression, functionCall, variables) ->
-        {
-            CollectionExpression collection = (CollectionExpression) transform(functionCall.getParameters().get(0).getExpression(), variables);
-            return newMemberOfExpressionBuilder().withCollectionExpression(collection).withObjectExpression((ObjectExpression) expression).build();
-        });
-
-
-        functionTransformers.put("kindof", (expression, functionCall, variables) -> {
-            QualifiedName base = ((NavigationExpression) functionCall.getParameters().get(0).getExpression()).getBase();
-            return newInstanceOfExpressionBuilder().withObjectExpression((ObjectExpression) expression).withElementName(getTypeName(createQNamespaceString(base), base.getName())).build();
-        });
-        functionTransformers.put("typeof", (expression, functionCall, variables) -> {
-            QualifiedName base = ((NavigationExpression) functionCall.getParameters().get(0).getExpression()).getBase();
-            return newTypeOfExpressionBuilder().withObjectExpression((ObjectExpression) expression).withElementName(getTypeName(createQNamespaceString(base), base.getName())).build();
-        });
+    private void literals() {
+        transformers.put(NavigationExpression.class, new JqlNavigationTransformer<>(this));
+        transformers.put(BooleanLiteral.class, (jqlExpression, variables) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
+        transformers.put(DecimalLiteral.class, (jqlExpression, variables) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
+        transformers.put(IntegerLiteral.class, (jqlExpression, variables) -> newIntegerConstantBuilder().withValue(((IntegerLiteral) jqlExpression).getValue()).build());
+        transformers.put(StringLiteral.class, (jqlExpression, variables) -> newStringConstantBuilder().withValue(((StringLiteral) jqlExpression).getValue()).build());
+        transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
+        transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
+        transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
+        transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
     }
 
     private String createQNamespaceString(QualifiedName qName) {

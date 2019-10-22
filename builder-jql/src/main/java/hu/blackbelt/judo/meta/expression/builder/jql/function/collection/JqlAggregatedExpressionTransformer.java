@@ -13,7 +13,7 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAggregatedExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAggregatedExpressionBuilder;
 
-public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTransformer  {
+public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression>  {
 
     private IntegerAggregator integerAggregator;
     private DecimalAggregator decimalAggregator;
@@ -25,8 +25,7 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
-        CollectionExpression collection = (CollectionExpression) argument;
+    public Expression apply(CollectionExpression collection, FunctionCall functionCall, List<ObjectVariable> variables) {
         Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         if (parameter instanceof IntegerExpression && integerAggregator != null) {
             return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression)parameter).withOperator(integerAggregator).build();

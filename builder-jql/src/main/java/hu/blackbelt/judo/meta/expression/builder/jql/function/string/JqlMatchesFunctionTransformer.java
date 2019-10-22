@@ -12,15 +12,15 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newMatchesBuilder;
 
 
-public class JqlMatchesFunctionTransformer extends AbstractJqlFunctionTransformer {
+public class JqlMatchesFunctionTransformer extends AbstractJqlFunctionTransformer<StringExpression> {
 
     public JqlMatchesFunctionTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
     }
 
     @Override
-    public Expression apply(Expression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
+    public Expression apply(StringExpression argument, FunctionCall functionCall, List<ObjectVariable> variables) {
         StringExpression parameter = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
-        return newMatchesBuilder().withExpression((StringExpression) argument).withPattern(parameter).build();
+        return newMatchesBuilder().withExpression(argument).withPattern(parameter).build();
     }
 }
