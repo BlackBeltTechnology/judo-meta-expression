@@ -539,7 +539,7 @@ public class AsmJqlExpressionBuilderTest {
         EClass customer = findBase("Customer");
         createGetterExpression(customer, "self.addresses", "customerAddresses", RELATION);
 
-        createExpression(null, "-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entitites::InternationalOrder)");
+        createExpression(null, "-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
     }
 
 }

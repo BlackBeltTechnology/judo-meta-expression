@@ -85,7 +85,13 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     private void objectFunctions() {
         functionTransformers.put("kindof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
-                (expression, parameter) -> newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeNameFromResource(parameter)).build(),
+                (expression, parameter) -> {
+                    TypeName typeNameFromResource = getTypeNameFromResource(parameter);
+                    if (typeNameFromResource == null) {
+                        throw new IllegalArgumentException("Type not found: " + parameter);
+                    }
+                    return newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(typeNameFromResource).build();
+                },
                 (jqlExpression) -> ((NavigationExpression) jqlExpression).getBase()
         ));
         functionTransformers.put("typeof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
