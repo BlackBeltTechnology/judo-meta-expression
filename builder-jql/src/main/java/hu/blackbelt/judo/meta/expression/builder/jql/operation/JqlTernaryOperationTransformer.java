@@ -23,26 +23,27 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 
 public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<TernaryOperation, NE, P, PTE, E, C, RTE, M, U> {
 
-    private final Set<SupportedType> supportedTypes = new HashSet<SupportedType>() {
+    private final Map<Class<? extends Expression>, BiFunction<SwitchCase, DataExpression, SwitchExpression>> supportedTypes = new HashMap<Class<? extends Expression>, BiFunction<SwitchCase, DataExpression, SwitchExpression>>() {
         {
-            add(new SupportedType(IntegerExpression.class, (thenCase, elseExpression) -> newIntegerSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(DecimalExpression.class, (thenCase, elseExpression) -> newDecimalSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(CollectionExpression.class, (thenCase, elseExpression) -> newCollectionSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(CustomExpression.class, (thenCase, elseExpression) -> newCustomSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(EnumerationExpression.class, (thenCase, elseExpression) -> {
+            put(IntegerExpression.class, (thenCase, elseExpression) -> newIntegerSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(DecimalExpression.class, (thenCase, elseExpression) -> newDecimalSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(CollectionExpression.class, (thenCase, elseExpression) -> newCollectionSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(CustomExpression.class, (thenCase, elseExpression) -> newCustomSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(EnumerationExpression.class, (thenCase, elseExpression) -> {
                 EnumerationSwitchExpressionBuilder builder = newEnumerationSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression);
                 Object enumeration = ((EnumerationExpression) elseExpression).getEnumeration(getModelAdapter());
                 return builder.withElementName((TypeName)enumeration).build();
-            }));
-            add(new SupportedType(DateExpression.class, (thenCase, elseExpression) -> newDateSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(ObjectExpression.class, (thenCase, elseExpression) -> newObjectSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(StringExpression.class, (thenCase, elseExpression) -> newStringSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
-            add(new SupportedType(TimestampExpression.class, (thenCase, elseExpression) -> newTimestampSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build()));
+            });
+            put(DateExpression.class, (thenCase, elseExpression) -> newDateSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(ObjectExpression.class, (thenCase, elseExpression) -> newObjectSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(StringExpression.class, (thenCase, elseExpression) -> newStringSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(TimestampExpression.class, (thenCase, elseExpression) -> newTimestampSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
         }
     };
 
     public JqlTernaryOperationTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
+
     }
 
     @Override
@@ -52,8 +53,8 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M,
         Expression elseExpression = jqlTransformers.transform(ternaryOperation.getElseExpression(), variables);
         validateExpressionTypes(condition, elseExpression, thenExpression);
         SwitchCase thenCase = SwitchCaseBuilder.create().withCondition((LogicalExpression) condition).withExpression((DataExpression) thenExpression).build();
-        SupportedType resultType = findResultType(elseExpression, thenExpression);
-        return resultType.builderFunction.apply(thenCase, (DataExpression) elseExpression);
+        BiFunction<SwitchCase, DataExpression, SwitchExpression> resultBuilder = findResultType(thenExpression, elseExpression);
+        return resultBuilder.apply(thenCase, (DataExpression) elseExpression);
     }
 
     private void validateExpressionTypes(Expression condition, Expression elseExpression, Expression thenExpression) {
@@ -68,16 +69,19 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M,
         }
     }
 
-    private SupportedType findResultType(Expression thenExpression, Expression elseExpression) {
-        for (SupportedType supportedType : supportedTypes) {
-            if (supportedType.type.isAssignableFrom(thenExpression.getClass())) {
-                if (!supportedType.type.isAssignableFrom(elseExpression.getClass())) {
-                    throw new IllegalArgumentException(String.format("THEN and ELSE part type differs: %s vs %s", thenExpression.getClass(), elseExpression.getClass()));
+    private BiFunction<SwitchCase, DataExpression, SwitchExpression> findResultType(Expression thenExpression, Expression elseExpression) {
+        if (thenExpression instanceof NumericExpression && elseExpression instanceof NumericExpression && (thenExpression instanceof DecimalExpression || elseExpression instanceof DecimalExpression)) {
+            return supportedTypes.get(DecimalExpression.class);
+        }
+        for (Map.Entry<Class<? extends Expression>, BiFunction<SwitchCase, DataExpression, SwitchExpression>> supportedTypeEntry : supportedTypes.entrySet()) {
+            if (supportedTypeEntry.getKey().isAssignableFrom(thenExpression.getClass())) {
+                if (!supportedTypeEntry.getKey().isAssignableFrom(elseExpression.getClass())) {
+                    throw new IllegalArgumentException(String.format("THEN and ELSE part type differs: %s vs %s", thenExpression.getClass().getName(), elseExpression.getClass().getName()));
                 } else {
-                    if (supportedType.type.isAssignableFrom(EnumerationExpression.class)) {
+                    if (supportedTypeEntry.getKey().isAssignableFrom(EnumerationExpression.class)) {
                         validateEnumTypes((EnumerationExpression) thenExpression, (EnumerationExpression) elseExpression);
                     }
-                    return supportedType;
+                    return supportedTypeEntry.getValue();
                 }
             }
         }
@@ -89,17 +93,6 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M,
         Object elseEnum = elseExpression.getEnumeration(getModelAdapter());
         if (!Objects.equals(thenEnum, elseEnum)) {
             throw new IllegalArgumentException(String.format("THEN and ELSE part different enumerations: %s vs %s", thenEnum, elseEnum));
-        }
-    }
-
-    private static final class SupportedType {
-
-        private Class<? extends Expression> type;
-        private BiFunction<SwitchCase, DataExpression, SwitchExpression> builderFunction;
-
-        private SupportedType(Class<? extends Expression> type, BiFunction<SwitchCase, DataExpression, SwitchExpression> builderFunction) {
-            this.type = type;
-            this.builderFunction = builderFunction;
         }
     }
 

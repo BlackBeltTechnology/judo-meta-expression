@@ -191,7 +191,34 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         Expression transformedExpression = foundTransformer
                 .orElseThrow(() -> new UnsupportedOperationException("Not implemented transformation for " + jqlExpression.getClass()))
                 .apply(jqlExpression, variables);
-        return applyFunctions(jqlExpression, transformedExpression, variables);
+        if (jqlExpression instanceof NavigationExpression) {
+            return transformedExpression;
+        } else {
+            return applyFunctions(jqlExpression, transformedExpression, variables);
+        }
+
+    }
+
+    public Expression applySelectorFunctions(Feature jqlFeature, Expression baseExpression, List<ObjectVariable> variables) {
+        EList<FunctionCall> functionCalls = jqlFeature.getFunctions();
+        Expression result =baseExpression;
+        for (FunctionCall functionCall : functionCalls) {
+            String functionName = functionCall.getFunction().getName().toLowerCase();
+            JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
+            List<ObjectVariable> variablesWithLambdaArgument = new ArrayList<>(variables);
+            String lambdaArgument = functionCall.getLambdaArgument();
+            if (lambdaArgument != null) {
+                CollectionVariable collection = (CollectionVariable) result;
+                ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
+                variablesWithLambdaArgument.add(0, iterator);
+            }
+            if (functionTransformer != null) {
+                result = functionTransformer.apply(result, functionCall, variablesWithLambdaArgument);
+            } else {
+                throw new IllegalStateException("Unknown function: " + functionName);
+            }
+        }
+        return result;
     }
 
     public Expression applyFunctions(JqlExpression jqlExpression, Expression argument, List<ObjectVariable> variables) {
@@ -236,4 +263,6 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
     public Resource getExpressionResource() {
         return expressionResource;
     }
+
+
 }

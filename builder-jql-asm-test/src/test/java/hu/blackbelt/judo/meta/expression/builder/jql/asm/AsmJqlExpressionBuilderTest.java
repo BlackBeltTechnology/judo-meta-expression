@@ -13,6 +13,7 @@ import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.Measure;
@@ -379,10 +380,14 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testSwitchCase() {
+    void testTernaryOperation() {
         createExpression(null, "true ? 1 : 2");
         createExpression(null, "true ? 1 : 2 + 3");
         createExpression(null, "true ? 1.0 : 2.0 + 3");
+        Expression decimalSwitch1 = createExpression(null, "true ? 1 : 2.0");
+        assertThat(decimalSwitch1, instanceOf(DecimalSwitchExpression.class));
+        Expression decimalSwitch2 = createExpression(null, "true ? 1.0 : 2");
+        assertThat(decimalSwitch2, instanceOf(DecimalSwitchExpression.class));
 
         EClass order = findBase("Order");
         createGetterExpression(order, "false ? self.shipper.companyName : 'b'", "stringSwitch", ATTRIBUTE);
@@ -497,6 +502,15 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testSelectorFunctions() {
+        EClass category = findBase("Category");
+        createExpression(null, "demo::entities::Product!sort()");
+        createExpression(null, "demo::entities::Product!sort()!head()");
+        createExpression(null, "demo::entities::Product!sort()!head().weight");
+        createExpression(category, "self.products!sort()!head().weight");
+    }
+
+    @Test
     void testStringFunctions() {
         EClass order = findBase("Order");
 
@@ -507,6 +521,8 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipper.companyName!upperCase()", "shipperNameUpper", ATTRIBUTE);
 
         // Length
+        Expression shipperNameLength = createGetterExpression(order, "self.shipper.companyName!length()", "shipperNameLength", ATTRIBUTE);
+        assertThat(shipperNameLength, instanceOf(NumericExpression.class));
         createGetterExpression(order, "self.shipper.companyName!lowerCase()!length() > 0", "shipperNameLowerLength", ATTRIBUTE);
 
         // SubString
@@ -543,6 +559,9 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(null, "demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
         // select categories, where the category has more than 10 products
         createExpression(null, "demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category = c)!count() > 10)");
+
+        createExpression(null, "true ? 8[dkg]+12[g] : 2[g] + 4[g] + demo::entities::Product!sort()!head().weight");
+
 
     }
 

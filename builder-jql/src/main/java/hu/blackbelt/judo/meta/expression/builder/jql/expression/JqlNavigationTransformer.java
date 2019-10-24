@@ -46,16 +46,19 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
             baseExpression = newObjectVariableReferenceBuilder().withVariable(baseVariable.get()).build();
             navigationBase = (C) baseVariable.get().getObjectType(getModelAdapter());
         }
+        baseExpression = jqlTransformers.applyFunctions(jqlExpression, baseExpression, variables);
         for (final Feature jqlFeature : jqlExpression.getFeatures()) {
             final Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
             final Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
             if (attribute.isPresent()) {
                 //TODO - handle data expressions that are not attribute selectors (necessary for getters only, setters must be selectors!)
                 baseExpression = createAttributeSelector(attribute.get(), jqlFeature.getName(), (ObjectExpression) baseExpression);
+                baseExpression = jqlTransformers.applySelectorFunctions(jqlFeature, baseExpression, variables);
                 navigationBase = null;
             } else if (reference.isPresent()) {
                 //TODO - handle reference expressions that are not reference selectors (necessary for getters only, setters must be selectors!)
                 baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
+                baseExpression = jqlTransformers.applySelectorFunctions(jqlFeature, baseExpression, variables);
                 navigationBase = getModelAdapter().getTarget(reference.get());
             } else {
                 LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
