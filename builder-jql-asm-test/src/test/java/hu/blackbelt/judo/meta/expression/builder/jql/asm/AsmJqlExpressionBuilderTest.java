@@ -13,6 +13,7 @@ import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -462,6 +463,8 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(orderDetail, "not self.product!kindof(demo::entities::Product)", "productType", ATTRIBUTE);
         createGetterExpression(orderDetail, "self.product!typeof(demo::entities::Product)", "productType", ATTRIBUTE);
 
+        EClass order = findBase("Order");
+        createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName = 'joe')");
     }
 
     @Test
@@ -562,7 +565,15 @@ public class AsmJqlExpressionBuilderTest {
 
         createExpression(null, "true ? 8[dkg]+12[g] : 2[g] + 4[g] + demo::entities::Product!sort()!head().weight");
 
+        createExpression(null, "(2 + 4) * 8[kg] * 60[kilometrePerHour] / 3[s]");
+        createExpression(null, "9[mm]/(1/45[cm])");
+        createExpression(null, "9[mg] < 2[kg]");
+        createExpression(null, "`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
+        Expression timeStampAddition = createExpression(null, "demo::entities::Order!sort()!head().orderDate - 3[day]");
+        assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
+        createExpression(null, "`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
+        createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer");
     }
 
 }

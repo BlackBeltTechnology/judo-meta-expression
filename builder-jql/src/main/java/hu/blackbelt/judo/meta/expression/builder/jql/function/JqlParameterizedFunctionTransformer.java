@@ -41,7 +41,7 @@ public class JqlParameterizedFunctionTransformer<B extends Expression, P, R exte
             P castParam = (P) parameter;
             return builder.apply(argument, castParam);
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Illegal argument type: " + parameter.getClass());
+            throw new IllegalArgumentException(String.format("Error in expression %s!%s, illegal argument type: %s", argument, functionCall.getFunction().getName(), parameter.getClass()));
         }
 
     }

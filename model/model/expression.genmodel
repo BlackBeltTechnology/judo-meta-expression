@@ -210,8 +210,15 @@
             body="return getName();"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/ObjectVariable">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/ObjectVariable/filterVariable"/>
         <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/getObjectType/modelAdapter"/>
+        </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/createFilterVariable"
+            body="&#x9;&#x9;hu.blackbelt.judo.meta.expression.TypeName typeName = (hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getObjectType(modelAdapter)).get();&#xA;&#x9;&#x9;Iterable&lt;org.eclipse.emf.ecore.EObject> contents = expressionResource::getAllContents;&#xA;&#x9;&#x9;        java.util.stream.Stream&lt;hu.blackbelt.judo.meta.expression.TypeName> typeNameStream = java.util.stream.StreamSupport.stream(contents.spliterator(), true)&#xA;&#x9;&#x9;                .filter(e -> hu.blackbelt.judo.meta.expression.TypeName.class.isAssignableFrom(e.getClass())).map(e -> (hu.blackbelt.judo.meta.expression.TypeName)e);&#xA;&#x9;&#x9;setFilterVariable(hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder()&#xA;&#x9;&#x9;                    .withElementName(typeNameStream.filter(tn -> java.util.Objects.equals(tn.getName(), typeName.getName()) &amp;&amp; java.util.Objects.equals(tn.getNamespace(), typeName.getNamespace())).findAny().get())&#xA;&#x9;&#x9;                    .withName(name)&#xA;&#x9;&#x9;                    .build());&#xA;&#x9;&#x9;return getFilterVariable();&#xA;">
+          <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/createFilterVariable/name"/>
+          <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/createFilterVariable/modelAdapter"/>
+          <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/createFilterVariable/expressionResource"/>
         </genOperations>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/CollectionVariable">

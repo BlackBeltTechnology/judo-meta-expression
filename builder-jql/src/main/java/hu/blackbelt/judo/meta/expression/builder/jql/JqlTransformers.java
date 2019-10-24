@@ -43,8 +43,7 @@ import static hu.blackbelt.judo.meta.expression.collection.util.builder.Collecti
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newCastObjectBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newContainerExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
@@ -113,8 +112,14 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("head", new JqlHeadFunctionTransformer(this));
         functionTransformers.put("tail", new JqlTailFunctionTransformer(this));
-        functionTransformers.put("filter", new JqlParameterizedFunctionTransformer<CollectionExpression, LogicalExpression, FilteringExpression>(this,
-                (expression, parameter) -> newCollectionFilterExpressionBuilder().withCollectionExpression(expression).withCondition(parameter).build()));
+        functionTransformers.put("filter", new JqlParameterizedFunctionTransformer<ReferenceExpression, LogicalExpression, FilteringExpression>(this,
+                (expression, parameter) -> {
+                    if (expression instanceof ObjectExpression) {
+                        return newObjectFilterExpressionBuilder().withObjectExpression((ObjectExpression) expression).withCondition(parameter).build();
+                    } else {
+                        return newCollectionFilterExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withCondition(parameter).build();
+                    }
+                }));
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
         functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN));
@@ -208,9 +213,16 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
             List<ObjectVariable> variablesWithLambdaArgument = new ArrayList<>(variables);
             String lambdaArgument = functionCall.getLambdaArgument();
             if (lambdaArgument != null) {
-                CollectionVariable collection = (CollectionVariable) result;
-                ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
-                variablesWithLambdaArgument.add(0, iterator);
+                if (result instanceof CollectionVariable) {
+                    CollectionVariable collection = (CollectionVariable) result;
+                    ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
+                    variablesWithLambdaArgument.add(0, iterator);
+                } else if (result instanceof ObjectVariable) {
+                    ObjectVariable objectVariable = (ObjectVariable) result;
+                    ObjectVariable filterVariable = objectVariable.createFilterVariable(lambdaArgument, getModelAdapter(), expressionResource);
+                    variablesWithLambdaArgument.add(0, filterVariable);
+                }
+
             }
             if (functionTransformer != null) {
                 result = functionTransformer.apply(result, functionCall, variablesWithLambdaArgument);
