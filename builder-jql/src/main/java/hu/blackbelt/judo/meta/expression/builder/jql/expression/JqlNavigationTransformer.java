@@ -6,6 +6,8 @@ import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.collection.CastCollection;
+import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
@@ -59,7 +61,15 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
                 //TODO - handle reference expressions that are not reference selectors (necessary for getters only, setters must be selectors!)
                 baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
                 baseExpression = jqlTransformers.applySelectorFunctions(jqlFeature, baseExpression, variables);
-                navigationBase = getModelAdapter().getTarget(reference.get());
+                if (baseExpression instanceof CastCollection) {
+                    CastCollection castCollection = (CastCollection) baseExpression;
+                    navigationBase = (C) castCollection.getElementName().get(getModelAdapter());
+                } else if (baseExpression instanceof CastObject) {
+                    CastObject castObject = (CastObject) baseExpression;
+                    navigationBase = (C) castObject.getElementName().get(getModelAdapter());
+                } else {
+                    navigationBase = getModelAdapter().getTarget(reference.get());
+                }
             } else {
                 LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
                 throw new IllegalStateException("Feature not found");

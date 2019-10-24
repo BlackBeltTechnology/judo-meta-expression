@@ -304,11 +304,13 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testCast() {
-        EClass employee = findBase("Customer");
-        createExpression(employee, "self=>orders!asCollection(demo::entities::InternationalOrder)");
+        EClass customer = findBase("Customer");
+        createExpression(customer, "self=>orders!asCollection(demo::entities::InternationalOrder)");
+        createExpression(customer, "self=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country");
 
         EClass order = findBase("Order");
         createExpression(order, "self=>customer!asType(demo::entities::Company)");
+
     }
 
     @Test
@@ -573,7 +575,7 @@ public class AsmJqlExpressionBuilderTest {
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression(null, "`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
-        createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer");
+        createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country=#RO and c=>addresses!sort()!head().postalCode!matches('11%'))");
     }
 
 }
