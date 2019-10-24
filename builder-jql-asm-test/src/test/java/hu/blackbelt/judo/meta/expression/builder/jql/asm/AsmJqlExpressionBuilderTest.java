@@ -92,7 +92,7 @@ public class AsmJqlExpressionBuilderTest {
         expressionModelResourceSupport = null;
     }
 
-    private void validateExpressions(final Resource expressionResource) throws Exception {
+    private void validateExpressions(final Resource expressionResource) throws  Exception {
         final List<ModelContext> modelContexts = Arrays.asList(
                 wrappedEmfModelContextBuilder()
                         .log(log)
@@ -142,24 +142,24 @@ public class AsmJqlExpressionBuilderTest {
         executionContext.close();
     }
 
-    private Expression createExpression(String jqlExpressionAsString) throws Exception {
+    private Expression createExpression(String jqlExpressionAsString) {
         return createExpression(null, jqlExpressionAsString);
     }
 
-    private Expression createExpression(final EClass clazz, final String jqlExpressionString) throws Exception {
+    private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
         final Expression expression = asmJqlExpressionBuilder.createExpression(clazz, jqlExpressionString);
         assertThat(expression, notNullValue());
         return expression;
     }
 
-    private Expression createGetterExpression(EClass clazz, String jqlExpressionString, String feature, JqlExpressionBuilder.BindingType bindingType) throws Exception {
+    private Expression createGetterExpression(EClass clazz, String jqlExpressionString, String feature, JqlExpressionBuilder.BindingType bindingType) {
         Expression expression = createExpression(clazz, jqlExpressionString);
         createGetterBinding(clazz, expression, feature, bindingType);
         return expression;
     }
 
     @Test
-    void testOrderDate() throws Exception {
+    void testOrderDate() {
         final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
         final Expression expression = createExpression(order, "self.orderDate");
         assertNotNull(expression);
@@ -170,7 +170,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testOrderCategories() throws Exception {
+    void testOrderCategories() {
         EClass order = findBase("Order");
         Expression expression = createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
@@ -178,14 +178,14 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testSimpleArithmeticOperation() throws Exception {
+    void testSimpleArithmeticOperation() {
         final Expression expression = createExpression(null, "2*3");
         log.info("Simple arithmetic operation: " + expression);
         assertNotNull(expression);
     }
 
     @Test
-    void testStaticExpressions() throws Exception {
+    void testStaticExpressions() {
         Expression allProducts = createExpression(null, "demo::entities::Product");
         assertThat(allProducts, instanceOf(CollectionExpression.class));
         Expression allOrdersCount = createExpression(null, "demo::entities::Order!count()");
@@ -193,6 +193,7 @@ public class AsmJqlExpressionBuilderTest {
         Expression allEmployeeOrders = createExpression(null, "demo::entities::Employee=>orders");
         assertThat(allEmployeeOrders , instanceOf(CollectionExpression.class));
         assertThat(allEmployeeOrders, collectionOf("Order"));
+        Expression allProductsSorted = createExpression(null, "demo::entities::Product!sort()");
     }
 
     private Matcher<Expression> collectionOf(String typeName) {
@@ -252,7 +253,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testSimpleDaoTest() throws Exception {
+    void testSimpleDaoTest() {
         EClass order = findBase("Order");
         createGetterExpression(order, "self.orderDetails", "orderDetails", RELATION);
         Expression orderCategories = createGetterExpression(order, "self.orderDetails.product.category", "categories", RELATION);
@@ -287,7 +288,6 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(orderDetail, "self.discount", "discount", ATTRIBUTE);
         createGetterExpression(orderDetail, "self.quantity * self.unitPrice * (1 - self.discount)", "price", ATTRIBUTE);
 
-        validateExpressions(expressionModelResourceSupport.getResource());
     }
 
     private EClass findBase(String entityName) {
@@ -301,7 +301,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testCast() throws Exception {
+    void testCast() {
         EClass employee = findBase("Customer");
         createExpression(employee, "self=>orders!asCollection(demo::entities::InternationalOrder)");
 
@@ -310,14 +310,14 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testContainer() throws Exception {
+    void testContainer() {
         EClass address = findBase("Address");
         createExpression(address, "self!container(demo::entities::Customer)");
     }
 
 
     @Test
-    void testConstants() throws Exception {
+    void testConstants() {
         createExpression(null, "1");
         createExpression(null, "1.2");
         createExpression(null, "true");
@@ -330,7 +330,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testDateOperations() throws Exception {
+    void testDateOperations() {
         createExpression(null, "`2019-12-31`!difference(`2020-01-01`)");
         createExpression(null, "`2019-12-31` < `2020-01-01`");
         createExpression(null, "`2019-12-31` > `2020-01-01`");
@@ -345,7 +345,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testTimestampOperations() throws Exception {
+    void testTimestampOperations() {
         createExpression("`2019-12-31T00:00:00.000+0100`!difference(`2019-12-31T00:00:00.000+0200`)");
         createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` < `2019-12-31T00:00:00.000+0200`");
@@ -360,7 +360,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testDecimalOperations() throws Exception {
+    void testDecimalOperations() {
         createExpression("1.0 < 3.14");
         createExpression("1.0 > 3.14");
         createExpression("1.0 <= 3.14");
@@ -379,7 +379,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testSwitchCase() throws Exception {
+    void testSwitchCase() {
         createExpression(null, "true ? 1 : 2");
         createExpression(null, "true ? 1 : 2 + 3");
         createExpression(null, "true ? 1.0 : 2.0 + 3");
@@ -389,7 +389,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testCollectionOperations() throws Exception {
+    void testCollectionOperations() {
         EClass category = findBase("Category");
         Expression products = createGetterExpression(category, "self.products", "products", RELATION);
         assertThat(products, collectionOf("Product"));
@@ -425,13 +425,13 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testCustomAttributes() throws Exception {
+    void testCustomAttributes() {
         EClass category = findBase("Category");
 
     }
 
     @Test
-    void testStringOperations() throws Exception {
+    void testStringOperations() {
         EClass category = findBase("Category");
         createExpression(category, "self.categoryName < 'c'");
         createExpression(category, "self.categoryName > 'c'");
@@ -448,7 +448,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testObjectOperations() throws Exception {
+    void testObjectOperations() {
         EClass category = findBase("Category");
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()", "productComparison1", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() <> self=>products!sort(p | p.unitPrice)!tail()", "productComparison2", ATTRIBUTE);
@@ -460,14 +460,14 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testUnaryOperations() throws Exception {
+    void testUnaryOperations() {
         createExpression(null, "-1");
         createExpression(null, "-1.0");
         createExpression(null, "not true");
     }
 
     @Test
-    void testEnums() throws Exception {
+    void testEnums() {
         EClass order = findBase("Order");
         createGetterExpression(order, "self.shipAddress.country = demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
         createGetterExpression(order, "self.shipAddress.country = #AT", "countryCheck2", ATTRIBUTE);
@@ -477,7 +477,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testMeasures() throws Exception {
+    void testMeasures() {
         createExpression(null, "5[demo::measures::Time#min]");
         createExpression(null, "1.23[min]");
 
@@ -488,7 +488,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testNumericFunctions() throws Exception {
+    void testNumericFunctions() {
         Expression roundedConstant = createExpression(null, "1.2!round()");
         assertThat(roundedConstant, instanceOf(IntegerExpression.class));
         EClass product = findBase("Product");
@@ -497,7 +497,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
-    void testStringFunctions() throws Exception {
+    void testStringFunctions() {
         EClass order = findBase("Order");
 
         // LowerCase
@@ -532,6 +532,14 @@ public class AsmJqlExpressionBuilderTest {
 
         // Matches
         createGetterExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')", "shipperNameMatches", ATTRIBUTE);
+    }
+
+    @Test
+    public void test002() {
+        EClass customer = findBase("Customer");
+        createGetterExpression(customer, "self.addresses", "customerAddresses", RELATION);
+
+        createExpression(null, "-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entitites::InternationalOrder)");
     }
 
 }

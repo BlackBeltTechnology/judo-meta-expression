@@ -5,6 +5,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.collection.OrderByItem;
 import hu.blackbelt.judo.meta.expression.collection.impl.SortExpressionImpl;
+import hu.blackbelt.judo.meta.expression.collection.util.builder.SortExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -39,9 +40,11 @@ public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<C
                     orderByItems.add(newOrderByItemBuilder().withExpression(orderByItemExpression).withDescending(orderByItemDesc.isValue()).build());
                 }
         );
-        return newSortExpressionBuilder()
-                .withCollectionExpression(collection)
-                .withOrderBy(orderByItems).build();
+        SortExpressionBuilder builder = newSortExpressionBuilder().withCollectionExpression(collection);
+        if (!orderByItems.isEmpty()) {
+            builder = builder.withOrderBy(orderByItems);
+        }
+        return builder.build();
     }
 
     private boolean isDescending(String parameterExtension) {

@@ -226,7 +226,7 @@
           <genParameters ecoreParameter="expression.ecore#//variable/CollectionVariable/createIterator/expressionResource"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getVariableName"
-            body="return getIteratorVariable().getName();"/>
+            body="return getIteratorVariable() == null ? null : getIteratorVariable().getName();"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operator" resource="XMI" disposableProviderFactory="true"
@@ -825,7 +825,7 @@
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/toString"
-            body="return getCollectionExpression() + &quot; as &quot; + getCollectionExpression().getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());"/>
+            body="&#x9;&#x9;if (getCollectionExpression().getVariableName() == null) {&#xA;&#x9;&#x9;    return getCollectionExpression() + &quot; as e orderedBy e.id&quot;;&#xA;&#x9;&#x9;} else {&#xA;&#x9;&#x9;    return getCollectionExpression() + &quot; as &quot; + getCollectionExpression().getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());&#xA;&#x9;&#x9;}&#xA;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/SubCollectionExpression">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
