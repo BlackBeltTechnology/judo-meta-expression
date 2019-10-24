@@ -540,6 +540,10 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(customer, "self.addresses", "customerAddresses", RELATION);
 
         createExpression(null, "-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
+        createExpression(null, "demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
+        // select categories, where the category has more than 10 products
+        createExpression(null, "demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category = c)!count() > 10)");
+
     }
 
 }

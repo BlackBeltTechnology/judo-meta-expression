@@ -49,13 +49,13 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             return createTimestampOperation((TimestampExpression) left, (TimestampExpression) right, operator);
         } else if (left instanceof TimestampExpression && right instanceof MeasuredInteger || right instanceof TimestampExpression && left instanceof MeasuredInteger) {
             return createTimestampAdditionOperation(left, right, operator);
-        } else if (left instanceof ObjectSelectorExpression && right instanceof ObjectSelectorExpression) {
-            return createObjectSelectorOperation((ObjectSelectorExpression) left, (ObjectSelectorExpression) right, operator);
+        } else if (left instanceof ObjectExpression && right instanceof ObjectExpression) {
+            return createObjectSelectorOperation((ObjectExpression) left, (ObjectExpression) right, operator);
         }
         throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
     }
 
-    private Expression createObjectSelectorOperation(ObjectSelectorExpression left, ObjectSelectorExpression right, String operator) {
+    private Expression createObjectSelectorOperation(ObjectExpression left, ObjectExpression right, String operator) {
         switch (operator) {
             case "=":
                 return newObjectComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
