@@ -51,7 +51,7 @@ public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
             }
             result = builder.build();
         } else if (jqlValue instanceof DecimalLiteral) {
-            BigDecimal decimalValue = ((DecimalLiteral)jqlValue).getValue();
+            BigDecimal decimalValue = ((DecimalLiteral) jqlValue).getValue();
             MeasuredDecimalBuilder builder = newMeasuredDecimalBuilder().withUnitName(unitName).withValue(decimalValue);
             if (measureName != null) {
                 builder = builder.withMeasure(measureName);

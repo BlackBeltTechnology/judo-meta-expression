@@ -1,14 +1,17 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.util.builder.SwitchCaseBuilder;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.TernaryOperation;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionSwitchExpressionBuilder;
@@ -32,7 +35,7 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M,
             put(EnumerationExpression.class, (thenCase, elseExpression) -> {
                 EnumerationSwitchExpressionBuilder builder = newEnumerationSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression);
                 Object enumeration = ((EnumerationExpression) elseExpression).getEnumeration(getModelAdapter());
-                return builder.withElementName((TypeName)enumeration).build();
+                return builder.withElementName((TypeName) enumeration).build();
             });
             put(DateExpression.class, (thenCase, elseExpression) -> newDateSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(ObjectExpression.class, (thenCase, elseExpression) -> newObjectSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
@@ -58,14 +61,14 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E, C extends NE, RTE, M,
     }
 
     private void validateExpressionTypes(Expression condition, Expression elseExpression, Expression thenExpression) {
-        if (!LogicalExpression.class.isInstance(condition)) {
+        if (!(condition instanceof LogicalExpression)) {
             throw new IllegalArgumentException("Not a logical expression: " + condition);
         }
-        if (!DataExpression.class.isInstance(elseExpression)) {
-            throw new IllegalArgumentException("Not a data expression: " + elseExpression);
+        if (!(thenExpression instanceof DataExpression)) {
+            throw new IllegalArgumentException("Not a data expression in THEN: " + thenExpression);
         }
-        if (!DataExpression.class.isInstance(thenExpression)) {
-            throw new IllegalArgumentException("Not a data expression: " + elseExpression);
+        if (!(elseExpression instanceof DataExpression)) {
+            throw new IllegalArgumentException("Not a data expression in ELSE: " + elseExpression);
         }
     }
 

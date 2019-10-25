@@ -13,7 +13,7 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAggregatedExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAggregatedExpressionBuilder;
 
-public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression>  {
+public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
     private IntegerAggregator integerAggregator;
     private DecimalAggregator decimalAggregator;
@@ -28,8 +28,8 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
     public Expression apply(CollectionExpression collection, FunctionCall functionCall, List<ObjectVariable> variables) {
         Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         if (parameter instanceof IntegerExpression && integerAggregator != null) {
-            return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression)parameter).withOperator(integerAggregator).build();
-        } else if (parameter instanceof DecimalExpression || parameter instanceof  IntegerExpression && integerAggregator == null) {
+            return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression) parameter).withOperator(integerAggregator).build();
+        } else if (parameter instanceof DecimalExpression || parameter instanceof IntegerExpression && integerAggregator == null) {
             return newDecimalAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((NumericExpression) parameter).withOperator(decimalAggregator).build();
         } else {
             throw new IllegalArgumentException("Invalid expression for aggregation: " + parameter);

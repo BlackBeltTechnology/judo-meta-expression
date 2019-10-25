@@ -8,7 +8,6 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 

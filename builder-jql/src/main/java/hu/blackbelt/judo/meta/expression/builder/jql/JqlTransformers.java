@@ -100,11 +100,11 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
         functionTransformers.put("astype", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
                 (expression, parameter) -> newCastObjectBuilder().withElementName(getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
-                jqlExpression -> ((NavigationExpression)jqlExpression).getBase()));
+                jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
 
         functionTransformers.put("container", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
                 (expression, parameter) -> newContainerExpressionBuilder().withElementName(getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
-                jqlExpression -> ((NavigationExpression)jqlExpression).getBase()));
+                jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
 
     }
 
@@ -133,7 +133,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
         functionTransformers.put("ascollection", new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
                 (expression, parameter) -> newCastCollectionBuilder().withElementName(getTypeNameFromResource(parameter)).withCollectionExpression(expression).build(),
-                jqlExpression -> ((NavigationExpression)jqlExpression).getBase()));
+                jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
 
     }
 
@@ -206,7 +206,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
 
     public Expression applySelectorFunctions(Feature jqlFeature, Expression baseExpression, List<ObjectVariable> variables) {
         EList<FunctionCall> functionCalls = jqlFeature.getFunctions();
-        Expression result =baseExpression;
+        Expression result = baseExpression;
         for (FunctionCall functionCall : functionCalls) {
             String functionName = functionCall.getFunction().getName().toLowerCase();
             JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);

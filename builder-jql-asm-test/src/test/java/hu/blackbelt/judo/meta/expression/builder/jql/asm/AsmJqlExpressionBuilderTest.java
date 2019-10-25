@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
@@ -331,6 +332,7 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(null, "\"b\"");
         DateConstant dateConstant = (DateConstant) createExpression(null, "`2019-12-31`");
         createExpression(null, "`2019-12-31T13:52:03 Europe/Budapest`");
+        createExpression("demo::entities::Category!sort()!head().picture");
     }
 
     @Test
@@ -394,6 +396,13 @@ public class AsmJqlExpressionBuilderTest {
 
         EClass order = findBase("Order");
         createGetterExpression(order, "false ? self.shipper.companyName : 'b'", "stringSwitch", ATTRIBUTE);
+//     TODO createExpression("true ? demo::entities::Product : demo::entities::Order");
+        createExpression("true ? demo::entities::Category!sort()!head().picture : demo::entities::Product!sort()!head()->category.picture");
+        createExpression("true ? demo::types::Countries#AT : demo::types::Countries#RO");
+//     TODO createExpression("true ? demo::entities::Category!sort()!head() : demo::entities::Product!sort()!head()->category");
+        createExpression("true ? 'a' : demo::entities::Category!sort()!head().categoryName");
+        createExpression("true ? `2019-10-12` : `2019-10-23`");
+        createExpression("true ? `2019-10-12T` : `2019-10-23T`");
     }
 
     @Test
@@ -560,22 +569,31 @@ public class AsmJqlExpressionBuilderTest {
         EClass customer = findBase("Customer");
         createGetterExpression(customer, "self.addresses", "customerAddresses", RELATION);
 
-        createExpression(null, "-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
-        createExpression(null, "demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
+        createExpression("-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
+        createExpression("demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
         // select categories, where the category has more than 10 products
-        createExpression(null, "demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category = c)!count() > 10)");
+        createExpression("demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category = c)!count() > 10)");
 
-        createExpression(null, "true ? 8[dkg]+12[g] : 2[g] + 4[g] + demo::entities::Product!sort()!head().weight");
+        createExpression("true ? 8[dkg]+12[g] : 2[g] + 4[g] + demo::entities::Product!sort()!head().weight");
 
-        createExpression(null, "(2 + 4) * 8[kg] * 60[kilometrePerHour] / 3[s]");
-        createExpression(null, "9[mm]/(1/45[cm])");
-        createExpression(null, "9[mg] < 2[kg]");
-        createExpression(null, "`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
+        createExpression("(2 + 4) * 8[kg] * 60[kilometrePerHour] / 3[s]");
+        createExpression("9[mm]/(1/45[cm])");
+        createExpression( "9[mg] < 2[kg]");
+        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
         Expression timeStampAddition = createExpression(null, "demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression(null, "`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
-        createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country=#RO and c=>addresses!sort()!head().postalCode!matches('11%'))");
+        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country=#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
+        assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));
+    }
+
+    @Test
+    public void test003() {
+        createExpression("demo::entities::Employee!filter(e | e.lastName = 'Gipsz' and e.firstName = 'Jakab')!sort()!head()=>orders!sort(o | o.orderDate DESC)");
+//     TODO createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture)");
+        createExpression(findBase("Order"), "self=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
+
     }
 
 }

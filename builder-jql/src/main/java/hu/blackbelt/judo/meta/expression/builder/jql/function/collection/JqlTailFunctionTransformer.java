@@ -10,11 +10,9 @@ import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 
-import java.math.BigInteger;
 import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newSubCollectionExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newCountExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAritmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSelectorExpressionBuilder;
@@ -36,11 +34,11 @@ public class JqlTailFunctionTransformer extends AbstractJqlFunctionTransformer<O
                 throw new IllegalArgumentException("Function parameter must be integer, got: " + parameter);
             }
             IntegerExpression length = newCountExpressionBuilder().withCollectionExpression(copy(collection)).build();
-            IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(length).withRight((IntegerExpression)copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+            IntegerExpression position = newIntegerAritmeticExpressionBuilder().withLeft(length).withRight((IntegerExpression) copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
 
             return newSubCollectionExpressionBuilder()
                     .withCollectionExpression(collection)
-                    .withLength((IntegerExpression)parameter)
+                    .withLength((IntegerExpression) parameter)
                     .withPosition(position).build();
         }
     }
