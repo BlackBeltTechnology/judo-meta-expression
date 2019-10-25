@@ -1,9 +1,9 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.StringExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
-import hu.blackbelt.judo.meta.expression.operator.*;
+import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
@@ -18,14 +18,16 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.*;
-import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newDecimalComparisonBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
 public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
@@ -47,6 +49,9 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 URI.createURI(createdSourceModelName));
 
         final TypeName orderType = newTypeNameBuilder().withNamespace("demo::entities").withName("Order").build();
+        expressionResource.getContents().add(orderType);
+        expressionResource.getContents().add(newTypeNameBuilder().withNamespace("demo::entities").withName("OrderDetail").build());
+
 
         final ObjectVariable order = newInstanceBuilder()
                 .withElementName(orderType)
@@ -60,17 +65,16 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withAttributeName("orderDate")
                 .build();
 
-//        final StringExpression shipperName = newStringAttributeBuilder()
-//                .withObjectExpression(newObjectNavigationExpressionBuilder()
-//                        .withObjectExpression(newObjectVariableReferenceBuilder()
-//                                .withVariable(order)
-//                                .build())
-//                        .withName("s")
-//                        .withReferenceName("shipper")
-//                        .build())
-//                .withAttributeName("companyName")
-//                .withAlias("shipperName")
-//                .build();
+        final StringExpression shipperName = newStringAttributeBuilder()
+                .withObjectExpression(newObjectNavigationExpressionBuilder()
+                        .withObjectExpression(newObjectVariableReferenceBuilder()
+                                .withVariable(order)
+                                .build())
+                        .withName("s")
+                        .withReferenceName("shipper")
+                        .build())
+                .withAttributeName("companyName")
+                .build();
 
         final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
@@ -242,7 +246,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
         expressionResource.getContents().addAll(Arrays.asList(orderType, order
                 , orderDate
-//                , shipperName
+                , shipperName
                 , orderDetails
 //                , price
 //                , itemsOfDiscountedProducts
