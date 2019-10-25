@@ -11,8 +11,6 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTra
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlMatchesFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlPositionFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
@@ -20,10 +18,8 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperatio
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
-import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
-import hu.blackbelt.judo.meta.expression.logical.InstanceOfExpression;
-import hu.blackbelt.judo.meta.expression.logical.MemberOfExpression;
-import hu.blackbelt.judo.meta.expression.logical.TypeOfExpression;
+import hu.blackbelt.judo.meta.expression.logical.*;
+import hu.blackbelt.judo.meta.expression.numeric.Position;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
@@ -32,8 +28,6 @@ import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.resource.Resource;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -47,22 +41,14 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
+public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> {
 
-    private Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
-    private Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
+    private final JqlExpressionBuilder<NE, P, PTE, E, C, RTE, M, U> expressionBuilder;
+    private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
+    private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
 
-    private ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
-    private Map<String, MeasureName> measureNames;
-
-    private Map<String, TypeName> enumTypes;
-    private Resource expressionResource;
-
-    public JqlTransformers(ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, Map<String, MeasureName> measureNames, Map<String, TypeName> enumTypes, Resource expressionResource) {
-        this.modelAdapter = modelAdapter;
-        this.measureNames = measureNames;
-        this.enumTypes = enumTypes;
-        this.expressionResource = expressionResource;
+    public JqlTransformers(JqlExpressionBuilder<NE, P, PTE, E, C, RTE, M, U> expressionBuilder) {
+        this.expressionBuilder = expressionBuilder;
         literals();
         operations();
         stringFunctions();
@@ -72,20 +58,10 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         objectFunctions();
     }
 
-    private static String createQNamespaceString(QualifiedName qName) {
-        String qNamespaceString;
-        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
-            qNamespaceString = String.join("::", qName.getNamespaceElements());
-        } else {
-            qNamespaceString = null;
-        }
-        return qNamespaceString;
-    }
-
     private void objectFunctions() {
         functionTransformers.put("kindof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
                 (expression, parameter) -> {
-                    TypeName typeNameFromResource = getTypeNameFromResource(parameter);
+                    TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
                     if (typeNameFromResource == null) {
                         throw new IllegalArgumentException("Type not found: " + parameter);
                     }
@@ -94,16 +70,16 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                 (jqlExpression) -> ((NavigationExpression) jqlExpression).getBase()
         ));
         functionTransformers.put("typeof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
-                (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(getTypeNameFromResource(parameter)).build(),
+                (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(expressionBuilder.getTypeNameFromResource(parameter)).build(),
                 (jqlExpression -> ((NavigationExpression) jqlExpression).getBase())
         ));
 
         functionTransformers.put("astype", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
-                (expression, parameter) -> newCastObjectBuilder().withElementName(getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
+                (expression, parameter) -> newCastObjectBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
                 jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
 
         functionTransformers.put("container", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
-                (expression, parameter) -> newContainerExpressionBuilder().withElementName(getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
+                (expression, parameter) -> newContainerExpressionBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
                 jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
 
     }
@@ -132,7 +108,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                 (expression, parameter) -> newMemberOfExpressionBuilder().withCollectionExpression(parameter).withObjectExpression(expression).build()));
 
         functionTransformers.put("ascollection", new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
-                (expression, parameter) -> newCastCollectionBuilder().withElementName(getTypeNameFromResource(parameter)).withCollectionExpression(expression).build(),
+                (expression, parameter) -> newCastCollectionBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withCollectionExpression(expression).build(),
                 jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
 
     }
@@ -151,7 +127,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         functionTransformers.put("uppercase", (expression, functionCall, variables) -> newUpperCaseBuilder().withExpression((StringExpression) expression).build());
         functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder().withExpression((StringExpression) expression).build());
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
-        functionTransformers.put("position", new JqlPositionFunctionTransformer(this));
+        functionTransformers.put("position", new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Position>(this, (argument, parameter) -> newPositionBuilder().withContainer(argument).withContainment(parameter).build()));
         functionTransformers.put("replace", new JqlReplaceFunctionTransformer(this));
         functionTransformers.put("first", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> newSubStringBuilder()
@@ -167,7 +143,7 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
                             .withPosition(position)
                             .withLength(parameter).build();
                 }));
-        functionTransformers.put("matches", new JqlMatchesFunctionTransformer(this));
+        functionTransformers.put("matches", new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Matches>(this, (argument, parameter) -> newMatchesBuilder().withExpression(argument).withPattern(parameter).build()));
     }
 
     private void operations() {
@@ -199,82 +175,59 @@ public class JqlTransformers<NE, P, PTE, E, C extends NE, RTE, M, U> {
         if (jqlExpression instanceof NavigationExpression) {
             return transformedExpression;
         } else {
-            return applyFunctions(jqlExpression, transformedExpression, variables);
+            return applyFunctions(jqlExpression.getFunctions(), transformedExpression, variables);
         }
-
     }
 
-    public Expression applySelectorFunctions(Feature jqlFeature, Expression baseExpression, List<ObjectVariable> variables) {
-        EList<FunctionCall> functionCalls = jqlFeature.getFunctions();
-        Expression result = baseExpression;
+    public Expression applyFunctions(List<FunctionCall> functionCalls, Expression baseExpression, List<ObjectVariable> variables) {
+        Expression subject = baseExpression;
         for (FunctionCall functionCall : functionCalls) {
             String functionName = functionCall.getFunction().getName().toLowerCase();
             JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
-            List<ObjectVariable> variablesWithLambdaArgument = new ArrayList<>(variables);
-            String lambdaArgument = functionCall.getLambdaArgument();
-            if (lambdaArgument != null) {
-                if (result instanceof CollectionVariable) {
-                    CollectionVariable collection = (CollectionVariable) result;
-                    ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
-                    variablesWithLambdaArgument.add(0, iterator);
-                } else if (result instanceof ObjectVariable) {
-                    ObjectVariable objectVariable = (ObjectVariable) result;
-                    ObjectVariable filterVariable = objectVariable.createFilterVariable(lambdaArgument, getModelAdapter(), expressionResource);
-                    variablesWithLambdaArgument.add(0, filterVariable);
-                }
-
+            List<ObjectVariable> mutableVariableList = new ArrayList<>(variables);
+            if (functionCall.getLambdaArgument() != null) {
+                addLambdaVariable(subject, mutableVariableList, functionCall.getLambdaArgument());
             }
             if (functionTransformer != null) {
-                result = functionTransformer.apply(result, functionCall, variablesWithLambdaArgument);
+                subject = functionTransformer.apply(subject, functionCall, mutableVariableList);
             } else {
                 throw new IllegalStateException("Unknown function: " + functionName);
             }
         }
-        return result;
+        return subject;
     }
 
-    public Expression applyFunctions(JqlExpression jqlExpression, Expression argument, List<ObjectVariable> variables) {
-        EList<FunctionCall> functionCalls = jqlExpression.getFunctions();
-        Expression result = argument;
-        for (FunctionCall functionCall : functionCalls) {
-            String functionName = functionCall.getFunction().getName().toLowerCase();
-            JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
-            List<ObjectVariable> variablesWithLambdaArgument = new ArrayList<>(variables);
-            String lambdaArgument = functionCall.getLambdaArgument();
-            if (lambdaArgument != null) {
-                CollectionVariable collection = (CollectionVariable) result;
-                ObjectVariable iterator = collection.createIterator(lambdaArgument, getModelAdapter(), expressionResource);
-                variablesWithLambdaArgument.add(0, iterator);
-            }
-            if (functionTransformer != null) {
-                result = functionTransformer.apply(result, functionCall, variablesWithLambdaArgument);
-            } else {
-                throw new IllegalStateException("Unknown function: " + functionName);
-            }
+    private void addLambdaVariable(Expression subject, List<ObjectVariable> variablesWithLambdaArgument, String lambdaArgument) {
+        ObjectVariable variable;
+        if (subject instanceof CollectionVariable) {
+            CollectionVariable collection = (CollectionVariable) subject;
+            variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+        } else if (subject instanceof ObjectVariable) {
+            ObjectVariable objectVariable = (ObjectVariable) subject;
+            variable = objectVariable.createFilterVariable(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+        } else {
+            variable = null;
         }
-        return result;
+        if (variable != null) {
+            variablesWithLambdaArgument.add(0, variable);
+        } else {
+            throw new IllegalArgumentException(String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
+        }
     }
 
-    public ModelAdapter<NE, P, PTE, E, C, RTE, M, U> getModelAdapter() {
-        return modelAdapter;
+    public ModelAdapter<NE,P,PTE,E,C,RTE,M,U> getModelAdapter() {
+        return expressionBuilder.getModelAdapter();
     }
 
-    public Map<String, MeasureName> getMeasureNames() {
-        return measureNames;
+    public TypeName getEnumType(String enumType) {
+        return expressionBuilder.getEnumTypeName(enumType);
     }
 
-    public Map<String, TypeName> getEnumTypes() {
-        return enumTypes;
+    public TypeName getTypeNameFromResource(QualifiedName qualifiedName) {
+        return expressionBuilder.getTypeNameFromResource(qualifiedName);
     }
 
-    public TypeName getTypeNameFromResource(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), qName.getName()) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
+    public MeasureName getMeasureName(QualifiedName qualifiedName) {
+        return expressionBuilder.getMeasureName(qualifiedName);
     }
-
-    public Resource getExpressionResource() {
-        return expressionResource;
-    }
-
-
 }

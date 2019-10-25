@@ -21,7 +21,7 @@ import java.util.Optional;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 
-public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, RTE, M, U> {
+public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, RTE, M, U> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 
@@ -29,6 +29,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
         super(jqlTransformers);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Expression doTransform(hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression jqlExpression, List<ObjectVariable> variables) {
         Expression baseExpression;
@@ -48,19 +49,19 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
             baseExpression = newObjectVariableReferenceBuilder().withVariable(baseVariable.get()).build();
             navigationBase = (C) baseVariable.get().getObjectType(getModelAdapter());
         }
-        baseExpression = jqlTransformers.applyFunctions(jqlExpression, baseExpression, variables);
+        baseExpression = jqlTransformers.applyFunctions(jqlExpression.getFunctions(), baseExpression, variables);
         for (final Feature jqlFeature : jqlExpression.getFeatures()) {
             final Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
             final Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
             if (attribute.isPresent()) {
                 //TODO - handle data expressions that are not attribute selectors (necessary for getters only, setters must be selectors!)
                 baseExpression = createAttributeSelector(attribute.get(), jqlFeature.getName(), (ObjectExpression) baseExpression);
-                baseExpression = jqlTransformers.applySelectorFunctions(jqlFeature, baseExpression, variables);
+                baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, variables);
                 navigationBase = null;
             } else if (reference.isPresent()) {
                 //TODO - handle reference expressions that are not reference selectors (necessary for getters only, setters must be selectors!)
                 baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
-                baseExpression = jqlTransformers.applySelectorFunctions(jqlFeature, baseExpression, variables);
+                baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, variables);
                 if (baseExpression instanceof CastCollection) {
                     CastCollection castCollection = (CastCollection) baseExpression;
                     navigationBase = (C) castCollection.getElementName().get(getModelAdapter());
@@ -72,7 +73,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> ex
                 }
             } else {
                 LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
-                throw new IllegalStateException("Feature not found");
+                throw new IllegalStateException(String.format("Feature %s of %s not found", jqlFeature.getName(), navigationBase));
             }
         }
         return baseExpression;

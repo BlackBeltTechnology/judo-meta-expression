@@ -18,7 +18,7 @@ import java.util.List;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
 
-public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, NE, P, PTE, E, C, RTE, M, U> {
+public class JqlMeasuredLiteralTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, NE, P, PTE, E, C, RTE, M, U> {
 
     public JqlMeasuredLiteralTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
@@ -33,7 +33,7 @@ public class JqlMeasuredLiteralTransformer<NE, P, PTE, E, C extends NE, RTE, M, 
     }
 
     private MeasureName getMeasureName(MeasuredLiteral measuredLiteral) {
-        return measuredLiteral.getType() != null ? jqlTransformers.getMeasureNames().get(measuredLiteral.getType()) : null;
+        return measuredLiteral.getType() != null ? jqlTransformers.getMeasureName(measuredLiteral.getType()) : null;
     }
 
     @Override

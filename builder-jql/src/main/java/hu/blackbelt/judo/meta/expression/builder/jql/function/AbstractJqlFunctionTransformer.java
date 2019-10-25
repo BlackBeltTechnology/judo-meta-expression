@@ -5,7 +5,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 
 public abstract class AbstractJqlFunctionTransformer<B extends Expression> implements JqlFunctionTransformer<B> {
 
-    protected JqlTransformers jqlTransformers;
+    protected final JqlTransformers jqlTransformers;
 
     protected AbstractJqlFunctionTransformer(JqlTransformers jqlTransformers) {
         this.jqlTransformers = jqlTransformers;

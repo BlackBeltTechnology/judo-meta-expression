@@ -20,7 +20,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
 
-public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, NE, P, PTE, E, C extends NE, RTE, M, U> implements JqlExpressionTransformerFunction {
+public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, NE, P, PTE, E extends NE, C extends NE, RTE, M, U> implements JqlExpressionTransformerFunction {
 
     protected final JqlTransformers<NE, P, PTE, E, C, RTE, M, U> jqlTransformers;
 
@@ -28,6 +28,7 @@ public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, 
         this.jqlTransformers = jqlTransformers;
     }
 
+    @SuppressWarnings("unchecked")
     public final Expression apply(JqlExpression jqlExpression, List<ObjectVariable> variables) {
         return doTransform((T) jqlExpression, variables);
     }

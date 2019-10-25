@@ -4,13 +4,13 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
+import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
@@ -47,30 +47,32 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  */
 public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
-
     public static final String SELF_NAME = "self";
-
-    private MeasureProvider<M, U> measureProvider;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     private final Resource expressionResource;
     private final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
-
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
-
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
     public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
-        this.jqlTransformers = new JqlTransformers<>(modelAdapter, measureNames, enumTypes, expressionResource);
         this.expressionResource = expressionResource;
+        this.jqlTransformers = new JqlTransformers<>(this);
 
         addMeasures();
         addClasses();
         addEnums();
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
+        final Iterable<Notifier> asmContents = resourceSet::getAllContents;
+        return StreamSupport.stream(asmContents.spliterator(), true)
+                .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
 
     private void addEnums() {
@@ -99,9 +101,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
                         .build();
                 expressionResource.getContents().add(self);
             } else {
-                if (LOGGER.isTraceEnabled()) {
-                    LOGGER.trace("  - self instance is already added to resource set: {}", clazz);
-                }
+                LOGGER.trace("  - self instance is already added to resource set: {}", clazz);
                 self = foundSelf.get();
             }
 
@@ -110,13 +110,11 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
     }
 
     private void storeTypeName(NE namespaceElement, TypeName typeName) {
-        if (!all(expressionResource.getResourceSet(), TypeName.class)
-                .anyMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
+        if (all(expressionResource.getResourceSet(), TypeName.class)
+                .noneMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
             expressionResource.getContents().add(typeName);
         } else {
-            if (LOGGER.isTraceEnabled()) {
                 LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
-            }
         }
     }
 
@@ -161,7 +159,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
      * @param jqlExpression JQL expression
      * @return expression
      */
-    public Expression createExpression(final C entityType, JqlExpression jqlExpression) {
+    private Expression createExpression(final C entityType, JqlExpression jqlExpression) {
         final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
         final Expression expression = transformJqlToExpression(jqlExpression, instance != null ? ECollections.singletonEList(instance) : ECollections.emptyEList());
 
@@ -250,10 +248,28 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         return jqlTransformers.transform(jqlExpression, variables);
     }
 
-    public static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
-        final Iterable<Notifier> asmContents = resourceSet::getAllContents;
-        return StreamSupport.stream(asmContents.spliterator(), true)
-                .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
+    public ModelAdapter<NE,P,PTE,E,C,RTE,M,U> getModelAdapter() {
+        return modelAdapter;
+    }
+
+    public Resource getExpressionResource() {
+        return expressionResource;
+    }
+
+    public MeasureName getMeasureName(QualifiedName qualifiedName) {
+        return measureNames.get(qualifiedName);
+    }
+
+    public TypeName getEnumTypeName(String enumType) {
+        return enumTypes.get(enumType);
+    }
+
+    public enum BindingRole {
+        GETTER, SETTER, DEFAULT, RANGE
+    }
+
+    public enum BindingType {
+        ATTRIBUTE, RELATION
     }
 
     public static class BindingContext {
@@ -281,11 +297,20 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         }
     }
 
-    public enum BindingRole {
-        GETTER, SETTER, DEFAULT, RANGE
+    public TypeName getTypeNameFromResource(QualifiedName qName) {
+        String namespace = createQNamespaceString(qName);
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), qName.getName()) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
     }
 
-    public enum BindingType {
-        ATTRIBUTE, RELATION
+    private static String createQNamespaceString(QualifiedName qName) {
+        String qNamespaceString;
+        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
+            qNamespaceString = String.join("::", qName.getNamespaceElements());
+        } else {
+            qNamespaceString = null;
+        }
+        return qNamespaceString;
     }
+
+
 }

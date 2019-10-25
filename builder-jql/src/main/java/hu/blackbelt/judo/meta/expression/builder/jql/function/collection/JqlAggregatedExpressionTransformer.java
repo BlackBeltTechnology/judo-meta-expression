@@ -15,8 +15,8 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 
 public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
-    private IntegerAggregator integerAggregator;
-    private DecimalAggregator decimalAggregator;
+    private final IntegerAggregator integerAggregator;
+    private final DecimalAggregator decimalAggregator;
 
     public JqlAggregatedExpressionTransformer(JqlTransformers jqlTransformers, IntegerAggregator integerAggregator, DecimalAggregator decimalAggregator) {
         super(jqlTransformers);
@@ -29,7 +29,7 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
         Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), variables);
         if (parameter instanceof IntegerExpression && integerAggregator != null) {
             return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression) parameter).withOperator(integerAggregator).build();
-        } else if (parameter instanceof DecimalExpression || parameter instanceof IntegerExpression && integerAggregator == null) {
+        } else if (parameter instanceof DecimalExpression || parameter instanceof IntegerExpression) {
             return newDecimalAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((NumericExpression) parameter).withOperator(decimalAggregator).build();
         } else {
             throw new IllegalArgumentException("Invalid expression for aggregation: " + parameter);
