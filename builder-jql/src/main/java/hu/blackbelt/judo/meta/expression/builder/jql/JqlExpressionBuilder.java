@@ -256,7 +256,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         return expressionResource;
     }
 
-    public MeasureName getMeasureName(QualifiedName qualifiedName) {
+    public MeasureName getMeasureName(String qualifiedName) {
         return measureNames.get(qualifiedName);
     }
 

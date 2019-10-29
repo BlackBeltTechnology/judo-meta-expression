@@ -14,7 +14,6 @@ import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -33,7 +32,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
@@ -42,7 +43,8 @@ import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AsmJqlExpressionBuilderTest {
@@ -502,8 +504,10 @@ public class AsmJqlExpressionBuilderTest {
 
         Expression measuredIntDiv = createExpression(null, "2[min] div 1");
         assertTrue(modelAdapter.isMeasured((NumericExpression) measuredIntDiv));
-        Expression measuredDecimalRatio = createExpression(null, "2.0[min] / 1[min]");
-        assertFalse(modelAdapter.isMeasured((NumericExpression) measuredDecimalRatio));
+        Expression notMeasuredDecimalRatio = createExpression(null, "2.0[min] / 1[min]");
+        assertFalse(modelAdapter.isMeasured((NumericExpression) notMeasuredDecimalRatio));
+        Expression measuredDecimalRatio = createExpression(null, "2.0[demo::measures::Velocity#m/s] / 1[s]");
+        assertTrue(modelAdapter.isMeasured((NumericExpression) measuredDecimalRatio));
     }
 
     @Test
