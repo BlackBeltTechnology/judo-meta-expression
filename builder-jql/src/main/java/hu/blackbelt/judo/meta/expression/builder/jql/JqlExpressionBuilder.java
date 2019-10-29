@@ -312,5 +312,9 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         return qNamespaceString;
     }
 
+    public TypeName getTypeName(String namespace, String name) {
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
+    }
+
 
 }

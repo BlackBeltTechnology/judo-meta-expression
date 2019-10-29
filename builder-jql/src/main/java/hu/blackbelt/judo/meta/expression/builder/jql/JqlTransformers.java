@@ -227,6 +227,10 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> 
         return expressionBuilder.getTypeNameFromResource(qualifiedName);
     }
 
+    public TypeName getTypeNameFromResource(String namespace, String name) {
+        return expressionBuilder.getTypeName(namespace, name);
+    }
+
     public MeasureName getMeasureName(String qualifiedName) {
         return expressionBuilder.getMeasureName(qualifiedName);
     }

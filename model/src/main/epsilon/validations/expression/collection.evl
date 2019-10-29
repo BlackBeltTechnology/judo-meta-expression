@@ -116,3 +116,10 @@ context EXPR!CollectionVariableReference {
         message: "Type of variable " + self.variable.name + " is unknown"
     }
 }
+
+context EXPR!CollectionSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}

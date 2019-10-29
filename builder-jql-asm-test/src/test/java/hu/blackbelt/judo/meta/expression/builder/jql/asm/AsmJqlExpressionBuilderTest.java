@@ -417,6 +417,7 @@ public class AsmJqlExpressionBuilderTest {
 
         Expression companyAncestor = createExpression("true ? demo::entities::Supplier : demo::entities::Shipper");
         assertThat(((CollectionSwitchExpression) companyAncestor).getElementName().getName(), is("Company"));
+
         assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::entities::Product : demo::entities::Order"));
 
         createExpression("true ? demo::entities::Category!sort()!head().picture : demo::entities::Product!sort()!head()->category.picture");
