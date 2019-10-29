@@ -83,7 +83,7 @@
     </eOperations>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cases" lowerBound="1" upperBound="-1"
         eType="#//SwitchCase" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultExpression" eType="#//DataExpression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="defaultExpression" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="SwitchCase">
@@ -95,7 +95,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="condition" lowerBound="1"
         eType="#//LogicalExpression" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
-        eType="#//DataExpression" containment="true"/>
+        eType="#//Expression" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AggregatedExpression" abstract="true"
       eSuperTypes="#//Expression">
