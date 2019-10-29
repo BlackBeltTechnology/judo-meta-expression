@@ -793,7 +793,12 @@
                 -->
                 <module>osgi</module>
                 <module>osgi-itest</module>
-                <module>feature</module>
+                <module>feature-model</module>
+                <module>feature-builder-jql</module>
+                <module>feature-builder-jql-asm</module>
+                <module>feature-adapter-asm</module>
+                <module>feature-adapter-psm</module>
+                <module>feature-adapter-measure</module>
                 <module>site</module>
             </modules>
         </profile>

@@ -3,23 +3,96 @@
    <description>
       To install these features, point Eclipse at this site.
    </description>
+
+   <category-def name="expression" label="Judo Expression Model">
+      <description>
+         Judo Expression Model
+      </description>
+   </category-def>
+
+   <category-def name="adapters" label="Judo Expression Adapters">
+      <description>
+         Judo Expression Model adapters for other metamodels
+      </description>
+   </category-def>
+
+   <category-def name="builders" label="Judo Expression Builders">
+      <description>
+         Judo Expression builders uses other metamodels
+      </description>
+   </category-def>
+
+
+
+
+   <category-def name="expression_source" label="Judo Expression Model Source">
+      <description>
+         Judo Expression Model sourcee
+      </description>
+   </category-def>
+
+   <category-def name="adapters_source" label="Judo Expression Adapters Source">
+      <description>
+         Judo Expression Model adapters for other metamodels source
+      </description>
+   </category-def>
+
+   <category-def name="builders_source" label="Judo Expression Builders Source">
+      <description>
+         Judo Expression builders uses other metamodels source
+      </description>
+   </category-def>
+
+
    <feature id="hu.blackbelt.judo.meta.expression.feature">
       <category name="expression"/>
    </feature>
-   <category-def name="expression" label="Judo Expression Model">
-      <description>
-         Judo Expression Model Update Site: contains all features in this build.
-      </description>
-   </category-def>
 
    <feature id="hu.blackbelt.judo.meta.expression.feature.source">
       <category name="expression_source"/>
    </feature>
-   <category-def name="expression_source" label="Judo Expression Model Source">
-      <description>
-         Judo Expression Model source code.
-      </description>
-   </category-def>
+
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.feature">
+      <category name="builders"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.feature.source">
+      <category name="builders_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature">
+      <category name="builders"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature.source">
+      <category name="builders_source"/>
+   </feature>
+
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature.source">
+      <category name="adapters_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.psm.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.psm.feature.source">
+      <category name="adapters_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.asm.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.asm.feature.source">
+      <category name="adapters_source"/>
+   </feature>
 
    <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <!-- The tycho plugin 1.5.0 will fix it -->
