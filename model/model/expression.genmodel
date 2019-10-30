@@ -103,12 +103,12 @@
     <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression"/>
     <genClasses ecoreClass="expression.ecore#//ModelAdapter"/>
     <genClasses ecoreClass="expression.ecore#//Sequence"/>
-    <genClasses ecoreClass="expression.ecore#//GlobalSequence">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//GlobalSequence/typeName"/>
+    <genClasses ecoreClass="expression.ecore#//StaticSequence">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//StaticSequence/typeName"/>
     </genClasses>
-    <genClasses ecoreClass="expression.ecore#//EntitySequence">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//EntitySequence/objectExpression"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//EntitySequence/sequenceName"/>
+    <genClasses ecoreClass="expression.ecore#//ObjectSequence">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//ObjectSequence/objectExpression"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ObjectSequence/sequenceName"/>
     </genClasses>
     <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
