@@ -594,6 +594,20 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    public void testDefined() {
+        EClass order = findBase("Order");
+        createExpression(order, "self.shipper!isUndefined()");
+        createExpression(order, "self.shipper.companyName!isUndefined()");
+        createExpression(order, "not self.shipper!isUndefined()");
+    }
+
+//    TODO @Test
+//    public void testSequences() {
+//        createExpression("demo::GlobalSequence!next()");
+//        createExpression("demo::GlobalSequence!current()");
+//    }
+
+    @Test
     public void test002() {
         EClass customer = findBase("Customer");
         createGetterExpression(customer, "self.addresses", "customerAddresses", RELATION);
@@ -620,9 +634,8 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     public void test003() {
         createExpression("demo::entities::Employee!filter(e | e.lastName = 'Gipsz' and e.firstName = 'Jakab')!sort()!head()=>orders!sort(o | o.orderDate DESC)");
-//     TODO createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture)");
+        createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture!isDefined())");
         createExpression(findBase("Order"), "self=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
-
     }
 
 }

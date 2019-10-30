@@ -160,6 +160,14 @@
       interface="true" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="ModelAdapter" instanceClassName="hu.blackbelt.judo.meta.expression.adapters.ModelAdapter"
       abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Sequence"/>
+  <eClassifiers xsi:type="ecore:EClass" name="StaticSequence" eSuperTypes="#//Sequence">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeName" eType="#//TypeName"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ObjectSequence" eSuperTypes="#//Sequence">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="objectExpression" eType="#//ObjectExpression"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sequenceName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true" eSuperTypes="#//Expression">
@@ -424,6 +432,10 @@
       <eLiterals name="add" literal="+"/>
       <eLiterals name="substract" value="1" literal="-"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SequenceOperator">
+      <eLiterals name="current" literal="current"/>
+      <eLiterals name="next" literal="next"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric"
       nsPrefix="n">
@@ -654,6 +666,10 @@
           eType="#//StringExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="containment" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SequenceExpression" eSuperTypes="#//Expression">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" eType="#//operator/SequenceOperator"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sequence" eType="#//Sequence"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical"

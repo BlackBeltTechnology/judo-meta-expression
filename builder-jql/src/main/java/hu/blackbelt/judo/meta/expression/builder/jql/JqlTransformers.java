@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationTra
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
@@ -59,6 +60,9 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> 
     }
 
     private void objectFunctions() {
+        functionTransformers.put("isundefined", new JqlIsDefinedFunctionTransformer(this, false));
+        functionTransformers.put("isdefined", new JqlIsDefinedFunctionTransformer(this, true));
+
         functionTransformers.put("kindof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
                 (expression, parameter) -> {
                     TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
