@@ -3,31 +3,104 @@
    <description>
       To install these features, point Eclipse at this site.
    </description>
+
+   <category-def name="expression" label="Judo Expression Model">
+      <description>
+         Judo Expression Model
+      </description>
+   </category-def>
+
+   <category-def name="adapters" label="Judo Expression Adapters">
+      <description>
+         Judo Expression Model adapters for other metamodels
+      </description>
+   </category-def>
+
+   <category-def name="builders" label="Judo Expression Builders">
+      <description>
+         Judo Expression builders uses other metamodels
+      </description>
+   </category-def>
+
+
+
+
+   <category-def name="expression_source" label="Judo Expression Model Source">
+      <description>
+         Judo Expression Model sourcee
+      </description>
+   </category-def>
+
+   <category-def name="adapters_source" label="Judo Expression Adapters Source">
+      <description>
+         Judo Expression Model adapters for other metamodels source
+      </description>
+   </category-def>
+
+   <category-def name="builders_source" label="Judo Expression Builders Source">
+      <description>
+         Judo Expression builders uses other metamodels source
+      </description>
+   </category-def>
+
+
    <feature id="hu.blackbelt.judo.meta.expression.feature">
       <category name="expression"/>
    </feature>
-   <category-def name="expression" label="Judo Expression Model">
-      <description>
-         Judo Expression Model Update Site: contains all features in this build.
-      </description>
-   </category-def>
 
    <feature id="hu.blackbelt.judo.meta.expression.feature.source">
       <category name="expression_source"/>
    </feature>
-   <category-def name="expression_source" label="Judo Expression Model Source">
-      <description>
-         Judo Expression Model source code.
-      </description>
-   </category-def>
+
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.feature">
+      <category name="builders"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.feature.source">
+      <category name="builders_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature">
+      <category name="builders"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature.source">
+      <category name="builders_source"/>
+   </feature>
+
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature.source">
+      <category name="adapters_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.psm.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.psm.feature.source">
+      <category name="adapters_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.asm.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.asm.feature.source">
+      <category name="adapters_source"/>
+   </feature>
 
    <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <!-- The tycho plugin 1.5.0 will fix it -->
    <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
    <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/epsilon-runtime-eclipse/1.2.0.develop_00011" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.develop_00128" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.develop_00400" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.develop_00058" enabled="true" />
-   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/1.0.0.develop_00050" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-asm/1.0.0.20191017_065843_5c67fc0_develop" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.20191018_135350_491e1a9_develop" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-measure/1.0.0.20191017_065900_9a9a2cc_develop" enabled="true" />
+   <repository-reference location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-jql/1.0.0.20191016_092449_edf1d62_develop" enabled="true" />
 
 </site>

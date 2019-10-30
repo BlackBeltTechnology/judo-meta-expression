@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="hu.blackbelt.judo.meta.expression.feature"
-      label="Judo Expression Model Feature"
+      id="hu.blackbelt.judo.meta.expression.adapter.measure.feature"
+      label="Judo Expression Model Measure Adapter Feature"
       version="1.0.0.qualifier"
       provider-name="BlackBelt Technology">
 
    <description url="http://www.blackbelt.hu">
-      This feature is the Judo Expression model.
+      This feature is the Judo Expression measure adapterl.
    </description>
 
    <copyright>
@@ -226,49 +226,14 @@
       <import plugin="com.google.guava"/>
       <import plugin="org.slf4j.api"/>
       <import plugin="org.eclipse.emf.common"/>
-      <import plugin="hu.blackbelt.eclipse.emf.genmodel.generator.ecore"/>
-      <import plugin="hu.blackbelt.judo.meta.asm.model"/>
+      <import plugin="hu.blackbelt.judo.meta.expression.model"/>
       <import plugin="hu.blackbelt.judo.meta.measure.model"/>
-      <import plugin="hu.blackbelt.judo.meta.psm.model"/>
-      <import plugin="hu.blackbelt.judo.meta.jql.model"/>
    </requires>
-
-   <plugin
-         id="hu.blackbelt.judo.meta.expression.model"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="hu.blackbelt.judo.meta.expression.model.adapter.measure"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="hu.blackbelt.judo.meta.expression.model.adapter.asm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="hu.blackbelt.judo.meta.expression.model.adapter.psm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="hu.blackbelt.judo.meta.expression.builder.jql"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="hu.blackbelt.judo.meta.expression.builder.jql.asm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
 </feature>
