@@ -35,7 +35,7 @@ public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<C
         );
         SortExpressionBuilder builder = newSortExpressionBuilder().withCollectionExpression(collection);
         if (!orderByItems.isEmpty()) {
-            builder = builder.withOrderBy(orderByItems);
+            builder.withOrderBy(orderByItems);
         }
         return builder.build();
     }

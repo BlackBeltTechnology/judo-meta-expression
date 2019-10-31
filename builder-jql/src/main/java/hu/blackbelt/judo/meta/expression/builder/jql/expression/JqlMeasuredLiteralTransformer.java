@@ -60,14 +60,14 @@ public class JqlMeasuredLiteralTransformer<NE, P, PTE, E extends NE, C extends N
             BigInteger integerValue = integerLiteral.getValue();
             MeasuredIntegerBuilder builder = newMeasuredIntegerBuilder().withUnitName(unitName).withValue(integerValue);
             if (measureName != null) {
-                builder = builder.withMeasure(measureName);
+                builder.withMeasure(measureName);
             }
             result = builder.build();
         } else if (jqlValue instanceof DecimalLiteral) {
             BigDecimal decimalValue = ((DecimalLiteral) jqlValue).getValue();
             MeasuredDecimalBuilder builder = newMeasuredDecimalBuilder().withUnitName(unitName).withValue(decimalValue);
             if (measureName != null) {
-                builder = builder.withMeasure(measureName);
+                builder.withMeasure(measureName);
             }
             result = builder.build();
         } else {

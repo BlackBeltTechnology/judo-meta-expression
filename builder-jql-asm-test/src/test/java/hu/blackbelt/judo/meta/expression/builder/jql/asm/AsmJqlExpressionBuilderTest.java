@@ -151,7 +151,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     private Expression createExpression(String jqlExpressionAsString) {
-        return createExpression(jqlExpressionAsString);
+        return createExpression(null, jqlExpressionAsString);
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {

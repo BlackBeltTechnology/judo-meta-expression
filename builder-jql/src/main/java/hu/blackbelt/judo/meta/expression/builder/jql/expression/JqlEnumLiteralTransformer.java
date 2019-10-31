@@ -27,7 +27,7 @@ public class JqlEnumLiteralTransformer<NE, P, PTE, E extends NE, C extends NE, R
             String name = type.getName();
             String namespace = type.getNamespaceElements() != null ? String.join("::", type.getNamespaceElements()) + "::" : "";
             TypeName enumTypeName = jqlTransformers.getEnumType(namespace + name);
-            builder = builder.withEnumeration(enumTypeName);
+            builder.withEnumeration(enumTypeName);
         }
         return builder.build();
     }
