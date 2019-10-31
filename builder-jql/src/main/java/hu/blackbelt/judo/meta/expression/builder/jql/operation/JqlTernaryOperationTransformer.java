@@ -111,18 +111,30 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E extends NE, C extends 
             return thenType;
         }
         // Determine least upper bound, ie. a single shared supertype that is more specific than any other shared supertype
-        Set<C> thenSupertypes = new LinkedHashSet<>();
+        List<C> thenSupertypes = new LinkedList<>();
         thenSupertypes.addAll(getModelAdapter().getSuperTypes(thenType));
-        for (C c : thenSupertypes) {
-            thenSupertypes.addAll(getModelAdapter().getSuperTypes(c));
+        int index = 0;
+        while (index < thenSupertypes.size()) {
+            for (C superType : getModelAdapter().getSuperTypes(thenSupertypes.get(index))) {
+                if (!thenSupertypes.contains(superType)) {
+                    thenSupertypes.add(superType);
+                }
+            }
+            index++;
         }
-        Set<C> elseSuperTypes = new LinkedHashSet<>();
-        elseSuperTypes.addAll(getModelAdapter().getSuperTypes(elseType));
-        for (C c : elseSuperTypes) {
-            elseSuperTypes.addAll(getModelAdapter().getSuperTypes(c));
+        List<C> elseSupertypes = new LinkedList<>();
+        elseSupertypes.addAll(getModelAdapter().getSuperTypes(elseType));
+        index = 0;
+        while (index < elseSupertypes.size()) {
+            for (C superType : getModelAdapter().getSuperTypes(elseSupertypes.get(index))) {
+                if (!elseSupertypes.contains(superType)) {
+                    elseSupertypes.add(superType);
+                }
+            }
+            index++;
         }
         Set<C> commonSupertypes = new HashSet<>(thenSupertypes);
-        commonSupertypes.retainAll(elseSuperTypes);
+        commonSupertypes.retainAll(elseSupertypes);
         // find those supertypes which are supertypes of others
         Set<C> alreadySupertypes = new LinkedHashSet<>();
         for (C commonSuperType : commonSupertypes) {

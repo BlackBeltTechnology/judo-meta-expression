@@ -70,8 +70,8 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
 
     @SuppressWarnings("unchecked")
     private static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
-        final Iterable<Notifier> asmContents = resourceSet::getAllContents;
-        return StreamSupport.stream(asmContents.spliterator(), true)
+        final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
+        return StreamSupport.stream(resourceContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
 

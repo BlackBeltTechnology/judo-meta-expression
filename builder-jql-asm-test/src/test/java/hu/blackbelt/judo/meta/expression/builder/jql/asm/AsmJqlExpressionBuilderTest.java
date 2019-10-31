@@ -151,7 +151,7 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     private Expression createExpression(String jqlExpressionAsString) {
-        return createExpression(null, jqlExpressionAsString);
+        return createExpression(jqlExpressionAsString);
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
@@ -164,44 +164,6 @@ public class AsmJqlExpressionBuilderTest {
         Expression expression = createExpression(clazz, jqlExpressionString);
         createGetterBinding(clazz, expression, feature, bindingType);
         return expression;
-    }
-
-    @Test
-    void testOrderDate() {
-        final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
-        final Expression expression = createExpression(order, "self.orderDate");
-        assertNotNull(expression);
-
-        createGetterBinding(order, expression, "orderDate", ATTRIBUTE);
-
-        log.info("Order date: " + expression);
-    }
-
-    @Test
-    void testOrderCategories() {
-        EClass order = findBase("Order");
-        Expression expression = createExpression(order, "self.orderDetails.product.category");
-        assertNotNull(expression);
-        createGetterBinding(order, expression, "categories", RELATION);
-    }
-
-    @Test
-    void testSimpleArithmeticOperation() {
-        final Expression expression = createExpression(null, "2*3");
-        log.info("Simple arithmetic operation: " + expression);
-        assertNotNull(expression);
-    }
-
-    @Test
-    void testStaticExpressions() {
-        Expression allProducts = createExpression(null, "demo::entities::Product");
-        assertThat(allProducts, instanceOf(CollectionExpression.class));
-        Expression allOrdersCount = createExpression(null, "demo::entities::Order!count()");
-        assertThat(allOrdersCount, instanceOf(IntegerExpression.class));
-        Expression allEmployeeOrders = createExpression(null, "demo::entities::Employee=>orders");
-        assertThat(allEmployeeOrders, instanceOf(CollectionExpression.class));
-        assertThat(allEmployeeOrders, collectionOf("Order"));
-        Expression allProductsSorted = createExpression(null, "demo::entities::Product!sort()");
     }
 
     private Matcher<Expression> collectionOf(String typeName) {
@@ -260,6 +222,54 @@ public class AsmJqlExpressionBuilderTest {
         };
     }
 
+    private EClass findBase(String entityName) {
+        return asmUtils.all(EClass.class).filter(c -> entityName.equals(c.getName())).findAny().orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Binding createGetterBinding(EClass base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
+        Binding binding = asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, expression);
+        assertNotNull(binding);
+        return binding;
+    }
+
+    @Test
+    void testOrderDate() {
+        final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
+        final Expression expression = createExpression(order, "self.orderDate");
+        assertNotNull(expression);
+
+        createGetterBinding(order, expression, "orderDate", ATTRIBUTE);
+
+        log.info("Order date: " + expression);
+    }
+
+    @Test
+    void testOrderCategories() {
+        EClass order = findBase("Order");
+        Expression expression = createExpression(order, "self.orderDetails.product.category");
+        assertNotNull(expression);
+        createGetterBinding(order, expression, "categories", RELATION);
+    }
+
+    @Test
+    void testSimpleArithmeticOperation() {
+        final Expression expression = createExpression("2*3");
+        log.info("Simple arithmetic operation: " + expression);
+        assertNotNull(expression);
+    }
+
+    @Test
+    void testStaticExpressions() {
+        Expression allProducts = createExpression("demo::entities::Product");
+        assertThat(allProducts, instanceOf(CollectionExpression.class));
+        Expression allOrdersCount = createExpression("demo::entities::Order!count()");
+        assertThat(allOrdersCount, instanceOf(IntegerExpression.class));
+        Expression allEmployeeOrders = createExpression("demo::entities::Employee=>orders");
+        assertThat(allEmployeeOrders, instanceOf(CollectionExpression.class));
+        assertThat(allEmployeeOrders, collectionOf("Order"));
+        Expression allProductsSorted = createExpression("demo::entities::Product!sort()");
+    }
+
     @Test
     void testSimpleDaoTest() {
         EClass order = findBase("Order");
@@ -298,16 +308,6 @@ public class AsmJqlExpressionBuilderTest {
 
     }
 
-    private EClass findBase(String entityName) {
-        return asmUtils.all(EClass.class).filter(c -> entityName.equals(c.getName())).findAny().orElseThrow(IllegalArgumentException::new);
-    }
-
-    private Binding createGetterBinding(EClass base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Binding binding = asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, expression);
-        assertNotNull(binding);
-        return binding;
-    }
-
     @Test
     void testCast() {
         EClass customer = findBase("Customer");
@@ -328,31 +328,31 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testConstants() {
-        createExpression(null, "1");
-        createExpression(null, "1.2");
-        createExpression(null, "true");
-        createExpression(null, "false");
-        createExpression(null, "'a'");
-        createExpression(null, "\"\"");
-        createExpression(null, "\"b\"");
-        DateConstant dateConstant = (DateConstant) createExpression(null, "`2019-12-31`");
-        createExpression(null, "`2019-12-31T13:52:03 Europe/Budapest`");
+        createExpression("1");
+        createExpression("1.2");
+        createExpression("true");
+        createExpression("false");
+        createExpression("'a'");
+        createExpression("\"\"");
+        createExpression("\"b\"");
+        DateConstant dateConstant = (DateConstant) createExpression("`2019-12-31`");
+        createExpression("`2019-12-31T13:52:03 Europe/Budapest`");
         createExpression("demo::entities::Category!sort()!head().picture");
     }
 
     @Test
     void testDateOperations() {
-        createExpression(null, "`2019-12-31`!difference(`2020-01-01`)");
-        createExpression(null, "`2019-12-31` < `2020-01-01`");
-        createExpression(null, "`2019-12-31` > `2020-01-01`");
-        createExpression(null, "`2019-12-31` = `2020-01-01`");
-        createExpression(null, "`2019-12-31` <> `2020-01-01`");
-        createExpression(null, "`2019-12-31` <= `2020-01-01`");
-        createExpression(null, "`2019-12-31` >= `2020-01-01`");
-        assertThrows(UnsupportedOperationException.class, () -> createExpression(null, "`2019-12-31` + 1"));
-        createExpression(null, "`2019-12-31` + 1[day]");
-        createExpression(null, "1[day] + `2019-12-31`");
-        assertThrows(IllegalArgumentException.class, () -> createExpression(null, "1[day] - `2019-12-31`"));
+        createExpression("`2019-12-31`!difference(`2020-01-01`)");
+        createExpression("`2019-12-31` < `2020-01-01`");
+        createExpression("`2019-12-31` > `2020-01-01`");
+        createExpression("`2019-12-31` = `2020-01-01`");
+        createExpression("`2019-12-31` <> `2020-01-01`");
+        createExpression("`2019-12-31` <= `2020-01-01`");
+        createExpression("`2019-12-31` >= `2020-01-01`");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31` + 1"));
+        createExpression("`2019-12-31` + 1[day]");
+        createExpression("1[day] + `2019-12-31`");
+        assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31`"));
     }
 
     @Test
@@ -366,8 +366,8 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-12-31T00:00:00.000+0100` >= `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` + 1[week]");
         createExpression("`2019-12-31T00:00:00.000+0100` - 1[demo::measures::Time#day]");
-        assertThrows(UnsupportedOperationException.class, () -> createExpression(null, "`2019-12-31T00:00:00.000+0100` + 1"));
-        assertThrows(IllegalArgumentException.class, () -> createExpression(null, "1[day] - `2019-12-31T00:00:00.000+0100`"));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+0100` + 1"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31T00:00:00.000+0100`"));
     }
 
     @Test
@@ -391,12 +391,12 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testTernaryOperation() {
-        createExpression(null, "true ? 1 : 2");
-        createExpression(null, "true ? 1 : 2 + 3");
-        createExpression(null, "true ? 1.0 : 2.0 + 3");
-        Expression decimalSwitch1 = createExpression(null, "true ? 1 : 2.0");
+        createExpression("true ? 1 : 2");
+        createExpression("true ? 1 : 2 + 3");
+        createExpression("true ? 1.0 : 2.0 + 3");
+        Expression decimalSwitch1 = createExpression("true ? 1 : 2.0");
         assertThat(decimalSwitch1, instanceOf(DecimalSwitchExpression.class));
-        Expression decimalSwitch2 = createExpression(null, "true ? 1.0 : 2");
+        Expression decimalSwitch2 = createExpression("true ? 1.0 : 2");
         assertThat(decimalSwitch2, instanceOf(DecimalSwitchExpression.class));
 
 
@@ -486,7 +486,7 @@ public class AsmJqlExpressionBuilderTest {
 
         // Concatenate
         EClass order = findBase("Order");
-        createExpression(null, "'a'+'b'");
+        createExpression("'a'+'b'");
         createGetterExpression(order, "self.shipper.companyName + self.shipper.companyName", "shipperNameConcat", ATTRIBUTE);
         createGetterExpression(order, "'_' + self.shipper.companyName", "shipperNameConcat2", ATTRIBUTE);
     }
@@ -507,9 +507,9 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testUnaryOperations() {
-        createExpression(null, "-1");
-        createExpression(null, "-1.0");
-        createExpression(null, "not true");
+        createExpression("-1");
+        createExpression("-1.0");
+        createExpression("not true");
     }
 
     @Test
@@ -518,26 +518,26 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipAddress.country = demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
         createGetterExpression(order, "self.shipAddress.country = #AT", "countryCheck2", ATTRIBUTE);
 
-        Expression expression = createExpression(null, "1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
-        assertThrows(IllegalArgumentException.class, () -> createExpression(null, "true ? demo::types::Countries#AT : demo::types::Titles#MR"));
+        Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
+        assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::types::Countries#AT : demo::types::Titles#MR"));
     }
 
     @Test
     void testMeasures() {
-        createExpression(null, "5[demo::measures::Time#min]");
-        createExpression(null, "1.23[min]");
+        createExpression("5[demo::measures::Time#min]");
+        createExpression("1.23[min]");
 
-        Expression measuredIntDiv = createExpression(null, "2[min] div 1");
+        Expression measuredIntDiv = createExpression("2[min] div 1");
         assertTrue(modelAdapter.isMeasured((NumericExpression) measuredIntDiv));
-        Expression notMeasuredDecimalRatio = createExpression(null, "2.0[min] / 1[min]");
+        Expression notMeasuredDecimalRatio = createExpression("2.0[min] / 1[min]");
         assertFalse(modelAdapter.isMeasured((NumericExpression) notMeasuredDecimalRatio));
-        Expression measuredDecimalRatio = createExpression(null, "2.0[demo::measures::Velocity#m/s] / 1[s]");
+        Expression measuredDecimalRatio = createExpression("2.0[demo::measures::Velocity#m/s] / 1[s]");
         assertTrue(modelAdapter.isMeasured((NumericExpression) measuredDecimalRatio));
     }
 
     @Test
     void testNumericFunctions() {
-        Expression roundedConstant = createExpression(null, "1.2!round()");
+        Expression roundedConstant = createExpression("1.2!round()");
         assertThat(roundedConstant, instanceOf(IntegerExpression.class));
         EClass product = findBase("Product");
         Expression roundedAttribute = createGetterExpression(product, "self.unitPrice!round()", "unitPriceRound", ATTRIBUTE);
@@ -547,9 +547,9 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testSelectorFunctions() {
         EClass category = findBase("Category");
-        createExpression(null, "demo::entities::Product!sort()");
-        createExpression(null, "demo::entities::Product!sort()!head()");
-        createExpression(null, "demo::entities::Product!sort()!head().weight");
+        createExpression("demo::entities::Product!sort()");
+        createExpression("demo::entities::Product!sort()!head()");
+        createExpression("demo::entities::Product!sort()!head().weight");
         createExpression(category, "self.products!sort()!head().weight");
     }
 
@@ -623,9 +623,9 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("9[mm]/(1/45[cm])");
         createExpression("9[mg] < 2[kg]");
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
-        Expression timeStampAddition = createExpression(null, "demo::entities::Order!sort()!head().orderDate - 3[day]");
+        Expression timeStampAddition = createExpression("demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
-        createExpression(null, "`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
+        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
         Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country=#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));

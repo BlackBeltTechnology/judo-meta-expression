@@ -43,11 +43,7 @@ public class PsmMeasureProvider implements MeasureProvider<Measure, Unit> {
                 .filter(ns -> ns.getElements().contains(measure))
                 .findAny();
 
-        if (namespace.isPresent()) {
-            return getNamespaceFQName(namespace.get());
-        } else {
-            return null;
-        }
+        return namespace.map(this::getNamespaceFQName).orElse(null);
     }
 
     @Override
