@@ -291,22 +291,27 @@ public class EsmJqlExpressionBuilderTest {
     @Test
     void testCast() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
-        Class order = new EntityCreator("Order").create();
+        TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
+                .withName("customer")
+                .withUpper(1)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+        Class order = new EntityCreator("Order").withTwoWayRelation(twr).create();
         Class internationalOrder = new EntityCreator("InternationalOrder").withGeneralization(order).create();
-//        TwoWayRelationMember other = newTwoWayRelationMemberBuilder().withName("customer").build();
-//        Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, other).create();
-//        other.setTarget(customer);
         Class address = new EntityCreator("Address").create();
         Class internationalAddress = new EntityCreator("InternationalAddress")
                 .withAttribute("country", stringType)
                 .withGeneralization(address)
                 .create();
-        Class customer = new EntityCreator("Customer").withCollectionRelation("orders", order).withCollectionRelation("addresses", address).create();
-        createTestModel(createPackage("entities", order, internationalOrder, customer, address, internationalAddress), stringType);
+        Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, twr, true).withCollectionRelation("addresses", address).create();
+        twr.setTarget(customer);
+        Class company = new EntityCreator("Company").withGeneralization(customer).create();
+
+        createTestModel(createPackage("entities", order, internationalOrder, customer, address, internationalAddress, company), stringType);
         Expression expression = createExpression(customer, "self=>orders!asCollection(demo::entities::InternationalOrder)");
         Expression expression1 = createExpression(customer, "self=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country");
 
-//        createExpression(order, "self=>customer!asType(demo::entities::Company)");
+        createExpression(order, "self=>customer!asType(demo::entities::Company)");
 
     }
 
@@ -382,8 +387,19 @@ public class EsmJqlExpressionBuilderTest {
             return builder.build();
         }
 
-        public EntityCreator withTwoWayRelation(String name, Class target, TwoWayRelationMember partner) {
-            TwoWayRelationMember relationMember = newTwoWayRelationMemberBuilder().withName(name).withPartner(partner).withTarget(target).build();
+        public EntityCreator withTwoWayRelation(TwoWayRelationMember partner) {
+            relations.add(partner);
+            return this;
+        }
+        public EntityCreator withTwoWayRelation(String name, Class target, TwoWayRelationMember partner, boolean multi) {
+            TwoWayRelationMember relationMember = newTwoWayRelationMemberBuilder()
+                    .withName(name)
+                    .withPartner(partner)
+                    .withTarget(target)
+                    .withUpper(multi ? -1 : 1)
+                    .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
+                    .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression(""))
+                    .build();
             partner.setPartner(relationMember);
             relations.add(relationMember);
             return this;
