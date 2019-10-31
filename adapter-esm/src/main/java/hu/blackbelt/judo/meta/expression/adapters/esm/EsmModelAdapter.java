@@ -134,6 +134,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                     generalizations.add(parent);
                 }
             }
+            index++;
         }
         return generalizations;
     }

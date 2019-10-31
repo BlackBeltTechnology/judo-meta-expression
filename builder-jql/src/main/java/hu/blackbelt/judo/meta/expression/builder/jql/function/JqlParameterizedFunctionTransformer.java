@@ -38,7 +38,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
             PARAM castParam = (PARAM) parameter;
             return builder.apply(argument, castParam);
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException(String.format("Error in expression %s!%s, illegal argument type: %s", argument, functionCall.getFunction().getName(), parameter.getClass()));
+            throw new IllegalArgumentException(String.format("Error in expression %s!%s, illegal argument type: %s (%s)", argument, functionCall.getFunction().getName(), argument.getClass(), e.getMessage()));
         }
 
     }
