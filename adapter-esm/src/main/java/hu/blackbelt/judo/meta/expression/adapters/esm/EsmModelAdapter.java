@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ESM models.
  */
-public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Measure, Unit> {
+public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(EsmModelAdapter.class);
@@ -285,6 +285,21 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public EList<EnumerationType> getAllEnums() {
         return ECollections.asEList(getEsmElement(EnumerationType.class).collect(toList()));
+    }
+
+    @Override
+    public EList<NamespaceElement> getAllStaticSequences() {
+        return ECollections.asEList(getEsmElement(NamespaceSequence.class).collect(toList()));
+    }
+
+    @Override
+    public Optional<? extends Sequence> getSequence(hu.blackbelt.judo.meta.esm.structure.Class clazz, String sequenceName) {
+        return ((EntityType)clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
+    }
+
+    @Override
+    public boolean isSequence(NamespaceElement namespaceElement) {
+        return namespaceElement instanceof Sequence;
     }
 
     @Override

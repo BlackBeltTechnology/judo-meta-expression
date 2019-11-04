@@ -18,6 +18,7 @@ import hu.blackbelt.judo.meta.esm.namespace.util.builder.PackageBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.*;
+import hu.blackbelt.judo.meta.esm.structure.Sequence;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.DataMemberBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.EntityTypeBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.OneWayRelationMemberBuilder;
@@ -31,6 +32,8 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
+import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
@@ -40,6 +43,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,8 +65,7 @@ import static hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport.esmMode
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -72,7 +75,7 @@ public class EsmJqlExpressionBuilderTest {
     private static final String SOURCE_MODEL_NAME = "urn:esm.judo-meta-esm";
     private static final Log log = new Slf4jLog();
 
-    private JqlExpressionBuilder<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Measure, Unit> esmJqlExpressionBuilder;
+    private JqlExpressionBuilder<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
 
     private Resource measureResource;
     private EsmModelAdapter modelAdapter;
@@ -315,7 +318,6 @@ public class EsmJqlExpressionBuilderTest {
 
     }
 
-
     @Test
     void testStaticExpressions() {
         EntityType product = new EntityCreator("Product").create();
@@ -334,6 +336,25 @@ public class EsmJqlExpressionBuilderTest {
         assertThat(allProductsSorted, collectionOf("Product"));
     }
 
+    @Test
+    void testSequence() {
+        EntityType product = new EntityCreator("Product").withSequence("ProductSequence").create();
+        NamespaceSequence globalSequence = newNamespaceSequenceBuilder().withName("GlobalSequence").build();
+        Package entities = createPackage("entities", product, globalSequence);
+        createTestModel(entities);
+
+        Expression staticSequenceExpression = createExpression("demo::entities::GlobalSequence!next()");
+        assertThat(staticSequenceExpression, instanceOf(SequenceExpression.class));
+        assertThat(((SequenceExpression)staticSequenceExpression).getSequence(), instanceOf(StaticSequence.class));
+        assertThat(((SequenceExpression)staticSequenceExpression).getOperator(), is(SequenceOperator.NEXT));
+
+        Expression entitySequenceExpression = createExpression("demo::entities::Product!sort()!head().ProductSequence!current()");
+        assertThat(entitySequenceExpression, instanceOf(SequenceExpression.class));
+        assertThat(((SequenceExpression)entitySequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
+        assertThat(((SequenceExpression)entitySequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
+
+
+    }
 
     private Package createPackage(String name, NamespaceElement... children) {
         PackageBuilder packageBuilder = newPackageBuilder().withName(name);
@@ -348,6 +369,7 @@ public class EsmJqlExpressionBuilderTest {
         private Collection<DataFeature> attributes = new LinkedList<>();
         private Collection<RelationFeature> relations = new LinkedList<>();
         private Collection<Generalization> generalizations = new LinkedList<>();
+        private Collection<EntitySequence> sequences = new LinkedList<>();
 
         public EntityCreator(String name) {
             this.name = name;
@@ -373,6 +395,11 @@ public class EsmJqlExpressionBuilderTest {
             return this;
         }
 
+        public EntityCreator withSequence(String name) {
+            sequences.add(newEntitySequenceBuilder().withName(name).build());
+            return this;
+        }
+
         public EntityType create() {
             EntityTypeBuilder builder = newEntityTypeBuilder().withName(name);
             if (!attributes.isEmpty()) {
@@ -383,6 +410,9 @@ public class EsmJqlExpressionBuilderTest {
             }
             if (!generalizations.isEmpty()) {
                 builder.withGeneralizations(generalizations);
+            }
+            if (!sequences.isEmpty()) {
+                builder.withSequences(sequences);
             }
             return builder.build();
         }

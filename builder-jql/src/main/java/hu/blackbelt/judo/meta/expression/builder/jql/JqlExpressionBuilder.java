@@ -45,19 +45,19 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  * @param <M>   measure
  * @param <U>   unit
  */
-public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> {
+public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> {
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     private final Resource expressionResource;
-    private final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter;
+    private final ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
-    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, M, U> modelAdapter, final Resource expressionResource) {
+    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
@@ -65,6 +65,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         addMeasures();
         addClasses();
         addEnums();
+        addSequences();
 
     }
 
@@ -73,6 +74,23 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
         return StreamSupport.stream(resourceContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
+    }
+
+    private static String createQNamespaceString(QualifiedName qName) {
+        String qNamespaceString;
+        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
+            qNamespaceString = String.join("::", qName.getNamespaceElements());
+        } else {
+            qNamespaceString = null;
+        }
+        return qNamespaceString;
+    }
+
+    private void addSequences() {
+        modelAdapter.getAllStaticSequences().forEach(e -> {
+            TypeName typeName = modelAdapter.getTypeName(e).get();
+            storeTypeName(e, typeName);
+        });
     }
 
     private void addEnums() {
@@ -114,7 +132,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
                 .noneMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
             expressionResource.getContents().add(typeName);
         } else {
-                LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
+            LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
         }
     }
 
@@ -248,7 +266,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         return jqlTransformers.transform(jqlExpression, variables);
     }
 
-    public ModelAdapter<NE,P,PTE,E,C,RTE,M,U> getModelAdapter() {
+    public ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> getModelAdapter() {
         return modelAdapter;
     }
 
@@ -262,6 +280,15 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
 
     public TypeName getEnumTypeName(String enumType) {
         return enumTypes.get(enumType);
+    }
+
+    public TypeName getTypeNameFromResource(QualifiedName qName) {
+        String namespace = createQNamespaceString(qName);
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), qName.getName()) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
+    }
+
+    public TypeName getTypeName(String namespace, String name) {
+        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
     }
 
     public enum BindingRole {
@@ -295,25 +322,6 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, M
         public BindingRole getRole() {
             return role;
         }
-    }
-
-    public TypeName getTypeNameFromResource(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), qName.getName()) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
-    }
-
-    private static String createQNamespaceString(QualifiedName qName) {
-        String qNamespaceString;
-        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
-            qNamespaceString = String.join("::", qName.getNamespaceElements());
-        } else {
-            qNamespaceString = null;
-        }
-        return qNamespaceString;
-    }
-
-    public TypeName getTypeName(String namespace, String name) {
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
     }
 
 

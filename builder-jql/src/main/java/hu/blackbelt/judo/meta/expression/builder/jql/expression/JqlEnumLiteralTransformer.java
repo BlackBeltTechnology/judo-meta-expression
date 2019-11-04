@@ -12,7 +12,7 @@ import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
 
-public class JqlEnumLiteralTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> extends AbstractJqlExpressionTransformer<EnumLiteral, NE, P, PTE, E, C, RTE, M, U> {
+public class JqlEnumLiteralTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<EnumLiteral, NE, P, PTE, E, C, RTE, S, M, U> {
 
     public JqlEnumLiteralTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);

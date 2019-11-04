@@ -26,6 +26,7 @@ import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
@@ -42,13 +43,13 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> {
+public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> {
 
-    private final JqlExpressionBuilder<NE, P, PTE, E, C, RTE, M, U> expressionBuilder;
+    private final JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
 
-    public JqlTransformers(JqlExpressionBuilder<NE, P, PTE, E, C, RTE, M, U> expressionBuilder) {
+    public JqlTransformers(JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
         literals();
         operations();
@@ -57,6 +58,7 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> 
         temporalFunctions();
         collectionFunctions();
         objectFunctions();
+        sequenceFunctions();
     }
 
     private void objectFunctions() {
@@ -150,6 +152,13 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> 
         functionTransformers.put("matches", new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Matches>(this, (argument, parameter) -> newMatchesBuilder().withExpression(argument).withPattern(parameter).build()));
     }
 
+    private void sequenceFunctions() {
+        functionTransformers.put("next", (expression, functionCall, variables) ->
+                newSequenceExpressionBuilder().withSequence((Sequence)expression).withOperator(SequenceOperator.NEXT).build());
+        functionTransformers.put("current", (expression, functionCall, variables) ->
+                newSequenceExpressionBuilder().withSequence((Sequence)expression).withOperator(SequenceOperator.CURRENT).build());
+    }
+
     private void operations() {
         transformers.put(BinaryOperation.class, new JqlBinaryOperationTransformer<>(this));
         transformers.put(UnaryOperation.class, new JqlUnaryOperationTransformer<>(this));
@@ -219,7 +228,7 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, M, U> 
         }
     }
 
-    public ModelAdapter<NE,P,PTE,E,C,RTE,M,U> getModelAdapter() {
+    public ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> getModelAdapter() {
         return expressionBuilder.getModelAdapter();
     }
 

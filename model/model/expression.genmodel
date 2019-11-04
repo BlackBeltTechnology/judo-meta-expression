@@ -105,10 +105,14 @@
     <genClasses ecoreClass="expression.ecore#//Sequence"/>
     <genClasses ecoreClass="expression.ecore#//StaticSequence">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//StaticSequence/typeName"/>
+      <genOperations ecoreOperation="expression.ecore#//StaticSequence/getOperands"
+          body="return org.eclipse.emf.common.util.ECollections.asEList();"/>
     </genClasses>
     <genClasses ecoreClass="expression.ecore#//ObjectSequence">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//ObjectSequence/objectExpression"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//ObjectSequence/sequenceName"/>
+      <genOperations ecoreOperation="expression.ecore#//ObjectSequence/getOperands"
+          body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
     </genClasses>
     <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -447,6 +451,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/SequenceExpression/operator"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//numeric/SequenceExpression/sequence"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/SequenceExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getSequence());"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Logical" resource="XMI" disposableProviderFactory="true"

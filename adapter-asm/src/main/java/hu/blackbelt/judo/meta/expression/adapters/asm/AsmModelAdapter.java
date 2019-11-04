@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ASM models.
  */
-public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
+public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
@@ -262,6 +262,24 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return ECollections.asEList(getAsmElement(EEnum.class)
                 .filter(e -> AsmUtils.isEnumeration(e))
                 .collect(toList()));
+    }
+
+    @Override
+    public EList<EClassifier> getAllStaticSequences() {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public Optional<? extends EClassifier> getSequence(EClass clazz, String sequenceName) {
+        // TODO
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean isSequence(EClassifier namespaceElement) {
+        // TODO
+        return false;
     }
 
 

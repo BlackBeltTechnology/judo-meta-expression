@@ -29,7 +29,7 @@ public class MeasureAdapter<M, U, T> {
     /**
      * Measure adapter that is used to resolve (object) types of numeric expressions.
      */
-    private final ModelAdapter<?, ?, ?, ?, ?, ?, M, U> modelAdapter;
+    private final ModelAdapter<?, ?, ?, ?, ?, ?, ?, M, U> modelAdapter;
 
     /**
      * Measure provider.
