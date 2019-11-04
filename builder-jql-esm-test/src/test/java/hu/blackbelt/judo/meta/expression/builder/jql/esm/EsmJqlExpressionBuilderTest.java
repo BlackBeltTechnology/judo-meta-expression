@@ -7,8 +7,6 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
-import hu.blackbelt.judo.meta.esm.expression.util.builder.AttributeSelectorTypeBuilder;
-import hu.blackbelt.judo.meta.esm.expression.util.builder.DataExpressionTypeBuilder;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
@@ -17,12 +15,11 @@ import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.namespace.util.builder.PackageBuilder;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.structure.Sequence;
+import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.DataMemberBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.EntityTypeBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.OneWayRelationMemberBuilder;
-import hu.blackbelt.judo.meta.esm.structure.util.builder.TwoWayRelationMemberBuilder;
 import hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport;
 import hu.blackbelt.judo.meta.esm.type.EnumerationMember;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
@@ -38,20 +35,16 @@ import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.File;
-import java.security.Permissions;
 import java.util.*;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
@@ -339,21 +332,25 @@ public class EsmJqlExpressionBuilderTest {
     @Test
     void testSequence() {
         EntityType product = new EntityCreator("Product").withSequence("ProductSequence").create();
+        EntityType order = new EntityCreator("Order").withObjectRelation("product", product).create();
         NamespaceSequence globalSequence = newNamespaceSequenceBuilder().withName("GlobalSequence").build();
-        Package entities = createPackage("entities", product, globalSequence);
+        Package entities = createPackage("entities", product, order, globalSequence);
         createTestModel(entities);
 
         Expression staticSequenceExpression = createExpression("demo::entities::GlobalSequence!next()");
         assertThat(staticSequenceExpression, instanceOf(SequenceExpression.class));
-        assertThat(((SequenceExpression)staticSequenceExpression).getSequence(), instanceOf(StaticSequence.class));
-        assertThat(((SequenceExpression)staticSequenceExpression).getOperator(), is(SequenceOperator.NEXT));
+        assertThat(((SequenceExpression) staticSequenceExpression).getSequence(), instanceOf(StaticSequence.class));
+        assertThat(((SequenceExpression) staticSequenceExpression).getOperator(), is(SequenceOperator.NEXT));
 
         Expression entitySequenceExpression = createExpression("demo::entities::Product!sort()!head().ProductSequence!current()");
         assertThat(entitySequenceExpression, instanceOf(SequenceExpression.class));
-        assertThat(((SequenceExpression)entitySequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
-        assertThat(((SequenceExpression)entitySequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
+        assertThat(((SequenceExpression) entitySequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
+        assertThat(((SequenceExpression) entitySequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
 
-
+        Expression objectSequenceExpression = createExpression(order, "self->product.ProductSequence!current()");
+        assertThat(objectSequenceExpression, instanceOf(SequenceExpression.class));
+        assertThat(((SequenceExpression) objectSequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
+        assertThat(((SequenceExpression) objectSequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
     }
 
     private Package createPackage(String name, NamespaceElement... children) {
@@ -362,6 +359,41 @@ public class EsmJqlExpressionBuilderTest {
             packageBuilder = packageBuilder.withElements(Arrays.asList(children));
         }
         return packageBuilder.build();
+    }
+
+    private RelationFeature createRelation(String name, Class target, int upperBound) {
+        OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
+        builder.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        return builder.build();
+    }
+
+    private DataFeature createAttribute(String name, Primitive datatype) {
+        DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
+        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        return builder.build();
+    }
+
+    private EnumerationType createEnum(String name, String... members) {
+        List<EnumerationMember> enumerationMembers = new LinkedList<>();
+        for (String member : members) {
+            enumerationMembers.add(newEnumerationMemberBuilder().withName(member).withOrdinal(enumerationMembers.size()).build());
+        }
+        return newEnumerationTypeBuilder()
+                .withName(name)
+                .withMembers(enumerationMembers)
+                .build();
+    }
+
+    private void createTestModel(NamespaceElement... elems) {
+        Model model = newModelBuilder().withName("demo").withElements(Arrays.asList(elems)).build();
+        esmModelResourceSupport.addContent(model);
+
+        esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
     }
 
     private class EntityCreator {
@@ -421,6 +453,7 @@ public class EsmJqlExpressionBuilderTest {
             relations.add(partner);
             return this;
         }
+
         public EntityCreator withTwoWayRelation(String name, Class target, TwoWayRelationMember partner, boolean multi) {
             TwoWayRelationMember relationMember = newTwoWayRelationMemberBuilder()
                     .withName(name)
@@ -434,42 +467,6 @@ public class EsmJqlExpressionBuilderTest {
             relations.add(relationMember);
             return this;
         }
-    }
-
-    private RelationFeature createRelation(String name, Class target, int upperBound) {
-        OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
-        builder.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        return builder.build();
-    }
-
-    private DataFeature createAttribute(String name, Primitive datatype) {
-        DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
-        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        return builder.build();
-    }
-
-
-    private EnumerationType createEnum(String name, String... members) {
-        List<EnumerationMember> enumerationMembers = new LinkedList<>();
-        for (String member : members) {
-            enumerationMembers.add(newEnumerationMemberBuilder().withName(member).withOrdinal(enumerationMembers.size()).build());
-        }
-        return newEnumerationTypeBuilder()
-                .withName(name)
-                .withMembers(enumerationMembers)
-                .build();
-    }
-
-    private void createTestModel(NamespaceElement... elems) {
-        Model model = newModelBuilder().withName("demo").withElements(Arrays.asList(elems)).build();
-        esmModelResourceSupport.addContent(model);
-
-        esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
     }
 
 }
