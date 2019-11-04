@@ -1,5 +1,8 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
+import hu.blackbelt.judo.meta.esm.measure.Measure;
+import hu.blackbelt.judo.meta.esm.measure.MeasureDefinitionTerm;
+import hu.blackbelt.judo.meta.esm.measure.Unit;
 import hu.blackbelt.judo.meta.esm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.esm.namespace.Namespace;
 import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
@@ -8,14 +11,8 @@ import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureChangedHandler;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.measure.BaseMeasure;
-import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.DurationType;
 import hu.blackbelt.judo.meta.measure.DurationUnit;
-import hu.blackbelt.judo.meta.esm.measure.Measure;
-import hu.blackbelt.judo.meta.esm.measure.MeasurePackage;
-import hu.blackbelt.judo.meta.esm.measure.Unit;
-
-import hu.blackbelt.judo.meta.psm.PsmUtils;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
@@ -27,7 +24,7 @@ import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.slf4j.Logger;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -46,6 +43,22 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     public EsmMeasureProvider(final ResourceSet resourceSet) {
         this.resourceSet = resourceSet;
+    }
+
+    public static <T> Stream<T> getAllContents(EObject eObject, Class<T> clazz) {
+        if (eObject.eResource() == null) {
+            throw new IllegalStateException("No object added to resource - " + eObject.eClass().toString());
+        } else {
+            ResourceSet resourceSet = eObject.eResource().getResourceSet();
+            if (resourceSet == null) {
+                throw new IllegalStateException("No resource in resourceset");
+            } else {
+                Iterable<Notifier> esmContents = resourceSet::getAllContents;
+                return StreamSupport.stream(esmContents.spliterator(), true)
+                        .filter((e) -> clazz.isAssignableFrom(e.getClass()))
+                        .map((e) -> (T) e);
+            }
+        }
     }
 
     @Override
@@ -70,7 +83,31 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     @Override
     public EMap<Measure, Integer> getBaseMeasures(final Measure measure) {
-        return null;
+        EList<MeasureDefinitionTerm> terms = measure.getTerms();
+        Map<Measure, Integer> base = new ConcurrentHashMap<>();
+        if (terms != null && !terms.isEmpty()) {
+            terms.forEach(term -> getBaseMeasures(findMeasureOfUnit(term.getUnit())).forEach(e -> {
+                final Measure m = e.getKey();
+                final Integer exponent = e.getValue();
+                final int currentExponent = base.getOrDefault(findMeasureOfUnit(term.getUnit()), 0);
+                final int calculatedBaseExponent = exponent * term.getExponent();
+                final int newExponent = currentExponent + calculatedBaseExponent;
+                if (newExponent != 0) {
+                    base.put(m, newExponent);
+                } else {
+                    base.remove(m);
+                }
+            }));
+            return ECollections.asEMap(base);
+        } else {
+            return ECollections.singletonEMap(measure, 1);
+        }
+    }
+
+    private Measure findMeasureOfUnit(Unit unit) {
+        return getMeasures()
+                .filter(m -> getUnits(m).contains(unit))
+                .findAny().get();
     }
 
     @Override
@@ -124,7 +161,7 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     @Override
     public boolean isBaseMeasure(Measure measure) {
-        return measure instanceof BaseMeasure;
+        return measure.getTerms() == null || measure.getTerms().isEmpty();
     }
 
     <T> Stream<T> getEsmElement(final Class<T> clazz) {
@@ -135,7 +172,7 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     public String getNamespaceFQName(Namespace namespace) {
         if (namespace instanceof NamespaceElement) {
-            return EsmUtils.getNamespaceElementFQName((NamespaceElement)namespace);
+            return EsmUtils.getNamespaceElementFQName((NamespaceElement) namespace);
         } else {
             return String.join(NAMESPACE_SEPARATOR, namespace.getElements().stream().map(NamedElement::getName).collect(toList()));
         }
@@ -145,22 +182,6 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
         return getAllContents(pkg, Namespace.class)
                 .filter((ns) -> ns.getElements().contains(pkg))
                 .findAny();
-    }
-
-    public static <T> Stream<T> getAllContents(EObject eObject, Class<T> clazz) {
-        if (eObject.eResource() == null) {
-            throw new IllegalStateException("No object added to resource - " + eObject.eClass().toString());
-        } else {
-            ResourceSet resourceSet = eObject.eResource().getResourceSet();
-            if (resourceSet == null) {
-                throw new IllegalStateException("No resource in resourceset");
-            } else {
-                Iterable<Notifier> esmContents = resourceSet::getAllContents;
-                return StreamSupport.stream(esmContents.spliterator(), true)
-                        .filter((e) -> clazz.isAssignableFrom(e.getClass()))
-                        .map((e) -> (T)e);
-            }
-        }
     }
 
 }

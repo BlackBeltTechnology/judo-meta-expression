@@ -82,7 +82,9 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<MeasureName> getMeasureName(Measure measure) {
-        return null;
+        return measureProvider.getMeasures()
+                .filter(mn -> Objects.equals(measureProvider.getMeasureNamespace(mn), measureProvider.getMeasureNamespace(measure)) && Objects.equals(mn.getName(), measure.getName()))
+                .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(measureProvider.getMeasureNamespace(measure)).build());
     }
 
     @Override

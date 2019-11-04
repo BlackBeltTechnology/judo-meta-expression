@@ -55,7 +55,7 @@ public class AsmJqlExpressionBuilderTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final Log log = new Slf4jLog();
 
-    private JqlExpressionBuilder<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> asmJqlExpressionBuilder;
+    private JqlExpressionBuilder<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> asmJqlExpressionBuilder;
 
     private Resource asmResource;
     private Resource measureResource;

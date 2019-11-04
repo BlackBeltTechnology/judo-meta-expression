@@ -267,7 +267,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     @Override
     public EList<EClassifier> getAllStaticSequences() {
         // TODO
-        return null;
+        return ECollections.emptyEList();
     }
 
     @Override
