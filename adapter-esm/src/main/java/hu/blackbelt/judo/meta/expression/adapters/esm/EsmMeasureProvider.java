@@ -1,8 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
-import hu.blackbelt.judo.meta.esm.measure.Measure;
-import hu.blackbelt.judo.meta.esm.measure.MeasureDefinitionTerm;
-import hu.blackbelt.judo.meta.esm.measure.Unit;
+import hu.blackbelt.judo.meta.esm.measure.*;
 import hu.blackbelt.judo.meta.esm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.esm.namespace.Namespace;
 import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
@@ -10,9 +8,6 @@ import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureChangedHandler;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.measure.BaseMeasure;
-import hu.blackbelt.judo.meta.measure.DurationType;
-import hu.blackbelt.judo.meta.measure.DurationUnit;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
@@ -31,11 +26,11 @@ import java.util.stream.StreamSupport;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Measure provider for measure metamodel that is used runtime (with ASM models).
+ * Measure provider for measure metamodel that is used runtime (with ESM models).
  */
 public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
 
-    private static final List<DurationType> DURATION_UNITS_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
+    private static final List<DurationType> DURATION_TYPES_SUPPORTING_ADDITION = Arrays.asList(DurationType.MILLISECOND, DurationType.SECOND, DurationType.MINUTE, DurationType.HOUR, DurationType.DAY, DurationType.WEEK);
     private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(EsmMeasureProvider.class);
     private static final String NAMESPACE_SEPARATOR = "::";
 
@@ -118,7 +113,7 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public boolean isDurationSupportingAddition(final Unit unit) {
         if (unit instanceof DurationUnit) {
-            return DURATION_UNITS_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getType());
+            return DURATION_TYPES_SUPPORTING_ADDITION.contains(((DurationUnit) unit).getUnitType());
         } else {
             return false;
         }

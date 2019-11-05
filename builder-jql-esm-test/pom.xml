@@ -83,5 +83,13 @@
             <version>${epsilon-version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.expression.model.test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>
