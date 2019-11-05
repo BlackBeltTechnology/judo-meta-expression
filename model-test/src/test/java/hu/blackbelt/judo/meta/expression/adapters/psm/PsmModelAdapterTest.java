@@ -51,7 +51,7 @@ public class PsmModelAdapterTest {
     private PsmModel measureModel;
     private PsmModel psmModel;
 
-    private ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> modelAdapter;
+    private ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter;
 
     @BeforeEach
     public void setUp() throws Exception {

@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
+import hu.blackbelt.judo.meta.psm.data.Sequence;
 import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -49,7 +50,7 @@ public class PsmModelAdapterDimensionTest {
         resource = resourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
         measureProvider = new PsmMeasureProvider(resourceSet);
 
-        final ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
+        final ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
 
         Mockito.doAnswer(invocationOnMock -> {
             final Object[] args = invocationOnMock.getArguments();

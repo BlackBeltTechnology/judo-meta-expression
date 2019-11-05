@@ -124,6 +124,12 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.epsilon</groupId>
@@ -139,6 +145,6 @@
 			<scope>test</scope>
 		</dependency>
 
-	</dependencies>
+    </dependencies>
 
 </project>

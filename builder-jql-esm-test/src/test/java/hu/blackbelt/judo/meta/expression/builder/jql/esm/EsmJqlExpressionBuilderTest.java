@@ -8,6 +8,8 @@ import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
+import hu.blackbelt.judo.meta.esm.measure.MeasureDefinitionTerm;
+import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
 import hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilder;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
@@ -30,6 +32,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
@@ -46,15 +49,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.File;
-import java.security.Permissions;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.*;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
 import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.*;
-import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasureBuilder;
-import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newUnitBuilder;
+import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
@@ -63,13 +68,19 @@ import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EsmJqlExpressionBuilderTest {
 
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    private @interface WithDefaultModel {
+
+    }
+
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
-    private static final String SOURCE_MODEL_NAME = "urn:esm.judo-meta-esm";
+    private static final String ESM_RESOURCE_URI = "urn:esm.judo-meta-esm";
+    private static final String EXPRESSION_RESOURCE_URI = "urn:test.judo-meta-expression";
     private static final Log log = new Slf4jLog();
 
     private JqlExpressionBuilder<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
@@ -80,29 +91,56 @@ public class EsmJqlExpressionBuilderTest {
     private EsmModelResourceSupport esmModelResourceSupport;
     private EsmUtils esmUtils;
 
+    private Map<String, Measure> measureMap = new HashMap<>();
+    private Model measureModel;
+
     @BeforeEach
-    void setUp() throws Exception {
-        MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.measureModelResourceSupportBuilder()
-                .uri(URI.createURI("urn:test.judo-meta-measure"))
-                .build();
-        Measure mass = new MeasureCreator("Mass").withUnit("mg").create();
-        Package measures = createPackage("measures", mass);
-        Model measureModel = newModelBuilder().withName("demo").withElements(Arrays.asList(measures)).build();
-        measureModelResourceSupport.addContent(measureModel);
+    void setUp(TestInfo testInfo) {
+        measureModel = createMeasureModel();
+        testInfo.getTestMethod().ifPresent(method -> {
+            if (method.getDeclaredAnnotationsByType(WithDefaultModel.class).length > 0) {
+                initResources(null);
+            }
+        });
+    }
+
+    private void initResources(Model model) {
+        MeasureModelResourceSupport measureModelResourceSupport = loadMeasureModel();
         measureResource = measureModelResourceSupport.getResource();
 
         expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
-                .uri(URI.createURI("urn:test.judo-meta-expression"))
+                .uri(URI.createURI(EXPRESSION_RESOURCE_URI))
                 .build();
-
         esmModelResourceSupport = esmModelResourceSupportBuilder()
-                .uri(URI.createURI(SOURCE_MODEL_NAME))
+                .uri(URI.createURI(ESM_RESOURCE_URI))
                 .build();
 
+        if (model != null) {
+            esmModelResourceSupport.addContent(model);
+        }
         modelAdapter = new EsmModelAdapter(esmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
         esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
         esmUtils = new EsmUtils(esmModelResourceSupport.getResourceSet(), false);
+    }
 
+    private Model createMeasureModel() {
+        Measure mass = new MeasureCreator("Mass").withUnit("mg").create();
+        Measure length = new MeasureCreator("Length").withUnit("m").create();
+        measureMap.put("Length", length);
+        Measure time = new MeasureCreator("Time").withUnit("s").create();
+        measureMap.put("Time", time);
+        Measure velocity = new MeasureCreator("Velocity").withUnit("m/s").withTerm(length.getUnits().get(0), 1).withTerm(time.getUnits().get(0), -1).create();
+        measureMap.put("Velocity", velocity);
+        Package measures = createPackage("measures", mass, length, time, velocity);
+        return newModelBuilder().withName("demo").withElements(Arrays.asList(measures)).build();
+    }
+
+    private MeasureModelResourceSupport loadMeasureModel() {
+        MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.measureModelResourceSupportBuilder()
+                .uri(URI.createURI("urn:test.judo-meta-measure"))
+                .build();
+        measureModelResourceSupport.addContent(measureModel);
+        return measureModelResourceSupport;
     }
 
     @AfterEach
@@ -132,7 +170,7 @@ public class EsmJqlExpressionBuilderTest {
                         .build(),
                 wrappedEmfModelContextBuilder()
                         .log(log)
-                        .name("NORTHWIND_MEASURES")
+                        .name("ESM_MEASURES")
                         .validateModel(false)
                         .aliases(ImmutableList.of("MEASURES"))
                         .resource(measureResource)
@@ -250,11 +288,13 @@ public class EsmJqlExpressionBuilderTest {
     }
 
     @Test
+    @WithDefaultModel
     void testConstants() {
         createExpression("1");
     }
 
     @Test
+    @WithDefaultModel
     void testUnaryOperations() {
         createExpression("-1");
         createExpression("-1.0");
@@ -293,8 +333,14 @@ public class EsmJqlExpressionBuilderTest {
 
     @Test
     void testMeasures() {
-        createExpression("5[demo::measures::Mass#mg]");
+        MeasuredType velocityType = newMeasuredTypeBuilder().withName("Velocity").withStoreUnit(measureMap.get("Velocity").getUnits().get(0)).build();
+        EntityType vehicle = new EntityCreator("Vehicle").withAttribute("maxSpeed", velocityType).create();
+        createTestModel(createPackage("entities", vehicle), velocityType);
 
+        createExpression("5[demo::measures::Mass#mg]");
+        NumericExpression velocityExpression = (NumericExpression) createExpression(vehicle, "self.maxSpeed * 5[demo::measures::Time#s]");
+        assertTrue(modelAdapter.isMeasured(velocityExpression));
+        assertThat(modelAdapter.getMeasureName(modelAdapter.getMeasure(velocityExpression).get()).get().getName(), is("Length"));
     }
 
     @Test
@@ -404,14 +450,13 @@ public class EsmJqlExpressionBuilderTest {
 
     private void createTestModel(NamespaceElement... elems) {
         Model model = newModelBuilder().withName("demo").withElements(Arrays.asList(elems)).build();
-        esmModelResourceSupport.addContent(model);
-
-        esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+        initResources(model);
     }
 
     private class MeasureCreator {
         private String name;
         private Collection<Unit> units = new ArrayList<>();
+        private Collection<MeasureDefinitionTerm> terms = new ArrayList<>();
 
         public MeasureCreator(String name) {
             this.name = name;
@@ -422,6 +467,9 @@ public class EsmJqlExpressionBuilderTest {
             if (!units.isEmpty()) {
                 builder.withUnits(units);
             }
+            if (!terms.isEmpty()) {
+                builder.withTerms(terms);
+            }
             return builder.build();
         }
 
@@ -429,6 +477,12 @@ public class EsmJqlExpressionBuilderTest {
             units.add(newUnitBuilder().withName(name).build());
             return this;
         }
+
+        public MeasureCreator withTerm(Unit unit, int exponent) {
+            terms.add(newMeasureDefinitionTermBuilder().withUnit(unit).withExponent(exponent).build());
+            return this;
+        }
+
     }
 
     private class EntityCreator {

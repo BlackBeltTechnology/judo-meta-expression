@@ -42,6 +42,7 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  * @param <E>   enumeration
  * @param <C>   class
  * @param <RTE> reference typed element (ie. reference)
+ * @param <S> sequence
  * @param <M>   measure
  * @param <U>   unit
  */
@@ -145,6 +146,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
                 expressionResource.getContents().add(measureName);
                 measureNames.put(String.join("::", measureName.getNamespace(), measureName.getName()), measureName);
             }
+
         });
     }
 

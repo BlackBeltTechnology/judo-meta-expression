@@ -45,7 +45,7 @@ public class AsmModelAdapterDimensionTest {
         resource = resourceSet.createResource(URI.createURI("urn:measure.judo-meta-measure"));
         measureProvider = new AsmMeasureProvider(resourceSet);
 
-        final ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
+        final ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
 
         Mockito.doAnswer(invocationOnMock -> {
             final Object[] args = invocationOnMock.getArguments();

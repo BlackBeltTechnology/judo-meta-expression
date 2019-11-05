@@ -1,13 +1,14 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
-import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
+import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
+import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.esm.namespace.Namespace;
 import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
+import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.*;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
@@ -23,9 +24,6 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.UniqueEList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
@@ -253,10 +251,10 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<Unit> getUnit(final NumericExpression numericExpression) {
+    public Optional<Unit> getUnit(NumericExpression numericExpression) {
         if (numericExpression instanceof NumericAttribute) {
-            final EClass objectType = (EClass) ((NumericAttribute) numericExpression).getObjectExpression().getObjectType(this);
-            final String attributeName = ((NumericAttribute) numericExpression).getAttributeName();
+            hu.blackbelt.judo.meta.esm.structure.Class objectType = (hu.blackbelt.judo.meta.esm.structure.Class) ((NumericAttribute) numericExpression).getObjectExpression().getObjectType(this);
+            String attributeName = ((NumericAttribute) numericExpression).getAttributeName();
 
             return getUnit(objectType, attributeName);
         } else if (numericExpression instanceof MeasuredDecimal) {
@@ -315,8 +313,8 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
 
-    Optional<Unit> getUnit(final EClass objectType, final String attributeName) {
-        final Optional<Optional<Unit>> unit = objectType.getEAllAttributes().stream()
+    Optional<Unit> getUnit(final hu.blackbelt.judo.meta.esm.structure.Class objectType, final String attributeName) {
+        final Optional<Optional<Unit>> unit = objectType.getAttributes().stream()
                 .filter(a -> Objects.equals(a.getName(), attributeName))
                 .map(a -> getUnit(a))
                 .findAny();
@@ -328,34 +326,8 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         }
     }
 
-    Optional<Unit> getUnit(final EAttribute attribute) {
-//        if (asmUtils.isNumeric(attribute.getEAttributeType())) {
-//            final Optional<String> unitNameOrSymbol = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "unit", false);
-//            final Optional<String> measureFqName = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "measure", false);
-//            if (unitNameOrSymbol.isPresent()) {
-//                if (measureFqName.isPresent()) {
-//                    final Optional<MeasureName> measureName = measureFqName.isPresent() ? parseMeasureName(measureFqName.get()) : Optional.empty();
-//                    if (!measureName.isPresent()) {
-//                        log.error("Failed to parse measure name: {}", measureFqName.get());
-//                        return Optional.empty();
-//                    }
-//                    final String replacedMeasureName = measureName.get().getNamespace().replace(".", NAMESPACE_SEPARATOR);
-//                    final Optional<Measure> measure = measureName.isPresent() ? measureProvider.getMeasure(replacedMeasureName, measureName.get().getName()) : Optional.empty();
-//                    if (!measure.isPresent() && measureName.isPresent()) {
-//                        log.error("Measure is defined but not resolved: namespace={}, name={}", replacedMeasureName, measureName.get().getName());
-//                        return Optional.empty();
-//                    }
-//                    return measureProvider.getUnitByNameOrSymbol(measure, unitNameOrSymbol.get());
-//                } else {
-//                    return measureProvider.getUnitByNameOrSymbol(Optional.empty(), unitNameOrSymbol.get());
-//                }
-//            } else {
-//                return Optional.empty();
-//            }
-//        } else {
-//            return Optional.empty();
-//        }
-        return null;
+    Optional<Unit> getUnit(final DataFeature attribute) {
+        return Optional.ofNullable(((MeasuredType) attribute.getDataType()).getStoreUnit());
     }
 
     private static Optional<MeasureName> parseMeasureName(final String name) {
