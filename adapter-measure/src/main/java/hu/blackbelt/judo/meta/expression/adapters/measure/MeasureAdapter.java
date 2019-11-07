@@ -21,9 +21,8 @@ import java.util.stream.Collectors;
  *
  * @param <M> measure type (in metamodel)
  * @param <U> unit type (in metamodel)
- * @param <T> object type (in metamodel)
  */
-public class MeasureAdapter<M, U, T> {
+public class MeasureAdapter<M, U> {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapter.class);
     /**

@@ -12,7 +12,6 @@ import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
-
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -28,14 +27,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
 import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.*;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 
 public class AsmModelAdapterDimensionTest {
 
-    private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
+    private MeasureAdapter<Measure, Unit> measureAdapter;
     private MeasureProvider<Measure, Unit> measureProvider;
     private Resource resource;
 

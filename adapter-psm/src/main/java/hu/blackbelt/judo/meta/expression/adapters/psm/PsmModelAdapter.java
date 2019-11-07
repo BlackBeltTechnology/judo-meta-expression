@@ -44,7 +44,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter measureAdapter;
+    private final MeasureAdapter<Measure, Unit> measureAdapter;
 
     /**
      * Create PSM model adapter for expressions.
@@ -260,7 +260,15 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(NumericExpression numericExpression) {
-        return measureAdapter.getDimension(numericExpression);
+        return measureAdapter.getDimension(numericExpression).map( dimensions -> {
+            Map<Measure, Integer> measureMap = new HashMap<>();
+            dimensions.entrySet().stream().forEach(entry -> {
+                MeasureAdapter.MeasureId measureId = entry.getKey();
+                Optional<Measure> measure = measureProvider.getMeasure(measureId.getNamespace(), measureId.getName());
+                measure.ifPresent(m -> measureMap.put(m, entry.getValue()));
+            });
+            return measureMap;
+        });
     }
 
     @Override

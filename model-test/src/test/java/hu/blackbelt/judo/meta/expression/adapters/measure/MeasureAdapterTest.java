@@ -33,7 +33,7 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -43,7 +43,7 @@ public class MeasureAdapterTest {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapterTest.class);
     private DummyMeasureProvider measureProvider = new DummyMeasureProvider();
     private ModelAdapter modelAdapter;
-    private MeasureAdapter<Measure, Unit, ?> measureAdapter;
+    private MeasureAdapter<Measure, Unit> measureAdapter;
 
     private final Map<String, Unit> attributeUnits = new TreeMap<>();
 

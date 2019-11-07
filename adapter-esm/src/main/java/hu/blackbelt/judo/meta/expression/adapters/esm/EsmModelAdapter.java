@@ -52,7 +52,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     private final ResourceSet esmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter measureAdapter;
+    private final MeasureAdapter<Measure, Unit> measureAdapter;
     private final EsmUtils esmUtils;
 
 
@@ -274,7 +274,15 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(final NumericExpression numericExpression) {
-        return measureAdapter.getDimension(numericExpression);
+        return measureAdapter.getDimension(numericExpression).map( dimensions -> {
+            Map<Measure, Integer> measureMap = new HashMap<>();
+            dimensions.entrySet().stream().forEach( entry -> {
+                MeasureAdapter.MeasureId measureId = entry.getKey();
+                Optional<Measure> measure = measureProvider.getMeasure(measureId.getNamespace(), measureId.getName());
+                measure.ifPresent(m -> measureMap.put(m, entry.getValue()));
+            });
+            return measureMap;
+        });
     }
 
     @Override

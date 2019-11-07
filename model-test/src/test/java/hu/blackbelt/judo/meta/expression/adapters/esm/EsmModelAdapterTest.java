@@ -178,16 +178,30 @@ public class EsmModelAdapterTest {
 //        assertThat(derivedLengthUnit, is(measureMap.get("Length").getUnits().get(0)));
     }
 
-    private ObjectVariableReference createVariableReference(EntityType entityType) {
-        Instance vehicleInstance  = newInstanceBuilder().withName("self").withElementName(modelAdapter.getTypeName(entityType).get()).build();
-        return newObjectVariableReferenceBuilder().withVariable(vehicleInstance).build();
-    }
-
     @Test
     public void testIsDurationSupportingAddition() {
         initResources(null);
         assertTrue(modelAdapter.isDurationSupportingAddition(measureMap.get("Time").getUnits().get(0)));
         assertFalse(modelAdapter.isDurationSupportingAddition(measureMap.get("Length").getUnits().get(0)));
+    }
+
+    @Test
+    public void testGetMeasure() {
+        initResources(null);
+        MeasureName measureName = newMeasureNameBuilder().withNamespace("demo::measures").withName("Length").build();
+        assertThat(modelAdapter.get(measureName).get(), is(measureMap.get("Length")));
+    }
+
+    @Test
+    public void testGetDimension() {
+        MeasuredType velocityType = newMeasuredTypeBuilder().withStoreUnit(measureMap.get("Velocity").getUnits().get(0)).withName("velocity").build();
+        EntityType vehicle = new EntityCreator("Vehicle").withAttribute("speed", velocityType).create();
+        initResources(createTestModel(velocityType, vehicle));
+        ObjectVariableReference variableReference = createVariableReference(vehicle);
+        Map<Measure, Integer> dimensionMap = modelAdapter.getDimension(newDecimalAttributeBuilder().withAttributeName("speed").withObjectExpression(variableReference).build()).get();
+        assertThat(dimensionMap.size(), is(2));
+        assertThat(dimensionMap, hasKey(measureMap.get("Length")));
+        assertThat(dimensionMap, hasKey(measureMap.get("Time")));
     }
 
     @Test
@@ -202,13 +216,6 @@ public class EsmModelAdapterTest {
         assertThat(modelAdapter.get(newTypeNameBuilder().withNamespace("demo::superpackage").withName("entities").build()).get(), is(entities));
         assertThat(modelAdapter.get(newTypeNameBuilder().withNamespace("demo.superpackage.entities").withName("Category").build()).get(), is(category));
         assertThat(modelAdapter.get(newTypeNameBuilder().withNamespace("demo::superpackage::entities").withName("Category").build()).get(), is(category));
-    }
-
-    @Test
-    public void testGetMeasure() {
-        initResources(null);
-        MeasureName measureName = newMeasureNameBuilder().withNamespace("demo::measures").withName("Length").build();
-        assertThat(modelAdapter.get(measureName).get(), is(measureMap.get("Length")));
     }
 
     @Test
@@ -294,5 +301,10 @@ public class EsmModelAdapterTest {
         assertThat(modelAdapter.getSuperTypes(child), containsInAnyOrder(grandfather, grandmother, father));
     }
 
+
+    private ObjectVariableReference createVariableReference(EntityType entityType) {
+        Instance vehicleInstance  = newInstanceBuilder().withName("self").withElementName(modelAdapter.getTypeName(entityType).get()).build();
+        return newObjectVariableReferenceBuilder().withVariable(vehicleInstance).build();
+    }
 
 }

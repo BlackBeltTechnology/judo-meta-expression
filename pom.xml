@@ -116,7 +116,7 @@
         <judo-meta-asm-version>1.0.0.20191017_065843_5c67fc0_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-		<judo-meta-esm-version>1.1.0.20191025_201354_0da09c6_develop</judo-meta-esm-version>
+		<judo-meta-esm-version> 1.1.0.20191107_104809_369274b_develop</judo-meta-esm-version>
 		<judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
 		<judo-meta-jql-version>1.0.0.feature_JNG_292_Extend_JQL_Grammar_00044</judo-meta-jql-version>
@@ -791,15 +791,13 @@
                 <module>model</module>
                 <module>adapter-measure</module>
                 <module>adapter-asm</module>
+				<module>adapter-esm</module>
 				<module>adapter-psm</module>
 				<module>builder-jql</module>
 				<module>builder-jql-asm</module>
 				<module>builder-jql-asm-test</module>
+				<module>builder-jql-esm-test</module>
                 <module>model-test</module>
-                <!--
-                <module>model-asm-test</module>
-                <module>model-psm-test</module>
-                -->
                 <module>osgi</module>
                 <module>osgi-itest</module>
                 <module>feature-model</module>

@@ -7,10 +7,8 @@ import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClass;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,17 +23,17 @@ import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AsmMeasureProviderTest {
 
     private MeasureModel measureModel;
     private MeasureProvider<Measure, Unit> measureProvider;
 
-    private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
+    private MeasureAdapter<Measure, Unit> measureAdapter;
 
     @BeforeEach
     public void setUp() throws IOException, MeasureModel.MeasureValidationException {
