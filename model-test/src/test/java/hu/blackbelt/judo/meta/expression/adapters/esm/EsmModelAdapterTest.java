@@ -18,6 +18,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalAritmeticExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
@@ -166,16 +167,15 @@ public class EsmModelAdapterTest {
         assertThat(modelAdapter.getUnit(decimalLength).get(), is(measureMap.get("Length").getUnits().get(0)));
         MeasuredInteger integerTime = newMeasuredIntegerBuilder().withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get()).withUnitName("s").withValue(BigInteger.ONE).build();
         assertThat(modelAdapter.getUnit(integerTime).get(), is(measureMap.get("Time").getUnits().get(0)));
-        // TODO Is the following valid?
-//        DecimalAritmeticExpression aritmeticExpression = newDecimalAritmeticExpressionBuilder().withLeft(
-//                newMeasuredDecimalBuilder()
-//                        .withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get())
-//                        .withUnitName("s")
-//                        .withValue(BigDecimal.ONE)
-//                        .build()).withOperator(DecimalOperator.MULTIPLY).withRight(
-//                newDecimalAttributeBuilder().withAttributeName("speed").withObjectExpression(variableReference).build()).build();
-//        Unit derivedLengthUnit = modelAdapter.getUnit(aritmeticExpression).get();
-//        assertThat(derivedLengthUnit, is(measureMap.get("Length").getUnits().get(0)));
+        DecimalAritmeticExpression aritmeticExpression = newDecimalAritmeticExpressionBuilder().withLeft(
+                newMeasuredDecimalBuilder()
+                        .withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get())
+                        .withUnitName("s")
+                        .withValue(BigDecimal.ONE)
+                        .build()).withOperator(DecimalOperator.MULTIPLY).withRight(
+                newDecimalAttributeBuilder().withAttributeName("speed").withObjectExpression(variableReference).build()).build();
+        Measure measure = modelAdapter.getMeasure(aritmeticExpression).get();
+        assertThat(measure, is(measureMap.get("Length")));
     }
 
     @Test
