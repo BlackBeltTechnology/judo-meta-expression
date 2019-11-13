@@ -68,7 +68,7 @@ context EXPR!CollectionFilterExpression {
 context EXPR!SortExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
-        
+
         check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of sort collection expression is not defined: " + self
     }
@@ -77,7 +77,7 @@ context EXPR!SortExpression {
 context EXPR!SubCollectionExpression {
     constraint Resolved {
         guard: self.collectionExpression.satisfiesAll("Resolved")
-        
+
         check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of subcollection expression is not defined: " + self
     }
@@ -95,7 +95,11 @@ context EXPR!CastCollection {
         guard: self.satisfiesAll("Resolved") and self.collectionExpression.satisfiesAll("Resolved")
         
         check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
-        message: "Invalid casting type: " + self.collectionExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
+        message {
+            var collectionType = self.collectionExpression.getObjectType(modelAdapter);
+            var castingType = self.getObjectType(modelAdapter);
+            return "Invalid casting: " + collectionType + " as " + castingType+ ". "+ collectionType + " is not supertype of " + castingType;
+        }
     }
 }
 
@@ -110,5 +114,12 @@ context EXPR!CollectionVariableReference {
         
         check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of variable " + self.variable.name + " is unknown"
+    }
+}
+
+context EXPR!CollectionSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
     }
 }

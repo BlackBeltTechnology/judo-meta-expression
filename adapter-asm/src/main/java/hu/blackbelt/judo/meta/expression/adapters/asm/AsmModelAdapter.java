@@ -13,7 +13,6 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
-
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
@@ -22,24 +21,20 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Model adapter for ASM models.
  */
-public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> {
+public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
@@ -48,7 +43,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     private final ResourceSet asmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter measureAdapter;
+    private final MeasureAdapter<Measure, Unit> measureAdapter;
 
     private final AsmUtils asmUtils;
 
@@ -61,12 +56,40 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         measureAdapter = new MeasureAdapter<>(measureProvider, this);
     }
 
+    private static Optional<MeasureName> parseMeasureName(final String name) {
+        if (name == null) {
+            return Optional.empty();
+        } else {
+            final Matcher m = MEASURE_NAME_PATTERN.matcher(name);
+            if (m.matches()) {
+                return Optional.of(newMeasureNameBuilder()
+                        .withNamespace(m.group(1))
+                        .withName(m.group(2))
+                        .build());
+            } else {
+                return Optional.empty();
+            }
+        }
+    }
+
     @Override
     public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
         return getAsmElement(EPackage.class)
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
-                .map(ns -> newTypeNameBuilder().withNamespace(asmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
+                .map(ns -> newTypeNameBuilder().withNamespace(AsmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
                 .findAny();
+    }
+
+    @Override
+    public Optional<TypeName> getEnumerationTypeName(EEnum enumeration) {
+        return getTypeName(enumeration);
+    }
+
+    @Override
+    public Optional<MeasureName> getMeasureName(Measure measure) {
+        return measureProvider.getMeasures()
+                .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
+                .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getNamespace()).build());
     }
 
     @Override
@@ -137,52 +160,52 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public boolean isNumeric(final EDataType primitive) {
-        return asmUtils.isNumeric(primitive);
+        return AsmUtils.isNumeric(primitive);
     }
 
     @Override
     public boolean isInteger(final EDataType primitive) {
-        return asmUtils.isInteger(primitive);
+        return AsmUtils.isInteger(primitive);
     }
 
     @Override
     public boolean isDecimal(final EDataType primitive) {
-        return asmUtils.isDecimal(primitive);
+        return AsmUtils.isDecimal(primitive);
     }
 
     @Override
     public boolean isBoolean(final EDataType primitive) {
-        return asmUtils.isBoolean(primitive);
+        return AsmUtils.isBoolean(primitive);
     }
 
     @Override
     public boolean isString(final EDataType primitive) {
-        return asmUtils.isString(primitive);
+        return AsmUtils.isString(primitive);
     }
 
     @Override
     public boolean isEnumeration(final EDataType primitive) {
-        return asmUtils.isEnumeration(primitive);
+        return AsmUtils.isEnumeration(primitive);
     }
 
     @Override
     public boolean isDate(EDataType primitive) {
-        return asmUtils.isDecimal(primitive);
+        return AsmUtils.isDecimal(primitive);
     }
 
     @Override
     public boolean isTimestamp(EDataType primitive) {
-        return asmUtils.isTimestamp(primitive);
+        return AsmUtils.isTimestamp(primitive);
     }
 
     @Override
     public boolean isCustom(EDataType primitive) {
-        return !asmUtils.isBoolean(primitive)
-                && !asmUtils.isNumeric(primitive)
-                && !asmUtils.isString(primitive)
-                && !asmUtils.isEnumeration(primitive)
-                && !asmUtils.isDate(primitive)
-                && !asmUtils.isTimestamp(primitive);
+        return !AsmUtils.isBoolean(primitive)
+                && !AsmUtils.isNumeric(primitive)
+                && !AsmUtils.isString(primitive)
+                && !AsmUtils.isEnumeration(primitive)
+                && !AsmUtils.isDate(primitive)
+                && !AsmUtils.isTimestamp(primitive);
     }
 
     @Override
@@ -234,14 +257,53 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(final NumericExpression numericExpression) {
-        return measureAdapter.getDimension(numericExpression);
+        return measureAdapter.getDimension(numericExpression).map(dimensions -> {
+                    Map<Measure, Integer> measureMap = new HashMap<>();
+                    dimensions.entrySet().stream().forEach(entry -> {
+                        MeasureAdapter.MeasureId measureId = entry.getKey();
+                        Optional<Measure> measure = measureProvider.getMeasure(measureId.getNamespace(), measureId.getName());
+                        measure.ifPresent(m -> measureMap.put(m, entry.getValue()));
+                    });
+                    return measureMap;
+                }
+        );
     }
 
     @Override
     public EList<EClass> getAllClasses() {
         return ECollections.asEList(getAsmElement(EClass.class)
                 .filter(c -> AsmUtils.isEntityType(c))
-                .collect(Collectors.toList()));
+                .collect(toList()));
+    }
+
+    @Override
+    public EList<EEnum> getAllEnums() {
+        return ECollections.asEList(getAsmElement(EEnum.class)
+                .filter(e -> AsmUtils.isEnumeration(e))
+                .collect(toList()));
+    }
+
+    @Override
+    public EList<EClassifier> getAllStaticSequences() {
+        // TODO
+        return ECollections.emptyEList();
+    }
+
+    @Override
+    public Optional<? extends EClassifier> getSequence(EClass clazz, String sequenceName) {
+        // TODO
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean isSequence(EClassifier namespaceElement) {
+        // TODO
+        return false;
+    }
+
+    @Override
+    public EList<Measure> getAllMeasures() {
+        return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
 
     <T> Stream<T> getAsmElement(final Class<T> clazz) {
@@ -264,9 +326,9 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     Optional<Unit> getUnit(final EAttribute attribute) {
-        if (asmUtils.isNumeric(attribute.getEAttributeType())) {
-            final Optional<String> unitNameOrSymbol = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "unit", false);
-            final Optional<String> measureFqName = asmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "measure", false);
+        if (AsmUtils.isNumeric(attribute.getEAttributeType())) {
+            final Optional<String> unitNameOrSymbol = AsmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "unit", false);
+            final Optional<String> measureFqName = AsmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "measure", false);
             if (unitNameOrSymbol.isPresent()) {
                 if (measureFqName.isPresent()) {
                     final Optional<MeasureName> measureName = measureFqName.isPresent() ? parseMeasureName(measureFqName.get()) : Optional.empty();
@@ -292,27 +354,11 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         }
     }
 
-    private static Optional<MeasureName> parseMeasureName(final String name) {
-        if (name == null) {
-            return Optional.empty();
-        } else {
-            final Matcher m = MEASURE_NAME_PATTERN.matcher(name);
-            if (m.matches()) {
-                return Optional.of(newMeasureNameBuilder()
-                        .withNamespace(m.group(1))
-                        .withName(m.group(2))
-                        .build());
-            } else {
-                return Optional.empty();
-            }
-        }
-    }
-
     @Override
     public EList<EClass> getContainerTypesOf(final EClass clazz) {
         return ECollections.asEList(asmUtils.all(EClass.class)
                 .filter(container -> container.getEAllContainments().stream().anyMatch(c -> EcoreUtil.equals(c.getEReferenceType(), clazz)))
                 .flatMap(container -> Stream.concat(container.getEAllSuperTypes().stream(), Collections.singleton(container).stream()))
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
 }

@@ -50,16 +50,20 @@
 		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20191017_065843_5c67fc0_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="1.0.0.20191018_135350_491e1a9_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20191018_135350_491e1a9_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="1.1.0.20191107_104809_369274b_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20191107_104809_369274b_develop"/>
+	  </location>
+	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="1.0.0.20191028_094457_28769af_develop"/>
+		  <repository location="https://nexus.blackbelt.cloud/repository/p2-judo/judo-meta-psm/1.0.0.20191028_094457_28769af_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="1.0.0.20191017_065900_9a9a2cc_develop"/>
 		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20191017_065900_9a9a2cc_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.0.20191016_092449_edf1d62_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20191016_092449_edf1d62_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.0.20191112_164935_2d7c4d3_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20191112_164935_2d7c4d3_develop"/>
 	  </location>
 
   </locations>

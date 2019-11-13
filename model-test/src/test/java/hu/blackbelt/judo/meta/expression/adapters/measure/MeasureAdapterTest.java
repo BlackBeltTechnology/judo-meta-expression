@@ -11,10 +11,9 @@ import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
-import hu.blackbelt.judo.meta.expression.operator.DecimalComparator;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
-import hu.blackbelt.judo.meta.expression.operator.IntegerComparator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +33,7 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,7 +43,7 @@ public class MeasureAdapterTest {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapterTest.class);
     private DummyMeasureProvider measureProvider = new DummyMeasureProvider();
     private ModelAdapter modelAdapter;
-    private MeasureAdapter<Measure, Unit, ?> measureAdapter;
+    private MeasureAdapter<Measure, Unit> measureAdapter;
 
     private final Map<String, Unit> attributeUnits = new TreeMap<>();
 
@@ -704,7 +703,7 @@ public class MeasureAdapterTest {
                                                 .build())
                                         .withAttributeName("a")
                                         .build())
-                                .withOperator(IntegerComparator.LESS_THAN)
+                                .withOperator(NumericComparator.LESS_THAN)
                                 .withRight(newIntegerAttributeBuilder()
                                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                                 .withVariable(packageInstance)
@@ -751,7 +750,7 @@ public class MeasureAdapterTest {
                                                 .build())
                                         .withAttributeName("a")
                                         .build())
-                                .withOperator(DecimalComparator.LESS_THAN)
+                                .withOperator(NumericComparator.LESS_THAN)
                                 .withRight(newDecimalAttributeBuilder()
                                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                                 .withVariable(packageInstance)

@@ -19,7 +19,7 @@ import java.util.Optional;
  * @param <M>   measure
  * @param <U>   unit
  */
-public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
+public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, S, M, U> {
 
     /**
      * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
@@ -29,6 +29,8 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
      * @return type name
      */
     Optional<TypeName> getTypeName(NE namespaceElement);
+
+    Optional<TypeName> getEnumerationTypeName(E enumeration);
 
     /**
      * Get a namespace element by element name.
@@ -262,4 +264,28 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, M, U> {
      * @return list of classes
      */
     EList<C> getAllClasses();
+
+    /** Returns all measures that can be used in expression.
+     *
+     * @return list of measures
+     */
+    EList<M> getAllMeasures();
+
+    Optional<MeasureName> getMeasureName(M measure);
+
+    EList<E> getAllEnums();
+
+    EList<NE> getAllStaticSequences();
+
+    /**
+     * Get object sequence by name.
+     *
+     * @param clazz         object type
+     * @param sequenceName attribute name
+     * @return the sequence
+     */
+    Optional<? extends S> getSequence(C clazz, String sequenceName);
+
+    boolean isSequence(NE namespaceElement);
+
 }

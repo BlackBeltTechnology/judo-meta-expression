@@ -11,11 +11,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.data.Attribute;
-import hu.blackbelt.judo.meta.psm.data.Containment;
-import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
-import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
+import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -31,27 +27,24 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Model adapter for PSM models.
  */
-public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Measure, Unit> {
+public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter measureAdapter;
+    private final MeasureAdapter<Measure, Unit> measureAdapter;
 
     /**
      * Create PSM model adapter for expressions.
@@ -73,6 +66,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                 .filter(ns -> ns.getElements().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namespaceElement.getName()).build())
                 .findAny();
+    }
+
+    @Override
+    public Optional<TypeName> getEnumerationTypeName(EnumerationType enumeration) {
+        return getTypeName(enumeration);
     }
 
     @Override
@@ -227,9 +225,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
             final MeasuredDecimal measuredDecimal = (MeasuredDecimal) numericExpression;
             return measureAdapter.getUnit(
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
-
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
-
                     measuredDecimal.getUnitName());
         } else if (numericExpression instanceof MeasuredInteger) {
             final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
@@ -264,12 +260,45 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(NumericExpression numericExpression) {
-        return measureAdapter.getDimension(numericExpression);
+        return measureAdapter.getDimension(numericExpression).map( dimensions -> {
+            Map<Measure, Integer> measureMap = new HashMap<>();
+            dimensions.entrySet().stream().forEach(entry -> {
+                MeasureAdapter.MeasureId measureId = entry.getKey();
+                Optional<Measure> measure = measureProvider.getMeasure(measureId.getNamespace(), measureId.getName());
+                measure.ifPresent(m -> measureMap.put(m, entry.getValue()));
+            });
+            return measureMap;
+        });
     }
 
     @Override
     public EList<EntityType> getAllClasses() {
-        return ECollections.asEList(getPsmElement(EntityType.class).collect(Collectors.toList()));
+        return ECollections.asEList(getPsmElement(EntityType.class).collect(toList()));
+    }
+
+    @Override
+    public EList<EnumerationType> getAllEnums() {
+        return ECollections.asEList(getPsmElement(EnumerationType.class).collect(toList()));
+    }
+
+    @Override
+    public EList<NamespaceElement> getAllStaticSequences() {
+        return ECollections.asEList(getPsmElement(NamespaceSequence.class).collect(toList()));
+    }
+
+    @Override
+    public Optional<? extends Sequence> getSequence(EntityType clazz, String sequenceName) {
+        return clazz.getSequences().stream().filter(sequence -> Objects.equals(sequence.getName(), sequenceName)).findAny();
+    }
+
+    @Override
+    public boolean isSequence(NamespaceElement namespaceElement) {
+        return namespaceElement instanceof Sequence;
+    }
+
+    @Override
+    public EList<Measure> getAllMeasures() {
+        return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
 
     <T> Stream<T> getPsmElement(final Class<T> clazz) {
@@ -301,6 +330,14 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         return ECollections.asEList(getPsmElement(EntityType.class)
                 .filter(container -> container.getRelations().stream().anyMatch(c -> (c instanceof Containment) && EcoreUtil.equals(c.getTarget(), entityType)))
                 .flatMap(container -> Stream.concat(PsmUtils.getAllSuperEntityTypes(container).stream(), Collections.singleton(container).stream()))
-                .collect(Collectors.toList()));
+                .collect(toList()));
     }
+
+    @Override
+    public Optional<MeasureName> getMeasureName(Measure measure) {
+        return measureProvider.getMeasures()
+                .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
+                .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getSymbol()).build());
+    }
+
 }

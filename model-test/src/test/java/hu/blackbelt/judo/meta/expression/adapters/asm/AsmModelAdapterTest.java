@@ -46,7 +46,7 @@ public class AsmModelAdapterTest {
     private AsmModel asmModel;
     private AsmUtils asmUtils;
 
-    private ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, Measure, Unit> modelAdapter;
+    private ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> modelAdapter;
 
     @BeforeEach
     public void setUp() throws Exception {

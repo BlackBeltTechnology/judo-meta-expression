@@ -3,33 +3,43 @@ context EXPR!IntegerConstant {
         check: self.value.isDefined()
         message: "Value of integer constant is not defined: " + self
     }
+
+    constraint MeasureIsValid {   	
+        check: true
+        message: "Measured constant: " + self
+    }
 }
 
 context EXPR!DecimalConstant {
     constraint Resolved {
         check: self.value.isDefined()
-        message: "Value of integer constant is not defined: " + self
+        message: "Value of decimal constant is not defined: " + self
+    }
+
+    constraint MeasureIsValid {
+        check: true
+        message: "Measured decimal constant: " + self
     }
 }
 
 context EXPR!BooleanConstant {
     constraint Resolved {
         check: self.value.isDefined()
-        message: "Value of integer constant is not defined: " + self
+        message: "Value of boolean constant is not defined: " + self
     }
 }
 
 context EXPR!StringConstant {
     constraint Resolved {
-        check: self.value.isDefined()
-        message: "Value of integer constant is not defined: " + self
+        check: "" == self.value or self.value.isDefined()
+        message: "Value of string constant is not defined: " + self
     }
 }
 
 context EXPR!Literal {
     constraint Resolved {
         check: self.value.isDefined()
-        message: "Value of integer constant is not defined: " + self
+        message: "Value of literal constant is not defined: " + self
     }
 }
 

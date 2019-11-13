@@ -78,8 +78,8 @@
         </objectExpression>
       </objectExpression>
       <condition xsi:type="l:KleeneExpression" xmi:id="_xcIc0OaCEeiefp-kRHrgiQ" operator="and">
-        <left xsi:type="l:StringComparison" xmi:id="_3VfLAONPEeiRKu0rpEAR6w" operator="matches">
-          <left xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
+        <left xsi:type="l:Matches" xmi:id="_3VfLAONPEeiRKu0rpEAR6w">
+          <expression xsi:type="str:StringAttribute" xmi:id="_9WuUsONPEeiRKu0rpEAR6w" attributeName="postalCode">
             <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_7WfnQBmSEemlcrqtQk4dUg">
               <collectionExpression xsi:type="c:SortExpression" xmi:id="_AiHXkBmTEemlcrqtQk4dUg">
                 <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_HwLgwBmTEemlcrqtQk4dUg" referenceName="addresses">
@@ -87,10 +87,10 @@
                 </collectionExpression>
               </collectionExpression>
             </objectExpression>
-          </left>
-          <right xsi:type="const:StringConstant" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
+          </expression>
+          <pattern xsi:type="const:StringConstant" xmi:id="_KxZKEONQEeiRKu0rpEAR6w" value="11%"/>
         </left>
-        <right xsi:type="l:EnumerationComparison" xmi:id="_C8y3MOaDEeiefp-kRHrgiQ" operator="==">
+        <right xsi:type="l:EnumerationComparison" xmi:id="_C8y3MOaDEeiefp-kRHrgiQ" operator="equal">
           <left xsi:type="enum:EnumerationAttribute" xmi:id="_H62soOaDEeiefp-kRHrgiQ" attributeName="country">
             <objectExpression xsi:type="o:CastObject" xmi:id="_y9NLIPPBEeiVnPNfsZPgMw" name="ia" elementName="_9eABUOaEEeiefp-kRHrgiQ">
               <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_7WfnQRmSEemlcrqtQk4dUg">
