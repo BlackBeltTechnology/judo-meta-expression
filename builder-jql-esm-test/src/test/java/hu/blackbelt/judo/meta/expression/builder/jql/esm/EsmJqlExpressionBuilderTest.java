@@ -25,6 +25,7 @@ import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
+import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import hu.blackbelt.judo.meta.expression.numeric.Length;
@@ -72,25 +73,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EsmJqlExpressionBuilderTest {
 
-    @Target(ElementType.METHOD)
-    @Retention(RetentionPolicy.RUNTIME)
-    private @interface WithDefaultModel {
-
-    }
-
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final String ESM_RESOURCE_URI = "urn:esm.judo-meta-esm";
     private static final String EXPRESSION_RESOURCE_URI = "urn:test.judo-meta-expression";
     private static final Log log = new Slf4jLog();
-
     private JqlExpressionBuilder<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
-
     private Resource measureResource;
     private EsmModelAdapter modelAdapter;
     private ExpressionModelResourceSupport expressionModelResourceSupport;
     private EsmModelResourceSupport esmModelResourceSupport;
     private EsmUtils esmUtils;
-
     private Map<String, Measure> measureMap = new HashMap<>();
     private Model measureModel;
 
@@ -352,14 +344,15 @@ public class EsmJqlExpressionBuilderTest {
                 .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
         Class order = new EntityCreator("Order").withTwoWayRelation(twr).create();
-        Class internationalOrder = new EntityCreator("InternationalOrder").withGeneralization(order).create();
         Class address = new EntityCreator("Address").create();
+        Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, twr, true).withCollectionRelation("addresses", address).create();
+        twr.setTarget(customer);
+
+        Class internationalOrder = new EntityCreator("InternationalOrder").withGeneralization(order).create();
         Class internationalAddress = new EntityCreator("InternationalAddress")
                 .withAttribute("country", stringType)
                 .withGeneralization(address)
                 .create();
-        Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, twr, true).withCollectionRelation("addresses", address).create();
-        twr.setTarget(customer);
         Class company = new EntityCreator("Company").withGeneralization(customer).create();
 
         initResources(createTestModel(createPackage("entities", order, internationalOrder, customer, address, internationalAddress, company), stringType));
@@ -427,11 +420,11 @@ public class EsmJqlExpressionBuilderTest {
         initResources(createTestModel(person, stringType, numericType));
         Expression derivedExpression = createExpression(person, "self.email1");
         assertThat(derivedExpression, instanceOf(AttributeSelector.class));
-        assertThat(((AttributeSelector)derivedExpression).getAttributeName(), is("email2"));
+        assertThat(((AttributeSelector) derivedExpression).getAttributeName(), is("email2"));
 
         Expression derivedExpressionFunction = createExpression(person, "self.email1!length()");
         assertThat(derivedExpressionFunction, instanceOf(Length.class));
-        StringAttribute operandAttribute = (StringAttribute) ((Length)derivedExpressionFunction).getExpression();
+        StringAttribute operandAttribute = (StringAttribute) ((Length) derivedExpressionFunction).getExpression();
         assertThat(operandAttribute.getAttributeName(), is("email2"));
 
         Expression email1Trimmed = createExpression(person, "self.email1Trimmed");
@@ -443,8 +436,80 @@ public class EsmJqlExpressionBuilderTest {
         Expression email1Concat = createExpression(person, "self.email1 + self.email1Trimmed");
         assertThat(email1Concat, instanceOf(Concatenate.class));
 
-        assertThrows(IllegalStateException.class, () -> createExpression(person, "self.emailWrong1"));
-        assertThrows(IllegalStateException.class, () -> createExpression(person, "self.email1!matches(self.emailWrong1)"));
-     }
+        assertThrows(CircularReferenceException.class, () -> createExpression(person, "self.emailWrong1"));
+        assertThrows(CircularReferenceException.class, () -> createExpression(person, "self.email1!matches(self.emailWrong1)"));
+    }
 
+    @Test
+    void testReferenceDerivedAttribute() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
+                .withName("a")
+                .withUpper(1)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+        EntityType entityB = new EntityCreator("B")
+                .withAttribute("field", stringType)
+                .withDerivedAttribute("aField", stringType, "self.a.field")
+                .withDerivedAttribute("aField2", stringType, "self.a.field2")
+                .withDerivedAttribute("q", stringType, "self.a.field")
+                .withTwoWayRelation(twr)
+                .create();
+        EntityType entityA = new EntityCreator("A")
+                .withAttribute("field", stringType)
+                .withAttribute("field2", stringType)
+                .withDerivedAttribute("bField", stringType, "self.b.field")
+                .withDerivedAttribute("aField2", stringType, "self.b.aField2")
+                .withTwoWayRelation("b", entityB, twr, false)
+                .withDerivedAttribute("q", stringType, "self.b.q")
+                .create();
+        twr.setTarget(entityA);
+        initResources(createTestModel(stringType, entityA, entityB));
+
+        createExpression(entityA, "self.bField + self.bField");
+        createExpression(entityB, "self.aField + self.aField");
+        // when derived attribute contains a different 'self':
+        createExpression(entityA, "self.field + self.aField2");
+
+    }
+
+    @Test
+    void testReferenceDerivedInheritedAttribute() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
+                .withName("a")
+                .withUpper(1)
+                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
+                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+        EntityType entityB = new EntityCreator("B")
+                .withTwoWayRelation(twr)
+                .withDerivedAttribute("w", stringType, "self.a.w")
+                .create();
+        EntityType entityParent = new EntityCreator("Parent")
+                .withAttribute("p", stringType)
+                .withDerivedAttribute("w", stringType, "self.b.w")
+                .withDerivedAttribute("wrong1", stringType, "self.wrong2")
+                .withDerivedAttribute("wrong2", stringType, "self.wrong1")
+                .withTwoWayRelation("b", entityB, twr, false)
+                .create();
+        twr.setTarget(entityParent);
+        EntityType entityA = new EntityCreator("A")
+                .withGeneralization(entityParent)
+                .withDerivedAttribute("parentP", stringType, "self.p")
+                .withDerivedAttribute("parentWrong", stringType, "self.wrong1")
+                .withDerivedAttribute("q", stringType, "self.b.w")
+                .create();
+        initResources(createTestModel(stringType, entityParent, entityA, entityB));
+        createExpression(entityA, "self.p");
+        createExpression(entityA, "self.parentP");
+        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.wrong1"));
+        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.parentWrong"));
+        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.q"));
+    }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    private @interface WithDefaultModel {
+
+    }
 }

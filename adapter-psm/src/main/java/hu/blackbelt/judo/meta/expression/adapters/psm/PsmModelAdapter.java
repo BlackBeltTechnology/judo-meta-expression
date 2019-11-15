@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.*;
+import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -299,6 +300,15 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public boolean isDerived(PrimitiveTypedElement attribute) {
         return false;
+    }
+
+    @Override
+    public Optional<String> getGetterExpression(PrimitiveTypedElement attribute) {
+        if (attribute instanceof PrimitiveAccessor) {
+            return Optional.of(((PrimitiveAccessor)attribute).getGetterExpression().getExpression());
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override

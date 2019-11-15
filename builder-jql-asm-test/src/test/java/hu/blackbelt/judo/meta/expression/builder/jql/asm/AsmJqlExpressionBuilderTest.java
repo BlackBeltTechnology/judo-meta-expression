@@ -485,9 +485,16 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testLambdaScoping() {
+        EClass category = findBase("Category");
+        createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()");
+        assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
+    }
+
+    @Test
     void testObjectOperations() {
         EClass category = findBase("Category");
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()", "productComparison1", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | q.unitPrice)!tail()", "productComparison1", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() <> self=>products!sort(p | p.unitPrice)!tail()", "productComparison2", ATTRIBUTE);
 
         EClass orderDetail = findBase("OrderDetail");

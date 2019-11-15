@@ -1,10 +1,10 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
-import hu.blackbelt.judo.meta.esm.structure.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
@@ -16,7 +16,6 @@ import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
@@ -48,9 +47,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
             }
         } else {
             String name = jqlExpression.getBase().getName();
-            final Optional<ObjectVariable> baseVariable = context.getVariables().stream()
-                    .filter(v -> Objects.equals(v.getName(), name))
-                    .findAny();
+            final Optional<ObjectVariable> baseVariable = context.resolveVariable(name);
             if (!baseVariable.isPresent()) {
                 throw new IllegalStateException("Base variable " + jqlExpression.getBase() + " not found");
             }
@@ -64,13 +61,13 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
             Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
             if (attribute.isPresent()) {
                 if (getModelAdapter().isDerived(attribute.get())) {
-                    PrimitiveAccessor accessor = (PrimitiveAccessor) attribute.get();
+                    PTE accessor = attribute.get();
                     if (context.containsAccessor(accessor)) {
-                        throw new IllegalStateException("Already resolved accessor: " + accessor.getGetterExpression().getExpression());
+                        throw new CircularReferenceException(accessor.toString());
                     } else {
                         context.pushAccessor(accessor);
                     }
-                    String getterExpression = accessor.getGetterExpression().getExpression();
+                    String getterExpression = getModelAdapter().getGetterExpression(accessor).get();
                     baseExpression = jqlTransformers.getExpressionBuilder().createExpression(navigationBase, getterExpression, context);
                     context.popAccessor();
                 } else {

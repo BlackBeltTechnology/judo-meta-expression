@@ -2,21 +2,22 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Objects;
+import java.util.Optional;
 
 public class JqlExpressionBuildingContext {
 
-    private List<ObjectVariable> variables = new ArrayList<>();
-    private Stack<Object> resolvedAccessors = new Stack<>();
+    private Deque<ObjectVariable> variables = new ArrayDeque<>();
+    private Deque<Object> resolvedAccessors = new ArrayDeque<>();
 
-    public List<ObjectVariable> getVariables() {
-        return variables;
+    public void pushVariable(ObjectVariable variable) {
+        variables.push(variable);
     }
 
-    public void addVariable(ObjectVariable variable) {
-        variables.add(variable);
+    public ObjectVariable popVariable() {
+        return variables.pop();
     }
 
     public void pushAccessor(Object accessor) {
@@ -29,5 +30,11 @@ public class JqlExpressionBuildingContext {
 
     public boolean containsAccessor(Object accessor) {
         return resolvedAccessors.contains(accessor);
+    }
+
+    public Optional<ObjectVariable> resolveVariable(String name) {
+        return variables.stream()
+                .filter(v -> Objects.equals(v.getName(), name))
+                .findAny();
     }
 }

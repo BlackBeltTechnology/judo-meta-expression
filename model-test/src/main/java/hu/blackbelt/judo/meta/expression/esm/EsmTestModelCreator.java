@@ -168,6 +168,9 @@ public class EsmTestModelCreator {
         builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
         builder.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
         builder.withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        if (!getterExpression.isEmpty()) {
+            builder.withProperty(true);
+        }
         return builder.build();
     }
 

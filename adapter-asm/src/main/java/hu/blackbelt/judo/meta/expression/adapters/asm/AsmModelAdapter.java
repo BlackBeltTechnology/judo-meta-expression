@@ -307,6 +307,11 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
+    public Optional<String> getGetterExpression(EAttribute attribute) {
+        return AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter", false);
+    }
+
+    @Override
     public EList<Measure> getAllMeasures() {
         return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }

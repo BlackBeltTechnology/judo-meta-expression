@@ -274,10 +274,13 @@ public class EsmModelAdapterTest {
     @Test
     public void testGetAttribute() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
-        EntityType address = new EntityCreator("Address").withAttribute("zip", stringType).create();
-        initResources(createTestModel(stringType, address));
+        EntityType internationalAddress = new EntityCreator("InternationalAddress").withAttribute("country", stringType).create();
+        EntityType address = new EntityCreator("Address").withAttribute("zip", stringType).withGeneralization(internationalAddress).create();
+        initResources(createTestModel(stringType, address, internationalAddress));
         assertThat(modelAdapter.getAttribute(address, "zip").get().getName(), is("zip"));
         assertThat(modelAdapter.getAttribute(address, "zip").get().getDataType(), is(stringType));
+        assertThat(modelAdapter.getAttribute(address, "country").get().getDataType(), is(stringType));
+
     }
 
     @Test

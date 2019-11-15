@@ -206,6 +206,9 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
             }
             if (functionTransformer != null) {
                 subject = functionTransformer.apply(subject, functionCall, context);
+                if (functionCall.getLambdaArgument() != null) {
+                    context.popVariable();
+                }
             } else {
                 throw new IllegalStateException("Unknown function: " + functionName);
             }
@@ -225,7 +228,7 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
             variable = null;
         }
         if (variable != null) {
-            context.addVariable(variable);
+            context.pushVariable(variable);
         } else {
             throw new IllegalArgumentException(String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
         }

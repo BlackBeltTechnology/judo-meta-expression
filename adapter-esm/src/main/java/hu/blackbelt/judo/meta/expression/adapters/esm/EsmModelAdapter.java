@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
-import hu.blackbelt.judo.meta.esm.expression.DataExpressionType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
@@ -141,6 +140,28 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<? extends PrimitiveTypedElement> getAttribute(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
+        EList<Generalization> generalizations = getAllGeneralizations(clazz);
+        List<hu.blackbelt.judo.meta.esm.structure.Class> base = generalizations.stream().map(Generalization::getTarget).collect(toList());
+        base.add(clazz);
+        Optional<Optional<DataFeature>> attribute = base.stream()
+                .filter(e -> e.getAttributes().stream().anyMatch(a -> Objects.equals(attributeName, a.getName()))) // classes having the attribute
+                .map(e -> e.getAttributes().stream().filter(a -> Objects.equals(attributeName, a.getName())).findFirst()) // get the first matching attribute
+                .findFirst();
+        return attribute.orElse(Optional.empty());
+    }
+
+    @Override
+    public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
+        return Optional.ofNullable(attribute.getDataType());
+    }
+
+    @Override
+    public Optional<? extends Primitive> getAttributeType(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
+        return getAttribute(clazz, attributeName).map(PrimitiveTypedElement::getDataType);
+    }
+
+    @Override
     public boolean isCollection(ReferenceSelector referenceSelector) {
         ReferenceTypedElement reference = (ReferenceTypedElement) referenceSelector.getReference(this);
         return isCollectionReference(reference);
@@ -154,21 +175,6 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public hu.blackbelt.judo.meta.esm.structure.Class getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
-    }
-
-    @Override
-    public Optional<? extends PrimitiveTypedElement> getAttribute(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
-        return clazz.getAttributes().stream().filter(a -> Objects.equals(a.getName(), attributeName)).findAny();
-    }
-
-    @Override
-    public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
-        return Optional.ofNullable(attribute.getDataType());
-    }
-
-    @Override
-    public Optional<? extends Primitive> getAttributeType(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
-        return getAttribute(clazz, attributeName).map(PrimitiveTypedElement::getDataType);
     }
 
     @Override
@@ -313,15 +319,18 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isDerived(PrimitiveTypedElement attribute) {
-        boolean derived = false;
-        if (attribute instanceof PrimitiveAccessor) {
-            PrimitiveAccessor primitiveAccessor = (PrimitiveAccessor) attribute;
-            DataExpressionType getterExpression = primitiveAccessor.getGetterExpression();
-            if (getterExpression != null) {
-                derived = getterExpression.getExpression() != null && !getterExpression.getExpression().trim().isEmpty();
+        return attribute instanceof DataMember && ((DataMember)attribute).isProperty();
+    }
+
+    @Override
+    public Optional<String> getGetterExpression(PrimitiveTypedElement attribute) {
+        Optional<String> result = Optional.empty();
+        if (attribute instanceof DataMember) {
+            if (((DataMember)attribute).isProperty()) {
+                result = Optional.of(((DataMember)attribute).getGetterExpression().getExpression());
             }
         }
-        return derived;
+        return result;
     }
 
     @Override

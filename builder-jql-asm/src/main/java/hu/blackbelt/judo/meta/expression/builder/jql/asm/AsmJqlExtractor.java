@@ -116,12 +116,12 @@ public class AsmJqlExtractor implements JqlExtractor {
 
                                     final JqlExpressionBuilder.BindingContext defaultBindingContext = new JqlExpressionBuilder.BindingContext(attribute.getName(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.DEFAULT);
 
-                                    final Optional<String> getterJql = asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter", false);
-                                    final Optional<String> getterDialect = asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.dialect", false);
-                                    final Optional<String> setterJql = asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter", false);
-                                    final Optional<String> setterDialect = asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter.dialect", false);
-                                    final Optional<String> defaultJql = asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default", false);
-                                    final Optional<String> defaultDialect = asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default.dialect", false);
+                                    final Optional<String> getterJql = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter", false);
+                                    final Optional<String> getterDialect = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.dialect", false);
+                                    final Optional<String> setterJql = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter", false);
+                                    final Optional<String> setterDialect = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter.dialect", false);
+                                    final Optional<String> defaultJql = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default", false);
+                                    final Optional<String> defaultDialect = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default.dialect", false);
 
                                     if (!hasGetterBinding) {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
@@ -236,14 +236,14 @@ public class AsmJqlExtractor implements JqlExtractor {
                                     final JqlExpressionBuilder.BindingContext defaultBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.DEFAULT);
                                     final JqlExpressionBuilder.BindingContext rangeBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.RANGE);
 
-                                    final Optional<String> getterJql = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter", false);
-                                    final Optional<String> getterDialect = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.dialect", false);
-                                    final Optional<String> setterJql = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter", false);
-                                    final Optional<String> setterDialect = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter.dialect", false);
-                                    final Optional<String> defaultJql = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default", false);
-                                    final Optional<String> defaultDialect = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default.dialect", false);
-                                    final Optional<String> rangeJql = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range", false);
-                                    final Optional<String> rangeDialect = asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range.dialect", false);
+                                    final Optional<String> getterJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter", false);
+                                    final Optional<String> getterDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.dialect", false);
+                                    final Optional<String> setterJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter", false);
+                                    final Optional<String> setterDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter.dialect", false);
+                                    final Optional<String> defaultJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default", false);
+                                    final Optional<String> defaultDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default.dialect", false);
+                                    final Optional<String> rangeJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range", false);
+                                    final Optional<String> rangeDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range.dialect", false);
 
                                     if (!hasGetterBinding) {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {

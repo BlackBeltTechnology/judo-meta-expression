@@ -186,7 +186,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
     private Expression createExpression(C entityType, JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
         final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
         if (instance != null) {
-            context.addVariable(instance);
+            context.pushVariable(instance);
         }
         final Expression expression = transformJqlToExpression(jqlExpression, context);
 
