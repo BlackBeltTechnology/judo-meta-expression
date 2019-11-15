@@ -2,11 +2,10 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 
-import java.util.List;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
@@ -29,11 +28,11 @@ public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, 
     }
 
     @SuppressWarnings("unchecked")
-    public final Expression apply(JqlExpression jqlExpression, List<ObjectVariable> variables) {
-        return doTransform((T) jqlExpression, variables);
+    public final Expression apply(JqlExpression jqlExpression,  JqlExpressionBuildingContext context) {
+        return doTransform((T) jqlExpression, context);
     }
 
-    protected abstract Expression doTransform(T jqlExpression, List<ObjectVariable> variables);
+    protected abstract Expression doTransform(T jqlExpression, JqlExpressionBuildingContext context);
 
     protected ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> getModelAdapter() {
         return jqlTransformers.getModelAdapter();

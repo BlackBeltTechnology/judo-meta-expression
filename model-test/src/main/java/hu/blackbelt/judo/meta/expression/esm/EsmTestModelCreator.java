@@ -80,7 +80,12 @@ public class EsmTestModelCreator {
         }
 
         public EntityCreator withAttribute(String name, Primitive datatype) {
-            attributes.add(createAttribute(name, datatype));
+            attributes.add(createAttribute(name, datatype, ""));
+            return this;
+        }
+
+        public EntityCreator withDerivedAttribute(String name, Primitive datatype, String getterExpression) {
+            attributes.add(createAttribute(name, datatype, getterExpression));
             return this;
         }
 
@@ -158,9 +163,9 @@ public class EsmTestModelCreator {
         return builder.build();
     }
 
-    public static DataFeature createAttribute(String name, Primitive datatype) {
+    public static DataFeature createAttribute(String name, Primitive datatype, String getterExpression) {
         DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
-        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
         builder.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
         builder.withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
         return builder.build();

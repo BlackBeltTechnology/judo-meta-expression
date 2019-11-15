@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
+import hu.blackbelt.judo.meta.esm.expression.DataExpressionType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
@@ -308,6 +309,19 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public boolean isSequence(NamespaceElement namespaceElement) {
         return namespaceElement instanceof Sequence;
+    }
+
+    @Override
+    public boolean isDerived(PrimitiveTypedElement attribute) {
+        boolean derived = false;
+        if (attribute instanceof PrimitiveAccessor) {
+            PrimitiveAccessor primitiveAccessor = (PrimitiveAccessor) attribute;
+            DataExpressionType getterExpression = primitiveAccessor.getGetterExpression();
+            if (getterExpression != null) {
+                derived = getterExpression.getExpression() != null && !getterExpression.getExpression().trim().isEmpty();
+            }
+        }
+        return derived;
     }
 
     @Override

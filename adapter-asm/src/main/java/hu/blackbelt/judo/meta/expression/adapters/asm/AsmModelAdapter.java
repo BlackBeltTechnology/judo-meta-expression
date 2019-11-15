@@ -302,6 +302,11 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
+    public boolean isDerived(EAttribute attribute) {
+        return attribute.isDerived();
+    }
+
+    @Override
     public EList<Measure> getAllMeasures() {
         return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }

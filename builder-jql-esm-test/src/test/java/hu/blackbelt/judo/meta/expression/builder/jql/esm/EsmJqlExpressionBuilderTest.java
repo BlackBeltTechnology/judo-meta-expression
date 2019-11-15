@@ -19,6 +19,7 @@ import hu.blackbelt.judo.meta.esm.structure.Sequence;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
+import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.Primitive;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.expression.*;
@@ -26,9 +27,13 @@ import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import hu.blackbelt.judo.meta.expression.numeric.Length;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
+import hu.blackbelt.judo.meta.expression.string.Concatenate;
+import hu.blackbelt.judo.meta.expression.string.StringAttribute;
+import hu.blackbelt.judo.meta.expression.string.Trim;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
@@ -57,6 +62,7 @@ import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilder
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport.esmModelResourceSupportBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
@@ -405,5 +411,40 @@ public class EsmJqlExpressionBuilderTest {
         assertThat(((SequenceExpression) objectSequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
         assertThat(((SequenceExpression) objectSequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
     }
+
+    @Test
+    void testDerivedAttribute() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        NumericType numericType = newNumericTypeBuilder().withName("int").withPrecision(10).withScale(0).build();
+        EntityType person = new EntityCreator("Person")
+                .withAttribute("email2", stringType)
+                .withDerivedAttribute("email1", stringType, "self.email2")
+                .withDerivedAttribute("email1Trimmed", stringType, "self.email1!trim()")
+                .withDerivedAttribute("email1TrimmedLowerLength", stringType, "self.email1Trimmed!lowerCase()!length()")
+                .withDerivedAttribute("emailWrong1", stringType, "self.emailWrong2")
+                .withDerivedAttribute("emailWrong2", stringType, "self.emailWrong1")
+                .create();
+        initResources(createTestModel(person, stringType, numericType));
+        Expression derivedExpression = createExpression(person, "self.email1");
+        assertThat(derivedExpression, instanceOf(AttributeSelector.class));
+        assertThat(((AttributeSelector)derivedExpression).getAttributeName(), is("email2"));
+
+        Expression derivedExpressionFunction = createExpression(person, "self.email1!length()");
+        assertThat(derivedExpressionFunction, instanceOf(Length.class));
+        StringAttribute operandAttribute = (StringAttribute) ((Length)derivedExpressionFunction).getExpression();
+        assertThat(operandAttribute.getAttributeName(), is("email2"));
+
+        Expression email1Trimmed = createExpression(person, "self.email1Trimmed");
+        assertThat(email1Trimmed, instanceOf(Trim.class));
+
+        Expression email1TrimmedLowerCaseLength = createExpression(person, "self.email1TrimmedLowerLength");
+        assertThat(email1TrimmedLowerCaseLength, instanceOf(Length.class));
+
+        Expression email1Concat = createExpression(person, "self.email1 + self.email1Trimmed");
+        assertThat(email1Concat, instanceOf(Concatenate.class));
+
+        assertThrows(IllegalStateException.class, () -> createExpression(person, "self.emailWrong1"));
+        assertThrows(IllegalStateException.class, () -> createExpression(person, "self.email1!matches(self.emailWrong1)"));
+     }
 
 }

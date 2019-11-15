@@ -297,6 +297,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isDerived(PrimitiveTypedElement attribute) {
+        return false;
+    }
+
+    @Override
     public EList<Measure> getAllMeasures() {
         return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }

@@ -10,7 +10,6 @@ import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
@@ -55,7 +54,7 @@ public class AsmJqlExpressionBuilderTest {
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final Log log = new Slf4jLog();
 
-    private JqlExpressionBuilder<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> asmJqlExpressionBuilder;
+    private JqlExpressionBuilder<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> expressionBuilder;
 
     private Resource asmResource;
     private Resource measureResource;
@@ -81,7 +80,7 @@ public class AsmJqlExpressionBuilderTest {
                 .build();
 
         modelAdapter = new AsmModelAdapter(asmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
-        asmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
 
         asmUtils = new AsmUtils(asmModelResourceSupport.getResourceSet());
     }
@@ -155,14 +154,14 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
-        final Expression expression = asmJqlExpressionBuilder.createExpression(clazz, jqlExpressionString);
+        final Expression expression = expressionBuilder.createExpression(clazz, jqlExpressionString);
         assertThat(expression, notNullValue());
         return expression;
     }
 
     private Expression createGetterExpression(EClass clazz, String jqlExpressionString, String feature, JqlExpressionBuilder.BindingType bindingType) {
         Expression expression = createExpression(clazz, jqlExpressionString);
-        createGetterBinding(clazz, expression, feature, bindingType);
+        expressionBuilder.createGetterBinding(clazz, expression, feature, bindingType);
         return expression;
     }
 
@@ -226,19 +225,13 @@ public class AsmJqlExpressionBuilderTest {
         return asmUtils.all(EClass.class).filter(c -> entityName.equals(c.getName())).findAny().orElseThrow(IllegalArgumentException::new);
     }
 
-    private Binding createGetterBinding(EClass base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Binding binding = asmJqlExpressionBuilder.createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, expression);
-        assertNotNull(binding);
-        return binding;
-    }
-
     @Test
     void testOrderDate() {
         final EClass order = asmUtils.all(EClass.class).filter(c -> "Order".equals(c.getName())).findAny().get();
         final Expression expression = createExpression(order, "self.orderDate");
         assertNotNull(expression);
 
-        createGetterBinding(order, expression, "orderDate", ATTRIBUTE);
+        expressionBuilder.createGetterBinding(order, expression, "orderDate", ATTRIBUTE);
 
         log.info("Order date: " + expression);
     }
@@ -248,7 +241,7 @@ public class AsmJqlExpressionBuilderTest {
         EClass order = findBase("Order");
         Expression expression = createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
-        createGetterBinding(order, expression, "categories", RELATION);
+        expressionBuilder.createGetterBinding(order, expression, "categories", RELATION);
     }
 
     @Test
