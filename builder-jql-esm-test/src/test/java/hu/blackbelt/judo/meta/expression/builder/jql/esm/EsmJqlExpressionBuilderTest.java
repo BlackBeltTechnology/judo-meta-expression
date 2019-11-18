@@ -549,11 +549,14 @@ public class EsmJqlExpressionBuilderTest {
         EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
                 .withDerivedReference("c", entityC, "self.b.c")
                 .withDerivedReference("w", entityC, "self.c.a.w")
+                .withAttribute("aField", stringType)
                 .create();
         owr.setTarget(entityA);
         derived.setTarget(entityC);
         initResources(createTestModel(entityA, entityB, entityC, stringType));
-        createExpression(entityA, "self.c.c");
+        createExpression(entityA, "self.c.a.aField");
+        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.c.a.c"));
+        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.c.c"));
         assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.w"));
     }
 

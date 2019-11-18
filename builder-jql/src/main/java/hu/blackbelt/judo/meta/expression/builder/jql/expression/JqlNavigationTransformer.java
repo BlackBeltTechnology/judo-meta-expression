@@ -99,6 +99,11 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
                 } else {
                     navigationBase = getModelAdapter().getTarget(reference.get());
                 }
+                if (context.containsBase(navigationBase)) {
+                    throw new CircularReferenceException("Base " + navigationBase);
+                } else {
+                    context.pushBase(navigationBase);
+                }
             } else if (sequence.isPresent()) {
                 baseExpression = newObjectSequenceBuilder().withObjectExpression((ObjectExpression) baseExpression).withSequenceName(jqlFeature.getName()).build();
                 baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
@@ -107,6 +112,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
                 throw new IllegalStateException(String.format("Feature %s of %s not found", jqlFeature.getName(), navigationBase));
             }
         }
+        context.popBase();
         return baseExpression;
     }
 

@@ -11,6 +11,7 @@ public class JqlExpressionBuildingContext {
 
     private Deque<ObjectVariable> variables = new ArrayDeque<>();
     private Deque<Object> resolvedAccessors = new ArrayDeque<>();
+    private Deque<Object> resolvedBases = new ArrayDeque<>();
 
     public void pushVariable(ObjectVariable variable) {
         variables.push(variable);
@@ -24,12 +25,26 @@ public class JqlExpressionBuildingContext {
         resolvedAccessors.push(accessor);
     }
 
+    public void pushBase(Object base) {
+        resolvedBases.push(base);
+    }
+
     public void popAccessor() {
         resolvedAccessors.pop();
     }
 
+    public void popBase() {
+        if (!resolvedBases.isEmpty()) {
+            resolvedBases.pop();
+        }
+    }
+
     public boolean containsAccessor(Object accessor) {
         return resolvedAccessors.contains(accessor);
+    }
+
+    public boolean containsBase(Object base) {
+        return resolvedBases.contains(base);
     }
 
     public Optional<ObjectVariable> resolveVariable(String name) {
