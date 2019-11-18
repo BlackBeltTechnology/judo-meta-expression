@@ -318,17 +318,33 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isDerived(PrimitiveTypedElement attribute) {
+    public boolean isDerivedAttribute(PrimitiveTypedElement attribute) {
         return attribute instanceof DataMember && ((DataMember)attribute).isProperty();
     }
 
     @Override
-    public Optional<String> getGetterExpression(PrimitiveTypedElement attribute) {
+    public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         Optional<String> result = Optional.empty();
-        if (attribute instanceof DataMember) {
-            if (((DataMember)attribute).isProperty()) {
+        if (isDerivedAttribute(attribute)) {
                 result = Optional.of(((DataMember)attribute).getGetterExpression().getExpression());
-            }
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isDerivedReference(ReferenceTypedElement reference) {
+        if (reference instanceof ReferenceAccessor && reference instanceof OneWayRelationMember) {
+            return ((OneWayRelationMember)reference).isProperty();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Optional<String> getReferenceGetter(ReferenceTypedElement reference) {
+        Optional<String> result = Optional.empty();
+        if (isDerivedReference(reference)) {
+            result = Optional.of(((ReferenceAccessor)reference).getGetterExpression().getExpression());
         }
         return result;
     }

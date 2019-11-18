@@ -89,13 +89,23 @@ public class EsmTestModelCreator {
             return this;
         }
 
+        public EntityCreator withDerivedReference(String name, hu.blackbelt.judo.meta.esm.structure.Class target, String getterExpression) {
+            relations.add(createRelation(name, target, 1, getterExpression));
+            return this;
+        }
+
         public EntityCreator withObjectRelation(String name, hu.blackbelt.judo.meta.esm.structure.Class target) {
-            relations.add(createRelation(name, target, 1));
+            relations.add(createRelation(name, target, 1, ""));
+            return this;
+        }
+
+        public EntityCreator withObjectRelation(RelationFeature owr) {
+            relations.add(owr);
             return this;
         }
 
         public EntityCreator withCollectionRelation(String name, hu.blackbelt.judo.meta.esm.structure.Class target) {
-            relations.add(createRelation(name, target, -1));
+            relations.add(createRelation(name, target, -1, ""));
             return this;
         }
 
@@ -154,12 +164,15 @@ public class EsmTestModelCreator {
         return packageBuilder.build();
     }
 
-    public static RelationFeature createRelation(String name, Class target, int upperBound) {
+    public static RelationFeature createRelation(String name, Class target, int upperBound, String getterExpression) {
         OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
         builder.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
         builder.withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
         builder.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        if (!getterExpression.isEmpty()) {
+            builder.withProperty(true);
+        }
         return builder.build();
     }
 

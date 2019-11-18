@@ -27,9 +27,11 @@ import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import hu.blackbelt.judo.meta.expression.numeric.Length;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.string.Concatenate;
@@ -506,6 +508,55 @@ public class EsmJqlExpressionBuilderTest {
         assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.parentWrong"));
         assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.q"));
     }
+
+    @Test
+    public void testDerivedAttributeChain() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        EntityType entityC = new EntityCreator("C").withAttribute("cField", stringType).create();
+        EntityType entityB = new EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
+                .withDerivedAttribute("bField", stringType, "self.b.bField")
+                .withDerivedAttribute("cField", stringType, "self.b.c.cField").create();
+        initResources(createTestModel(entityA, entityB, entityC, stringType));
+
+        createExpression(entityA, "self.bField");
+        createExpression(entityA, "self.cField");
+
+    }
+
+    @Test
+    public void testDerivedReference() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        EntityType entityC = new EntityCreator("C").withAttribute("cField", stringType).create();
+        EntityType entityB = new EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
+                .withDerivedReference("c", entityC, "self.b.c")
+                .create();
+        initResources(createTestModel(entityA, entityB, entityC, stringType));
+
+        AttributeSelector cFieldExpression = (AttributeSelector) createExpression(entityA, "self.c.cField");
+        ObjectNavigationExpression navigationExpression = (ObjectNavigationExpression) cFieldExpression.getObjectExpression();
+        assertThat(navigationExpression.getObjectExpression(), instanceOf(ObjectNavigationExpression.class));
+    }
+
+    @Test
+    public void testCircularReference() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        RelationFeature owr = EsmTestModelCreator.createRelation("a", null, 1, "");
+        RelationFeature derived = EsmTestModelCreator.createRelation("c", null, 1, "self.a.c");
+        EntityType entityC = new EntityCreator("C").withAttribute("cField", stringType).withObjectRelation(owr).withObjectRelation(derived).create();
+        EntityType entityB = new EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
+                .withDerivedReference("c", entityC, "self.b.c")
+                .withDerivedReference("w", entityC, "self.c.a.w")
+                .create();
+        owr.setTarget(entityA);
+        derived.setTarget(entityC);
+        initResources(createTestModel(entityA, entityB, entityC, stringType));
+        createExpression(entityA, "self.c.c");
+        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.w"));
+    }
+
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)

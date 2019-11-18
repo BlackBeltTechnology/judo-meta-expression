@@ -60,14 +60,14 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
             Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
             Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
             if (attribute.isPresent()) {
-                if (getModelAdapter().isDerived(attribute.get())) {
+                if (getModelAdapter().isDerivedAttribute(attribute.get())) {
                     PTE accessor = attribute.get();
                     if (context.containsAccessor(accessor)) {
                         throw new CircularReferenceException(accessor.toString());
                     } else {
                         context.pushAccessor(accessor);
                     }
-                    String getterExpression = getModelAdapter().getGetterExpression(accessor).get();
+                    String getterExpression = getModelAdapter().getAttributeGetter(accessor).get();
                     baseExpression = jqlTransformers.getExpressionBuilder().createExpression(navigationBase, getterExpression, context);
                     context.popAccessor();
                 } else {
@@ -76,7 +76,19 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
                 baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
                 navigationBase = null;
             } else if (reference.isPresent()) {
-                baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
+                if (getModelAdapter().isDerivedReference(reference.get())) {
+                    RTE accessor = reference.get();
+                    if (context.containsAccessor(accessor)) {
+                        throw new CircularReferenceException(accessor.toString());
+                    } else {
+                        context.pushAccessor(accessor);
+                    }
+                    String getterExpression = getModelAdapter().getReferenceGetter(accessor).get();
+                    baseExpression = jqlTransformers.getExpressionBuilder().createExpression(navigationBase, getterExpression, context);
+                    context.popAccessor();
+                } else {
+                    baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
+                }
                 baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
                 if (baseExpression instanceof CastCollection) {
                     CastCollection castCollection = (CastCollection) baseExpression;

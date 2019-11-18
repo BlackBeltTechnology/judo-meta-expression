@@ -291,7 +291,12 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, S, M, U> {
 
     boolean isSequence(NE namespaceElement);
 
-    boolean isDerived(PTE attribute);
+    boolean isDerivedAttribute(PTE attribute);
 
-    Optional<String> getGetterExpression(PTE attribute);
+    Optional<String> getAttributeGetter(PTE attribute);
+
+    boolean isDerivedReference(RTE reference);
+
+    Optional<String> getReferenceGetter(RTE reference);
+
 }

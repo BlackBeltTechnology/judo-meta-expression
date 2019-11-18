@@ -13,6 +13,7 @@ import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
+import hu.blackbelt.judo.meta.psm.derived.ReferenceAccessor;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -298,14 +299,28 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isDerived(PrimitiveTypedElement attribute) {
-        return false;
+    public boolean isDerivedAttribute(PrimitiveTypedElement attribute) {
+        return attribute instanceof PrimitiveAccessor;
     }
 
     @Override
-    public Optional<String> getGetterExpression(PrimitiveTypedElement attribute) {
+    public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         if (attribute instanceof PrimitiveAccessor) {
             return Optional.of(((PrimitiveAccessor)attribute).getGetterExpression().getExpression());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public boolean isDerivedReference(ReferenceTypedElement reference) {
+        return reference instanceof ReferenceAccessor;
+    }
+
+    @Override
+    public Optional<String> getReferenceGetter(ReferenceTypedElement reference) {
+        if (reference instanceof ReferenceAccessor) {
+            return Optional.of(((ReferenceAccessor)reference).getGetterExpression().getExpression());
         } else {
             return Optional.empty();
         }
