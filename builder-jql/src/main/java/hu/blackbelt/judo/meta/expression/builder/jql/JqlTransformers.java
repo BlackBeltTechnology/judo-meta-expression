@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlEnumLiteralTransformer;
@@ -32,7 +33,10 @@ import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
@@ -167,42 +171,44 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
 
     private void literals() {
         transformers.put(NavigationExpression.class, new JqlNavigationTransformer<>(this));
-        transformers.put(BooleanLiteral.class, (jqlExpression, variables) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
-        transformers.put(DecimalLiteral.class, (jqlExpression, variables) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
-        transformers.put(IntegerLiteral.class, (jqlExpression, variables) -> newIntegerConstantBuilder().withValue(((IntegerLiteral) jqlExpression).getValue()).build());
-        transformers.put(StringLiteral.class, (jqlExpression, variables) -> newStringConstantBuilder().withValue(((StringLiteral) jqlExpression).getValue()).build());
+        transformers.put(BooleanLiteral.class, (jqlExpression, context) -> newBooleanConstantBuilder().withValue(((BooleanLiteral) jqlExpression).isIsTrue()).build());
+        transformers.put(DecimalLiteral.class, (jqlExpression, context) -> newDecimalConstantBuilder().withValue(((DecimalLiteral) jqlExpression).getValue()).build());
+        transformers.put(IntegerLiteral.class, (jqlExpression, context) -> newIntegerConstantBuilder().withValue(((IntegerLiteral) jqlExpression).getValue()).build());
+        transformers.put(StringLiteral.class, (jqlExpression, context) -> newStringConstantBuilder().withValue(((StringLiteral) jqlExpression).getValue()).build());
         transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
         transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
         transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
     }
 
-    public Expression transform(JqlExpression jqlExpression, List<ObjectVariable> variables) {
+    public Expression transform(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
                 .findAny()
                 .map(Map.Entry::getValue);
         Expression transformedExpression = foundTransformer
                 .orElseThrow(() -> new UnsupportedOperationException("Not implemented transformation for " + jqlExpression.getClass()))
-                .apply(jqlExpression, variables);
+                .apply(jqlExpression, context);
         if (jqlExpression instanceof NavigationExpression) {
             return transformedExpression;
         } else {
-            return applyFunctions(jqlExpression.getFunctions(), transformedExpression, variables);
+            return applyFunctions(jqlExpression.getFunctions(), transformedExpression, context);
         }
     }
 
-    public Expression applyFunctions(List<FunctionCall> functionCalls, Expression baseExpression, List<ObjectVariable> variables) {
+    public Expression applyFunctions(List<FunctionCall> functionCalls, Expression baseExpression, JqlExpressionBuildingContext context) {
         Expression subject = baseExpression;
         for (FunctionCall functionCall : functionCalls) {
             String functionName = functionCall.getFunction().getName().toLowerCase();
             JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
-            List<ObjectVariable> mutableVariableList = new ArrayList<>(variables);
             if (functionCall.getLambdaArgument() != null) {
-                addLambdaVariable(subject, mutableVariableList, functionCall.getLambdaArgument());
+                addLambdaVariable(subject, context, functionCall.getLambdaArgument());
             }
             if (functionTransformer != null) {
-                subject = functionTransformer.apply(subject, functionCall, mutableVariableList);
+                subject = functionTransformer.apply(subject, functionCall, context);
+                if (functionCall.getLambdaArgument() != null) {
+                    context.popVariable();
+                }
             } else {
                 throw new IllegalStateException("Unknown function: " + functionName);
             }
@@ -210,7 +216,7 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
         return subject;
     }
 
-    private void addLambdaVariable(Expression subject, List<ObjectVariable> variablesWithLambdaArgument, String lambdaArgument) {
+    private void addLambdaVariable(Expression subject, JqlExpressionBuildingContext context, String lambdaArgument) {
         ObjectVariable variable;
         if (subject instanceof CollectionVariable) {
             CollectionVariable collection = (CollectionVariable) subject;
@@ -222,7 +228,7 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
             variable = null;
         }
         if (variable != null) {
-            variablesWithLambdaArgument.add(0, variable);
+            context.pushVariable(variable);
         } else {
             throw new IllegalArgumentException(String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
         }
@@ -246,5 +252,13 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
 
     public MeasureName getMeasureName(String qualifiedName) {
         return expressionBuilder.getMeasureName(qualifiedName);
+    }
+
+    public Optional<? extends Binding> getBinding(C baseType, String feature) {
+        return expressionBuilder.getBinding(baseType, feature);
+    }
+
+    public JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> getExpressionBuilder() {
+        return expressionBuilder;
     }
 }

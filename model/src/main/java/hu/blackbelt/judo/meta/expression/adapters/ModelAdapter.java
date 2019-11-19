@@ -1,6 +1,9 @@
 package hu.blackbelt.judo.meta.expression.adapters;
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceSelector;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import org.eclipse.emf.common.util.EList;
 
 import java.util.Collection;
@@ -287,5 +290,13 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, S, M, U> {
     Optional<? extends S> getSequence(C clazz, String sequenceName);
 
     boolean isSequence(NE namespaceElement);
+
+    boolean isDerivedAttribute(PTE attribute);
+
+    Optional<String> getAttributeGetter(PTE attribute);
+
+    boolean isDerivedReference(RTE reference);
+
+    Optional<String> getReferenceGetter(RTE reference);
 
 }

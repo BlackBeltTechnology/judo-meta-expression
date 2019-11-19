@@ -4,17 +4,16 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.binding.AttributeBinding;
 import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -160,29 +159,42 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
         return modelAdapter.getTypeName(clazz);
     }
 
+    public Expression createExpression(C entityType, String jqlExpressionAsString) {
+        final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
+        JqlExpressionBuildingContext context = new JqlExpressionBuildingContext();
+        context.pushBase(entityType);
+        return createExpression(jqlExpression, context);
+    }
+
     /**
      * Create and return expression of a given JQL string.
      *
-     * @param entityType            entity type
      * @param jqlExpressionAsString JQL expression as string
+     * @param context JQL building context, storing variables and navigation state
      * @return expression
      */
-    public Expression createExpression(final C entityType, String jqlExpressionAsString) {
+    public Expression createExpression(String jqlExpressionAsString, JqlExpressionBuildingContext context) {
         final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
-        return createExpression(entityType, jqlExpression);
+        return createExpression(jqlExpression, context);
     }
 
     /**
      * Create and return expression of a given JQL expression.
      *
-     * @param entityType    entity type
      * @param jqlExpression JQL expression
      * @return expression
      */
-    private Expression createExpression(final C entityType, JqlExpression jqlExpression) {
-        final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
-        final Expression expression = transformJqlToExpression(jqlExpression, instance != null ? ECollections.singletonEList(instance) : ECollections.emptyEList());
+    private Expression createExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+        Object base = context.peekBase();
+        final Instance instance = base != null ? entityInstances.get(base) : null;
+        if (instance != null) {
+            context.pushVariable(instance);
+        }
+        final Expression expression = transformJqlToExpression(jqlExpression, context);
 
+        if (instance != null) {
+            context.popVariable();
+        }
         if (expression != null) {
             LOGGER.info("Expression created: {}", expression);
             expressionResource.getContents().add(expression);
@@ -264,8 +276,24 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
         return binding;
     }
 
-    private Expression transformJqlToExpression(JqlExpression jqlExpression, final EList<ObjectVariable> variables) {
-        return jqlTransformers.transform(jqlExpression, variables);
+    public Binding createGetterBinding(C base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
+        Binding binding = createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, expression);
+        return binding;
+    }
+
+    public Optional<? extends Binding> getBinding(C base, String feature) {
+        TypeName typeName = getModelAdapter().getTypeName(base).get();
+        Optional<AttributeBinding> first = all(expressionResource.getResourceSet(), AttributeBinding.class)
+                .filter(b -> b.getTypeName() != null &&
+                        Objects.equals(b.getTypeName().getName(), typeName.getName()) &&
+                        Objects.equals(b.getTypeName().getNamespace(), typeName.getNamespace()) &&
+                        Objects.equals(b.getAttributeName(), feature)).findFirst();
+        return first;
+    }
+
+
+    private Expression transformJqlToExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+        return jqlTransformers.transform(jqlExpression, context);
     }
 
     public ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> getModelAdapter() {

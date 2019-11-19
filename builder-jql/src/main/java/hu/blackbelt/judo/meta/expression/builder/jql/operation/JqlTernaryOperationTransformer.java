@@ -1,13 +1,13 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.util.builder.SwitchCaseBuilder;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.TernaryOperation;
 
 import java.util.*;
@@ -64,10 +64,10 @@ public class JqlTernaryOperationTransformer<NE, P, PTE, E extends NE, C extends 
     }
 
     @Override
-    protected Expression doTransform(TernaryOperation ternaryOperation, List<ObjectVariable> variables) {
-        Expression condition = jqlTransformers.transform(ternaryOperation.getCondition(), variables);
-        Expression thenExpression = jqlTransformers.transform(ternaryOperation.getThenExpression(), variables);
-        Expression elseExpression = jqlTransformers.transform(ternaryOperation.getElseExpression(), variables);
+    protected Expression doTransform(TernaryOperation ternaryOperation, JqlExpressionBuildingContext context) {
+        Expression condition = jqlTransformers.transform(ternaryOperation.getCondition(), context);
+        Expression thenExpression = jqlTransformers.transform(ternaryOperation.getThenExpression(), context);
+        Expression elseExpression = jqlTransformers.transform(ternaryOperation.getElseExpression(), context);
         validateExpressionTypes(condition);
         SwitchCase thenCase = SwitchCaseBuilder.create().withCondition((LogicalExpression) condition).withExpression(thenExpression).build();
         BiFunction<SwitchCase, Expression, SwitchExpression> resultBuilder = findResultType(thenExpression, elseExpression);

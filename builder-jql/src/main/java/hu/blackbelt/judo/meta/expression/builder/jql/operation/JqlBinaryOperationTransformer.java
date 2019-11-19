@@ -1,14 +1,12 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.operator.*;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
-
-import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAritmeticExpressionBuilder;
@@ -24,9 +22,9 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E extends NE, C extends N
     }
 
     @Override
-    protected Expression doTransform(BinaryOperation binaryOperation, List<ObjectVariable> variables) {
-        Expression left = jqlTransformers.transform(binaryOperation.getLeftOperand(), variables);
-        Expression right = jqlTransformers.transform(binaryOperation.getRightOperand(), variables);
+    protected Expression doTransform(BinaryOperation binaryOperation, JqlExpressionBuildingContext context) {
+        Expression left = jqlTransformers.transform(binaryOperation.getLeftOperand(), context);
+        Expression right = jqlTransformers.transform(binaryOperation.getRightOperand(), context);
         String operator = binaryOperation.getOperator();
         if ((left instanceof IntegerExpression) && (right instanceof IntegerExpression)) {
             return createIntegerOperation((IntegerExpression) left, (IntegerExpression) right, operator);

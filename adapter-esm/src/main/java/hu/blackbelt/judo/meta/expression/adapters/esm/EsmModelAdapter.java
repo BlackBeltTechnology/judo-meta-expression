@@ -140,6 +140,28 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<? extends PrimitiveTypedElement> getAttribute(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
+        EList<Generalization> generalizations = getAllGeneralizations(clazz);
+        List<hu.blackbelt.judo.meta.esm.structure.Class> base = generalizations.stream().map(Generalization::getTarget).collect(toList());
+        base.add(clazz);
+        Optional<Optional<DataFeature>> attribute = base.stream()
+                .filter(e -> e.getAttributes().stream().anyMatch(a -> Objects.equals(attributeName, a.getName()))) // classes having the attribute
+                .map(e -> e.getAttributes().stream().filter(a -> Objects.equals(attributeName, a.getName())).findFirst()) // get the first matching attribute
+                .findFirst();
+        return attribute.orElse(Optional.empty());
+    }
+
+    @Override
+    public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
+        return Optional.ofNullable(attribute.getDataType());
+    }
+
+    @Override
+    public Optional<? extends Primitive> getAttributeType(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
+        return getAttribute(clazz, attributeName).map(PrimitiveTypedElement::getDataType);
+    }
+
+    @Override
     public boolean isCollection(ReferenceSelector referenceSelector) {
         ReferenceTypedElement reference = (ReferenceTypedElement) referenceSelector.getReference(this);
         return isCollectionReference(reference);
@@ -153,21 +175,6 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public hu.blackbelt.judo.meta.esm.structure.Class getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
-    }
-
-    @Override
-    public Optional<? extends PrimitiveTypedElement> getAttribute(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
-        return clazz.getAttributes().stream().filter(a -> Objects.equals(a.getName(), attributeName)).findAny();
-    }
-
-    @Override
-    public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
-        return Optional.ofNullable(attribute.getDataType());
-    }
-
-    @Override
-    public Optional<? extends Primitive> getAttributeType(hu.blackbelt.judo.meta.esm.structure.Class clazz, String attributeName) {
-        return getAttribute(clazz, attributeName).map(PrimitiveTypedElement::getDataType);
     }
 
     @Override
@@ -308,6 +315,38 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public boolean isSequence(NamespaceElement namespaceElement) {
         return namespaceElement instanceof Sequence;
+    }
+
+    @Override
+    public boolean isDerivedAttribute(PrimitiveTypedElement attribute) {
+        return attribute instanceof DataMember && ((DataMember)attribute).isProperty();
+    }
+
+    @Override
+    public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
+        Optional<String> result = Optional.empty();
+        if (isDerivedAttribute(attribute)) {
+                result = Optional.of(((DataMember)attribute).getGetterExpression().getExpression());
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isDerivedReference(ReferenceTypedElement reference) {
+        if (reference instanceof ReferenceAccessor && reference instanceof OneWayRelationMember) {
+            return ((OneWayRelationMember)reference).isProperty();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Optional<String> getReferenceGetter(ReferenceTypedElement reference) {
+        Optional<String> result = Optional.empty();
+        if (isDerivedReference(reference)) {
+            result = Optional.of(((ReferenceAccessor)reference).getGetterExpression().getExpression());
+        }
+        return result;
     }
 
     @Override

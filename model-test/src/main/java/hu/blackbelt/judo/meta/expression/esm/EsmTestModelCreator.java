@@ -80,17 +80,32 @@ public class EsmTestModelCreator {
         }
 
         public EntityCreator withAttribute(String name, Primitive datatype) {
-            attributes.add(createAttribute(name, datatype));
+            attributes.add(createAttribute(name, datatype, ""));
+            return this;
+        }
+
+        public EntityCreator withDerivedAttribute(String name, Primitive datatype, String getterExpression) {
+            attributes.add(createAttribute(name, datatype, getterExpression));
+            return this;
+        }
+
+        public EntityCreator withDerivedReference(String name, hu.blackbelt.judo.meta.esm.structure.Class target, String getterExpression) {
+            relations.add(createRelation(name, target, 1, getterExpression));
             return this;
         }
 
         public EntityCreator withObjectRelation(String name, hu.blackbelt.judo.meta.esm.structure.Class target) {
-            relations.add(createRelation(name, target, 1));
+            relations.add(createRelation(name, target, 1, ""));
+            return this;
+        }
+
+        public EntityCreator withObjectRelation(RelationFeature owr) {
+            relations.add(owr);
             return this;
         }
 
         public EntityCreator withCollectionRelation(String name, hu.blackbelt.judo.meta.esm.structure.Class target) {
-            relations.add(createRelation(name, target, -1));
+            relations.add(createRelation(name, target, -1, ""));
             return this;
         }
 
@@ -149,20 +164,26 @@ public class EsmTestModelCreator {
         return packageBuilder.build();
     }
 
-    public static RelationFeature createRelation(String name, Class target, int upperBound) {
+    public static RelationFeature createRelation(String name, Class target, int upperBound, String getterExpression) {
         OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
         builder.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
         builder.withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
         builder.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        if (!getterExpression.isEmpty()) {
+            builder.withProperty(true);
+        }
         return builder.build();
     }
 
-    public static DataFeature createAttribute(String name, Primitive datatype) {
+    public static DataFeature createAttribute(String name, Primitive datatype, String getterExpression) {
         DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
-        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
         builder.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
         builder.withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
+        if (!getterExpression.isEmpty()) {
+            builder.withProperty(true);
+        }
         return builder.build();
     }
 
