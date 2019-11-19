@@ -15,6 +15,18 @@ public class JqlExpressionBuildingContext {
     private Deque<Object> resolvedBases = new ArrayDeque<>();
     private Deque<Expression> baseExpressions = new ArrayDeque<>();
 
+    public void pushAccessor(Object accessor) {
+        resolvedAccessors.push(accessor);
+    }
+
+    public void popAccessor() {
+        resolvedAccessors.pop();
+    }
+
+    public boolean containsAccessor(Object accessor) {
+        return resolvedAccessors.contains(accessor);
+    }
+
     public void pushVariable(ObjectVariable variable) {
         variables.push(variable);
     }
@@ -23,8 +35,10 @@ public class JqlExpressionBuildingContext {
         return variables.pop();
     }
 
-    public void pushAccessor(Object accessor) {
-        resolvedAccessors.push(accessor);
+    public Optional<ObjectVariable> resolveVariable(String name) {
+        return variables.stream()
+                .filter(v -> Objects.equals(v.getName(), name))
+                .findAny();
     }
 
     public void pushBase(Object base) {
@@ -37,26 +51,8 @@ public class JqlExpressionBuildingContext {
         return resolvedBases.pop();
     }
 
-    public void popAccessor() {
-        resolvedAccessors.pop();
-    }
-
     public Object peekBase() {
-        if (!resolvedBases.isEmpty()) {
-            return resolvedBases.peek();
-        } else {
-            return null;
-        }
-    }
-
-    public boolean containsAccessor(Object accessor) {
-        return resolvedAccessors.contains(accessor);
-    }
-
-    public Optional<ObjectVariable> resolveVariable(String name) {
-        return variables.stream()
-                .filter(v -> Objects.equals(v.getName(), name))
-                .findAny();
+        return resolvedBases.peek();
     }
 
     public void pushBaseExpression(Expression baseExpression) {

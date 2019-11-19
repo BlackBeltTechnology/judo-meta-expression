@@ -169,8 +169,8 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
     /**
      * Create and return expression of a given JQL string.
      *
-     * @param entityType            entity type
      * @param jqlExpressionAsString JQL expression as string
+     * @param context JQL building context, storing variables and navigation state
      * @return expression
      */
     public Expression createExpression(String jqlExpressionAsString, JqlExpressionBuildingContext context) {

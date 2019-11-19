@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
+import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
 import hu.blackbelt.judo.meta.expression.numeric.Length;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.expression.string.Concatenate;
@@ -32,7 +33,7 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     void testDerivedAttribute() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
         NumericType numericType = newNumericTypeBuilder().withName("int").withPrecision(10).withScale(0).build();
-        EntityType person = new EsmTestModelCreator.EntityCreator("Person")
+        EntityType person = new EntityCreator("Person")
                 .withAttribute("email2", stringType)
                 .withDerivedAttribute("email1", stringType, "self.email2")
                 .withDerivedAttribute("email1Trimmed", stringType, "self.email1!trim()")
@@ -71,14 +72,14 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
                 .withUpper(1)
                 .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B")
+        EntityType entityB = new EntityCreator("B")
                 .withAttribute("field", stringType)
                 .withDerivedAttribute("aField", stringType, "self.a.field")
                 .withDerivedAttribute("aField2", stringType, "self.a.field2")
                 .withDerivedAttribute("q", stringType, "self.a.field")
                 .withTwoWayRelation(twr)
                 .create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A")
+        EntityType entityA = new EntityCreator("A")
                 .withAttribute("field", stringType)
                 .withAttribute("field2", stringType)
                 .withDerivedAttribute("bField", stringType, "self.b.field")
@@ -105,11 +106,11 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
                 .withUpper(1)
                 .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
                 .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B")
+        EntityType entityB = new EntityCreator("B")
                 .withTwoWayRelation(twr)
                 .withDerivedAttribute("w", stringType, "self.a.w")
                 .create();
-        EntityType entityParent = new EsmTestModelCreator.EntityCreator("Parent")
+        EntityType entityParent = new EntityCreator("Parent")
                 .withAttribute("p", stringType)
                 .withDerivedAttribute("w", stringType, "self.b.w")
                 .withDerivedAttribute("wrong1", stringType, "self.wrong2")
@@ -117,7 +118,7 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
                 .withTwoWayRelation("b", entityB, twr, false)
                 .create();
         twr.setTarget(entityParent);
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A")
+        EntityType entityA = new EntityCreator("A")
                 .withGeneralization(entityParent)
                 .withDerivedAttribute("parentP", stringType, "self.p")
                 .withDerivedAttribute("parentWrong", stringType, "self.wrong1")
@@ -134,11 +135,11 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     @Test
     public void testDerivedReferenceDerivedAttribute() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B")
+        EntityType entityB = new EntityCreator("B")
                 .withAttribute("bField", stringType)
                 .withDerivedAttribute("bFieldDerived", stringType, "self.bField")
                 .create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A")
+        EntityType entityA = new EntityCreator("A")
                 .withObjectRelation("b", entityB)
                 .withDerivedReference("bDerived", entityB, "self.b")
                 .create();
@@ -153,7 +154,7 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         RelationFeature aRel = createRelation("a", null, 1, "");
         RelationFeature aDerivedRel = createRelation("aDerived", null, 1, "self.a");
         RelationFeature aDerivedCircleRel = createRelation("aDerivedCircle", null, 1, "self.aDerivedCircle");
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A")
+        EntityType entityA = new EntityCreator("A")
                 .withAttribute("aField", stringType)
                 .withDerivedAttribute("aFieldDerived", stringType, "self.a.aField")
                 .withDerivedAttribute("aDerivedFieldDerived", stringType, "self.aDerived.aField")
@@ -179,12 +180,12 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     @Test
     public void testDerivedAttributeChain() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
-        EntityType entityC = new EsmTestModelCreator.EntityCreator("C").withAttribute("cField", stringType).create();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B")
+        EntityType entityC = new EntityCreator("C").withAttribute("cField", stringType).create();
+        EntityType entityB = new EntityCreator("B")
                 .withAttribute("bField", stringType)
                 .withDerivedAttribute("cField", stringType, "self.c.cField")
                 .withObjectRelation("c", entityC).create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A").withObjectRelation("b", entityB)
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
                 .withDerivedAttribute("bField", stringType, "self.b.bField")
                 .withDerivedAttribute("cField", stringType, "self.b.c.cField")
                 .withDerivedAttribute("bcField", stringType, "self.b.cField")
@@ -202,11 +203,11 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     @Test
     public void testDerivedFunction() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B")
+        EntityType entityB = new EntityCreator("B")
                 .withAttribute("b", stringType)
                 .withDerivedAttribute("bLower", stringType, "self.b!lowerCase()")
                 .create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A")
+        EntityType entityA = new EntityCreator("A")
                 .withObjectRelation("b", entityB)
                 .withDerivedAttribute("bTrim", stringType, "self.b.bLower!trim()")
                 .create();
@@ -217,24 +218,24 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     @Test
     public void testDerivedReference() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
-        EntityType entityE = new EsmTestModelCreator.EntityCreator("E")
+        EntityType entityE = new EntityCreator("E")
                 .withAttribute("eField", stringType)
                 .withDerivedAttribute("eFieldDerived", stringType, "self.eField")
                 .create();
-        EntityType entityD = new EsmTestModelCreator.EntityCreator("D").withAttribute("dField", stringType).create();
-        EntityType entityC = new EsmTestModelCreator.EntityCreator("C")
+        EntityType entityD = new EntityCreator("D").withAttribute("dField", stringType).create();
+        EntityType entityC = new EntityCreator("C")
                 .withAttribute("cField", stringType)
                 .withObjectRelation("d", entityD)
                 .withCollectionRelation("es", entityE)
                 .withDerivedReference("e", entityE, "self=>es!sort()!head()")
                 .create();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B").withAttribute("bField", stringType)
+        EntityType entityB = new EntityCreator("B").withAttribute("bField", stringType)
                 .withObjectRelation("c", entityC)
                 .withDerivedReference("d", entityD, "self.c.d")
                 .withCollectionRelation("es", entityE)
                 .withDerivedReference("esSorted", entityE, "self.es!sort()")
                 .create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A").withObjectRelation("b", entityB)
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
                 .withDerivedReference("c", entityC, "self.b.c")
                 .create();
         initResources(createTestModel(entityA, entityB, entityC, entityD, entityE, stringType));
@@ -258,9 +259,9 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         StringType stringType = newStringTypeBuilder().withName("string").build();
         RelationFeature owr = EsmTestModelCreator.createRelation("a", null, 1, "");
         RelationFeature derived = EsmTestModelCreator.createRelation("c", null, 1, "self.a.c");
-        EntityType entityC = new EsmTestModelCreator.EntityCreator("C").withAttribute("cField", stringType).withObjectRelation(owr).withObjectRelation(derived).create();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A").withObjectRelation("b", entityB)
+        EntityType entityC = new EntityCreator("C").withAttribute("cField", stringType).withObjectRelation(owr).withObjectRelation(derived).create();
+        EntityType entityB = new EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
                 .withDerivedReference("c", entityC, "self.b.c")
                 .withDerivedReference("w", entityC, "self.c.a.w")
                 .withAttribute("aField", stringType)
@@ -277,13 +278,30 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     public void testReferenceChain() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
         RelationFeature owr = EsmTestModelCreator.createRelation("a", null, 1, "");
-        EntityType entityC = new EsmTestModelCreator.EntityCreator("C").withAttribute("cField", stringType).withObjectRelation(owr).create();
-        EntityType entityB = new EsmTestModelCreator.EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
-        EntityType entityA = new EsmTestModelCreator.EntityCreator("A").withObjectRelation("b", entityB)
+        EntityType entityC = new EntityCreator("C").withAttribute("cField", stringType).withObjectRelation(owr).create();
+        EntityType entityB = new EntityCreator("B").withAttribute("bField", stringType).withObjectRelation("c", entityC).create();
+        EntityType entityA = new EntityCreator("A").withObjectRelation("b", entityB)
                 .withDerivedReference("c", entityC, "self.b.c")
                 .create();
         owr.setTarget(entityA);
         initResources(createTestModel(entityA, entityB, entityC, stringType));
         assertThat(createExpression(entityA, "self.c.a.c"), hasToString("self->b->c->a->b->c"));
+    }
+
+    @Test
+    public void testDerivedInLambda() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        NumericType intType = newNumericTypeBuilder().withName("int").build();
+        EntityType entityB = new EntityCreator("B")
+                .withAttribute("bField", stringType)
+                .withDerivedAttribute("bFieldLength", intType, "self.bField!length()")
+                .create();
+        EntityType entityA = new EntityCreator("A")
+                .withCollectionRelation("bs", entityB)
+                .withDerivedReference("bFiltered", entityB, "self->bs!filter(b | b.bFieldLength > 0)")
+                .withDerivedAttribute("bCount", intType, "self->bFiltered!count()")
+                .create();
+        initResources(createTestModel(entityA, entityB, intType, stringType));
+        assertThat(createExpression(entityA, "self.bCount"), hasToString("COUNT(self=>bs[b | (LENGTH(b.bField) > 0)])"));
     }
 }
