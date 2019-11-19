@@ -28,7 +28,7 @@ public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, 
     }
 
     @SuppressWarnings("unchecked")
-    public final Expression apply(JqlExpression jqlExpression,  JqlExpressionBuildingContext context) {
+    public final Expression apply(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
         return doTransform((T) jqlExpression, context);
     }
 

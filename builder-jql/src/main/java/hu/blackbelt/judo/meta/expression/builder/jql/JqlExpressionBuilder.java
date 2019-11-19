@@ -161,7 +161,9 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
 
     public Expression createExpression(C entityType, String jqlExpressionAsString) {
         final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
-        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext());
+        JqlExpressionBuildingContext context = new JqlExpressionBuildingContext();
+        context.pushBase(entityType);
+        return createExpression(jqlExpression, context);
     }
 
     /**
@@ -171,25 +173,28 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
      * @param jqlExpressionAsString JQL expression as string
      * @return expression
      */
-    public Expression createExpression(C entityType, String jqlExpressionAsString, JqlExpressionBuildingContext context) {
+    public Expression createExpression(String jqlExpressionAsString, JqlExpressionBuildingContext context) {
         final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
-        return createExpression(entityType, jqlExpression, context);
+        return createExpression(jqlExpression, context);
     }
 
     /**
      * Create and return expression of a given JQL expression.
      *
-     * @param entityType    entity type
      * @param jqlExpression JQL expression
      * @return expression
      */
-    private Expression createExpression(C entityType, JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
-        final Instance instance = entityType != null ? entityInstances.get(entityType) : null;
+    private Expression createExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+        Object base = context.peekBase();
+        final Instance instance = base != null ? entityInstances.get(base) : null;
         if (instance != null) {
             context.pushVariable(instance);
         }
         final Expression expression = transformJqlToExpression(jqlExpression, context);
 
+        if (instance != null) {
+            context.popVariable();
+        }
         if (expression != null) {
             LOGGER.info("Expression created: {}", expression);
             expressionResource.getContents().add(expression);

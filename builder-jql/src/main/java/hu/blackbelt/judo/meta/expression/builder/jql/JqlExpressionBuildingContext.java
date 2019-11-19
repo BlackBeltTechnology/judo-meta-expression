@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
+import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 
 import java.util.ArrayDeque;
@@ -12,6 +13,7 @@ public class JqlExpressionBuildingContext {
     private Deque<ObjectVariable> variables = new ArrayDeque<>();
     private Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private Deque<Object> resolvedBases = new ArrayDeque<>();
+    private Deque<Expression> baseExpressions = new ArrayDeque<>();
 
     public void pushVariable(ObjectVariable variable) {
         variables.push(variable);
@@ -26,16 +28,24 @@ public class JqlExpressionBuildingContext {
     }
 
     public void pushBase(Object base) {
-        resolvedBases.push(base);
+        if (base != null) {
+            resolvedBases.push(base);
+        }
+    }
+
+    public Object popBase() {
+        return resolvedBases.pop();
     }
 
     public void popAccessor() {
         resolvedAccessors.pop();
     }
 
-    public void popBase() {
+    public Object peekBase() {
         if (!resolvedBases.isEmpty()) {
-            resolvedBases.pop();
+            return resolvedBases.peek();
+        } else {
+            return null;
         }
     }
 
@@ -43,13 +53,22 @@ public class JqlExpressionBuildingContext {
         return resolvedAccessors.contains(accessor);
     }
 
-    public boolean containsBase(Object base) {
-        return resolvedBases.contains(base);
-    }
-
     public Optional<ObjectVariable> resolveVariable(String name) {
         return variables.stream()
                 .filter(v -> Objects.equals(v.getName(), name))
                 .findAny();
     }
+
+    public void pushBaseExpression(Expression baseExpression) {
+        baseExpressions.push(baseExpression);
+    }
+
+    public Expression popBaseExpression() {
+        return baseExpressions.poll();
+    }
+
+    public Expression peekBaseExpression() {
+        return baseExpressions.peek();
+    }
+
 }
