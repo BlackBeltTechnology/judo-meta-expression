@@ -345,7 +345,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         }
     }
 
-    Optional<Unit> getUnit(final EAttribute attribute) {
+    public Optional<Unit> getUnit(final EAttribute attribute) {
         if (AsmUtils.isNumeric(attribute.getEAttributeType())) {
             final Optional<String> unitNameOrSymbol = AsmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "unit", false);
             final Optional<String> measureFqName = AsmUtils.getExtensionAnnotationCustomValue(attribute, "constraints", "measure", false);

@@ -155,6 +155,9 @@ public class ExpressionEvaluator {
             }
 
             return variables;
+        } else if (expression instanceof AttributeSelector) {
+            final AttributeSelector attributeSelector = (AttributeSelector) expression;
+            return getVariablesOfScope(attributeSelector.getObjectExpression());
         } else {
             final Set<Variable> variables = new HashSet<>();
 
