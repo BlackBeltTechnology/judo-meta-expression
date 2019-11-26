@@ -15,7 +15,7 @@
     <packaging>eclipse-plugin</packaging>
     
     <name>Judo :: Expression :: Model :: Measure Model adapter</name>
-    <description>Judo Expression PSM Model adapter</description>
+    <description>Judo Expression Measure Model adapter</description>
 
     <dependencies>
         <dependency>
