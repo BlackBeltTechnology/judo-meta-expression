@@ -463,7 +463,7 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IntegerAritmeticExpression" eSuperTypes="#//IntegerExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerArithmeticExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
@@ -487,7 +487,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/IntegerOperator"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DecimalAritmeticExpression" eSuperTypes="#//DecimalExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalArithmeticExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>

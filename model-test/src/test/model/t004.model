@@ -88,8 +88,8 @@
       <iteratorVariable xsi:type="const:Instance" xmi:id="_lGBIQOtbEem5vKuy5HFejQ" name="odOrderDetailsIterator2" elementName="_EQiYgCS0EemLpvUY7MQgng"/>
       <objectExpression xsi:type="const:Instance" xmi:id="_6HkH8CS0EemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </collectionExpression>
-    <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_APAAQCS1EemLpvUY7MQgng" operator="*">
-      <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_B3WeICS1EemLpvUY7MQgng" operator="*">
+    <expression xsi:type="n:DecimalArithmeticExpression" xmi:id="_APAAQCS1EemLpvUY7MQgng" operator="*">
+      <left xsi:type="n:DecimalArithmeticExpression" xmi:id="_B3WeICS1EemLpvUY7MQgng" operator="*">
         <left xsi:type="n:IntegerAttribute" xmi:id="_GsBHACS1EemLpvUY7MQgng" attributeName="quantity">
           <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_JmR4sCS1EemLpvUY7MQgng" variable="_lGBIQOtbEem5vKuy5HFejQ"/>
         </left>
@@ -97,7 +97,7 @@
           <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_NqwawCS1EemLpvUY7MQgng" variable="_lGBIQOtbEem5vKuy5HFejQ"/>
         </right>
       </left>
-      <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_Si84wCS1EemLpvUY7MQgng" operator="-">
+      <right xsi:type="n:DecimalArithmeticExpression" xmi:id="_Si84wCS1EemLpvUY7MQgng" operator="-">
         <left xsi:type="const:IntegerConstant" xmi:id="_TpgRICS1EemLpvUY7MQgng" value="1"/>
         <right xsi:type="n:DecimalAttribute" xmi:id="_Uwz3cCS1EemLpvUY7MQgng" attributeName="discount">
           <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_WJAZcCS1EemLpvUY7MQgng" variable="_lGBIQOtbEem5vKuy5HFejQ"/>
@@ -110,8 +110,8 @@
       <iteratorVariable xsi:type="const:Instance" xmi:id="_rpWSYOtbEem5vKuy5HFejQ" name="odOrderDetailsIterator3" elementName="_EQiYgCS0EemLpvUY7MQgng"/>
       <objectExpression xsi:type="const:Instance" xmi:id="_ZefukSS1EemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </collectionExpression>
-    <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_Ze-PsCS1EemLpvUY7MQgng" operator="*">
-      <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_Ze-PsSS1EemLpvUY7MQgng" operator="*">
+    <expression xsi:type="n:DecimalArithmeticExpression" xmi:id="_Ze-PsCS1EemLpvUY7MQgng" operator="*">
+      <left xsi:type="n:DecimalArithmeticExpression" xmi:id="_Ze-PsSS1EemLpvUY7MQgng" operator="*">
         <left xsi:type="n:IntegerAttribute" xmi:id="_Ze-PsiS1EemLpvUY7MQgng" attributeName="quantity">
           <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_Ze-PsyS1EemLpvUY7MQgng" variable="_rpWSYOtbEem5vKuy5HFejQ"/>
         </left>
