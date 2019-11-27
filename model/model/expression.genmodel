@@ -510,11 +510,11 @@
             body="return &quot;(&quot; + getAttributeSelector() + &quot; IS NULL)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/UndefinedNavigationComparison">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedNavigationComparison/referenceExpression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedNavigationComparison/objectNavigationExpression"/>
         <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getReferenceExpression());"/>
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectNavigationExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/toString"
-            body="return &quot;(&quot; + getReferenceExpression() + &quot; IS NULL)&quot;;"/>
+            body="return &quot;(&quot; + getObjectNavigationExpression() + &quot; IS NULL)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/ContainsExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ContainsExpression/collectionExpression"/>
