@@ -117,3 +117,30 @@ context EXPR!DecimalComparison {
         message: "Both arguments are integer so integer comparison is recommended in: " + self
     }
 }
+
+context EXPR!Exists {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of collection expression is not defined: " + self
+    }
+}
+
+context EXPR!ForAll {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of collection expression is not defined: " + self
+    }
+}
+
+context EXPR!Empty {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of collection expression is not defined: " + self
+    }
+}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string" xmlns:t="http://blackbelt.hu/judo/meta/expression/temporal">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:c="http://blackbelt.hu/judo/meta/expression/collection" xmlns:const="http://blackbelt.hu/judo/meta/expression/constant" xmlns:expr="http://blackbelt.hu/judo/meta/expression" xmlns:l="http://blackbelt.hu/judo/meta/expression/logical" xmlns:n="http://blackbelt.hu/judo/meta/expression/numeric" xmlns:o="http://blackbelt.hu/judo/meta/expression/object" xmlns:str="http://blackbelt.hu/judo/meta/expression/string" xmlns:t="http://blackbelt.hu/judo/meta/expression/temporal" xmlns:cust="http://blackbelt.hu/judo/meta/expression/custom">
   <c:SortExpression xmi:id="_anHD0CSyEemLpvUY7MQgng">
     <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_f37dMCSyEemLpvUY7MQgng" name="o" referenceName="orders">
       <iteratorVariable xsi:type="const:Instance" xmi:id="_WTJUYOtcEem5vKuy5HFejQ" name="oIterator" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
@@ -49,12 +49,14 @@
       <iteratorVariable xsi:type="const:Instance" xmi:id="_aKRMYOtbEem5vKuy5HFejQ" name="odOrderDetailsIterator" elementName="_EQiYgCS0EemLpvUY7MQgng"/>
       <objectExpression xsi:type="const:Instance" xmi:id="_2R23ICSzEemLpvUY7MQgng" elementName="_kB3RkCSzEemLpvUY7MQgng"/>
     </collectionExpression>
-    <condition xsi:type="l:UndefinedAttributeComparison" xmi:id="_5ALekCSzEemLpvUY7MQgng" attributeName="picture">
-      <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_8ZinECSzEemLpvUY7MQgng" referenceName="category">
-        <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_87CKkCSzEemLpvUY7MQgng" referenceName="product">
-          <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_e3Uz4G2EEem-8fhXtH5KRA" variable="_aKRMYOtbEem5vKuy5HFejQ"/>
+    <condition xsi:type="l:UndefinedAttributeComparison" xmi:id="_5ALekCSzEemLpvUY7MQgng">
+      <attributeSelector xsi:type="cust:CustomAttribute" attributeName="picture">
+        <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_8ZinECSzEemLpvUY7MQgng" referenceName="category">
+          <objectExpression xsi:type="o:ObjectNavigationExpression" xmi:id="_87CKkCSzEemLpvUY7MQgng" referenceName="product">
+            <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_e3Uz4G2EEem-8fhXtH5KRA" variable="_aKRMYOtbEem5vKuy5HFejQ"/>
+          </objectExpression>
         </objectExpression>
-      </objectExpression>
+      </attributeSelector>
     </condition>
   </c:CollectionFilterExpression>
   <c:CollectionNavigationFromObjectExpression xmi:id="_anHq4ySyEemLpvUY7MQgng" referenceName="orderDetails">
