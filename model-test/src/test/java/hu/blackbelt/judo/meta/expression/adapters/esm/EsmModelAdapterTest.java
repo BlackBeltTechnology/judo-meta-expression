@@ -18,7 +18,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalAritmeticExpression;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalArithmeticExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
@@ -42,7 +42,7 @@ import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStrin
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAritmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
@@ -145,7 +145,7 @@ public class EsmModelAdapterTest {
         initResources(createTestModel(velocityType, vehicle));
         ObjectVariableReference variableReference = createVariableReference(vehicle);
         Measure measure = modelAdapter.getMeasure(
-                newDecimalAritmeticExpressionBuilder().withLeft(
+                newDecimalArithmeticExpressionBuilder().withLeft(
                         newMeasuredDecimalBuilder()
                                 .withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get())
                                 .withUnitName("s")
@@ -167,14 +167,14 @@ public class EsmModelAdapterTest {
         assertThat(modelAdapter.getUnit(decimalLength).get(), is(measureMap.get("Length").getUnits().get(0)));
         MeasuredInteger integerTime = newMeasuredIntegerBuilder().withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get()).withUnitName("s").withValue(BigInteger.ONE).build();
         assertThat(modelAdapter.getUnit(integerTime).get(), is(measureMap.get("Time").getUnits().get(0)));
-        DecimalAritmeticExpression aritmeticExpression = newDecimalAritmeticExpressionBuilder().withLeft(
+        DecimalArithmeticExpression arithmeticExpression = newDecimalArithmeticExpressionBuilder().withLeft(
                 newMeasuredDecimalBuilder()
                         .withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get())
                         .withUnitName("s")
                         .withValue(BigDecimal.ONE)
                         .build()).withOperator(DecimalOperator.MULTIPLY).withRight(
                 newDecimalAttributeBuilder().withAttributeName("speed").withObjectExpression(variableReference).build()).build();
-        Measure measure = modelAdapter.getMeasure(aritmeticExpression).get();
+        Measure measure = modelAdapter.getMeasure(arithmeticExpression).get();
         assertThat(measure, is(measureMap.get("Length")));
     }
 

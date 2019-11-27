@@ -34,7 +34,7 @@ context EXPR!DecimalAttribute {
     }
 }
 
-context EXPR!IntegerAritmeticExpression {
+context EXPR!IntegerArithmeticExpression {
 	// if result is measured
     constraint MeasureIsValid {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and
@@ -58,7 +58,7 @@ context EXPR!IntegerAritmeticExpression {
    	}
 }
 
-context EXPR!DecimalAritmeticExpression {
+context EXPR!DecimalArithmeticExpression {
 	// detected base measures are valid
     constraint MeasureIsValid {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and

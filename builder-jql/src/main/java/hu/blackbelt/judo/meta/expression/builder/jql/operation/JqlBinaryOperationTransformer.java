@@ -9,8 +9,8 @@ import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAritmeticExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAritmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerArithmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newConcatenateBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAdditionExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAdditionExpressionBuilder;
@@ -190,13 +190,13 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E extends NE, C extends N
     private Expression createDecimalOperation(NumericExpression left, NumericExpression right, String operator) {
         switch (operator) {
             case "+":
-                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.ADD).build();
+                return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.ADD).build();
             case "-":
-                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.SUBSTRACT).build();
+                return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.SUBSTRACT).build();
             case "*":
-                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.MULTIPLY).build();
+                return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.MULTIPLY).build();
             case "/":
-                return newDecimalAritmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.DIVIDE).build();
+                return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.DIVIDE).build();
             case "<":
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
             case ">":
@@ -217,17 +217,17 @@ public class JqlBinaryOperationTransformer<NE, P, PTE, E extends NE, C extends N
     private Expression createIntegerOperation(IntegerExpression left, IntegerExpression right, String operator) {
         switch (operator) {
             case "+":
-                return newIntegerAritmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.ADD).withRight(right).build();
+                return newIntegerArithmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.ADD).withRight(right).build();
             case "-":
-                return newIntegerAritmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.SUBSTRACT).withRight(right).build();
+                return newIntegerArithmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.SUBSTRACT).withRight(right).build();
             case "*":
-                return newIntegerAritmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.MULTIPLY).withRight(right).build();
+                return newIntegerArithmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.MULTIPLY).withRight(right).build();
             case "div":
-                return newIntegerAritmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.DIVIDE).withRight(right).build();
+                return newIntegerArithmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.DIVIDE).withRight(right).build();
             case "mod":
-                return newIntegerAritmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.MODULO).withRight(right).build();
+                return newIntegerArithmeticExpressionBuilder().withLeft(left).withOperator(IntegerOperator.MODULO).withRight(right).build();
             case "/":
-                return newDecimalAritmeticExpressionBuilder().withLeft(left).withOperator(DecimalOperator.DIVIDE).withRight(right).build();
+                return newDecimalArithmeticExpressionBuilder().withLeft(left).withOperator(DecimalOperator.DIVIDE).withRight(right).build();
             case "<":
                 return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
             case ">":

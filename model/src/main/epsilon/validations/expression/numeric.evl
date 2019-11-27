@@ -12,26 +12,26 @@ context EXPR!RoundExpression {
     }
 }
 
-context EXPR!IntegerAritmeticExpression {
+context EXPR!IntegerArithmeticExpression {
     constraint Resolved {
         check: true
         message: "Unsupported expression: " + self
     }
 }
 
-context EXPR!DecimalAritmeticExpression {
+context EXPR!DecimalArithmeticExpression {
     constraint Resolved {
         check: true
         message: "Unsupported expression: " + self
     }
     
-    critique IntegerAritmeticExpressionIsRecommended {
+    critique IntegerArithmeticExpressionIsRecommended {
         guard: self.satisfiesAll("Resolved")
         
         check: not (self.left.isKindOf(EXPR!IntegerExpression) 
             and self.right.isKindOf(EXPR!IntegerExpression)
             and (self.operator == EXPR!DecimalOperator#add or self.operator == EXPR!DecimalOperator#substract or self.operator == EXPR!DecimalOperator#multiply))
-        message: "Both arguments are integer so integer aritmetic expression is recommended in: " + self
+        message: "Both arguments are integer so integer arithmetic expression is recommended in: " + self
     }
 }
 

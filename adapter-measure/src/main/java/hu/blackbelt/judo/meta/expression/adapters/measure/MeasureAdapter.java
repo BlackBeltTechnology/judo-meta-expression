@@ -77,12 +77,12 @@ public class MeasureAdapter<M, U> {
             return true;
         } else if (numericExpression instanceof NumericAttribute) {
             return getMeasure(numericExpression).isPresent();
-        } else if (numericExpression instanceof IntegerAritmeticExpression) {
-            final IntegerAritmeticExpression integerAritmeticExpression = (IntegerAritmeticExpression) numericExpression;
-            return getDimension(integerAritmeticExpression).map(d -> !d.isEmpty()).orElse(false);
-        } else if (numericExpression instanceof DecimalAritmeticExpression) {
-            final DecimalAritmeticExpression decimalAritmeticExpression = (DecimalAritmeticExpression) numericExpression;
-            return getDimension(decimalAritmeticExpression).map(d -> !d.isEmpty()).orElse(false);
+        } else if (numericExpression instanceof IntegerArithmeticExpression) {
+            final IntegerArithmeticExpression integerArithmeticExpression = (IntegerArithmeticExpression) numericExpression;
+            return getDimension(integerArithmeticExpression).map(d -> !d.isEmpty()).orElse(false);
+        } else if (numericExpression instanceof DecimalArithmeticExpression) {
+            final DecimalArithmeticExpression decimalArithmeticExpression = (DecimalArithmeticExpression) numericExpression;
+            return getDimension(decimalArithmeticExpression).map(d -> !d.isEmpty()).orElse(false);
         } else if (numericExpression instanceof IntegerOppositeExpression) {
             return isMeasured(((IntegerOppositeExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalOppositeExpression) {
@@ -191,10 +191,10 @@ public class MeasureAdapter<M, U> {
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());
-        } else if (numericExpression instanceof DecimalAritmeticExpression) {
-            return getDimensionOfDecimalAritmeticExpression((DecimalAritmeticExpression) numericExpression);
-        } else if (numericExpression instanceof IntegerAritmeticExpression) {
-            return getDimensionOfIntegerAritmeticExpression((IntegerAritmeticExpression) numericExpression);
+        } else if (numericExpression instanceof DecimalArithmeticExpression) {
+            return getDimensionOfDecimalArithmeticExpression((DecimalArithmeticExpression) numericExpression);
+        } else if (numericExpression instanceof IntegerArithmeticExpression) {
+            return getDimensionOfIntegerArithmeticExpression((IntegerArithmeticExpression) numericExpression);
         } else if (numericExpression instanceof IntegerOppositeExpression) {
             return getDimension(((IntegerOppositeExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalOppositeExpression) {
@@ -237,11 +237,11 @@ public class MeasureAdapter<M, U> {
                 .orElse(null);
     }
 
-    private Optional<Map<MeasureId, Integer>> getDimensionOfIntegerAritmeticExpression(final IntegerAritmeticExpression integerAritmeticExpression) {
-        final Optional<Map<MeasureId, Integer>> left = getDimension(integerAritmeticExpression.getLeft());
-        final Optional<Map<MeasureId, Integer>> right = getDimension(integerAritmeticExpression.getRight());
+    private Optional<Map<MeasureId, Integer>> getDimensionOfIntegerArithmeticExpression(final IntegerArithmeticExpression integerArithmeticExpression) {
+        final Optional<Map<MeasureId, Integer>> left = getDimension(integerArithmeticExpression.getLeft());
+        final Optional<Map<MeasureId, Integer>> right = getDimension(integerArithmeticExpression.getRight());
 
-        switch (integerAritmeticExpression.getOperator()) {
+        switch (integerArithmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
             case MODULO:
@@ -269,7 +269,7 @@ public class MeasureAdapter<M, U> {
                             currentExponent = 0;
                         }
                         final int newExponent;
-                        switch (integerAritmeticExpression.getOperator()) {
+                        switch (integerArithmeticExpression.getOperator()) {
                             case MULTIPLY:
                                 newExponent = currentExponent + exponent;
                                 break;
@@ -292,11 +292,11 @@ public class MeasureAdapter<M, U> {
         throw new IllegalArgumentException("Unsupported operation");
     }
 
-    private Optional<Map<MeasureId, Integer>> getDimensionOfDecimalAritmeticExpression(final DecimalAritmeticExpression decimalAritmeticExpression) {
-        final Optional<Map<MeasureId, Integer>> left = getDimension(decimalAritmeticExpression.getLeft());
-        final Optional<Map<MeasureId, Integer>> right = getDimension(decimalAritmeticExpression.getRight());
+    private Optional<Map<MeasureId, Integer>> getDimensionOfDecimalArithmeticExpression(final DecimalArithmeticExpression decimalArithmeticExpression) {
+        final Optional<Map<MeasureId, Integer>> left = getDimension(decimalArithmeticExpression.getLeft());
+        final Optional<Map<MeasureId, Integer>> right = getDimension(decimalArithmeticExpression.getRight());
 
-        switch (decimalAritmeticExpression.getOperator()) {
+        switch (decimalArithmeticExpression.getOperator()) {
             case ADD:
             case SUBSTRACT:
                 if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
@@ -323,7 +323,7 @@ public class MeasureAdapter<M, U> {
                             currentExponent = 0;
                         }
                         final int newExponent;
-                        switch (decimalAritmeticExpression.getOperator()) {
+                        switch (decimalArithmeticExpression.getOperator()) {
                             case MULTIPLY:
                                 newExponent = currentExponent + exponent;
                                 break;

@@ -285,7 +285,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public EList<NamespaceElement> getAllStaticSequences() {
-        return ECollections.asEList(getPsmElement(NamespaceSequence.class).collect(toList()));
+        return ECollections.asEList(getPsmElement(NamespaceSequence.class).map(ns -> (NamespaceElement)ns).collect(toList()));
     }
 
     @Override

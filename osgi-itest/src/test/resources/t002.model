@@ -40,8 +40,8 @@
                 <left xsi:type="n:DecimalAttribute" xmi:id="_JjcxgOKmEeiRKu0rpEAR6w" attributeName="exciseTax">
                   <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_L6lA8OKmEeiRKu0rpEAR6w" variable="_WAzVQOteEem5vKuy5HFejQ"/>
                 </left>
-                <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_WanzgO5zEeicoeazcHGCBw">
-                  <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_AjuTQO8kEeicoeazcHGCBw" operator="/">
+                <right xsi:type="n:DecimalArithmeticExpression" xmi:id="_WanzgO5zEeicoeazcHGCBw">
+                  <left xsi:type="n:DecimalArithmeticExpression" xmi:id="_AjuTQO8kEeicoeazcHGCBw" operator="/">
                     <left xsi:type="const:IntegerConstant" xmi:id="_BTx3MO8kEeicoeazcHGCBw" value="2"/>
                     <right xsi:type="const:IntegerConstant" xmi:id="_LNYZkO8kEeicoeazcHGCBw" value="1"/>
                   </left>
@@ -50,7 +50,7 @@
                       <iteratorVariable xsi:type="const:Instance" xmi:id="_hYdxEOteEem5vKuy5HFejQ" name="ioOrderDetailsIterator" elementName="_pUjd4OteEem5vKuy5HFejQ"/>
                       <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_kztHAO51EeicoeazcHGCBw" variable="_WAzVQOteEem5vKuy5HFejQ"/>
                     </collectionExpression>
-                    <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_5Zn6gPGIEei9nrMUNuzDTw" operator="*">
+                    <expression xsi:type="n:DecimalArithmeticExpression" xmi:id="_5Zn6gPGIEei9nrMUNuzDTw" operator="*">
                       <left xsi:type="n:DecimalAttribute" xmi:id="_7cpiMPGIEei9nrMUNuzDTw" attributeName="unitPrice">
                         <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_9gykMPGIEei9nrMUNuzDTw" variable="_hYdxEOteEem5vKuy5HFejQ"/>
                       </left>
@@ -166,18 +166,18 @@
       <right xsi:type="const:IntegerConstant" xmi:id="_QLhNcPb5Eei6VpsqfFnFTg" value="10"/>
     </condition>
   </c:CollectionFilterExpression>
-  <n:DecimalAritmeticExpression xmi:id="_GmGacB5NEemwg4NgOjaKeA">
+  <n:DecimalArithmeticExpression xmi:id="_GmGacB5NEemwg4NgOjaKeA">
     <left xsi:type="n:DecimalSwitchExpression" xmi:id="_D1bHsB7_EemlZKbj92vNQw">
       <cases xmi:id="_FKVsMB7_EemlZKbj92vNQw">
         <condition xsi:type="const:BooleanConstant" xmi:id="_JmQd4B7_EemlZKbj92vNQw" value="true"/>
-        <expression xsi:type="n:DecimalAritmeticExpression" xmi:id="_nnA5gB-0EemlZKbj92vNQw">
+        <expression xsi:type="n:DecimalArithmeticExpression" xmi:id="_nnA5gB-0EemlZKbj92vNQw">
           <left xsi:type="const:MeasuredDecimal" xmi:id="_o-CW0B-0EemlZKbj92vNQw" value="8" unitName="dkg"/>
           <right xsi:type="const:MeasuredDecimal" xmi:id="_r2vCQB-0EemlZKbj92vNQw" value="12" unitName="g"/>
         </expression>
       </cases>
       <defaultExpression xsi:type="const:MeasuredDecimal" xmi:id="_LohY4B-1EemlZKbj92vNQw" value="2" unitName="g"/>
     </left>
-    <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_KAW60B5NEemwg4NgOjaKeA">
+    <right xsi:type="n:DecimalArithmeticExpression" xmi:id="_KAW60B5NEemwg4NgOjaKeA">
       <left xsi:type="n:DecimalAttribute" xmi:id="_TYjZQB5NEemwg4NgOjaKeA" attributeName="weight">
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_5bQ7YB5NEemwg4NgOjaKeA">
           <collectionExpression xsi:type="c:SortExpression" xmi:id="_6TIXgB5NEemwg4NgOjaKeA">
@@ -187,27 +187,27 @@
       </left>
       <right xsi:type="const:MeasuredDecimal" xmi:id="_Ouv8kB5NEemwg4NgOjaKeA" value="4" unitName="g"/>
     </right>
-  </n:DecimalAritmeticExpression>
-  <n:DecimalAritmeticExpression xmi:id="_tknRoB-6EemlZKbj92vNQw" operator="*">
-    <left xsi:type="n:DecimalAritmeticExpression" xmi:id="_5VFc8B_kEemlZKbj92vNQw" operator="*">
-      <left xsi:type="n:IntegerAritmeticExpression" xmi:id="_BsfMwB_lEemlZKbj92vNQw">
+  </n:DecimalArithmeticExpression>
+  <n:DecimalArithmeticExpression xmi:id="_tknRoB-6EemlZKbj92vNQw" operator="*">
+    <left xsi:type="n:DecimalArithmeticExpression" xmi:id="_5VFc8B_kEemlZKbj92vNQw" operator="*">
+      <left xsi:type="n:IntegerArithmeticExpression" xmi:id="_BsfMwB_lEemlZKbj92vNQw">
         <left xsi:type="const:IntegerConstant" xmi:id="_CRBdMB_lEemlZKbj92vNQw" value="2"/>
         <right xsi:type="const:IntegerConstant" xmi:id="_Cr7QgB_lEemlZKbj92vNQw" value="4"/>
       </left>
       <right xsi:type="const:MeasuredDecimal" xmi:id="_FKjPEB_lEemlZKbj92vNQw" value="8" unitName="kg"/>
     </left>
-    <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_7FV2QB-7EemlZKbj92vNQw" operator="/">
+    <right xsi:type="n:DecimalArithmeticExpression" xmi:id="_7FV2QB-7EemlZKbj92vNQw" operator="/">
       <left xsi:type="const:MeasuredDecimal" xmi:id="_CGaFQB-8EemlZKbj92vNQw" value="60" unitName="km/h"/>
       <right xsi:type="const:MeasuredDecimal" xmi:id="_LF2sgB-8EemlZKbj92vNQw" value="3" unitName="s"/>
     </right>
-  </n:DecimalAritmeticExpression>
-  <n:DecimalAritmeticExpression xmi:id="_cBULcB_lEemlZKbj92vNQw" operator="/">
+  </n:DecimalArithmeticExpression>
+  <n:DecimalArithmeticExpression xmi:id="_cBULcB_lEemlZKbj92vNQw" operator="/">
     <left xsi:type="const:MeasuredDecimal" xmi:id="_PUXtkCB7Eem84oR5A2vsXg" value="9" unitName="mm"/>
-    <right xsi:type="n:DecimalAritmeticExpression" xmi:id="_oTTs0CB6Eem84oR5A2vsXg" operator="/">
+    <right xsi:type="n:DecimalArithmeticExpression" xmi:id="_oTTs0CB6Eem84oR5A2vsXg" operator="/">
       <left xsi:type="const:DecimalConstant" xmi:id="_JUGhUCCIEem84oR5A2vsXg" value="1"/>
       <right xsi:type="const:MeasuredDecimal" xmi:id="_rDShICB6Eem84oR5A2vsXg" value="45" unitName="cm"/>
     </right>
-  </n:DecimalAritmeticExpression>
+  </n:DecimalArithmeticExpression>
   <l:DecimalComparison xmi:id="_bez44CLmEemiuM_tO8e5iw">
     <left xsi:type="const:MeasuredDecimal" xmi:id="_3O5UoCLmEemiuM_tO8e5iw" value="9" unitName="mg"/>
     <right xsi:type="const:MeasuredDecimal" xmi:id="_d3bWECLmEemiuM_tO8e5iw" value="2" unitName="kg"/>

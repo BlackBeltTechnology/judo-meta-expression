@@ -199,7 +199,7 @@ public class MeasureAdapterTest {
     }
 
     @Test
-    public void testIsMeasuredIntegerAritmeticExpression() {
+    public void testIsMeasuredIntegerArithmeticExpression() {
         final TypeName packageType = newTypeNameBuilder().withNamespace("dummy").withName("Package").build();
         final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
         final Object pkg = new Object();
@@ -210,7 +210,7 @@ public class MeasureAdapterTest {
         attributeUnits.put("width", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
         attributeUnits.put("length", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
-        final NumericExpression addition = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression addition = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -227,7 +227,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(addition));
         Assert.assertThat(measureAdapter.getDimension(addition).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1)));
 
-        final NumericExpression subtraction = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression subtraction = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -244,7 +244,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(subtraction));
         Assert.assertThat(measureAdapter.getDimension(subtraction).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1)));
 
-        final NumericExpression multiplicationWithScalar = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression multiplicationWithScalar = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -260,7 +260,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(multiplicationWithScalar));
         Assert.assertThat(measureAdapter.getDimension(multiplicationWithScalar).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
 
-        final NumericExpression multiplication = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression multiplication = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -279,7 +279,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(multiplication));
         Assert.assertThat(measureAdapter.getDimension(multiplication).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 2)));
 
-        final NumericExpression multiplication2 = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression multiplication2 = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -287,7 +287,7 @@ public class MeasureAdapterTest {
                         .withAttributeName("length")
                         .build())
                 .withOperator(IntegerOperator.MULTIPLY)
-                .withRight(newIntegerAritmeticExpressionBuilder()
+                .withRight(newIntegerArithmeticExpressionBuilder()
                         .withLeft(newIntegerAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
                                         .withVariable(packageInstance)
@@ -307,7 +307,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(multiplication2));
         Assert.assertThat(measureAdapter.getDimension(multiplication2).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 3)));
 
-        final NumericExpression divisionByScalar = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression divisionByScalar = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -319,7 +319,7 @@ public class MeasureAdapterTest {
                         .withValue(BigInteger.ONE)
                         .build())
                 .build();
-        final NumericExpression reciprocal = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression reciprocal = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerConstantBuilder()
                         .withValue(BigInteger.ONE)
                         .build())
@@ -337,7 +337,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(reciprocal));
         Assert.assertThat(measureAdapter.getDimension(reciprocal).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), -1)));
 
-        final NumericExpression modulo = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression modulo = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -354,7 +354,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(modulo));
         Assert.assertThat(measureAdapter.getDimension(modulo).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
 
-        final NumericExpression division1 = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression division1 = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newMeasuredIntegerBuilder()
                         .withValue(BigInteger.valueOf(1000))
                         .withUnitName("cm²")
@@ -371,7 +371,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(division1));
         Assert.assertThat(measureAdapter.getDimension(division1).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
 
-        final NumericExpression division2 = newIntegerAritmeticExpressionBuilder()
+        final NumericExpression division2 = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -390,7 +390,7 @@ public class MeasureAdapterTest {
     }
 
     @Test
-    public void testIsMeasuredDecimalAritmeticExpression() {
+    public void testIsMeasuredDecimalArithmeticExpression() {
         final TypeName packageType = newTypeNameBuilder().withNamespace("dummy").withName("Package").build();
         final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
         final Object pkg = new Object();
@@ -401,7 +401,7 @@ public class MeasureAdapterTest {
         attributeUnits.put("width", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
         attributeUnits.put("length", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
-        final NumericExpression addition = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression addition = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -418,7 +418,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(addition));
         Assert.assertThat(measureAdapter.getDimension(addition).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1)));
 
-        final NumericExpression subtraction = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression subtraction = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -435,7 +435,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(subtraction));
         Assert.assertThat(measureAdapter.getDimension(subtraction).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getMass()), 1)));
 
-        final NumericExpression multiplicationWithScalar = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression multiplicationWithScalar = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -451,7 +451,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(multiplicationWithScalar));
         Assert.assertThat(measureAdapter.getDimension(multiplicationWithScalar).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
 
-        final NumericExpression multiplication = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression multiplication = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -470,7 +470,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(multiplication));
         Assert.assertThat(measureAdapter.getDimension(multiplication).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 2)));
 
-        final NumericExpression multiplication2 = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression multiplication2 = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -478,7 +478,7 @@ public class MeasureAdapterTest {
                         .withAttributeName("length")
                         .build())
                 .withOperator(DecimalOperator.MULTIPLY)
-                .withRight(newDecimalAritmeticExpressionBuilder()
+                .withRight(newDecimalArithmeticExpressionBuilder()
                         .withLeft(newIntegerAttributeBuilder()
                                 .withObjectExpression(newObjectVariableReferenceBuilder()
                                         .withVariable(packageInstance)
@@ -498,7 +498,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(multiplication2));
         Assert.assertThat(measureAdapter.getDimension(multiplication2).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 3)));
 
-        final NumericExpression divisionByScalar = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression divisionByScalar = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
@@ -510,7 +510,7 @@ public class MeasureAdapterTest {
                         .withValue(BigInteger.ONE)
                         .build())
                 .build();
-        final NumericExpression reciprocal = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression reciprocal = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newIntegerConstantBuilder()
                         .withValue(BigInteger.ONE)
                         .build())
@@ -528,7 +528,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(reciprocal));
         Assert.assertThat(measureAdapter.getDimension(reciprocal).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), -1)));
 
-        final NumericExpression division1 = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression division1 = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newMeasuredIntegerBuilder()
                         .withValue(BigInteger.valueOf(1000))
                         .withUnitName("cm²")
@@ -545,7 +545,7 @@ public class MeasureAdapterTest {
         Assert.assertTrue(measureAdapter.isMeasured(division1));
         Assert.assertThat(measureAdapter.getDimension(division1).get(), is(Collections.singletonMap(measureIdFrom(measureProvider.getLength()), 1)));
 
-        final NumericExpression division2 = newDecimalAritmeticExpressionBuilder()
+        final NumericExpression division2 = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(packageInstance)
