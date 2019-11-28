@@ -374,7 +374,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     Optional<Unit> getUnit(final DataFeature attribute) {
-        return Optional.ofNullable(((MeasuredType) attribute.getDataType()).getStoreUnit());
+        if (attribute.getDataType() instanceof  MeasuredType) {
+            return Optional.ofNullable(((MeasuredType) attribute.getDataType()).getStoreUnit());
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static Optional<MeasureName> parseMeasureName(final String name) {
