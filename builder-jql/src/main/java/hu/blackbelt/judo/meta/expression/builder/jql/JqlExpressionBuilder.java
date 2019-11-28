@@ -196,7 +196,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
             context.popVariable();
         }
         if (expression != null) {
-            LOGGER.debug("Expression created: {}", expression);
+            LOGGER.trace("Expression created: {}", expression);
             expressionResource.getContents().add(expression);
         } else {
             LOGGER.warn("No expression created");

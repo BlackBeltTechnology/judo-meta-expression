@@ -106,6 +106,11 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
                         return newCollectionFilterExpressionBuilder().withCollectionExpression((CollectionExpression) expression).withCondition(parameter).build();
                     }
                 }));
+        functionTransformers.put("exists", new JqlParameterizedFunctionTransformer<CollectionExpression, LogicalExpression, FilteringExpression>(this,
+                (expression, parameter) -> newExistsBuilder().withCollectionExpression(expression).withCondition(parameter).build()));
+        functionTransformers.put("forall", new JqlParameterizedFunctionTransformer<CollectionExpression, LogicalExpression, FilteringExpression>(this,
+                (expression, parameter) -> newForAllBuilder().withCollectionExpression(expression).withCondition(parameter).build()));
+        functionTransformers.put("empty", (expression, functionCall, variables) -> newEmptyBuilder().withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
         functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN));
