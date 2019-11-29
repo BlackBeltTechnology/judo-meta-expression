@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +70,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
             Expression contextBaseExpression = context.peekBaseExpression();
             String name = jqlExpression.getBase().getName();
             if (name.equals("self") && contextBaseExpression != null) {
-                baseExpression = contextBaseExpression;
+                baseExpression = EcoreUtil.copy(contextBaseExpression);
                 navigationBase = (C) context.peekBase();
             } else {
                 final Optional<ObjectVariable> baseVariable = context.resolveVariable(name);

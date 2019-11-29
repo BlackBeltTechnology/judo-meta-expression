@@ -65,6 +65,20 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
     }
 
     @Test
+    void testDerivedSelf() {
+        NumericType numericType = newNumericTypeBuilder().withName("numeric").withScale(10).withPrecision(1).build();
+        EntityType order = new EntityCreator("Order")
+                        .withAttribute("productWeight", numericType)
+                        .withDerivedAttribute("sumWeight", numericType, "self.quantity * self.productWeight")
+                        .withDerivedAttribute("calculatedWeight", numericType, "self.sumWeight * 2")
+                        .withAttribute("quantity", numericType)
+                        .create();
+        initResources(createTestModel(numericType, order));
+        createExpression(order, "self.calculatedWeight / 2");
+    }
+
+
+    @Test
     void testReferenceDerivedAttribute() {
         StringType stringType = newStringTypeBuilder().withName("string").build();
         TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
