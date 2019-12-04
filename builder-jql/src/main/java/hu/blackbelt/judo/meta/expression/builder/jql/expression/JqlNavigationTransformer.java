@@ -73,7 +73,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
                 baseExpression = EcoreUtil.copy(contextBaseExpression);
                 navigationBase = (C) context.peekBase();
             } else {
-                final Optional<ObjectVariable> baseVariable = context.resolveVariable(name);
+                Optional<ObjectVariable> baseVariable = context.resolveVariable(name);
                 if (!baseVariable.isPresent()) {
                     throw new IllegalStateException("Base variable " + jqlExpression.getBase() + " not found");
                 }

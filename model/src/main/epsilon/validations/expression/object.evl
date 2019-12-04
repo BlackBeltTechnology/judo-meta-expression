@@ -35,7 +35,7 @@ context EXPR!ObjectFilterExpression {
 context EXPR!ObjectVariableReference {
     constraint Resolved {
         check: self.variable.type().isDefined()
-        message: "Variable is unknown: " + self
+        message: "Object variable reference is unknown: " + self
     }
 
     constraint TypeIsDefined {

@@ -2,11 +2,11 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
-import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -198,7 +198,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 //                .withAlias("completedDate")
 //                .build();
 
-        final CollectionVariable discountedItems = newCollectionFilterExpressionBuilder()
+        final CollectionFilterExpression discountedItems = newCollectionFilterExpressionBuilder()
                 .withCollectionExpression(newCollectionVariableReferenceBuilder()
                         .withVariable(orderDetails)
                         .build())
@@ -216,11 +216,11 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                         .build())
                 .build();
 
-        final ObjectVariable di = discountedItems.createIterator("di", modelAdapter, expressionResource);
+//        final ObjectVariable di = discountedItems.createIterator("di", modelAdapter, expressionResource);
 
         final StringExpression discountedCategoryName = newStringAttributeBuilder()
                 .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(di)
+                        .withVariable(od)
                         .build())
                 .withAttributeName("categoryName")
                 .build();
