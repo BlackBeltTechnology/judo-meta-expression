@@ -20,10 +20,13 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperatio
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
+import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
+import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
@@ -163,9 +166,9 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
 
     private void sequenceFunctions() {
         functionTransformers.put("next", (expression, functionCall, variables) ->
-                newSequenceExpressionBuilder().withSequence((Sequence)expression).withOperator(SequenceOperator.NEXT).build());
+                newSequenceExpressionBuilder().withSequence((Sequence) expression).withOperator(SequenceOperator.NEXT).build());
         functionTransformers.put("current", (expression, functionCall, variables) ->
-                newSequenceExpressionBuilder().withSequence((Sequence)expression).withOperator(SequenceOperator.CURRENT).build());
+                newSequenceExpressionBuilder().withSequence((Sequence) expression).withOperator(SequenceOperator.CURRENT).build());
     }
 
     private void operations() {
@@ -212,7 +215,8 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
             if (functionTransformer != null) {
                 subject = functionTransformer.apply(subject, functionCall, context);
                 if (functionCall.getLambdaArgument() != null) {
-                    context.popVariable();
+                    // TODO handle scoping of lambda variables
+//                    context.popVariable();
                 }
             } else {
                 throw new IllegalStateException("Unknown function: " + functionName);
@@ -222,18 +226,24 @@ public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, 
     }
 
     private void addLambdaVariable(Expression subject, JqlExpressionBuildingContext context, String lambdaArgument) {
-        ObjectVariable variable;
         if (subject instanceof CollectionVariable) {
             CollectionVariable collection = (CollectionVariable) subject;
-            variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+            if (collection.getIteratorVariable() == null) {
+                ObjectVariable variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+                context.pushVariable(variable);
+            } else {
+                collection.getIteratorVariable().setName(lambdaArgument);
+            }
         } else if (subject instanceof ObjectVariable) {
-            ObjectVariable objectVariable = (ObjectVariable) subject;
-            variable = objectVariable.createFilterVariable(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
-        } else {
-            variable = null;
-        }
-        if (variable != null) {
+            ObjectVariable variable = (ObjectVariable) subject;
+            variable.setName(lambdaArgument);
             context.pushVariable(variable);
+        } else if (subject instanceof ObjectFilterExpression) {
+            addLambdaVariable(((ObjectFilterExpression) subject).getObjectExpression(), context, lambdaArgument);
+        } else if (subject instanceof CollectionFilterExpression) {
+            addLambdaVariable(((CollectionFilterExpression) subject).getCollectionExpression(), context, lambdaArgument);
+        } else if (subject instanceof SortExpression) {
+            addLambdaVariable(((SortExpression) subject).getCollectionExpression(), context, lambdaArgument);
         } else {
             throw new IllegalArgumentException(String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
         }

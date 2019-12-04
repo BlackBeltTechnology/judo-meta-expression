@@ -15,6 +15,7 @@ import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObje
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -87,10 +88,11 @@ public class AsmJqlExpressionBuilderTest {
 
     @AfterEach
     void tearDown(final TestInfo testInfo) throws Exception {
-        validateExpressions(expressionModelResourceSupport.getResource());
         expressionModelResourceSupport.saveExpression(expressionSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, testInfo.getDisplayName().replace("(", "").replace(")", "") + "-expression.model"))
+                .validateModel(false)
                 .build());
+        validateExpressions(expressionModelResourceSupport.getResource());
 
         asmResource = null;
         measureResource = null;
@@ -426,15 +428,20 @@ public class AsmJqlExpressionBuilderTest {
     }
 
     @Test
+    void testCollectionVariableNames() {
+        EClass category = findBase("Category");
+        Expression productListOrdered = createGetterExpression(category, "self=>products!sort(e | e.unitPrice ASC, e.productName DESC)!sort(p | p.unitPrice)!join(s | s.productName, ',')", "productListOrdered", ATTRIBUTE);
+        assertThat(productListOrdered, instanceOf(StringExpression.class));
+    }
+
+    @Test
     void testCollectionOperations() {
         EClass category = findBase("Category");
         Expression products = createGetterExpression(category, "self.products", "products", RELATION);
         assertThat(products, collectionOf("Product"));
 
         createGetterExpression(category, "self=>products!count()", "productListCount", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!join(p | p.productName, ', ')!length()", "productListLength", ATTRIBUTE);
-        Expression productListOrdered = createGetterExpression(category, "self=>products!sort(e | e.unitPrice ASC, e.productName DESC)!join(p | p.productName, ', ')", "productListOrdered", ATTRIBUTE);
-        assertThat(productListOrdered, instanceOf(StringExpression.class));
+        createGetterExpression(category, "self=>products!join(p1 | p1.productName, ', ')!length()", "productListLength", ATTRIBUTE);
         createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!head(5)", "productListHead", RELATION);
         Expression productListTail = createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!tail(5)", "productListTail", RELATION);
         assertThat(productListTail, collectionOf("Product"));
@@ -488,7 +495,9 @@ public class AsmJqlExpressionBuilderTest {
     void testLambdaScoping() {
         EClass category = findBase("Category");
         createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()");
-        assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
+        Expression qExpression = createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>owner=>orders!sort(q | p.unitPrice)!tail()");
+        // TODO handle scope change on different side of binary operations (and other expressions probably)
+//        assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
     }
 
     @Test
@@ -503,6 +512,15 @@ public class AsmJqlExpressionBuilderTest {
 
         EClass order = findBase("Order");
         createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName = 'joe')");
+        ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName = 'DHL')");
+        assertThat(objectFilter.getVariableName(), is("s"));
+
+    }
+
+    @Test
+    void testChainedObjectFilter() {
+        EClass order = findBase("Order");
+        ObjectFilterExpression chainedObjectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName = 'DHL')!filter(c | c.phone!isDefined()).territory!filter(t | t.shipper.phone = c.phone)");
     }
 
     @Test

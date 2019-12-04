@@ -6,7 +6,6 @@
         <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_kTLTcOGpEeiNLd-ce3MxwA">
           <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAO2fEeicoeazcHGCBw">
             <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_J5GK0OJ5EeiNLd-ce3MxwA">
-              <iteratorVariable xsi:type="const:Instance" xmi:id="_zH7ccOteEem5vKuy5HFejQ" name="ioFilteredIterator" elementName="_1H5BMOKCEeiNLd-ce3MxwA"/>
               <collectionExpression xsi:type="c:CastCollection" xmi:id="_y9MkEPPBEeiVnPNfsZPgMw" name="io" elementName="_1H5BMOKCEeiNLd-ce3MxwA">
                 <iteratorVariable xsi:type="const:Instance" xmi:id="_WAzVQOteEem5vKuy5HFejQ" name="ioIterator" elementName="_1H5BMOKCEeiNLd-ce3MxwA"/>
                 <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_Pznz8OjZEeiJDbyXqjzKLw">
@@ -22,8 +21,9 @@
                     <objectExpression xsi:type="o:ObjectSelectorExpression" xmi:id="_rpXC8OvSEeicoeazcHGCBw">
                       <collectionExpression xsi:type="c:SortExpression" xmi:id="_XeZYAe2fEeicoeazcHGCBw">
                         <collectionExpression xsi:type="c:CollectionFilterExpression" xmi:id="_smO64OvSEeicoeazcHGCBw">
-                          <iteratorVariable xsi:type="const:Instance" xmi:id="_5DPZwOtdEem5vKuy5HFejQ" name="pIterator" elementName="_jECy8OvSEeicoeazcHGCBw"/>
-                          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_tSwCoOvSEeicoeazcHGCBw" name="p" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+                          <collectionExpression xsi:type="c:ImmutableCollection" xmi:id="_tSwCoOvSEeicoeazcHGCBw" name="p" elementName="_jECy8OvSEeicoeazcHGCBw">
+                             <iteratorVariable xsi:type="const:Instance" xmi:id="_5DPZwOtdEem5vKuy5HFejQ" name="pIterator" elementName="_jECy8OvSEeicoeazcHGCBw"/>
+                      	  </collectionExpression>
                           <condition xsi:type="l:StringComparison" xmi:id="_x1q0MOvSEeicoeazcHGCBw" operator="==">
                             <left xsi:type="str:StringAttribute" xmi:id="_0wFW4OvSEeicoeazcHGCBw" attributeName="productName">
                               <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_14bfAOvSEeicoeazcHGCBw" variable="_5DPZwOtdEem5vKuy5HFejQ"/>
@@ -64,13 +64,13 @@
             </collectionExpression>
             <orderBy xmi:id="_ckbdsO2fEeicoeazcHGCBw">
               <expression xsi:type="n:DecimalAttribute" xmi:id="_mMPsgO2fEeicoeazcHGCBw" attributeName="freight">
-                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_zH7ccOteEem5vKuy5HFejQ"/>
+                <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_oHqQUO2fEeicoeazcHGCBw" variable="_WAzVQOteEem5vKuy5HFejQ"/>
               </expression>
             </orderBy>
             <orderBy xmi:id="_NJ-scO2gEeicoeazcHGCBw" descending="true">
               <expression xsi:type="n:CountExpression" xmi:id="_okfg0O2gEeicoeazcHGCBw">
                 <collectionExpression xsi:type="c:CollectionNavigationFromObjectExpression" xmi:id="_qWaxcO2gEeicoeazcHGCBw" referenceName="orderDetails">
-                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_zH7ccOteEem5vKuy5HFejQ"/>
+                  <objectExpression xsi:type="o:ObjectVariableReference" xmi:id="_2dFBQO2gEeicoeazcHGCBw" variable="_WAzVQOteEem5vKuy5HFejQ"/>
                 </collectionExpression>
               </expression>
             </orderBy>
