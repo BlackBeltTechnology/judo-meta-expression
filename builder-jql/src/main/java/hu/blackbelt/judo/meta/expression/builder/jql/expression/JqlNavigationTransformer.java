@@ -10,7 +10,9 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContex
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
+import hu.blackbelt.judo.meta.expression.variable.IntegerVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
+import hu.blackbelt.judo.meta.expression.variable.Variable;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
@@ -21,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newObjectSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
@@ -73,12 +76,15 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RT
                 baseExpression = EcoreUtil.copy(contextBaseExpression);
                 navigationBase = (C) context.peekBase();
             } else {
-                Optional<ObjectVariable> baseVariable = context.resolveVariable(name);
-                if (!baseVariable.isPresent()) {
-                    throw new IllegalStateException("Base variable " + jqlExpression.getBase() + " not found");
+                Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> new IllegalStateException("Base variable " + jqlExpression.getBase() + " not found"));
+                navigationBase = null;
+                if (baseVariable instanceof ObjectVariable) {
+                    navigationBase = (C) ((ObjectVariable)baseVariable).getObjectType(getModelAdapter());
+                    baseExpression = newObjectVariableReferenceBuilder().withVariable((ObjectVariable) baseVariable).build();
+                } else if (baseVariable instanceof IntegerVariable) {
+                    baseExpression = newIntegerVariableReferenceBuilder().withVariable((IntegerVariable)baseVariable).build();
                 }
-                navigationBase = (C) baseVariable.get().getObjectType(getModelAdapter());
-                baseExpression = newObjectVariableReferenceBuilder().withVariable(baseVariable.get()).build();
+
             }
         }
         LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));

@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
+import hu.blackbelt.judo.meta.expression.variable.Variable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public class JqlExpressionBuildingContext {
 
-    private Deque<ObjectVariable> variables = new ArrayDeque<>();
+    private Deque<Variable> variables = new ArrayDeque<>();
     private Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private Deque<Object> resolvedBases = new ArrayDeque<>();
     private Deque<Expression> baseExpressions = new ArrayDeque<>();
@@ -27,15 +28,15 @@ public class JqlExpressionBuildingContext {
         return resolvedAccessors.contains(accessor);
     }
 
-    public void pushVariable(ObjectVariable variable) {
+    public void pushVariable(Variable variable) {
         variables.push(variable);
     }
 
-    public ObjectVariable popVariable() {
+    public Variable popVariable() {
         return variables.pop();
     }
 
-    public Optional<ObjectVariable> resolveVariable(String name) {
+    public Optional<Variable> resolveVariable(String name) {
         return variables.stream()
                 .filter(v -> Objects.equals(v.getName(), name))
                 .findAny();

@@ -41,7 +41,7 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  * @param <E>   enumeration
  * @param <C>   class
  * @param <RTE> reference typed element (ie. reference)
- * @param <S> sequence
+ * @param <S>   sequence
  * @param <M>   measure
  * @param <U>   unit
  */
@@ -159,22 +159,24 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
         return modelAdapter.getTypeName(clazz);
     }
 
-    public Expression createExpression(C entityType, String jqlExpressionAsString) {
-        final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
-        JqlExpressionBuildingContext context = new JqlExpressionBuildingContext();
-        context.pushBase(entityType);
-        return createExpression(jqlExpression, context);
+    public JqlExpression parseJqlString(String jqlString) {
+        return jqlParser.parseString(jqlString);
     }
 
-    /**
-     * Create and return expression of a given JQL string.
-     *
-     * @param jqlExpressionAsString JQL expression as string
-     * @param context JQL building context, storing variables and navigation state
-     * @return expression
-     */
-    public Expression createExpression(String jqlExpressionAsString, JqlExpressionBuildingContext context) {
-        final JqlExpression jqlExpression = jqlParser.parseString(jqlExpressionAsString);
+    public Expression createExpression(C clazz, String jqlExpressionString) {
+        return createExpression(clazz, parseJqlString(jqlExpressionString));
+    }
+
+    public Expression createExpression(String jqlString, JqlExpressionBuildingContext context) {
+        return createExpression(parseJqlString(jqlString), context);
+    }
+
+    public Expression createExpression(C entityType, JqlExpression jqlExpression) {
+        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext());
+    }
+
+    public Expression createExpression(C clazz, JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+        context.pushBase(clazz);
         return createExpression(jqlExpression, context);
     }
 
@@ -184,7 +186,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
      * @param jqlExpression JQL expression
      * @return expression
      */
-    private Expression createExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+    public Expression createExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
         Object base = context.peekBase();
         final Instance instance = base != null ? entityInstances.get(base) : null;
         if (instance != null) {
