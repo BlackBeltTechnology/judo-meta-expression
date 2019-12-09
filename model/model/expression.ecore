@@ -346,13 +346,12 @@
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="ObjectVariable" abstract="true" eSuperTypes="#//variable/Variable">
+    <eClassifiers xsi:type="ecore:EClass" name="ObjectVariable" eSuperTypes="#//variable/Variable">
       <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="CollectionVariable" abstract="true"
-        eSuperTypes="#//variable/Variable">
+    <eClassifiers xsi:type="ecore:EClass" name="CollectionVariable" eSuperTypes="#//variable/Variable">
       <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
