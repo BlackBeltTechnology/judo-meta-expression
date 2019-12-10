@@ -102,7 +102,10 @@ public class AbstractEsmJqlExpressionBuilderTest {
 
     protected Model createMeasureModel() {
         Measure mass = new EsmTestModelCreator.MeasureCreator("Mass").withUnit("mg").create();
-        Measure length = new EsmTestModelCreator.MeasureCreator("Length").withUnit("m").create();
+        Measure length = new EsmTestModelCreator.MeasureCreator("Length")
+                .withUnit("m")
+                .withUnit("cm", 1, 100)
+                .create();
         measureMap.put("Length", length);
         Measure time = new EsmTestModelCreator.MeasureCreator("Time").withDurationUnit("s", DurationType.SECOND).create();
         measureMap.put("Time", time);

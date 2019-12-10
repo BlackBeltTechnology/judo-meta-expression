@@ -56,6 +56,11 @@ public class EsmTestModelCreator {
             return this;
         }
 
+        public MeasureCreator withUnit(String name, double dividend, double divisor) {
+            units.add(newUnitBuilder().withName(name).withRateDivisor(divisor).withRateDividend(dividend).build());
+            return this;
+        }
+
         public MeasureCreator withDurationUnit(String name, DurationType durationType) {
             units.add(newDurationUnitBuilder().withName(name).withUnitType(durationType).build());
             return this;

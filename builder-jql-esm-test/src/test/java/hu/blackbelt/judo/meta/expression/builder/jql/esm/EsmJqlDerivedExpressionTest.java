@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.esm;
 
+import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.RelationFeature;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
@@ -18,6 +19,7 @@ import hu.blackbelt.judo.meta.expression.string.Trim;
 import org.junit.jupiter.api.Test;
 
 import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
@@ -28,6 +30,28 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilderTest {
+
+
+    @Test
+    void testDerivedMeasure() {
+        MeasuredType meterType = newMeasuredTypeBuilder()
+                .withName("Length")
+                .withStoreUnit(measureMap.get("Length").getUnits().get(0)).build();
+        MeasuredType cmType = newMeasuredTypeBuilder()
+                .withName("Length")
+                .withStoreUnit(measureMap.get("Length").getUnits().get(1)).build();
+        EntityType product = new EntityCreator("Product")
+                .withAttribute("width", meterType)
+                .withAttribute("height", cmType)
+                .create();
+        EntityType derivedProduct = new EntityCreator("DerivedProduct")
+                .withObjectRelation("product", product)
+                .withDerivedAttribute("derivedAreaCm", cmType, "self.product.width * self.product.height")
+                .withDerivedAttribute("derivedAreaM", meterType, "self.product.width * self.product.height")
+                .create();
+        initResources(createTestModel(product, derivedProduct, meterType, cmType));
+        Expression expression = createExpression(derivedProduct, "self.derivedAreaM");
+    }
 
     @Test
     void testDerivedAttribute() {
