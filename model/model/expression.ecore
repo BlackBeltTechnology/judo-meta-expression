@@ -390,8 +390,8 @@
     <eClassifiers xsi:type="ecore:EClass" name="DateVariable" eSuperTypes="#//variable/TypedVariable"/>
     <eClassifiers xsi:type="ecore:EClass" name="TimestampVariable" eSuperTypes="#//variable/TypedVariable"/>
     <eClassifiers xsi:type="ecore:EClass" name="EnumerationVariable" eSuperTypes="#//variable/TypedVariable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="TypedObjectVariable" eSuperTypes="#//variable/TypedVariable"/>
-    <eClassifiers xsi:type="ecore:EClass" name="TypedCollectionVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedObjectVariable" eSuperTypes="#//variable/TypedVariable #//variable/ObjectVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedCollectionVariable" eSuperTypes="#//variable/TypedVariable #//variable/CollectionVariable"/>
   </eSubpackages>
   <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
