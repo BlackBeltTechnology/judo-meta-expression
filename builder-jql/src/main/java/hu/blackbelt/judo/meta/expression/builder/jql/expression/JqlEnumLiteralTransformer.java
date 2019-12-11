@@ -10,7 +10,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
 
-public class JqlEnumLiteralTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<EnumLiteral, NE, P, PTE, E, C, RTE, S, M, U> {
+public class JqlEnumLiteralTransformer<NE, P extends NE, PTE, E extends P, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<EnumLiteral, NE, P, PTE, E, C, RTE, S, M, U> {
 
     public JqlEnumLiteralTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);

@@ -23,7 +23,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampSwitchExpressionBuilder;
 
-public class JqlTernaryOperationTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<TernaryOperation, NE, P, PTE, E, C, RTE, S, M, U> {
+public class JqlTernaryOperationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<TernaryOperation, NE, P, PTE, E, C, RTE, S, M, U> {
 
     private final Map<Class<? extends Expression>, BiFunction<SwitchCase, Expression, SwitchExpression>> supportedTypes = new HashMap<Class<? extends Expression>, BiFunction<SwitchCase, Expression, SwitchExpression>>() {
         {

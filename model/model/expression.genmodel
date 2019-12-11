@@ -221,6 +221,13 @@
         <genOperations ecoreOperation="expression.ecore#//variable/Variable/getVariableName"
             body="return getName();"/>
       </genClasses>
+      <genClasses image="false" ecoreClass="expression.ecore#//variable/TypedVariable">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/TypedVariable/typeName"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/TypedVariable/getObjectType"
+            body="return getTypeName().get(modelAdapter);">
+          <genParameters ecoreParameter="expression.ecore#//variable/TypedVariable/getObjectType/modelAdapter"/>
+        </genOperations>
+      </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/ObjectVariable">
         <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getObjectType">
           <genParameters ecoreParameter="expression.ecore#//variable/ObjectVariable/getObjectType/modelAdapter"/>
@@ -240,11 +247,7 @@
         <genOperations ecoreOperation="expression.ecore#//variable/CollectionVariable/getVariableName"
             body="return getIteratorVariable() == null ? null : getIteratorVariable().getName();"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//variable/BooleanVariable">
-        <genOperations ecoreOperation="expression.ecore#//variable/BooleanVariable/getObjectType">
-          <genParameters ecoreParameter="expression.ecore#//variable/BooleanVariable/getObjectType/modelAdapter"/>
-        </genOperations>
-      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/BooleanVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/StringVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/IntegerVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/DecimalVariable"/>
@@ -252,6 +255,8 @@
       <genClasses ecoreClass="expression.ecore#//variable/DateVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/TimestampVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/EnumerationVariable"/>
+      <genClasses ecoreClass="expression.ecore#//variable/TypedObjectVariable"/>
+      <genClasses ecoreClass="expression.ecore#//variable/TypedCollectionVariable"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operator" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

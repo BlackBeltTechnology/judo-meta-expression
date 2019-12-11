@@ -50,7 +50,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> {
+public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, RTE, S, M, U> {
 
     private final JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();

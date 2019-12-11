@@ -45,7 +45,7 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  * @param <M>   measure
  * @param <U>   unit
  */
-public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> {
+public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends NE, RTE, S, M, U> {
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
