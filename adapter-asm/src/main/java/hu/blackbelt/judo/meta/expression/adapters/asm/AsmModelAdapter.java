@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ASM models.
  */
-public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EReference, EClassifier, Measure, Unit> {
+public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
@@ -379,6 +379,13 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return ECollections.asEList(asmUtils.all(EClass.class)
                 .filter(container -> container.getEAllContainments().stream().anyMatch(c -> EcoreUtil.equals(c.getEReferenceType(), clazz)))
                 .flatMap(container -> Stream.concat(container.getEAllSuperTypes().stream(), Collections.singleton(container).stream()))
+                .collect(toList()));
+    }
+
+    @Override
+    public EList<EClass> getAllAccessPoints() {
+        return ECollections.asEList(getAsmElement(EClass.class)
+                .filter(c -> AsmUtils.isAccessPoint(c))
                 .collect(toList()));
     }
 }

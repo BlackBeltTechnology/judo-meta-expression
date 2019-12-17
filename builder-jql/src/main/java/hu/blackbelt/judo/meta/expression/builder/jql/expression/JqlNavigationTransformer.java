@@ -25,7 +25,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newObjectSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 
-public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, RTE, S, M, U> {
+public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, AP, RTE, S, M, U> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 

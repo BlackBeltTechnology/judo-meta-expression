@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
@@ -234,9 +233,7 @@ public class EsmModelAdapterTest {
         EntityType grandmother = new EntityCreator("Grandmother").withObjectRelation("friend", grandmotherFriend).create();
         TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
                 .withName("brother")
-                .withUpper(1)
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+                .withUpper(1).build();
         EntityType uncle = new EntityCreator("Uncle").withGeneralization(grandfather).withGeneralization(grandmother).withTwoWayRelation(twr).create();
         EntityType father = new EntityCreator("Father").withGeneralization(grandfather).withGeneralization(grandmother).withTwoWayRelation("brother", uncle, twr, false).create();
         twr.setTarget(father);

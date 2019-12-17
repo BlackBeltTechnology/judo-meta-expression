@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
+import hu.blackbelt.judo.meta.esm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
@@ -43,7 +44,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ESM models.
  */
-public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, ReferenceTypedElement, Sequence, Measure, Unit> {
+public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(EsmModelAdapter.class);
@@ -189,12 +190,12 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isInteger(Primitive primitive) {
-        return isNumeric(primitive) && ((NumericType)primitive).getScale() == 0;
+        return isNumeric(primitive) && ((NumericType) primitive).getScale() == 0;
     }
 
     @Override
     public boolean isDecimal(Primitive primitive) {
-        return isNumeric(primitive) && ((NumericType)primitive).getScale() > 0;
+        return isNumeric(primitive) && ((NumericType) primitive).getScale() > 0;
     }
 
     @Override
@@ -214,7 +215,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isDate(Primitive primitive) {
-        return primitive instanceof  DateType;
+        return primitive instanceof DateType;
     }
 
     @Override
@@ -281,9 +282,9 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(final NumericExpression numericExpression) {
-        return measureAdapter.getDimension(numericExpression).map( dimensions -> {
+        return measureAdapter.getDimension(numericExpression).map(dimensions -> {
             Map<Measure, Integer> measureMap = new HashMap<>();
-            dimensions.entrySet().stream().forEach( entry -> {
+            dimensions.entrySet().stream().forEach(entry -> {
                 MeasureAdapter.MeasureId measureId = entry.getKey();
                 Optional<Measure> measure = measureProvider.getMeasure(measureId.getNamespace(), measureId.getName());
                 measure.ifPresent(m -> measureMap.put(m, entry.getValue()));
@@ -309,7 +310,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<? extends Sequence> getSequence(hu.blackbelt.judo.meta.esm.structure.Class clazz, String sequenceName) {
-        return ((EntityType)clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
+        return ((EntityType) clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
     }
 
     @Override
@@ -319,22 +320,22 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isDerivedAttribute(PrimitiveTypedElement attribute) {
-        return attribute instanceof DataMember && ((DataMember)attribute).isProperty();
+        return attribute instanceof DataMember && ((DataMember) attribute).getDataMemberType() == DataMemberType.PROPERTY;
     }
 
     @Override
     public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         Optional<String> result = Optional.empty();
         if (isDerivedAttribute(attribute)) {
-                result = Optional.of(((DataMember)attribute).getGetterExpression().getExpression());
+            result = Optional.of(((DataMember) attribute).getGetterExpression());
         }
         return result;
     }
 
     @Override
     public boolean isDerivedReference(ReferenceTypedElement reference) {
-        if (reference instanceof ReferenceAccessor && reference instanceof OneWayRelationMember) {
-            return ((OneWayRelationMember)reference).isProperty();
+        if (reference instanceof OneWayRelationMember) {
+            return ((OneWayRelationMember) reference).getRelationMemberType() == RelationMemberType.PROPERTY;
         } else {
             return false;
         }
@@ -344,7 +345,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Optional<String> getReferenceGetter(ReferenceTypedElement reference) {
         Optional<String> result = Optional.empty();
         if (isDerivedReference(reference)) {
-            result = Optional.of(((ReferenceAccessor)reference).getGetterExpression().getExpression());
+            if (reference instanceof StaticNavigation) {
+                result = Optional.of(((StaticNavigation) reference).getGetterExpression());
+            } else if (reference instanceof OneWayRelationMember) {
+                result = Optional.of(((OneWayRelationMember) reference).getGetterExpression());
+            }
         }
         return result;
     }
@@ -374,7 +379,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     Optional<Unit> getUnit(final DataFeature attribute) {
-        if (attribute.getDataType() instanceof  MeasuredType) {
+        if (attribute.getDataType() instanceof MeasuredType) {
             return Optional.ofNullable(((MeasuredType) attribute.getDataType()).getStoreUnit());
         } else {
             return Optional.empty();
@@ -403,7 +408,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                 .filter(
                         container -> container.getRelations().stream()
                                 .anyMatch(relation -> (relation instanceof OneWayRelationMember)
-                                        && ((OneWayRelationMember)relation).isContainment()
+                                        && ((OneWayRelationMember) relation).isContainment()
                                         && EcoreUtil.equals(relation.getTarget(), clazz)))
                 .flatMap(
                         container -> Stream.concat(
@@ -414,12 +419,16 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     public String getNamespaceFQName(Namespace namespace) {
         if (namespace instanceof NamespaceElement) {
-            return EsmUtils.getNamespaceElementFQName((NamespaceElement)namespace);
+            return EsmUtils.getNamespaceElementFQName((NamespaceElement) namespace);
         } else if (namespace instanceof Model) {
-            return ((Model)namespace).getName();
+            return ((Model) namespace).getName();
         } else {
             return String.join(NAMESPACE_SEPARATOR, namespace.getElements().stream().map(NamedElement::getName).collect(toList()));
         }
     }
 
+    @Override
+    public EList<AccessPoint> getAllAccessPoints() {
+        return ECollections.asEList(getEsmElement(AccessPoint.class).collect(toList()));
+    }
 }

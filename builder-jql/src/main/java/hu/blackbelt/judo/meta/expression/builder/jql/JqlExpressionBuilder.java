@@ -45,24 +45,25 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
  * @param <M>   measure
  * @param <U>   unit
  */
-public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S, M, U> {
+public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP extends NE, RTE, S, M, U> {
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     private final Resource expressionResource;
-    private final ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> modelAdapter;
+    private final ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
-    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> modelAdapter, final Resource expressionResource) {
+    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
 
         addMeasures();
+        addAccessPoints();
         addClasses();
         addEnums();
         addSequences();
@@ -88,6 +89,13 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
 
     private void addSequences() {
         modelAdapter.getAllStaticSequences().forEach(e -> {
+            TypeName typeName = modelAdapter.getTypeName(e).get();
+            storeTypeName(e, typeName);
+        });
+    }
+
+    private void addAccessPoints() {
+        modelAdapter.getAllAccessPoints().forEach(e -> {
             TypeName typeName = modelAdapter.getTypeName(e).get();
             storeTypeName(e, typeName);
         });
@@ -296,7 +304,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, RTE, S
         return jqlTransformers.transform(jqlExpression, context);
     }
 
-    public ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> getModelAdapter() {
+    public ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
         return modelAdapter;
     }
 
