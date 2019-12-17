@@ -69,7 +69,7 @@ public class JqlNavigationTransformer<NE, P, PTE, E extends NE, C extends NE, AP
         } else {
             Expression contextBaseExpression = context.peekBaseExpression();
             String name = jqlExpression.getBase().getName();
-            if (name.equals("self") && contextBaseExpression != null) {
+            if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
                 baseExpression = EcoreUtil.copy(contextBaseExpression);
                 navigationBase = (C) context.peekBase();
             } else {

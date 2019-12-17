@@ -129,7 +129,7 @@
         <log4j.configuration>log4j.properties</log4j.configuration>
 
         <!-- For tests -->
-        <northwind-model-version>1.0.0-SNAPSHOT</northwind-model-version>
+        <northwind-model-version>1.0.0.20191217_155824_7bc49f4_develop</northwind-model-version>
         <judo-tatami-version>1.0.0.20191217_143942_3c5d9cb_develop</judo-tatami-version>
     </properties>
 

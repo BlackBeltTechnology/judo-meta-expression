@@ -54,6 +54,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP ext
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
+    private final Map<String, TypeName> accessPoints = new ConcurrentHashMap<>();
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
@@ -98,6 +99,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP ext
         modelAdapter.getAllAccessPoints().forEach(e -> {
             TypeName typeName = modelAdapter.getTypeName(e).get();
             storeTypeName(e, typeName);
+            accessPoints.put(typeName.getNamespace() + "::" + typeName.getName(), typeName);
         });
     }
 
@@ -220,8 +222,15 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP ext
      * @param expression     expression
      * @return expression binding
      */
-    public Binding createBinding(final BindingContext bindingContext, final C entityType, final Expression expression) {
-        final Instance instance = entityInstances.get(entityType);
+    public Binding createBinding(final BindingContext bindingContext, final C entityType, AP accessPoint, final Expression expression) {
+        final TypeName typeName;
+        if (entityType != null) {
+            typeName = entityInstances.get(entityType).getElementName();
+        } else if (accessPoint != null) {
+            typeName = accessPoints.get(modelAdapter.getTypeName(accessPoint).map(tn -> tn.getNamespace() + "::" + tn.getName()).get());
+        } else {
+            throw new IllegalArgumentException("Entity type or access point must be specified");
+        }
 
         final Binding binding;
         switch (bindingContext.getType()) {
@@ -243,7 +252,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP ext
 
                 binding = newAttributeBindingBuilder()
                         .withExpression(expression)
-                        .withTypeName(instance.getElementName())
+                        .withTypeName(typeName)
                         .withAttributeName(bindingContext.getFeatureName())
                         .withRole(attributeBindingRole)
                         .build();
@@ -269,7 +278,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP ext
 
                 binding = newReferenceBindingBuilder()
                         .withExpression(expression)
-                        .withTypeName(instance.getElementName())
+                        .withTypeName(typeName)
                         .withReferenceName(bindingContext.getFeatureName())
                         .withRole(referenceBindingRole)
                         .build();
@@ -285,7 +294,7 @@ public class JqlExpressionBuilder<NE, P, PTE, E extends NE, C extends NE, AP ext
     }
 
     public Binding createGetterBinding(C base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Binding binding = createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, expression);
+        Binding binding = createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, null, expression);
         return binding;
     }
 
