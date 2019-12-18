@@ -8,13 +8,17 @@ import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.CollectionExpression;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.IntegerExpression;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ObjectSequence;
+import hu.blackbelt.judo.meta.expression.StaticSequence;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import org.junit.jupiter.api.Test;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
@@ -89,9 +93,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         StringType stringType = newStringTypeBuilder().withName("string").build();
         TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
                 .withName("customer")
-                .withUpper(1)
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+                .withUpper(1).build();
         Class order = new EntityCreator("Order").withTwoWayRelation(twr).create();
         Class address = new EntityCreator("Address").create();
         Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, twr, true).withCollectionRelation("addresses", address).create();

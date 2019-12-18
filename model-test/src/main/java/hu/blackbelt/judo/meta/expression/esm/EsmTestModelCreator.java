@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.esm;
 
-import hu.blackbelt.judo.meta.esm.expression.ExpressionDialect;
 import hu.blackbelt.judo.meta.esm.measure.DurationType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasureDefinitionTerm;
@@ -11,7 +10,14 @@ import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.namespace.util.builder.PackageBuilder;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.*;
+import hu.blackbelt.judo.meta.esm.structure.DataFeature;
+import hu.blackbelt.judo.meta.esm.structure.DataMemberType;
+import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
+import hu.blackbelt.judo.meta.esm.structure.EntityType;
+import hu.blackbelt.judo.meta.esm.structure.Generalization;
+import hu.blackbelt.judo.meta.esm.structure.RelationFeature;
+import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
+import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.DataMemberBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.EntityTypeBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.OneWayRelationMemberBuilder;
@@ -19,9 +25,12 @@ import hu.blackbelt.judo.meta.esm.type.EnumerationMember;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.Primitive;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.*;
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
@@ -147,8 +156,6 @@ public class EsmTestModelCreator {
                     .withPartner(partner)
                     .withTarget(target)
                     .withUpper(multi ? -1 : 1)
-                    .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
-                    .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression(""))
                     .build();
             partner.setPartner(relationMember);
             relations.add(relationMember);
@@ -166,24 +173,15 @@ public class EsmTestModelCreator {
 
     public static RelationFeature createRelation(String name, Class target, int upperBound, String getterExpression) {
         OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
-        builder.withDefaultExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withGetterExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
-        builder.withSetterExpression(newReferenceSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withRangeExpression(newReferenceExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        if (!getterExpression.isEmpty()) {
-            builder.withProperty(true);
-        }
+        builder.withGetterExpression(getterExpression);
+        builder.withRelationMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? RelationMemberType.PROPERTY : RelationMemberType.RELATION);
         return builder.build();
     }
 
     public static DataFeature createAttribute(String name, Primitive datatype, String getterExpression) {
         DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
-        builder.withGetterExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(getterExpression));
-        builder.withDefaultExpression(newDataExpressionTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        builder.withSetterExpression(newAttributeSelectorTypeBuilder().withDialect(ExpressionDialect.JQL).withExpression(""));
-        if (!getterExpression.isEmpty()) {
-            builder.withProperty(true);
-        }
+        builder.withGetterExpression(getterExpression);
+        builder.withDataMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? DataMemberType.PROPERTY : DataMemberType.ATTRIBUTE);
         return builder.build();
     }
 

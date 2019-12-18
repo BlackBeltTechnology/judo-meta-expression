@@ -18,11 +18,12 @@ import java.util.Optional;
  * @param <PTE> primitive typed element (ie. attribute)
  * @param <E>   enumeration
  * @param <C>   class
+ * @param <AP>  access point
  * @param <RTE> reference typed element (ie. reference)
  * @param <M>   measure
  * @param <U>   unit
  */
-public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, S, M, U> {
+public interface ModelAdapter<NE, P, PTE, E extends NE, C extends NE, AP extends NE, RTE, S, M, U> {
 
     /**
      * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
@@ -279,6 +280,8 @@ public interface ModelAdapter<NE, P, PTE, E, C extends NE, RTE, S, M, U> {
     EList<E> getAllEnums();
 
     EList<NE> getAllStaticSequences();
+
+    EList<AP> getAllAccessPoints();
 
     /**
      * Get object sequence by name.
