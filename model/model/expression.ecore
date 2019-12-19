@@ -346,6 +346,16 @@
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedVariable" abstract="true" eSuperTypes="#//variable/Variable">
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getTypeName().get(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="typeName" lowerBound="1"
+          eType="#//TypeName" containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ObjectVariable" abstract="true" eSuperTypes="#//variable/Variable">
       <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
         <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
@@ -372,6 +382,16 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="iteratorVariable" eType="#//variable/ObjectVariable"
           containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StringVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DateVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EnumerationVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedObjectVariable" eSuperTypes="#//variable/TypedVariable #//variable/ObjectVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TypedCollectionVariable" eSuperTypes="#//variable/TypedVariable #//variable/CollectionVariable"/>
   </eSubpackages>
   <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
@@ -678,6 +698,20 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="sequence" eType="#//Sequence"
           containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerVariableReference" eSuperTypes="#//VariableReference #//IntegerExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getVariableName" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return toString();"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//variable/IntegerVariable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalVariableReference" eSuperTypes="#//DecimalExpression #//VariableReference"/>
   </eSubpackages>
   <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical"
       nsPrefix="l">
@@ -1004,6 +1038,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanVariableReference" eSuperTypes="#//LogicalExpression #//VariableReference">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="variable" lowerBound="1"
+          eType="#//variable/BooleanVariable"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string"
       nsPrefix="str">
@@ -1124,6 +1162,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="separator" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StringVariableReference" eSuperTypes="#//StringExpression #//VariableReference"/>
   </eSubpackages>
   <eSubpackages name="enumeration" nsURI="http://blackbelt.hu/judo/meta/expression/enumeration"
       nsPrefix="enum">
@@ -1145,6 +1184,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="elementName" lowerBound="1"
           eType="#//TypeName"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EnumerationVariableReference" eSuperTypes="#//EnumerationExpression #//VariableReference"/>
   </eSubpackages>
   <eSubpackages name="object" nsURI="http://blackbelt.hu/judo/meta/expression/object"
       nsPrefix="o">
@@ -1555,6 +1595,7 @@
       nsPrefix="cust">
     <eClassifiers xsi:type="ecore:EClass" name="CustomAttribute" eSuperTypes="#//CustomExpression #//AttributeSelector"/>
     <eClassifiers xsi:type="ecore:EClass" name="CustomSwitchExpression" eSuperTypes="#//SwitchExpression #//CustomExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomVariableReference" eSuperTypes="#//VariableReference #//CustomExpression"/>
   </eSubpackages>
   <eSubpackages name="temporal" nsURI="http://blackbelt.hu/judo/meta/expression/temporal"
       nsPrefix="t">
@@ -1642,6 +1683,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="endDate" lowerBound="1"
           eType="#//DateExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampVariableReference" eSuperTypes="#//TimestampExpression #//VariableReference"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DateVariableReference" eSuperTypes="#//DateExpression #//VariableReference"/>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
       nsPrefix="b">

@@ -69,7 +69,8 @@ Export-Package: hu.blackbelt.judo.meta.expression,
  hu.blackbelt.judo.meta.expression.util.builder,
  hu.blackbelt.judo.meta.expression.variable,
  hu.blackbelt.judo.meta.expression.variable.impl,
- hu.blackbelt.judo.meta.expression.variable.util
+ hu.blackbelt.judo.meta.expression.variable.util,
+ hu.blackbelt.judo.meta.expression.variable.util.builder
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: hu.blackbelt.judo.meta.expression.model
 Import-Package: org.slf4j;version="1.7.2"

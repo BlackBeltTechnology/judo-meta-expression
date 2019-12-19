@@ -20,10 +20,11 @@ import java.util.Optional;
  * @param <C>   class
  * @param <AP>  access point
  * @param <RTE> reference typed element (ie. reference)
+ * @param <S> sequence
  * @param <M>   measure
  * @param <U>   unit
  */
-public interface ModelAdapter<NE, P, PTE, E extends NE, C extends NE, AP extends NE, RTE, S, M, U> {
+public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> {
 
     /**
      * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
