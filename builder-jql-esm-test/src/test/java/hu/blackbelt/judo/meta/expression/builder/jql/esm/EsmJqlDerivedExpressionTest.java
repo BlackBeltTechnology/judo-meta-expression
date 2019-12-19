@@ -17,7 +17,6 @@ import hu.blackbelt.judo.meta.expression.string.StringAttribute;
 import hu.blackbelt.judo.meta.expression.string.Trim;
 import org.junit.jupiter.api.Test;
 
-import static hu.blackbelt.judo.meta.esm.expression.util.builder.ExpressionBuilders.newReferenceExpressionTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
@@ -83,9 +82,7 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         StringType stringType = newStringTypeBuilder().withName("string").build();
         TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
                 .withName("a")
-                .withUpper(1)
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+                .withUpper(1).build();
         EntityType entityB = new EntityCreator("B")
                 .withAttribute("field", stringType)
                 .withDerivedAttribute("aField", stringType, "self.a.field")
@@ -117,9 +114,7 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         StringType stringType = newStringTypeBuilder().withName("string").build();
         TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
                 .withName("a")
-                .withUpper(1)
-                .withDefaultExpression(newReferenceExpressionTypeBuilder().withExpression(""))
-                .withRangeExpression(newReferenceExpressionTypeBuilder().withExpression("")).build();
+                .withUpper(1).build();
         EntityType entityB = new EntityCreator("B")
                 .withTwoWayRelation(twr)
                 .withDerivedAttribute("w", stringType, "self.a.w")

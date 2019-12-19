@@ -6,6 +6,7 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.esm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.esm.measure.DurationType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
@@ -62,7 +63,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
     private static final String ESM_RESOURCE_URI = "urn:esm.judo-meta-esm";
     private static final String EXPRESSION_RESOURCE_URI = "urn:test.judo-meta-expression";
     private static final Log log = new Slf4jLog();
-    private JqlExpressionBuilder<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, Class, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
+    private JqlExpressionBuilder<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, Class, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
     private Resource measureResource;
     protected EsmModelAdapter modelAdapter;
     private ExpressionModelResourceSupport expressionModelResourceSupport;

@@ -50,13 +50,13 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, RTE, S, M, U> {
+public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> {
 
-    private final JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> expressionBuilder;
+    private final JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
 
-    public JqlTransformers(JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> expressionBuilder) {
+    public JqlTransformers(JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
         literals();
         operations();
@@ -249,7 +249,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, R
         }
     }
 
-    public ModelAdapter<NE, P, PTE, E, C, RTE, S, M, U> getModelAdapter() {
+    public ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
         return expressionBuilder.getModelAdapter();
     }
 
@@ -273,7 +273,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, R
         return expressionBuilder.getBinding(baseType, feature);
     }
 
-    public JqlExpressionBuilder<NE, P, PTE, E, C, RTE, S, M, U> getExpressionBuilder() {
+    public JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> getExpressionBuilder() {
         return expressionBuilder;
     }
 }

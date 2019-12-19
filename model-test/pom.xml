@@ -56,7 +56,7 @@
 							<goal>psm-default-workflow</goal>
 						</goals>
 						<configuration>
-							<psmModelDest>${basedir}/target/test-classes/model/northwind-psm.model</psmModelDest>
+							<psmModelFile>${basedir}/target/test-classes/model/northwind-psm.model</psmModelFile>
 							<destination>${basedir}/target/test-classes/model</destination>
 							<modelName>northwind</modelName>
 							<ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>

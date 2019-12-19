@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
+import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.derived.ReferenceAccessor;
@@ -40,7 +41,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for PSM models.
  */
-public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Sequence, Measure, Unit> {
+public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
@@ -370,4 +371,8 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                 .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getSymbol()).build());
     }
 
+    @Override
+    public EList<AccessPoint> getAllAccessPoints() {
+        return ECollections.asEList(getPsmElement(AccessPoint.class).collect(toList()));
+    }
 }

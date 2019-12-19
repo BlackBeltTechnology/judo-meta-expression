@@ -90,12 +90,12 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         final Expression expression = builder.createExpression(entityType, JqlExpressionBuilder.SELF_NAME + "." + attribute.getName());
 
                                         if (!hasGetterBinding) {
-                                            builder.createBinding(getterBindingContext, entityType, expression);
+                                            builder.createBinding(getterBindingContext, entityType, null, expression);
                                         } else {
                                             log.debug("Getter expression already extracted for attribute: {}", attribute);
                                         }
                                         if (!hasSetterBinding) {
-                                            builder.createBinding(setterBindingContext, entityType, expression);
+                                            builder.createBinding(setterBindingContext, entityType, null, expression);
                                         } else {
                                             log.debug("Setter expression already extracted for attribute: {}", attribute);
                                         }
@@ -127,7 +127,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
                                             if (getterJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, getterJql.get());
-                                                builder.createBinding(getterBindingContext, entityType, expression);
+                                                builder.createBinding(getterBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Getter attribute JQL not found");
                                             }
@@ -144,7 +144,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (setterDialect.isPresent() && JQL_DIALECT.equals(setterDialect.get())) {
                                             if (setterJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, setterJql.get());
-                                                builder.createBinding(setterBindingContext, entityType, expression);
+                                                builder.createBinding(setterBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Getter attribute JQL not found");
                                             }
@@ -161,7 +161,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (defaultDialect.isPresent() && JQL_DIALECT.equals(defaultDialect.get())) {
                                             if (defaultJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, defaultJql.get());
-                                                builder.createBinding(defaultBindingContext, entityType, expression);
+                                                builder.createBinding(defaultBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Default attribute JQL not found");
                                             }
@@ -203,12 +203,12 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         final Expression expression = builder.createExpression(entityType, JqlExpressionBuilder.SELF_NAME + "." + reference.getName());
 
                                         if (!hasGetterBinding) {
-                                            builder.createBinding(getterBindingContext, entityType, expression);
+                                            builder.createBinding(getterBindingContext, entityType, null, expression);
                                         } else {
                                             log.debug("Getter expression already extracted for relation: {}", reference);
                                         }
                                         if (!hasSetterBinding) {
-                                            builder.createBinding(setterBindingContext, entityType, expression);
+                                            builder.createBinding(setterBindingContext, entityType, null, expression);
                                         } else {
                                             log.debug("Setter expression already extracted for relation: {}", reference);
                                         }
@@ -249,7 +249,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
                                             if (getterJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, getterJql.get());
-                                                builder.createBinding(getterBindingContext, entityType, expression);
+                                                builder.createBinding(getterBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Getter reference JQL not found");
                                             }
@@ -266,7 +266,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (setterDialect.isPresent() && JQL_DIALECT.equals(setterDialect.get())) {
                                             if (setterJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, setterJql.get());
-                                                builder.createBinding(setterBindingContext, entityType, expression);
+                                                builder.createBinding(setterBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Setter reference JQL not found");
                                             }
@@ -283,7 +283,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (defaultDialect.isPresent() && JQL_DIALECT.equals(defaultDialect.get())) {
                                             if (defaultJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, defaultJql.get());
-                                                builder.createBinding(defaultBindingContext, entityType, expression);
+                                                builder.createBinding(defaultBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Default reference JQL not found");
                                             }
@@ -300,7 +300,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (rangeDialect.isPresent() && JQL_DIALECT.equals(rangeDialect.get())) {
                                             if (rangeJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(entityType, rangeJql.get());
-                                                builder.createBinding(rangeBindingContext, entityType, expression);
+                                                builder.createBinding(rangeBindingContext, entityType, null, expression);
                                             } else {
                                                 throw new IllegalStateException("Range reference JQL not found");
                                             }
@@ -315,6 +315,87 @@ public class AsmJqlExtractor implements JqlExtractor {
                                 }
                             });
                 });
+
+        asmUtils.all(EClass.class)
+                .filter(c -> AsmUtils.isAccessPoint(c))
+                .forEach(accessPoint -> {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Extracting JQL expressions of access point {}", AsmUtils.getClassifierFQName(accessPoint));
+                    }
+
+                    final Optional<TypeName> typeName = builder.getTypeName(accessPoint);
+
+                    if (!typeName.isPresent()) {
+                        throw new IllegalStateException("Illegal type name");
+                    }
+
+                    accessPoint.getEReferences()
+                            .forEach(reference -> {
+                                final boolean hasGetterBinding = all(expressionResourceSet, ReferenceBinding.class)
+                                        .anyMatch(b -> b.getTypeName() != null &&
+                                                Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                b.getRole() == ReferenceBindingRole.GETTER &&
+                                                Objects.equals(b.getReferenceName(), reference.getName()));
+                                final boolean hasSetterBinding = all(expressionResourceSet, ReferenceBinding.class)
+                                        .anyMatch(b -> b.getTypeName() != null &&
+                                                Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                                Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
+                                                b.getRole() == ReferenceBindingRole.SETTER &&
+                                                Objects.equals(b.getReferenceName(), reference.getName()));
+
+                                final JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER);
+                                final JqlExpressionBuilder.BindingContext setterBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.SETTER);
+
+                                if (!reference.isDerived()) {
+                                    throw new IllegalStateException("References of access points must be derived");
+                                } else {
+                                    if (log.isTraceEnabled()) {
+                                        log.trace("  - extracting JQL expressions of navigation property: {}", AsmUtils.getReferenceFQName(reference));
+                                    }
+
+                                    final Optional<String> getterJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter", false);
+                                    final Optional<String> getterDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.dialect", false);
+                                    final Optional<String> setterJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter", false);
+                                    final Optional<String> setterDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter.dialect", false);
+
+                                    if (!hasGetterBinding) {
+                                        if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
+                                            if (getterJql.isPresent()) {
+                                                final Expression expression = builder.createExpression(null, getterJql.get());
+                                                builder.createBinding(getterBindingContext, null, accessPoint, expression);
+                                            } else {
+                                                throw new IllegalStateException("Getter reference JQL not found");
+                                            }
+                                        } else if (getterDialect.isPresent()) {
+                                            log.warn("Dialect {} of getter reference is not supported", getterDialect.get());
+                                        } else if (getterJql.isPresent()) {
+                                            log.warn("Dialect of getter reference is not specified, skipped expression: {}", getterJql.get());
+                                        }
+                                    } else {
+                                        log.debug("Getter expression already extracted for navigation property: {}", reference);
+                                    }
+
+                                    if (!hasSetterBinding) {
+                                        if (setterDialect.isPresent() && JQL_DIALECT.equals(setterDialect.get())) {
+                                            if (setterJql.isPresent()) {
+                                                final Expression expression = builder.createExpression(null, setterJql.get());
+                                                builder.createBinding(setterBindingContext, null, accessPoint, expression);
+                                            } else {
+                                                throw new IllegalStateException("Setter reference JQL not found");
+                                            }
+                                        } else if (setterDialect.isPresent()) {
+                                            log.warn("Dialect {} of setter reference is not supported", setterDialect.get());
+                                        } else if (setterJql.isPresent()) {
+                                            log.warn("Dialect of setter reference is not specified, skipped expression: {}", setterJql.get());
+                                        }
+                                    } else {
+                                        log.debug("Setter expression already extracted for navigation property: {}", reference);
+                                    }
+                                }
+                            });
+                });
+
         return expressionResourceSet;
     }
 

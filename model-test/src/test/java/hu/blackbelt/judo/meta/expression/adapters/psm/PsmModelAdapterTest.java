@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
+import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
@@ -51,7 +52,7 @@ public class PsmModelAdapterTest {
     private PsmModel measureModel;
     private PsmModel psmModel;
 
-    private ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter;
+    private ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter;
 
     @BeforeEach
     public void setUp() throws Exception {

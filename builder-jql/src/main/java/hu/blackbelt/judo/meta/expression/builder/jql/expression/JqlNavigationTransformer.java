@@ -28,7 +28,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newObjectSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 
-public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, RTE, S, M, U> {
+public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, AP, RTE, S, M, U> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 
@@ -72,7 +72,7 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         } else {
             Expression contextBaseExpression = context.peekBaseExpression();
             String name = jqlExpression.getBase().getName();
-            if (name.equals("self") && contextBaseExpression != null) {
+            if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
                 baseExpression = EcoreUtil.copy(contextBaseExpression);
                 navigationBase = (C) context.peekBase();
             } else {
