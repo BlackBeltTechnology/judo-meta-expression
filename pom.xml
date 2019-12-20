@@ -115,7 +115,7 @@
         <judo-meta-psm-version>1.0.0.20191126_150608_bdee275_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191217_134006_a431fce_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191220_184640_77c8fdb_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-esm-version>1.1.0.20191217_095100_4179752_develop</judo-meta-esm-version>
@@ -124,13 +124,13 @@
         <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20191112_163601_632e4f6_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20191220_185036_ecbae5c_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
         <!-- For tests -->
         <northwind-model-version>1.0.0.20191217_155824_7bc49f4_develop</northwind-model-version>
-        <judo-tatami-version>1.0.0.20191217_143942_3c5d9cb_develop</judo-tatami-version>
+        <judo-tatami-version>1.0.0.20191219_144009_3ce5247_develop</judo-tatami-version>
     </properties>
 
     <build>

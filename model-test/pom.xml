@@ -62,6 +62,7 @@
 							<ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
 							<ignoreAsm2sdk>true</ignoreAsm2sdk>
 							<ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
+							<ignoreAsm2expression>true</ignoreAsm2expression>
 							<ignoreAsm2Openapi>true</ignoreAsm2Openapi>
 						</configuration>
 					</execution>
