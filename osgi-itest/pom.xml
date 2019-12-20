@@ -393,6 +393,7 @@
                             <ignoreAsm2sdk>true</ignoreAsm2sdk>
                             <ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
                             <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
+                            <ignoreAsm2expression>true</ignoreAsm2expression>
                         </configuration>
                     </execution>
                 </executions>
