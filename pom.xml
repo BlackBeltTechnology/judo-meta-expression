@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>hu.blackbelt.judo.meta</groupId>
@@ -64,8 +63,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.2.0.develop_101</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.0.develop_00011</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.2.0.20191216_103052_a5925f7_develop</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.2.0.20191105_183445_4b0b2da_develop</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -74,8 +73,8 @@
         <tycho-version>1.4.0</tycho-version>
         <eclipse-p2-base>http://download.eclipse.org/releases/2019-03</eclipse-p2-base>
 
-        <emf-genmodel-generator-version>1.0.0.20191105_182930_676cf43_develop</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.20191105_183255_7673428_develop</judo-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.0.20191222_154354_a61f75c_develop</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.20191222_154320_f477d91_develop</judo-genmodel-generator-version>
 
 
         <!-- Xtend / Xcore -->
@@ -99,38 +98,38 @@
 
         <!-- Pax exam dependencies -->
         <karaf-version>4.2.6</karaf-version>
-        <osgi-utils-version>1.0.7</osgi-utils-version>
-        <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
-        <tinybundles-karaf-features-version>3.0.0_1</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.3</google-karaf-features-version>
-        <eclipse-emf-karaf-features-version>1.0.0.develop_10</eclipse-emf-karaf-features-version>
-        <eclipse-epsilon-karaf-features-version>1.0.0.develop_5</eclipse-epsilon-karaf-features-version>
-        <eclipse-xtext-karaf-features-version>1.0.0.develop_6</eclipse-xtext-karaf-features-version>
-        <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
-        <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
-        <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
-        <apache-httpclient-karaf-features-version>1.0.1.develop_15</apache-httpclient-karaf-features-version>
+        <osgi-utils-version>1.0.8.20191112_150604_8fcd0c1_develop</osgi-utils-version>
+        <bouncycastle-karaf-features-version>1.61.3.20191112_145528_65f6ec3_develop</bouncycastle-karaf-features-version>
+        <tinybundles-karaf-features-version>3.0.1.20191112_144102_0b06548_develop</tinybundles-karaf-features-version>
+        <google-karaf-features-version>1.0.4.20191112_145050_c95a06d_develop</google-karaf-features-version>
+        <eclipse-emf-karaf-features-version>1.0.0.20191112_145407_36a50ba_develop</eclipse-emf-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.0.0.20191112_145338_f4b7823_develop</eclipse-epsilon-karaf-features-version>
+        <eclipse-xtext-karaf-features-version>1.0.0.20191112_145149_5d3ebe1_develop</eclipse-xtext-karaf-features-version>
+        <antlr-karaf-features-version>1.0.2.20191112_150321_54f0b2e_develop</antlr-karaf-features-version>
+        <apache-commons-karaf-features-version>1.0.6.20191112_150120_8396e08_develop</apache-commons-karaf-features-version>
+        <apache-poi-karaf-features-version>1.0.3.20191112_145719_de479e7_develop</apache-poi-karaf-features-version>
+        <apache-httpclient-karaf-features-version>1.0.1.20191112_145941_a6f348a_develop</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.20191126_150608_bdee275_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20191222_195936_f876179_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.0.0.20191220_184640_77c8fdb_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20191222_200906_8bbce6b_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-esm-version>1.1.0.20191217_095100_4179752_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20191112_164935_2d7c4d3_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20191222_200908_edc6d3d_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20191220_185036_ecbae5c_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20191222_200337_856db04_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
         <!-- For tests -->
-        <northwind-model-version>1.0.0.20191217_155824_7bc49f4_develop</northwind-model-version>
-        <judo-tatami-version>1.0.0.20191219_144009_3ce5247_develop</judo-tatami-version>
+        <northwind-model-version>1.0.0.20191219_144834_bd106ea_develop</northwind-model-version>
+        <judo-tatami-version>1.0.0.20191220_231251_0a8918e_develop</judo-tatami-version>
     </properties>
 
     <build>
@@ -372,7 +371,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -394,7 +393,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -413,7 +412,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -432,7 +431,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -451,7 +450,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -470,7 +469,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -489,7 +488,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
