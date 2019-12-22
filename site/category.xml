@@ -98,9 +98,9 @@
    <!-- The tycho plugin 1.5.0 will fix it -->
    <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0.20191105_183445_4b0b2da_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20191222_200906_8bbce6b_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20191222_220748_43ea58f_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20191222_195936_f876179_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20191222_200337_856db04_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20191222_220833_d42fe26_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20191222_200908_edc6d3d_develop" enabled="true" />
 
 </site>
