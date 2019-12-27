@@ -128,7 +128,7 @@
         <log4j.configuration>log4j.properties</log4j.configuration>
 
         <!-- For tests -->
-        <judo-tatami-version>1.0.0.20191220_231251_0a8918e_develop</judo-tatami-version>
+        <judo-tatami-maven-plugin-version>1.0.0.20191223_003443_c2b5ba2_develop</judo-tatami-maven-plugin-version>
     </properties>
 
     <build>
