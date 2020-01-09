@@ -165,7 +165,8 @@ public class MeasureAdapter<M, U> {
      * @return measure
      */
     public Optional<M> getMeasure(final NumericExpression numericExpression) {
-        return getDimension(numericExpression).map(bm -> measureProvider.getMeasure(dimensions.get(bm).getNamespace(), dimensions.get(bm).getName()))
+        return getDimension(numericExpression)
+                .map(bm -> dimensions.containsKey(bm) ? measureProvider.getMeasure(dimensions.get(bm).getNamespace(), dimensions.get(bm).getName()) : Optional.<M>empty())
                 .filter(m -> m.isPresent()).map(m -> m.get());
     }
 
