@@ -1,18 +1,14 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.loadExpressionModel;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.junit.jupiter.api.AfterEach;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import java.io.File;
+
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IllegalPsmTest extends ExecutionContextOnPsmTest {
 	
@@ -21,28 +17,19 @@ public class IllegalPsmTest extends ExecutionContextOnPsmTest {
         super.setUp();
     }
 
-    @AfterEach
-    void tearDown() {
-        modelContexts.clear();
-    }
-
 	@Override
-	protected Resource getExpressionResource() throws Exception {
-		return loadExpressionModel(expressionLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/t004.model").getAbsolutePath()))
-                .name("test")
-                // TODO: check model
-                .validateModel(false)
-                .build()).getResourceSet().getResources().get(0);
+	protected ExpressionModel getExpressionModel() throws Exception {
+		return ExpressionModel.loadExpressionModel(expressionLoadArgumentsBuilder()
+				.name("expression")
+				.file(new File("src/test/model/t004.model"))
+				.build());
 	}
 	
 	@Test
-	void test() throws Exception {
-		
-		assertThrows(ScriptExecutionException.class, () -> ExpressionEpsilonValidator.validateExpression(log, 
-        		modelContexts,
-        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
-        		modelAdapter));
+	void test() {
+		assertThrows(ScriptExecutionException.class, () -> ExpressionEpsilonValidatorOnPsm.validateExpressionOnPsm(log,
+        		psmModel, expressionModel,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI()));
 	}
 
 }

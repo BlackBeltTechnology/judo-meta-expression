@@ -1,15 +1,12 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.junit.jupiter.api.AfterEach;
+import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.loadExpressionModel;
 
 class OrderAsmTest extends ExecutionContextOnAsmTest {
 
@@ -18,25 +15,18 @@ class OrderAsmTest extends ExecutionContextOnAsmTest {
         super.setUp();
     }
 
-    @AfterEach
-    void tearDown() {
-        modelContexts.clear();
-    }
-
-    protected Resource getExpressionResource() throws Exception {
-        return loadExpressionModel(expressionLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("src/test/model/t003.model").getAbsolutePath()))
-                .name("test")
-                // TODO: check model
-                .validateModel(false)
-                .build()).getResourceSet().getResources().get(0);
+    @Override
+    protected ExpressionModel getExpressionModel() throws Exception {
+        return ExpressionModel.loadExpressionModel(expressionLoadArgumentsBuilder()
+                .name("expression")
+                .file(new File("src/test/model/t003.model"))
+                .build());
     }
 
     @Test
     void test() throws Exception {
-    	ExpressionEpsilonValidator.validateExpression(log, 
-        		modelContexts ,
-        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
-        		modelAdapter);
+    	ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(log,
+        		asmModel, measureModel, expressionModel ,
+        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
     }
 }
