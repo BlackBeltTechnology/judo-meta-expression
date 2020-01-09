@@ -2,27 +2,17 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
+import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newDecimalComparisonBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
@@ -36,22 +26,15 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
         super.setUp();
     }
 
-    @AfterEach
-    void tearDown() {
-        modelContexts.clear();
-    }
-
-    protected Resource getExpressionResource() {
-        final ResourceSet expressionModelResourceSet = ExpressionModelResourceSupport.createExpressionResourceSet();
-
-        final String createdSourceModelName = "urn:expression.judo-meta-expression";
-        final Resource expressionResource = expressionModelResourceSet.createResource(
-                URI.createURI(createdSourceModelName));
+    @Override
+    protected ExpressionModel getExpressionModel() {
+        final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
+                .uri(URI.createURI("expression:test"))
+                .build();
 
         final TypeName orderType = newTypeNameBuilder().withNamespace("demo::entities").withName("Order").build();
-        expressionResource.getContents().add(orderType);
-        expressionResource.getContents().add(newTypeNameBuilder().withNamespace("demo::entities").withName("OrderDetail").build());
-
+        expressionModelResourceSupport.addContent(orderType);
+        expressionModelResourceSupport.addContent(newTypeNameBuilder().withNamespace("demo::entities").withName("OrderDetail").build());
 
         final ObjectVariable order = newInstanceBuilder()
                 .withElementName(orderType)
@@ -83,7 +66,7 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
                 .withReferenceName("orderDetails")
                 .build();
 
-        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter, expressionResource);
+//        final ObjectVariable od = orderDetails.createIterator("od", modelAdapter, expressionModelResourceSupport.getResource());
 
 //        final CollectionVariable itemsOfDiscountedProducts = newCollectionFilterExpressionBuilder()
 //                .withCollectionExpression(newCollectionVariableReferenceBuilder()
@@ -197,33 +180,33 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 //                        .build())
 //                .withAlias("completedDate")
 //                .build();
-
-        final CollectionFilterExpression discountedItems = newCollectionFilterExpressionBuilder()
-                .withCollectionExpression(newCollectionVariableReferenceBuilder()
-                        .withVariable(orderDetails)
-                        .build())
-                .withCondition(newDecimalComparisonBuilder()
-                        .withLeft(newDecimalAttributeBuilder()
-                                .withObjectExpression(newObjectVariableReferenceBuilder()
-                                        .withVariable(od)
-                                        .build())
-                                .withAttributeName("discount")
-                                .build())
-                        .withOperator(NumericComparator.GREATER_THAN)
-                        .withRight(newIntegerConstantBuilder()
-                                .withValue(BigInteger.ZERO)
-                                .build())
-                        .build())
-                .build();
-
-//        final ObjectVariable di = discountedItems.createIterator("di", modelAdapter, expressionResource);
-
-        final StringExpression discountedCategoryName = newStringAttributeBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(od)
-                        .build())
-                .withAttributeName("categoryName")
-                .build();
+//
+//        final CollectionFilterExpression discountedItems = newCollectionFilterExpressionBuilder()
+//                .withCollectionExpression(newCollectionVariableReferenceBuilder()
+//                        .withVariable(orderDetails)
+//                        .build())
+//                .withCondition(newDecimalComparisonBuilder()
+//                        .withLeft(newDecimalAttributeBuilder()
+//                                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                                        .withVariable(od)
+//                                        .build())
+//                                .withAttributeName("discount")
+//                                .build())
+//                        .withOperator(NumericComparator.GREATER_THAN)
+//                        .withRight(newIntegerConstantBuilder()
+//                                .withValue(BigInteger.ZERO)
+//                                .build())
+//                        .build())
+//                .build();
+//
+////        final ObjectVariable di = discountedItems.createIterator("di", modelAdapter, expressionResource);
+//
+//        final StringExpression discountedCategoryName = newStringAttributeBuilder()
+//                .withObjectExpression(newObjectVariableReferenceBuilder()
+//                        .withVariable(od)
+//                        .build())
+//                .withAttributeName("categoryName")
+//                .build();
 
 //        final StringExpression discountedProductName = newStringAttributeBuilder()
 //                .withObjectExpression(newObjectNavigationExpressionBuilder()
@@ -244,31 +227,33 @@ public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 //                .build();
 //        expressionResource.getContents().addAll(Arrays.asList(number));
 
-        expressionResource.getContents().addAll(Arrays.asList(orderType, order
-                , orderDate
-                , shipperName
-                , orderDetails
-//                , price
-//                , itemsOfDiscountedProducts
-//                , totalPrice
-//                , itemCount
-//                , categories
-//                , categoryName
-//                , categoryDescription
-//                , completedDate
-                , discountedItems
-                , discountedCategoryName
-//                , discountedProductName
-        ));
+        expressionModelResourceSupport.addContent(orderType);
+        expressionModelResourceSupport.addContent(order);
+        expressionModelResourceSupport.addContent(orderDate);
+        expressionModelResourceSupport.addContent(shipperName);
+        expressionModelResourceSupport.addContent(orderDetails);
+        //expressionModelResourceSupport.addContent(price);
+        //expressionModelResourceSupport.addContent(itemsOfDiscountedProducts);
+        //expressionModelResourceSupport.addContent(totalPrice);
+        //expressionModelResourceSupport.addContent(itemCount);
+        //expressionModelResourceSupport.addContent(categories);
+        //expressionModelResourceSupport.addContent(categoryName);
+        //expressionModelResourceSupport.addContent(categoryDescription);
+        //expressionModelResourceSupport.addContent(completedDate);
+//        expressionModelResourceSupport.addContent(discountedItems);
+//        expressionModelResourceSupport.addContent(discountedCategoryName);
+        //expressionModelResourceSupport.addContent(discountedProductName);
 
-        return expressionResource;
+        return ExpressionModel.buildExpressionModel()
+                .name("expression")
+                .expressionModelResourceSupport(expressionModelResourceSupport)
+                .build();
     }
 
     @Test
     void test() throws Exception {
-    	ExpressionEpsilonValidator.validateExpression(log, 
-        		modelContexts ,
-        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
-        		modelAdapter);
+        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(log,
+                asmModel, measureModel, expressionModel,
+                ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
     }
 }
