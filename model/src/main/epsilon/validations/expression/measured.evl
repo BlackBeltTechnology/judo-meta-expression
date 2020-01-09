@@ -44,7 +44,7 @@ context EXPR!IntegerArithmeticExpression {
 
     constraint MeasureOfAdditionIsValid {
         guard: self.satisfiesAll("Resolved") and
-            (self.operator == EXPR!DecimalOperator#add or self.operator == EXPR!DecimalOperator#substract) and
+            (self.operator == EXPR!IntegerOperator#add or self.operator == EXPR!IntegerOperator#substract) and
             (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right))
 
         check: modelAdapter.isMeasured(self) and
