@@ -388,4 +388,9 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .filter(c -> AsmUtils.isAccessPoint(c))
                 .collect(toList()));
     }
+
+    public AsmUtils getAsmUtils() {
+        return asmUtils;
+    }
+
 }
