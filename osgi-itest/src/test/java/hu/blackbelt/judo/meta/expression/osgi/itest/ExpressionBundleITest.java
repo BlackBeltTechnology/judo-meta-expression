@@ -1,10 +1,8 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
-import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.adapters.psm.PsmModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
@@ -16,23 +14,22 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.ops4j.pax.swissbox.core.BundleUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
 
-import com.google.common.collect.ImmutableList;
-
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.*;
-import static org.junit.Assert.*;
+import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.getRuntimeFeaturesForMetamodel;
+import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.testTargetDir;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.ops4j.pax.exam.CoreOptions.*;
 import static org.ops4j.pax.exam.OptionUtils.combine;
 import static org.ops4j.pax.swissbox.core.BundleUtils.getBundle;
@@ -175,36 +172,9 @@ public class ExpressionBundleITest {
     @Test
     public void testModelValidation() throws ScriptExecutionException, URISyntaxException {
         StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
-        
-        List<ModelContext> modelContexts = new ArrayList<>();
-        
-        modelContexts.add(wrappedEmfModelContextBuilder()
-                    .log(logger)
-                    .name("NORTHWIND")
-                    .validateModel(false)
-                    .aliases(ImmutableList.of("JUDOPSM"))
-                    .resource(psmModel.getResource())
-                    .build());
-        
-        modelContexts.add(wrappedEmfModelContextBuilder()
-                    .log(logger)
-                    .name("TEST")
-                    .validateModel(false)
-                    .aliases(ImmutableList.of("EXPR"))
-                    .resource(expressionModel.getResource())
-                    .build());
-        
-        ModelAdapter modelAdapter = new PsmModelAdapter(psmModel.getResourceSet(), psmModel.getResourceSet());
-        
-        try {
-            ExpressionEpsilonValidator.validateExpression(logger,
-            		modelContexts,
-                    ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(),
-                    modelAdapter);
 
-        } catch (Exception e) {
-            log.log(LogService.LOG_ERROR, logger.getBuffer());
-            assertFalse(true);
-        }
+        ExpressionEpsilonValidatorOnPsm.validateExpressionOnPsm(logger,
+                psmModel, expressionModel,
+                ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
     }
 }

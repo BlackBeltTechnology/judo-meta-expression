@@ -38,17 +38,17 @@
 					</execution>
 				</executions>
 				<dependencies>
-					<dependency>
-						<groupId>hu.blackbelt.model</groupId>
-						<artifactId>hu.blackbelt.model.northwind.model</artifactId>
-						<version>${northwind-model-version}</version>
-					</dependency>
+                    <dependency>
+                        <groupId>hu.blackbelt.judo.meta</groupId>
+                        <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                        <version>${judo-meta-psm-version}</version>
+                    </dependency>
 				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>hu.blackbelt.judo.tatami</groupId>
 				<artifactId>judo-tatami-workflow-maven-plugin</artifactId>
-				<version>${judo-tatami-version}</version>
+				<version>${judo-tatami-maven-plugin-version}</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -62,7 +62,9 @@
 							<ignoreAsm2Rdbms>true</ignoreAsm2Rdbms>
 							<ignoreAsm2sdk>true</ignoreAsm2sdk>
 							<ignoreAsm2jaxrsapi>true</ignoreAsm2jaxrsapi>
-							<ignoreAsm2Openapi>true</ignoreAsm2Openapi>
+							<ignoreAsm2Expression>true</ignoreAsm2Expression>
+                            <ignoreAsm2Script>true</ignoreAsm2Script>
+                            <ignoreAsm2Openapi>true</ignoreAsm2Openapi>
 						</configuration>
 					</execution>
 				</executions>
@@ -71,16 +73,6 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-psm2asm</artifactId>
-			<version>${judo-tatami-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.tatami</groupId>
-			<artifactId>judo-tatami-psm2measure</artifactId>
-			<version>${judo-tatami-version}</version>
-		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>

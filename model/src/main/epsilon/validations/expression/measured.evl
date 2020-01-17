@@ -35,51 +35,43 @@ context EXPR!DecimalAttribute {
 }
 
 context EXPR!IntegerArithmeticExpression {
-	// if result is measured
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and
-               (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
-               (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
-        
+        guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self)
+
         check: modelAdapter.getDimension(self).isPresent()
         message: "Measure of expression is invalid: " + self
     }
-    
-    // if result is not measured
-    constraint MeasureIsValid {
-    	guard: self.satisfiesAll("Resolved") and not modelAdapter.isMeasured(self) and
-               (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
-               (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
-    	
-        check: (not modelAdapter.getDimension(self).isPresent() or modelAdapter.getDimension(self).get().isEmpty()) and
-                (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
-                (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
-    	message: "Operation of measured expression is invalid: " + self
-   	}
+
+    constraint MeasureOfAdditionIsValid {
+        guard: self.satisfiesAll("Resolved") and
+            (self.operator == EXPR!IntegerOperator#add or self.operator == EXPR!IntegerOperator#substract) and
+            (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right))
+
+        check: modelAdapter.isMeasured(self) and
+            modelAdapter.getMeasure(self).orElse(null) == modelAdapter.getMeasure(self.left).orElse(null) and
+            modelAdapter.getMeasure(self).orElse(null) == modelAdapter.getMeasure(self.right).orElse(null)
+        message: "Measures of addition are not matching: " + self
+    }
 }
 
 context EXPR!DecimalArithmeticExpression {
-	// detected base measures are valid
     constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and
-               (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
-               (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
-        
+        guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self)
+
         check: modelAdapter.getDimension(self).isPresent()
         message: "Measure of expression is invalid: " + self
     }
-    
-    // measured operation is valid
-    constraint MeasureIsValid {
-    	guard: self.satisfiesAll("Resolved") and not modelAdapter.isMeasured(self) and
-               (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and 
-               (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
-    	
-        check: (not modelAdapter.getDimension(self).isPresent() or modelAdapter.getDimension(self).get().isEmpty()) and
-                   (not modelAdapter.isMeasured(self.left) or self.left.satisfiesAll("MeasureIsValid")) and
-                   (not modelAdapter.isMeasured(self.right) or self.right.satisfiesAll("MeasureIsValid"))
-    	message: "Operation of measured expression is invalid: " + self
-   	}
+
+    constraint MeasureOfAdditionIsValid {
+        guard: self.satisfiesAll("Resolved") and
+            (self.operator == EXPR!DecimalOperator#add or self.operator == EXPR!DecimalOperator#substract) and
+            (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right))
+
+        check: modelAdapter.isMeasured(self) and
+            modelAdapter.getMeasure(self).orElse(null) == modelAdapter.getMeasure(self.left).orElse(null) and
+            modelAdapter.getMeasure(self).orElse(null) == modelAdapter.getMeasure(self.right).orElse(null)
+        message: "Measures of addition are not matching: " + self
+    }
 }
 
 context EXPR!IntegerOppositeExpression {

@@ -1,13 +1,10 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
+import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 
 class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
@@ -16,29 +13,24 @@ class MinimalPsmTest extends ExecutionContextOnPsmTest {
         super.setUp();
     }
 
-    @AfterEach
-    void tearDown() {
-        modelContexts.clear();
-    }
-
     @Override
-    protected Resource getExpressionResource() {
-        final String createdSourceModelName = "urn:expression.judo-meta-expression";
+    protected ExpressionModel getExpressionModel() {
+        final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
+                .uri(URI.createURI("expr:test"))
+                .build();
 
-        final ResourceSet executionResourceSet = ExpressionModelResourceSupport.createExpressionResourceSet();
-        final Resource expressionResource = executionResourceSet.createResource(
-                URI.createURI(createdSourceModelName));
+        MinimalExpressionFactory.createMinimalExpression().forEach(e -> expressionModelResourceSupport.addContent(e));
 
-        expressionResource.getContents().addAll(MinimalExpressionFactory.createMinimalExpression());
-
-        return expressionResource;
+        return ExpressionModel.buildExpressionModel()
+                .name("expr")
+                .expressionModelResourceSupport(expressionModelResourceSupport)
+                .build();
     }
 
     @Test
     void test() throws Exception {
-    	ExpressionEpsilonValidator.validateExpression(log, 
-        		modelContexts ,
-        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(), 
-        		modelAdapter);
+        ExpressionEpsilonValidatorOnPsm.validateExpressionOnPsm(log,
+                psmModel, expressionModel,
+                ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
     }
 }
