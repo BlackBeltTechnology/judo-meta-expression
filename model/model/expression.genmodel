@@ -472,7 +472,14 @@
         <genOperations ecoreOperation="expression.ecore#//numeric/IntegerVariableReference/getVariableName"
             body="return toString();"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//numeric/DecimalVariableReference"/>
+      <genClasses ecoreClass="expression.ecore#//numeric/DecimalVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Logical" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -643,6 +650,10 @@
       <genClasses ecoreClass="expression.ecore#//logical/BooleanVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//logical/BooleanVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/BooleanVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/BooleanVariableReference/getVariableName"
+            body="return toString();"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
@@ -707,7 +718,14 @@
         <genOperations ecoreOperation="expression.ecore#//string/ConcatenateCollection/toString"
             body="return &quot;CONCAT(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;, &quot; + getSeparator()+&quot;)&quot;;"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//string/StringVariableReference"/>
+      <genClasses ecoreClass="expression.ecore#//string/StringVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//string/StringVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//string/StringVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//string/StringVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -726,7 +744,14 @@
           <genParameters ecoreParameter="expression.ecore#//enumeration/EnumerationSwitchExpression/getEnumeration/modelAdapter"/>
         </genOperations>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationVariableReference"/>
+      <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//enumeration/EnumerationVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Object" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -968,7 +993,14 @@
         fileExtensions="judo-meta-expression-custom" ecorePackage="expression.ecore#//custom">
       <genClasses ecoreClass="expression.ecore#//custom/CustomAttribute"/>
       <genClasses ecoreClass="expression.ecore#//custom/CustomSwitchExpression"/>
-      <genClasses ecoreClass="expression.ecore#//custom/CustomVariableReference"/>
+      <genClasses ecoreClass="expression.ecore#//custom/CustomVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//custom/CustomVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//custom/CustomVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//custom/CustomVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Temporal" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -1019,8 +1051,22 @@
         <genOperations ecoreOperation="expression.ecore#//temporal/DateDifferenceExpression/toString"
             body="return &quot;DIFFERENCE(&quot; + getStartDate() + &quot;, &quot; + getEndDate() + &quot;)&quot;;"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//temporal/TimestampVariableReference"/>
-      <genClasses ecoreClass="expression.ecore#//temporal/DateVariableReference"/>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimestampVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/DateVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/DateVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/DateVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/DateVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
