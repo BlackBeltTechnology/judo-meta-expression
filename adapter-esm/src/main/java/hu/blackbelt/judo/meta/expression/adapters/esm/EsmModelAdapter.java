@@ -54,15 +54,10 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     private final ResourceSet esmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
     private final MeasureAdapter<Measure, Unit> measureAdapter;
-    private final EsmUtils esmUtils;
-
 
     public EsmModelAdapter(final ResourceSet esmResourceSet, final ResourceSet measureResourceSet) {
         this.esmResourceSet = esmResourceSet;
-
-        esmUtils = new EsmUtils(esmResourceSet);
         measureProvider = new EsmMeasureProvider(measureResourceSet);
-
         measureAdapter = new MeasureAdapter<>(measureProvider, this);
     }
 

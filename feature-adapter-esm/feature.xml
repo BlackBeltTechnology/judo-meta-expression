@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature"
-      label="Judo Expression JQL Builder for ASM Feature"
+      id="hu.blackbelt.judo.meta.expression.adapter.esm.feature"
+      label="Judo Expression Model ESM Adapter Feature"
       version="1.0.0.qualifier"
       provider-name="BlackBelt Technology">
 
    <description url="http://www.blackbelt.hu">
-      This feature is the Judo Expression model.
+      This feature is the Judo ESM adapter.
    </description>
 
    <copyright>
@@ -227,16 +227,14 @@
       <import plugin="org.slf4j.api"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="hu.blackbelt.judo.meta.expression.model"/>
-      <import plugin="hu.blackbelt.judo.meta.asm.model"/>
-      <import plugin="hu.blackbelt.judo.meta.jql.model"/>
-      <import plugin="hu.blackbelt.judo.meta.expression.builder.jql"/>
+      <import plugin="hu.blackbelt.judo.meta.esm.model"/>
+      <import plugin="hu.blackbelt.judo.meta.expression.model.adapter.measure"/>
    </requires>
 
    <plugin
-         id="hu.blackbelt.judo.meta.expression.builder.jql.asm"
+         id="hu.blackbelt.judo.meta.expression.model.adapter.esm"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>

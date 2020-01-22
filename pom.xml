@@ -116,7 +116,7 @@
         <judo-meta-asm-version>1.0.0.20200112_031229_be74b13_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20191217_095100_4179752_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20200122_130853_62d2aed_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
         <judo-meta-jql-version>1.0.0.20200112_030445_9877e2b_develop</judo-meta-jql-version>
@@ -802,6 +802,7 @@
                 <module>feature-builder-jql</module>
                 <module>feature-builder-jql-asm</module>
                 <module>feature-adapter-asm</module>
+                <module>feature-adapter-esm</module>
                 <module>feature-adapter-psm</module>
                 <module>feature-adapter-measure</module>
                 <module>site</module>
