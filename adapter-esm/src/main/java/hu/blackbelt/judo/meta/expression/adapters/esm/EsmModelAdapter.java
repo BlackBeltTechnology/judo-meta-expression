@@ -84,7 +84,8 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Optional<? extends NamespaceElement> get(final TypeName elementName) {
         final Optional<Namespace> namespace = getEsmElement(Namespace.class)
-                .filter(p -> Objects.equals(getNamespaceFQName(p), elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR)))
+                .filter(p -> Objects.equals(getNamespaceFQName(p), 
+                		elementName.getNamespace() != null ? elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR) : ""))
                 .findAny();
 
         if (namespace.isPresent()) {
@@ -104,7 +105,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isObjectType(NamespaceElement namespaceElement) {
-        return namespaceElement instanceof EntityType;
+        return namespaceElement instanceof hu.blackbelt.judo.meta.esm.structure.Class;
     }
 
     @Override
@@ -305,7 +306,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<? extends Sequence> getSequence(hu.blackbelt.judo.meta.esm.structure.Class clazz, String sequenceName) {
-        return ((EntityType) clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
+    	if (clazz instanceof EntityType) {
+    		return ((EntityType) clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
+    	} else {
+    		return Optional.empty();
+    	}
     }
 
     @Override
