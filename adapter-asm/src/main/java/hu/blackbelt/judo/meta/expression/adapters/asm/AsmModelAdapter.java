@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> {
 
-    private static final String NAMESPACE_SEPARATOR = "::";
+    protected static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
 
     private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
@@ -326,7 +326,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
 
-    <T> Stream<T> getAsmElement(final Class<T> clazz) {
+    protected <T> Stream<T> getAsmElement(final Class<T> clazz) {
         final Iterable<Notifier> asmContents = asmResourceSet::getAllContents;
         return StreamSupport.stream(asmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
