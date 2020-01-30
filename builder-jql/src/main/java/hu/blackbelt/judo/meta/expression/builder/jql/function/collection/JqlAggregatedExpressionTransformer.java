@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
@@ -23,7 +23,7 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
     }
 
     @Override
-    public Expression apply(CollectionExpression collection, FunctionCall functionCall, JqlExpressionBuildingContext context) {
+    public Expression apply(CollectionExpression collection, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
         Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
         if (parameter instanceof IntegerExpression && integerAggregator != null) {
             return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression) parameter).withOperator(integerAggregator).build();

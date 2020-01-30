@@ -3,7 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
@@ -22,7 +22,7 @@ public class JqlHeadFunctionTransformer extends AbstractJqlFunctionTransformer<O
     }
 
     @Override
-    public Expression apply(OrderedCollectionExpression argument, FunctionCall functionCall, JqlExpressionBuildingContext context) {
+    public Expression apply(OrderedCollectionExpression argument, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
         if (functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) {
             return newObjectSelectorExpressionBuilder().withCollectionExpression(argument).withOperator(ObjectSelector.HEAD).build();
         } else {

@@ -4,10 +4,7 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.variable.*;
@@ -62,7 +59,7 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
 
     @SuppressWarnings("unchecked")
     @Override
-    public Expression doTransform(hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression jqlExpression, JqlExpressionBuildingContext context) {
+    public Expression doTransform(hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         LOG.debug("Transform navigation: {}", navigationString(jqlExpression));
         Expression baseExpression = null;
         C navigationBase;

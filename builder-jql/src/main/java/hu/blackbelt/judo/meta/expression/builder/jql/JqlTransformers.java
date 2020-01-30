@@ -189,7 +189,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
     }
 
-    public Expression transform(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+    public Expression transform(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
                 .findAny()
@@ -204,7 +204,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         }
     }
 
-    public Expression applyFunctions(List<FunctionCall> functionCalls, Expression baseExpression, JqlExpressionBuildingContext context) {
+    public Expression applyFunctions(List<FunctionCall> functionCalls, Expression baseExpression, ExpressionBuildingVariableResolver context) {
         Expression subject = baseExpression;
         for (FunctionCall functionCall : functionCalls) {
             String functionName = functionCall.getFunction().getName().toLowerCase();
@@ -225,7 +225,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         return subject;
     }
 
-    private void addLambdaVariable(Expression subject, JqlExpressionBuildingContext context, String lambdaArgument) {
+    private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
         if (subject instanceof CollectionVariable) {
             CollectionVariable collection = (CollectionVariable) subject;
             if (collection.getIteratorVariable() == null) {

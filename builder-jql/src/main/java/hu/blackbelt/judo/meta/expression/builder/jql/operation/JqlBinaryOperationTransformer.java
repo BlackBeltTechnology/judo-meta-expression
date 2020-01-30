@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
@@ -22,7 +22,7 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
     }
 
     @Override
-    protected Expression doTransform(BinaryOperation binaryOperation, JqlExpressionBuildingContext context) {
+    protected Expression doTransform(BinaryOperation binaryOperation, ExpressionBuildingVariableResolver context) {
         Expression left = jqlTransformers.transform(binaryOperation.getLeftOperand(), context);
         Expression right = jqlTransformers.transform(binaryOperation.getRightOperand(), context);
         String operator = binaryOperation.getOperator();

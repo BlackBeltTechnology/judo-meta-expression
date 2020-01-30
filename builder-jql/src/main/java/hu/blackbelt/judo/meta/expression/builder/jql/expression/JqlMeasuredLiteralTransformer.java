@@ -2,7 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredDecimalBuilder;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredIntegerBuilder;
@@ -48,7 +48,7 @@ public class JqlMeasuredLiteralTransformer<NE, P extends NE, PTE, E extends P, C
     }
 
     @Override
-    protected Expression doTransform(MeasuredLiteral measuredLiteral, JqlExpressionBuildingContext context) {
+    protected Expression doTransform(MeasuredLiteral measuredLiteral, ExpressionBuildingVariableResolver context) {
         MeasureIdentifier measureIdentifier = new MeasureIdentifier(measuredLiteral.getMeasure());
         String unitName = getUnitName(measureIdentifier);
         MeasureName measureName = getMeasureName(measureIdentifier);

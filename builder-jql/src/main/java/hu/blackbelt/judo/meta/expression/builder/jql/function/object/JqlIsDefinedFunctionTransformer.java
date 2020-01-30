@@ -3,7 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.object;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
@@ -21,7 +21,7 @@ public class JqlIsDefinedFunctionTransformer extends AbstractJqlFunctionTransfor
     }
 
     @Override
-    public Expression apply(Expression expression, FunctionCall functionCall, JqlExpressionBuildingContext variables) {
+    public Expression apply(Expression expression, FunctionCall functionCall, ExpressionBuildingVariableResolver variables) {
         LogicalExpression comparisonExpression;
         if (expression instanceof AttributeSelector) {
             AttributeSelector attributeSelector = (AttributeSelector) expression;

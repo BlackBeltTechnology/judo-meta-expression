@@ -2,7 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.LiteralBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.EnumLiteral;
@@ -17,7 +17,7 @@ public class JqlEnumLiteralTransformer<NE, P extends NE, PTE, E extends P, C ext
     }
 
     @Override
-    protected Expression doTransform(EnumLiteral jqlExpression, JqlExpressionBuildingContext context) {
+    protected Expression doTransform(EnumLiteral jqlExpression, ExpressionBuildingVariableResolver context) {
         String value = jqlExpression.getValue();
         LiteralBuilder builder = newLiteralBuilder().withValue(value);
         QualifiedName type = jqlExpression.getType();

@@ -177,7 +177,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         return createExpression(clazz, parseJqlString(jqlExpressionString));
     }
 
-    public Expression createExpression(String jqlString, JqlExpressionBuildingContext context) {
+    public Expression createExpression(String jqlString, ExpressionBuildingVariableResolver context) {
         return createExpression(parseJqlString(jqlString), context);
     }
 
@@ -185,7 +185,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext());
     }
 
-    public Expression createExpression(C clazz, JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+    public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         context.pushBase(clazz);
         return createExpression(jqlExpression, context);
     }
@@ -196,7 +196,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
      * @param jqlExpression JQL expression
      * @return expression
      */
-    public Expression createExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+    public Expression createExpression(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         Object base = context.peekBase();
         final Instance instance = base != null ? entityInstances.get(base) : null;
         if (instance != null) {
@@ -311,7 +311,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
     }
 
 
-    private Expression transformJqlToExpression(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+    private Expression transformJqlToExpression(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         return jqlTransformers.transform(jqlExpression, context);
     }
 

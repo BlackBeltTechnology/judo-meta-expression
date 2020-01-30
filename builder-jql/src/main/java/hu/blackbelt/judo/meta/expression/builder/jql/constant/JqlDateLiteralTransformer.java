@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.constant;
 
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.jql.jqldsl.DateLiteral;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
@@ -17,7 +17,7 @@ public class JqlDateLiteralTransformer implements JqlExpressionTransformerFuncti
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
-    public Expression apply(JqlExpression jqlExpression, JqlExpressionBuildingContext context) {
+    public Expression apply(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         DateLiteral dateLiteral = (DateLiteral) jqlExpression;
         try {
             Date dateValue = DATE_FORMAT.parse(dateLiteral.getValue());

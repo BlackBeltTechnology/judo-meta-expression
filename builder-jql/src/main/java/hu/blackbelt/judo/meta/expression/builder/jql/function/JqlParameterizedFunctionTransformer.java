@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function;
 
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
@@ -25,7 +25,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
     }
 
     @Override
-    public RESULT apply(BASE argument, FunctionCall functionCall, JqlExpressionBuildingContext context) {
+    public RESULT apply(BASE argument, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
         Object parameter;
         JqlExpression jqlParameterExpression = functionCall.getParameters().get(0).getExpression();
         if (parameterMapper != null) {

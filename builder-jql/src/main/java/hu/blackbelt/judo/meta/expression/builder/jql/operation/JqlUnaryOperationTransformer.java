@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.DecimalExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.UnaryOperation;
@@ -20,7 +20,7 @@ public class JqlUnaryOperationTransformer<NE, P extends NE, PTE, E extends P, C 
     }
 
     @Override
-    protected Expression doTransform(UnaryOperation unaryOperation, JqlExpressionBuildingContext context) {
+    protected Expression doTransform(UnaryOperation unaryOperation, ExpressionBuildingVariableResolver context) {
         Expression operand = jqlTransformers.transform(unaryOperation.getOperand(), context);
         String operator = unaryOperation.getOperator();
         if (operand instanceof IntegerExpression) {

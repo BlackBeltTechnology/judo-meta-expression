@@ -1,7 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionSwitchExpressionBuilder;
@@ -64,7 +64,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, PTE, E extends P, 
     }
 
     @Override
-    protected Expression doTransform(TernaryOperation ternaryOperation, JqlExpressionBuildingContext context) {
+    protected Expression doTransform(TernaryOperation ternaryOperation, ExpressionBuildingVariableResolver context) {
         Expression condition = jqlTransformers.transform(ternaryOperation.getCondition(), context);
         Expression thenExpression = jqlTransformers.transform(ternaryOperation.getThenExpression(), context);
         Expression elseExpression = jqlTransformers.transform(ternaryOperation.getElseExpression(), context);

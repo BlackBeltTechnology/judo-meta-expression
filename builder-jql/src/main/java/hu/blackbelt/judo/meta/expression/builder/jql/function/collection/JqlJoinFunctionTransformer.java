@@ -3,7 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingContext;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
@@ -17,7 +17,7 @@ public class JqlJoinFunctionTransformer extends AbstractJqlFunctionTransformer<C
     }
 
     @Override
-    public Expression apply(CollectionExpression collection, FunctionCall functionCall, JqlExpressionBuildingContext context) {
+    public Expression apply(CollectionExpression collection, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
         StringExpression text = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
         StringExpression separator = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context);
         return newConcatenateCollectionBuilder().withCollectionExpression(collection).withExpression(text).withSeparator(separator).build();

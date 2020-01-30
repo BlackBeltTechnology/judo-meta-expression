@@ -227,6 +227,8 @@
             body="return getTypeName().get(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//variable/TypedVariable/getObjectType/modelAdapter"/>
         </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/TypedVariable/toString"
+            body="return String.format(&quot;%s %s&quot;, getTypeName(), getVariableName());"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//variable/ObjectVariable">
         <genOperations ecoreOperation="expression.ecore#//variable/ObjectVariable/getObjectType">
