@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -74,7 +73,7 @@
         <eclipse-p2-base>http://download.eclipse.org/releases/2019-03</eclipse-p2-base>
 
         <emf-genmodel-generator-version>1.0.0</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0.20200130_232426_224b5ae_1_0_beta1</judo-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.0.20200203_171824_17e20f6_1_0_beta1</judo-genmodel-generator-version>
 
 
         <!-- Xtend / Xcore -->
@@ -111,19 +110,19 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.20200131_103050_48a7a6c_1_0_beta1</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20200203_173502_6b392d1_1_0_beta1</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.0.0.20200131_125057_1051352_1_0_beta1</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20200203_182802_36278e7_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-esm-version>1.1.0.20200125_134347_682810f_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20200131_122339_903c0eb_1_0_beta1</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20200203_182845_6dd6283_1_0_beta1</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20200131_121641_0b15242_1_0_beta1</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20200203_183444_de49bfc_1_0_beta1</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
