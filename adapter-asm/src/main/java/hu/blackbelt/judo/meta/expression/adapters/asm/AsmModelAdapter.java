@@ -190,7 +190,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
     @Override
     public boolean isDate(EDataType primitive) {
-        return AsmUtils.isDecimal(primitive);
+        return AsmUtils.isDate(primitive);
     }
 
     @Override
