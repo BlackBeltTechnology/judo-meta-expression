@@ -56,6 +56,13 @@
                                     <value>repository-reference location="$2$3${judo-meta-psm-version}"</value>
                                 </replacement>
 
+                                <!-- ESM -->
+                                <replacement>
+                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-esm\/)(.*?)(\")</token>
+                                    <value>repository-reference location="$2$3${judo-meta-esm-version}"</value>
+                                </replacement>
+
+
                                 <!-- MEASURE -->
                                 <replacement>
                                     <token>(repository-reference\ location\=\")(.*?)(judo-meta-measure\/)(.*?)(\")</token>

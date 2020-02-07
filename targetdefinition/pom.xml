@@ -86,6 +86,16 @@
                                     <token>(judo-meta-psm\/)(.*)(\"\/&gt;)</token>
                                     <value>$1${judo-meta-psm-version}"/&gt;</value>
                                 </replacement>
+                                
+                                <!-- ESM Model -->
+                                <replacement>
+                                    <token>(hu.blackbelt.judo.meta.esm.feature.feature.group\"\ version\=\")(.*)(\"\/&gt;)</token>
+                                    <value>$1${judo-meta-esm-version}"/&gt;</value>
+                                </replacement>
+                                <replacement>
+                                    <token>(judo-meta-esm\/)(.*)(\"\/&gt;)</token>
+                                    <value>$1${judo-meta-esm-version}"/&gt;</value>
+                                </replacement>
 
                                 <!-- Measure Model -->
                                 <replacement>
