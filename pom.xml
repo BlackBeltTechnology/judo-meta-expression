@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -116,7 +117,7 @@
         <judo-meta-asm-version>1.0.0.20200207_113414_05dc3e4_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20200211_142426_b8ab10a_1_0_beta1</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20200212_122029_76e5751_1_0_beta1</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
         <judo-meta-jql-version>1.0.0.20200207_115435_6a6ef4f_1_0_beta1</judo-meta-jql-version>
