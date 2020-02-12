@@ -105,7 +105,7 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200207_113414_05dc3e4_1_0_beta1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20200206_141403_c15a2bf_1_0_beta1" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200211_142426_b8ab10a_1_0_beta1" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200212_122029_76e5751_1_0_beta1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200207_114056_6806f0b_1_0_beta1" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20200207_115435_6a6ef4f_1_0_beta1" enabled="true" />
 
