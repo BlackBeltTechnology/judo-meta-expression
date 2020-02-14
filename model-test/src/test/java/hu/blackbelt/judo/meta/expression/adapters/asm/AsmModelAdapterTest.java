@@ -78,7 +78,7 @@ public class AsmModelAdapterTest {
 
     @Test
     public void testGetTypeName() {
-        Optional<TypeName> categoryTypeName = modelAdapter.getTypeName(getEClassByName("Category").get());
+        Optional<TypeName> categoryTypeName = modelAdapter.getTypeName(asmUtils.resolve("demo.entities.Category").get());
 
         assertTrue(categoryTypeName.isPresent());
         assertThat(categoryTypeName.get().getName(), is("Category")); //TODO: check, seems kinda silly (+psm)
@@ -130,9 +130,9 @@ public class AsmModelAdapterTest {
 
     @Test
     public void testGetReference() {
-        Optional<EClass> containerClass = getEClassByName("Category");
+        Optional<EClass> containerClass = asmUtils.resolve("demo.entities.Category").map(c -> (EClass) c);
         Optional<EReference> productsReference = containerClass.get().getEReferences().stream().filter(r -> "products".equals(r.getName())).findAny();
-        Optional<EClass> targetClass = getEClassByName("Product");
+        Optional<EClass> targetClass = asmUtils.resolve("demo.entities.Product").map(c -> (EClass) c);
 
         assertTrue(containerClass.isPresent());
         assertTrue(targetClass.isPresent());
@@ -142,7 +142,7 @@ public class AsmModelAdapterTest {
 
     @Test
     public void testGetAttribute() {
-        Optional<EClass> eClass = getEClassByName("Category");
+        Optional<EClass> eClass = asmUtils.resolve("demo.entities.Category").map(c -> (EClass) c);
         Optional<EAttribute> categoryNameEAttribute = eClass.get().getEAttributes().stream().filter(a -> "categoryName".equals(a.getName())).findAny();
 
         assertTrue(eClass.isPresent());
@@ -153,7 +153,7 @@ public class AsmModelAdapterTest {
 
     @Test
     public void testGetAttributeType() {
-        Optional<EClass> eClass = getEClassByName("Category");
+        Optional<EClass> eClass = asmUtils.resolve("demo.entities.Category").map(c -> (EClass) c);
         Optional<EAttribute> eAttribute = eClass.get().getEAttributes().stream().filter(a -> "categoryName".equals(a.getName())).findAny();
 
         assertTrue(eClass.isPresent());
@@ -164,14 +164,14 @@ public class AsmModelAdapterTest {
 
     @Test
     public void testGetSuperType() {
-        Optional<EClass> childClass = getEClassByName("Company");
-        Optional<EClass> superClass = getEClassByName("Customer");
+        Optional<EClass> childClass = asmUtils.resolve("demo.entities.Company").map(c -> (EClass) c);
+        Optional<EClass> superClass = asmUtils.resolve("demo.entities.Customer").map(c -> (EClass) c);
 
         assertTrue(childClass.isPresent());
         assertTrue(superClass.isPresent());
         assertTrue(modelAdapter.getSuperTypes(childClass.get()).contains(superClass.get()));
 
-        Optional<EClass> negtestClass = getEClassByName("Order");
+        Optional<EClass> negtestClass = asmUtils.resolve("demo.entities.Order").map(c -> (EClass) c);
         assertTrue(negtestClass.isPresent());
         assertFalse(modelAdapter.getSuperTypes(childClass.get()).contains(negtestClass.get()));
         assertFalse(modelAdapter.getSuperTypes(negtestClass.get()).contains(superClass.get()));
@@ -205,7 +205,7 @@ public class AsmModelAdapterTest {
     //TODO
     //@Test
     void testGetUnit() {
-        TypeName type = modelAdapter.getTypeName(getEClassByName("Product").get()).get();
+        TypeName type = modelAdapter.getTypeName(asmUtils.resolve("demo.entities.Product").get()).get();
         Instance instance = newInstanceBuilder().withElementName(type).build();
         //EClass eClass = newEClassBuilder().withName("Product")..build();
 
@@ -293,14 +293,6 @@ public class AsmModelAdapterTest {
         final Iterable<Notifier> asmContents = asmModel.getResourceSet()::getAllContents;
         return StreamSupport.stream(asmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
-    }
-
-    public Optional<EClass> getEClassByName(final String eClassTypeName) {
-        final Iterable<Notifier> asmContents = asmModel.getResourceSet()::getAllContents;
-        return StreamSupport.stream(asmContents.spliterator(), true)
-                .filter(e -> EClass.class.isAssignableFrom(e.getClass())).map(e -> (EClass) e)
-                .filter(eClass -> Objects.equals(eClass.getName(), eClassTypeName))
-                .findAny();
     }
 
     private Optional<Measure> getMeasureByName(final String measureName) {
