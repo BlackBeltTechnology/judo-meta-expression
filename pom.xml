@@ -113,16 +113,16 @@
         <judo-meta-psm-version>1.0.0.20200214_131022_4bc065e_1_0_beta1</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.0.0.20200207_113414_05dc3e4_1_0_beta1</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20200218_044706_1cb0de9_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-esm-version>1.1.0.20200218_003910_0992cb3_1_0_beta1</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20200207_115435_6a6ef4f_1_0_beta1</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20200218_042349_6551863_1_0_beta1</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20200207_114056_6806f0b_1_0_beta1</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20200218_035943_3432273_1_0_beta1</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
