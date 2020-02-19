@@ -31,6 +31,7 @@ import java.util.stream.StreamSupport;
 import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newAttributeBindingBuilder;
 import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
 /**
  * Expression builder from JQL.
@@ -333,7 +334,15 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
         String namespace = createQNamespaceString(qName);
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), qName.getName()) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
+        if (namespace != null) {
+            String name = qName.getName();
+            TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
+            NE ne = modelAdapter.get(typeName).get();
+            TypeName resolvedTypeName = modelAdapter.getTypeName(ne).get();
+            return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
+        } else {
+            return null;
+        }
     }
 
     public TypeName getTypeName(String namespace, String name) {
