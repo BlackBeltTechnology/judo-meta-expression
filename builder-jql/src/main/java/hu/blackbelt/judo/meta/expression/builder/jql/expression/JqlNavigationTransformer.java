@@ -63,6 +63,7 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         LOG.debug("Transform navigation: {}", navigationString(jqlExpression));
         Expression baseExpression = null;
         C navigationBase;
+
         TypeName typeName = jqlTransformers.getTypeNameFromResource(jqlExpression.getBase());
         if (typeName != null) {
             if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
