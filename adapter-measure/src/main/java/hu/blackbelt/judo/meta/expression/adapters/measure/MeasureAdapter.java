@@ -472,7 +472,7 @@ public class MeasureAdapter<M, U> {
 
     private Optional<Map<MeasureId, Integer>> getDimensionOfMeasure(final M measure) {
         final MeasureId measureId = MeasureId.fromMeasure(measureProvider, measure);
-        return dimensions.entrySet().parallelStream()
+        return dimensions.entrySet().stream()
                 .filter(e -> Objects.equals(e.getValue(), measureId))
                 .map(e -> e.getKey())
                 .findAny();
