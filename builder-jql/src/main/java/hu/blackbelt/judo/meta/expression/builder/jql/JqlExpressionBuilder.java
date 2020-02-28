@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.expression.binding.AttributeBinding;
 import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
+import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
@@ -382,5 +383,8 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         }
     }
 
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Class<? extends JqlExpressionTransformerFunction> transformer) {
+        jqlTransformers.overrideTransformer(jqlType, transformer);
+    }
 
 }

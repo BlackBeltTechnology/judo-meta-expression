@@ -35,6 +35,7 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -275,5 +276,13 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 
     public JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> getExpressionBuilder() {
         return expressionBuilder;
+    }
+
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Class<? extends JqlExpressionTransformerFunction> transformerClass) {
+        try {
+            transformers.put(jqlType, transformerClass.getDeclaredConstructor(JqlTransformers.class).newInstance(this));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
