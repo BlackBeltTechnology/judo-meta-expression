@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,62 +115,86 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
             Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
             Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
             if (attribute.isPresent()) {
-                if (getModelAdapter().isDerivedAttribute(attribute.get())) {
-                    PTE accessor = attribute.get();
-                    if (context.containsAccessor(accessor)) {
-                        throw new CircularReferenceException(accessor.toString());
-                    } else {
-                        context.pushAccessor(accessor);
-                    }
-                    String getterExpression = getModelAdapter().getAttributeGetter(accessor).get();
-                    context.pushBaseExpression(baseExpression);
-                    context.pushBase(navigationBase);
-                    baseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
-                    context.popBaseExpression();
-                    context.popBase();
-                    context.popAccessor();
-                } else {
-                    baseExpression = createAttributeSelector(attribute.get(), jqlFeature.getName(), (ObjectExpression) baseExpression);
-                }
-                baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
-                navigationBase = null;
+                JqlFeatureTransformResult<C> transformResult = transformAttribute(attribute.get(), context, baseExpression, navigationBase, jqlFeature);
+                baseExpression = transformResult.baseExpression;
+                navigationBase = transformResult.navigationBase;
             } else if (reference.isPresent()) {
-                if (getModelAdapter().isDerivedReference(reference.get())) {
-                    RTE accessor = reference.get();
-                    if (context.containsAccessor(accessor)) {
-                        throw new CircularReferenceException(accessor.toString());
-                    } else {
-                        context.pushAccessor(accessor);
-                    }
-                    String getterExpression = getModelAdapter().getReferenceGetter(accessor).get();
-                    context.pushBaseExpression(baseExpression);
-                    context.pushBase(navigationBase);
-                    baseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
-                    context.popBaseExpression();
-                    context.popBase();
-                    context.popAccessor();
-                } else {
-                    baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
-                }
-                baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
-                if (baseExpression instanceof CastCollection) {
-                    CastCollection castCollection = (CastCollection) baseExpression;
-                    navigationBase = (C) castCollection.getElementName().get(getModelAdapter());
-                } else if (baseExpression instanceof CastObject) {
-                    CastObject castObject = (CastObject) baseExpression;
-                    navigationBase = (C) castObject.getElementName().get(getModelAdapter());
-                } else {
-                    navigationBase = getModelAdapter().getTarget(reference.get());
-                }
             } else if (sequence.isPresent()) {
                 baseExpression = newObjectSequenceBuilder().withObjectExpression((ObjectExpression) baseExpression).withSequenceName(jqlFeature.getName()).build();
                 baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
+            } else if (isExtendedFeaturePresent()) {
+
             } else {
                 LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
                 throw new IllegalStateException(String.format("Feature %s of %s not found", jqlFeature.getName(), getModelAdapter().getTypeName(navigationBase).orElse(null)));
             }
         }
         return baseExpression;
+    }
+
+    private JqlFeatureTransformResult transformReference(PTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
+        if (getModelAdapter().isDerivedReference(reference.get())) {
+            RTE accessor = reference.get();
+            if (context.containsAccessor(accessor)) {
+                throw new CircularReferenceException(accessor.toString());
+            } else {
+                context.pushAccessor(accessor);
+            }
+            String getterExpression = getModelAdapter().getReferenceGetter(accessor).get();
+            context.pushBaseExpression(baseExpression);
+            context.pushBase(navigationBase);
+            baseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
+            context.popBaseExpression();
+            context.popBase();
+            context.popAccessor();
+        } else {
+            baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
+        }
+        baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
+        if (baseExpression instanceof CastCollection) {
+            CastCollection castCollection = (CastCollection) baseExpression;
+            navigationBase = (C) castCollection.getElementName().get(getModelAdapter());
+        } else if (baseExpression instanceof CastObject) {
+            CastObject castObject = (CastObject) baseExpression;
+            navigationBase = (C) castObject.getElementName().get(getModelAdapter());
+        } else {
+            navigationBase = getModelAdapter().getTarget(reference.get());
+        }
+
+    }
+
+    private JqlFeatureTransformResult transformAttribute(PTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
+        if (getModelAdapter().isDerivedAttribute(accessor)) {
+            if (context.containsAccessor(accessor)) {
+                throw new CircularReferenceException(accessor.toString());
+            } else {
+                context.pushAccessor(accessor);
+            }
+            String getterExpression = getModelAdapter().getAttributeGetter(accessor).get();
+            context.pushBaseExpression(baseExpression);
+            context.pushBase(navigationBase);
+            baseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
+            context.popBaseExpression();
+            context.popBase();
+            context.popAccessor();
+        } else {
+            baseExpression = createAttributeSelector(accessor, jqlFeature.getName(), (ObjectExpression) baseExpression);
+        }
+        return new JqlFeatureTransformResult(null, jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context));
+    }
+
+    protected boolean isExtendedFeaturePresent() {
+        return false;
+    }
+
+    protected static class JqlFeatureTransformResult<C> {
+        public C navigationBase;
+        public Expression baseExpression;
+
+        public JqlFeatureTransformResult(C navigationBase, Expression baseExpression) {
+            this.navigationBase = navigationBase;
+            this.baseExpression = baseExpression;
+        }
     }
 
 }
