@@ -52,9 +52,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
 
     private Expression createObjectSelectorOperation(ObjectExpression left, ObjectExpression right, String operator) {
         switch (operator) {
-            case "=":
+            case "==":
                 return newObjectComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newObjectComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException(String.format("Not supported object selector operation: %s", operator));
@@ -63,9 +63,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
 
     private Expression createTimestampOperation(TimestampExpression left, TimestampExpression right, String operator) {
         switch (operator) {
-            case "=":
+            case "==":
                 return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
             case "<":
                 return newTimestampComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_THAN).build();
@@ -130,9 +130,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
                 return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
             case ">=":
                 return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
-            case "=":
+            case "==":
                 return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newDateComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid date operation: " + operator);
@@ -142,9 +142,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
 
     private Expression createEnumerationOperation(EnumerationExpression left, EnumerationExpression right, String operator) {
         switch (operator) {
-            case "=":
+            case "==":
                 return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid enumeration operation: " + operator);
@@ -178,9 +178,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
                 return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.LESS_OR_EQUAL).build();
             case ">=":
                 return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.GREATER_OR_EQUAL).build();
-            case "=":
+            case "==":
                 return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newStringComparisonBuilder().withLeft(left).withRight(right).withOperator(StringComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid string operation: " + operator);
@@ -205,9 +205,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
             case ">=":
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
-            case "=":
+            case "==":
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newDecimalComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid numeric operation: " + operator);
@@ -236,9 +236,9 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
                 return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.LESS_OR_EQUAL).build();
             case ">=":
                 return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.GREATER_OR_EQUAL).build();
-            case "=":
+            case "==":
                 return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.EQUAL).build();
-            case "<>":
+            case "!=":
                 return newIntegerComparisonBuilder().withLeft(left).withRight(right).withOperator(NumericComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid integer operation: " + operator);

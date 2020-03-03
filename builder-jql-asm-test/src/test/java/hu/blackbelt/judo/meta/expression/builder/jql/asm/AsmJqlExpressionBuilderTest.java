@@ -340,8 +340,8 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-12-31`!difference(`2020-01-01`)");
         createExpression("`2019-12-31` < `2020-01-01`");
         createExpression("`2019-12-31` > `2020-01-01`");
-        createExpression("`2019-12-31` = `2020-01-01`");
-        createExpression("`2019-12-31` <> `2020-01-01`");
+        createExpression("`2019-12-31` == `2020-01-01`");
+        createExpression("`2019-12-31` != `2020-01-01`");
         createExpression("`2019-12-31` <= `2020-01-01`");
         createExpression("`2019-12-31` >= `2020-01-01`");
         assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31` + 1"));
@@ -355,8 +355,8 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-12-31T00:00:00.000+0100`!difference(`2019-12-31T00:00:00.000+0200`)");
         createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` < `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` = `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` <> `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` == `2019-12-31T00:00:00.000+0200`");
+        createExpression("`2019-12-31T00:00:00.000+0100` != `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` <= `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` >= `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` + 1[week]");
@@ -371,8 +371,8 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("1.0 > 3.14");
         createExpression("1.0 <= 3.14");
         createExpression("1.0 >= 3.14");
-        createExpression("1.0 = 3.14");
-        createExpression("1.0 <> 3.14");
+        createExpression("1.0 == 3.14");
+        createExpression("1.0 != 3.14");
         createExpression("1.0 + 3.14");
         createExpression("1.0 - 3.14");
         createExpression("1.0 * 3.14");
@@ -481,8 +481,8 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(category, "self.categoryName > 'c'");
         createExpression(category, "self.categoryName <= 'c'");
         createExpression(category, "self.categoryName >= 'c'");
-        createExpression(category, "self.categoryName = 'c'");
-        createExpression(category, "self.categoryName <> 'c'");
+        createExpression(category, "self.categoryName == 'c'");
+        createExpression(category, "self.categoryName != 'c'");
 
         // Concatenate
         EClass order = findBase("Order");
@@ -494,8 +494,8 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testLambdaScoping() {
         EClass category = findBase("Category");
-        createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(p | p.unitPrice)!tail()");
-        Expression qExpression = createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>owner=>orders!sort(q | p.unitPrice)!tail()");
+        createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>products!sort(p | p.unitPrice)!tail()");
+        Expression qExpression = createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>owner=>orders!sort(q | p.unitPrice)!tail()");
         // TODO handle scope change on different side of binary operations (and other expressions probably)
 //        assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
     }
@@ -503,16 +503,16 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testObjectOperations() {
         EClass category = findBase("Category");
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | q.unitPrice)!tail()", "productComparison1", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() <> self=>products!sort(p | p.unitPrice)!tail()", "productComparison2", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>products!sort(q | q.unitPrice)!tail()", "productComparison1", ATTRIBUTE);
+        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() != self=>products!sort(p | p.unitPrice)!tail()", "productComparison2", ATTRIBUTE);
 
         EClass orderDetail = findBase("OrderDetail");
         createGetterExpression(orderDetail, "not self.product!kindof(demo::entities::Product)", "productType", ATTRIBUTE);
         createGetterExpression(orderDetail, "self.product!typeof(demo::entities::Product)", "productType", ATTRIBUTE);
 
         EClass order = findBase("Order");
-        createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName = 'joe')");
-        ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName = 'DHL')");
+        createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName == 'joe')");
+        ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')");
         assertThat(objectFilter.getVariableName(), is("s"));
 
     }
@@ -520,7 +520,7 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testChainedObjectFilter() {
         EClass order = findBase("Order");
-        ObjectFilterExpression chainedObjectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName = 'DHL')!filter(c | c.phone!isDefined()).territory!filter(t | t.shipper.phone = c.phone)");
+        ObjectFilterExpression chainedObjectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')!filter(c | c.phone!isDefined()).territory!filter(t | t.shipper.phone == c.phone)");
     }
 
     @Test
@@ -533,8 +533,8 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testEnums() {
         EClass order = findBase("Order");
-        createGetterExpression(order, "self.shipAddress.country = demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
-        createGetterExpression(order, "self.shipAddress.country = #AT", "countryCheck2", ATTRIBUTE);
+        createGetterExpression(order, "self.shipAddress.country == demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
+        createGetterExpression(order, "self.shipAddress.country == #AT", "countryCheck2", ATTRIBUTE);
 
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::types::Countries#AT : demo::types::Titles#MR"));
@@ -633,7 +633,7 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
         createExpression("demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
         // select categories, where the category has more than 10 products
-        createExpression("demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category = c)!count() > 10)");
+        createExpression("demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category == c)!count() > 10)");
 
         createExpression("true ? 8[dkg]+12[g] : 2[g] + 4[g] + demo::entities::Product!sort()!head().weight");
 
@@ -645,13 +645,13 @@ public class AsmJqlExpressionBuilderTest {
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
-        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName = 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country=#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
+        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == #RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));
     }
 
     @Test
     public void test003() {
-        createExpression("demo::entities::Employee!filter(e | e.lastName = 'Gipsz' and e.firstName = 'Jakab')!sort()!head()=>orders!sort(o | o.orderDate DESC)");
+        createExpression("demo::entities::Employee!filter(e | e.lastName == 'Gipsz' and e.firstName == 'Jakab')!sort()!head()=>orders!sort(o | o.orderDate DESC)");
         createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture!isDefined())");
         createExpression(findBase("Order"), "self=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
     }
