@@ -119,7 +119,7 @@
         <judo-meta-esm-version>1.1.0.20200302_160745_b1f9633_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20200303_170030_ff76625_feature_JNG_1123_Change_equality_and_similar_operators</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20200304_090520_ff76625_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
         <judo-meta-measure-version>1.0.0.20200303_142139_7856e18_develop</judo-meta-measure-version>
