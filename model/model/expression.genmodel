@@ -141,6 +141,8 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/BooleanConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/BooleanConstant/toString"
             body="return String.valueOf(isValue());"/>
+        <genOperations ecoreOperation="expression.ecore#//constant/BooleanConstant/getValue"
+            body="return isValue();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/StringConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/StringConstant/value"/>
