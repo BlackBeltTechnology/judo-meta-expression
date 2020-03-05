@@ -47,7 +47,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WPSdCDlEeqA1rnNh8KDMw" name="discountedItemsOutOfStock" upperBound="-1" eType="_1WUK-CDlEeqA1rnNh8KDMw" changeable="false" volatile="true" derived="true">
         <eAnnotations xmi:id="_1WOrYCDlEeqA1rnNh8KDMw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/expression">
-          <details xmi:id="_1XU3kSDlEeqA1rnNh8KDMw" key="getter" value="self.orderDetails!filter(od | od.discount > 0 and od.product.unitsInStock = 0)"/>
+          <details xmi:id="_1XU3kSDlEeqA1rnNh8KDMw" key="getter" value="self.orderDetails!filter(od | od.discount > 0 and od.product.unitsInStock == 0)"/>
           <details xmi:id="_1XU3kiDlEeqA1rnNh8KDMw" key="getter.dialect" value="JQL"/>
         </eAnnotations>
       </eStructuralFeatures>
