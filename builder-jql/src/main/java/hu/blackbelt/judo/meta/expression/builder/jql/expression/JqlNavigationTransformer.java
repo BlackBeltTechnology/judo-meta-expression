@@ -11,7 +11,6 @@ import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,11 +118,16 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
                 baseExpression = transformResult.baseExpression;
                 navigationBase = transformResult.navigationBase;
             } else if (reference.isPresent()) {
+            	JqlFeatureTransformResult<C> transformResult = transformReference(reference.get(), context, baseExpression, navigationBase, jqlFeature);
+                baseExpression = transformResult.baseExpression;
+                navigationBase = transformResult.navigationBase;
             } else if (sequence.isPresent()) {
                 baseExpression = newObjectSequenceBuilder().withObjectExpression((ObjectExpression) baseExpression).withSequenceName(jqlFeature.getName()).build();
                 baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
-            } else if (isExtendedFeaturePresent()) {
-
+            } else if (isExtendedFeaturePresent(jqlExpression, jqlFeature, context)) {
+            	JqlFeatureTransformResult<C> transformResult = transformExtendedFeature(jqlExpression, context, baseExpression, navigationBase, jqlFeature);
+            	baseExpression = transformResult.baseExpression;
+            	navigationBase = transformResult.navigationBase;
             } else {
                 LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
                 throw new IllegalStateException(String.format("Feature %s of %s not found", jqlFeature.getName(), getModelAdapter().getTypeName(navigationBase).orElse(null)));
@@ -132,38 +136,41 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         return baseExpression;
     }
 
-    private JqlFeatureTransformResult transformReference(PTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
-        if (getModelAdapter().isDerivedReference(reference.get())) {
-            RTE accessor = reference.get();
+	private JqlFeatureTransformResult<C> transformReference(RTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
+    	C resultNavigationBase = navigationBase;
+    	Expression resultBaseExpression = baseExpression;
+        if (getModelAdapter().isDerivedReference(accessor)) {
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(accessor.toString());
             } else {
                 context.pushAccessor(accessor);
             }
             String getterExpression = getModelAdapter().getReferenceGetter(accessor).get();
-            context.pushBaseExpression(baseExpression);
-            context.pushBase(navigationBase);
-            baseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
+            context.pushBaseExpression(resultBaseExpression);
+            context.pushBase(resultNavigationBase);
+            resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
         } else {
-            baseExpression = createReferenceSelector(reference.get(), jqlFeature.getName(), (ReferenceExpression) baseExpression);
+            resultBaseExpression = createReferenceSelector(accessor, jqlFeature.getName(), (ReferenceExpression) resultBaseExpression);
         }
-        baseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context);
-        if (baseExpression instanceof CastCollection) {
-            CastCollection castCollection = (CastCollection) baseExpression;
-            navigationBase = (C) castCollection.getElementName().get(getModelAdapter());
-        } else if (baseExpression instanceof CastObject) {
-            CastObject castObject = (CastObject) baseExpression;
-            navigationBase = (C) castObject.getElementName().get(getModelAdapter());
+        resultBaseExpression = jqlTransformers.applyFunctions(jqlFeature.getFunctions(), resultBaseExpression, context);
+        if (resultBaseExpression instanceof CastCollection) {
+            CastCollection castCollection = (CastCollection) resultBaseExpression;
+            resultNavigationBase = (C) castCollection.getElementName().get(getModelAdapter());
+        } else if (resultBaseExpression instanceof CastObject) {
+            CastObject castObject = (CastObject) resultBaseExpression;
+            resultNavigationBase = (C) castObject.getElementName().get(getModelAdapter());
         } else {
-            navigationBase = getModelAdapter().getTarget(reference.get());
+            resultNavigationBase = getModelAdapter().getTarget(accessor);
         }
-
+        return new JqlFeatureTransformResult<>(resultNavigationBase, resultBaseExpression);
     }
 
-    private JqlFeatureTransformResult transformAttribute(PTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
+    private JqlFeatureTransformResult<C> transformAttribute(PTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
+    	C resultNavigationBase = navigationBase;
+    	Expression resultBaseExpression = baseExpression;
         if (getModelAdapter().isDerivedAttribute(accessor)) {
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(accessor.toString());
@@ -171,21 +178,27 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
                 context.pushAccessor(accessor);
             }
             String getterExpression = getModelAdapter().getAttributeGetter(accessor).get();
-            context.pushBaseExpression(baseExpression);
-            context.pushBase(navigationBase);
-            baseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
+            context.pushBaseExpression(resultBaseExpression);
+            context.pushBase(resultNavigationBase);
+            resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
         } else {
-            baseExpression = createAttributeSelector(accessor, jqlFeature.getName(), (ObjectExpression) baseExpression);
+        	resultBaseExpression = createAttributeSelector(accessor, jqlFeature.getName(), (ObjectExpression) resultBaseExpression);
         }
-        return new JqlFeatureTransformResult(null, jqlTransformers.applyFunctions(jqlFeature.getFunctions(), baseExpression, context));
+        return new JqlFeatureTransformResult<>(null, jqlTransformers.applyFunctions(jqlFeature.getFunctions(), resultBaseExpression, context));
     }
 
-    protected boolean isExtendedFeaturePresent() {
+    protected boolean isExtendedFeaturePresent(NavigationExpression jqlExpression, Feature jqlFeature, ExpressionBuildingVariableResolver context) {
         return false;
     }
+
+    protected JqlFeatureTransformResult<C> transformExtendedFeature(NavigationExpression jqlExpression,
+			ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase,
+			Feature jqlFeature) {
+		return null;
+	}
 
     protected static class JqlFeatureTransformResult<C> {
         public C navigationBase;

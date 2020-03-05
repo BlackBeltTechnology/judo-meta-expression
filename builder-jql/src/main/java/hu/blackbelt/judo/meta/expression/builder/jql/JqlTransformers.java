@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
@@ -278,11 +279,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         return expressionBuilder;
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Class<? extends JqlExpressionTransformerFunction> transformerClass) {
-        try {
-            transformers.put(jqlType, transformerClass.getDeclaredConstructor(JqlTransformers.class).newInstance(this));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
+            transformers.put(jqlType, transformer.apply(this));
     }
 }
