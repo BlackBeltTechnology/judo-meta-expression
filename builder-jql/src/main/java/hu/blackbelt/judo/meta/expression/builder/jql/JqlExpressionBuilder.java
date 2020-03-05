@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -383,7 +384,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         }
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Class<? extends JqlExpressionTransformerFunction> transformer) {
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
 
