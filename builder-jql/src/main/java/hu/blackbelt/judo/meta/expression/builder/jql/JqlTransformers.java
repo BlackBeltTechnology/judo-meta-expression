@@ -35,11 +35,13 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
@@ -275,5 +277,9 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 
     public JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> getExpressionBuilder() {
         return expressionBuilder;
+    }
+
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
+            transformers.put(jqlType, transformer.apply(this));
     }
 }
