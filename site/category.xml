@@ -102,11 +102,11 @@
    <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <!-- The tycho plugin 1.5.0 will fix it -->
    <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.0" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200312_003012_3e1a2e0_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20200312_001702_3ddad85_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200312_001606_336e78e_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200312_003825_686c97f_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20200312_003115_abdee0d_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.1.20200312_082528_9c54b14_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200312_085852_14b61ba_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.0.0.20200312_084108_e4d4b61_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200312_083204_9f96fcb_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200312_090534_0f478f8_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.0.20200312_085804_9b1928e_develop" enabled="true" />
 
 </site>
