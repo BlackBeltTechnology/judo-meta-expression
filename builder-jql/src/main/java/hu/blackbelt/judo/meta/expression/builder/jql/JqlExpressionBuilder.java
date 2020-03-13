@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -339,7 +340,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         if (namespace != null) {
             String name = qName.getName();
             TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-            NE ne = modelAdapter.get(typeName).get();
+            NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException(String.valueOf(typeName)));
             TypeName resolvedTypeName = modelAdapter.getTypeName(ne).get();
             return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
         } else {
