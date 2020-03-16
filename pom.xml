@@ -103,19 +103,19 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.1</pax-exam-version>
 
-        <judo-meta-psm-version>1.0.0.20200316_201045_d95498d_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.0.0.20200316_225214_d95498d_1_0_beta1</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.0.0.20200316_202425_f020781_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.0.0.20200316_230812_a5481d4_1_0_beta1</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20200316_200953_3d2f84e_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20200316_225155_5448ffe_1_0_beta1</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.0.20200316_202542_7ed5043_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.0.20200316_230828_16226d5_1_0_beta1</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20200316_203312_738060f_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20200316_231526_7a4056e_1_0_beta1</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
