@@ -50,8 +50,8 @@
 		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.0.0.20200319_170715_c25fe12_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="1.1.0.20200319_083038_d8f4842_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200319_083038_d8f4842_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="1.1.0.20200320_082437_c02dfda_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200320_082437_c02dfda_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="1.0.0.20200319_083857_23d04ba_develop"/>
