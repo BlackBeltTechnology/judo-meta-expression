@@ -4,9 +4,10 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
+
+import java.util.function.Supplier;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
@@ -38,11 +39,11 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
             return createEnumerationOperation((EnumerationExpression) left, (EnumerationExpression) right, operator);
         } else if (left instanceof DateExpression && right instanceof DateExpression) {
             return createDateOperation((DateExpression) left, (DateExpression) right, operator);
-        } else if (left instanceof DateExpression && right instanceof MeasuredInteger || right instanceof DateExpression && left instanceof MeasuredInteger) {
+        } else if (left instanceof DateExpression && right instanceof NumericExpression || right instanceof DateExpression && left instanceof NumericExpression) {
             return createDateAdditionOperation(left, right, operator);
         } else if (left instanceof TimestampExpression && right instanceof TimestampExpression) {
             return createTimestampOperation((TimestampExpression) left, (TimestampExpression) right, operator);
-        } else if (left instanceof TimestampExpression && right instanceof MeasuredInteger || right instanceof TimestampExpression && left instanceof MeasuredInteger) {
+        } else if (left instanceof TimestampExpression && right instanceof NumericExpression || right instanceof TimestampExpression && left instanceof NumericExpression) {
             return createTimestampAdditionOperation(left, right, operator);
         } else if (left instanceof ObjectExpression && right instanceof ObjectExpression) {
             return createObjectSelectorOperation((ObjectExpression) left, (ObjectExpression) right, operator);
@@ -84,16 +85,18 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
         switch (operator) {
             case "+": {
                 TimestampExpression timestamp = (TimestampExpression) (left instanceof TimestampExpression ? left : right);
-                MeasuredInteger duration = (MeasuredInteger) (left instanceof MeasuredInteger ? left : right);
-                return newTimestampAdditionExpressionBuilder().withTimestamp(timestamp).withDuration(duration).withOperator(TemporalOperator.ADD).build();
+                NumericExpression duration = (NumericExpression) (left instanceof NumericExpression ? left : right);
+                return createMeasuredTemporalAddition(duration,
+                        () -> newTimestampAdditionExpressionBuilder().withTimestamp(timestamp).withDuration(duration).withOperator(TemporalOperator.ADD).build());
             }
             case "-": {
-                if (!(left instanceof TimestampExpression) || !(right instanceof MeasuredInteger)) {
+                if (!(left instanceof TimestampExpression) || !(right instanceof NumericExpression)) {
                     throw new IllegalArgumentException(String.format("Arguments must be timestamp and measured integer, got %s, %s", left, right));
                 }
                 TimestampExpression date = (TimestampExpression) left;
-                MeasuredInteger duration = (MeasuredInteger) right;
-                return newTimestampAdditionExpressionBuilder().withTimestamp(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build();
+                NumericExpression duration = (NumericExpression) right;
+                return createMeasuredTemporalAddition(duration,
+                        () -> newTimestampAdditionExpressionBuilder().withTimestamp(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build());
             }
             default:
                 throw new UnsupportedOperationException("Unsupported timestamp operation: " + operator);
@@ -104,20 +107,27 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
         switch (operator) {
             case "+": {
                 DateExpression date = (DateExpression) (left instanceof DateExpression ? left : right);
-                MeasuredInteger duration = (MeasuredInteger) (left instanceof MeasuredInteger ? left : right);
-                return newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.ADD).build();
+                NumericExpression duration = (NumericExpression) (left instanceof NumericExpression ? left : right);
+                return createMeasuredTemporalAddition(duration,
+                        () -> newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.ADD).build());
             }
             case "-": {
-                if (!(left instanceof DateExpression) || !(right instanceof MeasuredInteger)) {
+                if (!(left instanceof DateExpression) || !(right instanceof NumericExpression)) {
                     throw new IllegalArgumentException(String.format("Arguments must be date and measured integer, got %s, %s", left, right));
                 }
                 DateExpression date = (DateExpression) left;
-                MeasuredInteger duration = (MeasuredInteger) right;
-                return newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build();
+                NumericExpression duration = (NumericExpression) right;
+                return createMeasuredTemporalAddition(duration,
+                        () -> newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build());
             }
             default:
                 throw new UnsupportedOperationException("Unsupported date operation: " + operator);
         }
+    }
+
+    private Expression createMeasuredTemporalAddition(NumericExpression duration, Supplier<Expression> supplier) {
+        return getModelAdapter().getUnit(duration).filter(getModelAdapter()::isDurationSupportingAddition).
+                map(unit -> supplier.get()).orElseThrow(() -> new UnsupportedOperationException("Operand is not a temporal duration"));
     }
 
     private Expression createDateOperation(DateExpression left, DateExpression right, String operator) {

@@ -109,7 +109,9 @@ public class AbstractEsmJqlExpressionBuilderTest {
         measureMap.put("Time", time);
         Measure velocity = new EsmTestModelCreator.MeasureCreator("Velocity").withUnit("m/s").withTerm(length.getUnits().get(0), 1).withTerm(time.getUnits().get(0), -1).create();
         measureMap.put("Velocity", velocity);
-        Package measures = createPackage("measures", mass, length, time, velocity);
+        Measure duration = new EsmTestModelCreator.MeasureCreator("Duration").withDurationUnit("day", DurationType.DAY).create();
+        measureMap.put("Duration", duration);
+        Package measures = createPackage("measures", mass, length, time, velocity, duration);
         return newModelBuilder().withName("demo").withElements(Arrays.asList(measures)).build();
     }
 
