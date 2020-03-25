@@ -2,7 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
 
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
@@ -16,7 +16,7 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
     private final IntegerAggregator integerAggregator;
     private final DecimalAggregator decimalAggregator;
 
-    public JqlAggregatedExpressionTransformer(JqlTransformers jqlTransformers, IntegerAggregator integerAggregator, DecimalAggregator decimalAggregator) {
+    public JqlAggregatedExpressionTransformer(ExpressionTransformer jqlTransformers, IntegerAggregator integerAggregator, DecimalAggregator decimalAggregator) {
         super(jqlTransformers);
         this.integerAggregator = integerAggregator;
         this.decimalAggregator = decimalAggregator;

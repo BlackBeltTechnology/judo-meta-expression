@@ -240,11 +240,6 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<Measure> getDurationMeasure() {
-        return measureAdapter.getDurationMeasure();
-    }
-
-    @Override
     public boolean isDurationSupportingAddition(final Unit unit) {
         return measureProvider.isDurationSupportingAddition(unit);
     }
@@ -274,6 +269,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public EList<Unit> getUnits(Measure measure) {
+        return measureProvider.getUnits(measure);
     }
 
     @Override

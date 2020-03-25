@@ -219,11 +219,6 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public Optional<Measure> getDurationMeasure() {
-        return measureAdapter.getDurationMeasure();
-    }
-
-    @Override
     public boolean isDurationSupportingAddition(final Unit unit) {
         return measureProvider.isDurationSupportingAddition(unit);
     }
@@ -253,6 +248,11 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public EList<Unit> getUnits(Measure measure) {
+        return measureProvider.getUnits(measure);
     }
 
     @Override

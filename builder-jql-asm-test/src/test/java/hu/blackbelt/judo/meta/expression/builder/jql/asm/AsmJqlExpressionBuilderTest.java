@@ -19,10 +19,10 @@ import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
-import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -35,9 +35,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
@@ -351,7 +351,7 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testDateOperations() {
-        createExpression("`2019-12-31`!difference(`2020-01-01`)");
+        createExpression("`2019-12-31`!elapsedTimeFrom(`2020-01-01`)");
         createExpression("`2019-12-31` < `2020-01-01`");
         createExpression("`2019-12-31` > `2020-01-01`");
         createExpression("`2019-12-31` == `2020-01-01`");
@@ -390,7 +390,8 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(productType, "self.producedOn + self.ripeningTime");
         Expression expression = createExpression(productType, "self.producedOn + 10.5[day]");
         assertThat(expression, instanceOf(DateExpression.class));
-        createExpression("`2019-12-31T00:00:00.000+0100`!difference(`2019-12-31T00:00:00.000+0200`)");
+        TimestampDifferenceExpression elapsedTimeFrom = (TimestampDifferenceExpression) createExpression("`2019-12-31T00:00:00.000+0100`!elapsedTimeFrom(`2019-12-31T00:00:00.000+0200`)");
+        assertThat(elapsedTimeFrom.getMeasure(), notNullValue());
         createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` < `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` == `2019-12-31T00:00:00.000+0200`");
@@ -682,7 +683,7 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
         Expression timeStampAddition = createExpression("demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
-        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
+        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
         Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == #RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));

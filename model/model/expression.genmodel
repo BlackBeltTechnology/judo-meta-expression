@@ -204,12 +204,12 @@
       <genClasses ecoreClass="expression.ecore#//constant/DateConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/DateConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/DateConstant/toString"
-            body="return getValue() != null ? new java.text.SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(getValue()) : &quot;null&quot;;"/>
+            body="return getValue() != null ? &quot;`&quot; + new java.text.SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(getValue()) + &quot;`&quot; : &quot;null&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/TimestampConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/TimestampConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/TimestampConstant/toString"
-            body="return String.valueOf(getValue());"/>
+            body="return String.format(&quot;`%s`&quot;, getValue());"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//constant/DataConstant">
         <genOperations ecoreOperation="expression.ecore#//constant/DataConstant/getValue"/>
@@ -1025,6 +1025,8 @@
       <genClasses ecoreClass="expression.ecore#//temporal/TimestampDifferenceExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/startTimestamp"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/endTimestamp"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/measure"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getStartTimestamp(), getEndTimestamp());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/isMeasured"
@@ -1032,7 +1034,7 @@
           <genParameters ecoreParameter="expression.ecore#//temporal/TimestampDifferenceExpression/isMeasured/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/toString"
-            body="return &quot;(&quot; + getEndTimestamp() + &quot; - &quot; + getStartTimestamp() + &quot;)&quot;;"/>
+            body="return String.format(&quot;%s!elapsedTimeFrom(%s, %s)&quot;, getEndTimestamp(), getStartTimestamp(), getMeasure());"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//temporal/DateAdditionExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateAdditionExpression/expression"/>
@@ -1046,6 +1048,8 @@
       <genClasses ecoreClass="expression.ecore#//temporal/DateDifferenceExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateDifferenceExpression/startDate"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateDifferenceExpression/endDate"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/DateDifferenceExpression/measure"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateDifferenceExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getStartDate(), getEndDate());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateDifferenceExpression/isMeasured"
@@ -1053,7 +1057,7 @@
           <genParameters ecoreParameter="expression.ecore#//temporal/DateDifferenceExpression/isMeasured/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateDifferenceExpression/toString"
-            body="return &quot;DIFFERENCE(&quot; + getStartDate() + &quot;, &quot; + getEndDate() + &quot;)&quot;;"/>
+            body="return String.format(&quot;%s!elapsedTimeFrom(%s, %s)&quot;, getEndDate(), getStartDate(), getMeasure());"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//temporal/TimestampVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"

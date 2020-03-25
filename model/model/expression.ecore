@@ -322,7 +322,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="DateConstant" eSuperTypes="#//DateExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getValue() != null ? new java.text.SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(getValue()) : &quot;null&quot;;"/>
+          <details key="body" value="return getValue() != null ? &quot;`&quot; + new java.text.SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(getValue()) + &quot;`&quot; : &quot;null&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
@@ -331,7 +331,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="TimestampConstant" eSuperTypes="#//TimestampExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return String.valueOf(getValue());"/>
+          <details key="body" value="return String.format(&quot;`%s`&quot;, getValue());"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
@@ -1703,7 +1703,7 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;(&quot; + getEndTimestamp() + &quot; - &quot; + getStartTimestamp() + &quot;)&quot;;"/>
+          <details key="body" value="return String.format(&quot;%s!elapsedTimeFrom(%s, %s)&quot;, getEndTimestamp(), getStartTimestamp(), getMeasure());"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="startTimestamp" lowerBound="1"
@@ -1744,7 +1744,7 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;DIFFERENCE(&quot; + getStartDate() + &quot;, &quot; + getEndDate() + &quot;)&quot;;"/>
+          <details key="body" value="return String.format(&quot;%s!elapsedTimeFrom(%s, %s)&quot;, getEndDate(), getStartDate(), getMeasure());"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="startDate" lowerBound="1"

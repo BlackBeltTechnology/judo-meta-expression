@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.DataExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.collection.OrderByItem;
 import hu.blackbelt.judo.meta.expression.collection.util.builder.SortExpressionBuilder;
@@ -20,7 +20,7 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
 
 public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
-    public JqlSortFunctionTransformer(JqlTransformers jqlTransformers) {
+    public JqlSortFunctionTransformer(ExpressionTransformer jqlTransformers) {
         super(jqlTransformers);
     }
 

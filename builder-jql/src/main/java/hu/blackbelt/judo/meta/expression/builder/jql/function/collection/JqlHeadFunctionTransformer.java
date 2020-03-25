@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
@@ -17,7 +17,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 
 public class JqlHeadFunctionTransformer extends AbstractJqlFunctionTransformer<OrderedCollectionExpression> {
 
-    public JqlHeadFunctionTransformer(JqlTransformers jqlTransformers) {
+    public JqlHeadFunctionTransformer(ExpressionTransformer jqlTransformers) {
         super(jqlTransformers);
     }
 

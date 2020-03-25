@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
@@ -15,7 +15,7 @@ public class JqlIsDefinedFunctionTransformer extends AbstractJqlFunctionTransfor
 
     private boolean checkDefined;
 
-    public JqlIsDefinedFunctionTransformer(JqlTransformers jqlTransformers, boolean checkDefined) {
+    public JqlIsDefinedFunctionTransformer(ExpressionTransformer jqlTransformers, boolean checkDefined) {
         super(jqlTransformers);
         this.checkDefined = checkDefined;
     }
