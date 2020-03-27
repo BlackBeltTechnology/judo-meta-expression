@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 
@@ -12,7 +12,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 
 public class JqlJoinFunctionTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
-    public JqlJoinFunctionTransformer(JqlTransformers jqlTransformers) {
+    public JqlJoinFunctionTransformer(ExpressionTransformer jqlTransformers) {
         super(jqlTransformers);
     }
 

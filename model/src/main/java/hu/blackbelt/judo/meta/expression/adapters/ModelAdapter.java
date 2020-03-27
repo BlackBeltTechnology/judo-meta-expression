@@ -217,13 +217,6 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
     boolean contains(E enumeration, String memberName);
 
     /**
-     * Get duration measure that can be used by architecture (ie. adding ms, s, etc. units is supported).
-     *
-     * @return duration measure
-     */
-    Optional<M> getDurationMeasure();
-
-    /**
      * Check if a given unit is duration that supports addition (ie. adding ms, s, etc. to it).
      *
      * @param unit unit
@@ -246,6 +239,13 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
      * @return unit
      */
     Optional<U> getUnit(NumericExpression numericExpression);
+
+    /**
+     * Get units of a measure.
+     * @param measure
+     * @return List of units.
+     */
+    EList<U> getUnits(M measure);
 
     /**
      * Get dimension (map of base measured with exponents) of a numeric expression. Measure may not defined for it (ie. expression fragments that is not assigned).

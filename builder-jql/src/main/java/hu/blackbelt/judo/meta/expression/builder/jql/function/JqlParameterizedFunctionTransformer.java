@@ -2,7 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 
@@ -14,12 +14,12 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
     private Function<JqlExpression, PARAM> parameterMapper;
     private final BiFunction<BASE, PARAM, RESULT> builder;
 
-    public JqlParameterizedFunctionTransformer(JqlTransformers jqlTransformers, BiFunction<BASE, PARAM, RESULT> builder, Function<JqlExpression, PARAM> parameterMapper) {
+    public JqlParameterizedFunctionTransformer(ExpressionTransformer jqlTransformers, BiFunction<BASE, PARAM, RESULT> builder, Function<JqlExpression, PARAM> parameterMapper) {
         this(jqlTransformers, builder);
         this.parameterMapper = parameterMapper;
     }
 
-    public JqlParameterizedFunctionTransformer(JqlTransformers jqlTransformers, BiFunction<BASE, PARAM, RESULT> builder) {
+    public JqlParameterizedFunctionTransformer(ExpressionTransformer jqlTransformers, BiFunction<BASE, PARAM, RESULT> builder) {
         super(jqlTransformers);
         this.builder = builder;
     }

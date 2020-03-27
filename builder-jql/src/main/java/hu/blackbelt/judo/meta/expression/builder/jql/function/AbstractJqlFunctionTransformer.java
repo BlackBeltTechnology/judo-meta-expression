@@ -1,13 +1,13 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function;
 
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 
 public abstract class AbstractJqlFunctionTransformer<B extends Expression> implements JqlFunctionTransformer<B> {
 
-    protected final JqlTransformers jqlTransformers;
+    protected final ExpressionTransformer jqlTransformers;
 
-    protected AbstractJqlFunctionTransformer(JqlTransformers jqlTransformers) {
+    protected AbstractJqlFunctionTransformer(ExpressionTransformer jqlTransformers) {
         this.jqlTransformers = jqlTransformers;
     }
 

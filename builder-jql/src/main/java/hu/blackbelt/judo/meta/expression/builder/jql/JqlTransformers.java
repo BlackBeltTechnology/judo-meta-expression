@@ -37,10 +37,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
@@ -52,7 +49,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> {
+public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> implements ExpressionTransformer, ExpressionMeasureProvider {
 
     private final JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
@@ -138,7 +135,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
     }
 
     private void temporalFunctions() {
-        functionTransformers.put("difference", new JqlDifferenceFunctionTransformer(this));
+        functionTransformers.put("elapsedtimefrom", new JqlDifferenceFunctionTransformer(this, this));
     }
 
     private void stringFunctions() {
@@ -191,6 +188,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
     }
 
+    @Override
     public Expression transform(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
@@ -267,8 +265,29 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         return expressionBuilder.getTypeName(namespace, name);
     }
 
+    @Override
     public MeasureName getMeasureName(String qualifiedName) {
         return expressionBuilder.getMeasureName(qualifiedName);
+    }
+
+    @Override
+    public MeasureName getDurationMeasureName(QualifiedName qualifiedName) {
+        return expressionBuilder.getDurationMeasureName(JqlExpressionBuilder.createQNamespaceString(qualifiedName) + "::" + qualifiedName.getName());
+    }
+
+    @Override
+    public Collection<MeasureName> getDurationMeasures() {
+        return expressionBuilder.getDurationMeasures();
+    }
+
+    @Override
+    public Optional<MeasureName> getDefaultDurationMeasure() {
+        Collection<MeasureName> durationMeasures = expressionBuilder.getDurationMeasures();
+        if (durationMeasures.size() == 1) {
+            return Optional.of(durationMeasures.iterator().next());
+        } else {
+            return Optional.empty();
+        }
     }
 
     public Optional<? extends Binding> getBinding(C baseType, String feature) {
@@ -282,4 +301,5 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
             transformers.put(jqlType, transformer.apply(this));
     }
+
 }

@@ -202,11 +202,6 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<Measure> getDurationMeasure() {
-        return measureAdapter.getDurationMeasure();
-    }
-
-    @Override
     public boolean isDurationSupportingAddition(Unit unit) {
         return measureProvider.isDurationSupportingAddition(unit);
     }
@@ -238,6 +233,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public EList<Unit> getUnits(Measure measure) {
+        return measureProvider.getUnits(measure);
     }
 
     Optional<Unit> getUnit(final EntityType objectType, final String attributeName) {

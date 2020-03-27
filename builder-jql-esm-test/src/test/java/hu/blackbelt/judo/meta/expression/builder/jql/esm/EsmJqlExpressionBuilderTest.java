@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
+import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -64,6 +66,16 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         initResources(createTestModel(stringType, company, order));
         createExpression(order, "self.shipper.companyName + self.shipper.companyName");
         createExpression(order, "'_' + self.shipper.companyName");
+    }
+
+    @Test
+    void testDateAddition() {
+        DateType dateType = newDateTypeBuilder().withName("date").build();
+        EntityType company = new EntityCreator("Company").withAttribute("producedOn", dateType).create();
+        initResources(createTestModel(dateType, company));
+        createExpression(company, "self.producedOn");
+        Expression expression = createExpression(company, "self.producedOn + 1[day]");
+        System.out.println(expression);
     }
 
     @Test

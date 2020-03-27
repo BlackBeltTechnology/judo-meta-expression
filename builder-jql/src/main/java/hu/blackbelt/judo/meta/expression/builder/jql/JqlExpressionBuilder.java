@@ -22,10 +22,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -57,6 +54,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
     private final ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
+    private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
     private final Map<String, TypeName> accessPoints = new ConcurrentHashMap<>();
     private final JqlParser jqlParser = new JqlParser();
@@ -82,7 +80,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
 
-    private static String createQNamespaceString(QualifiedName qName) {
+    public static String createQNamespaceString(QualifiedName qName) {
         String qNamespaceString;
         if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
             qNamespaceString = String.join("::", qName.getNamespaceElements());
@@ -157,7 +155,9 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                     .anyMatch(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace(), measureName.getNamespace()));
             if (!alreadyAdded) {
                 expressionResource.getContents().add(measureName);
-                measureNames.put(String.join("::", measureName.getNamespace(), measureName.getName()), measureName);
+                String measureNameString = String.join("::", measureName.getNamespace(), measureName.getName());
+                measureNames.put(measureNameString, measureName);
+                modelAdapter.getUnits(measure).stream().filter(modelAdapter::isDurationSupportingAddition).findAny().ifPresent(u -> durationMeasures.put(measureNameString, measureName));
             }
 
         });
@@ -331,6 +331,14 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         return measureNames.get(qualifiedName);
     }
 
+    public MeasureName getDurationMeasureName(String qualifiedName) {
+        return durationMeasures.get(qualifiedName);
+    }
+
+    public Collection<MeasureName> getDurationMeasures() {
+        return durationMeasures.values();
+    }
+
     public TypeName getEnumTypeName(String enumType) {
         return enumTypes.get(enumType);
     }
@@ -387,6 +395,10 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
 
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
+    }
+
+    public Collection<String> s() {
+        return new ArrayList<>();
     }
 
 }

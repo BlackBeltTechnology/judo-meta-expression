@@ -19,6 +19,7 @@ import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
@@ -44,6 +45,7 @@ import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelCo
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
@@ -65,25 +67,37 @@ public class AsmJqlExpressionBuilderTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        final AsmModelResourceSupport asmModelResourceSupport = AsmModelResourceSupport.loadAsm(AsmModelResourceSupport.LoadArguments.asmLoadArgumentsBuilder()
-                .file(new File("src/test/model/asm.model"))
-                .uri(URI.createURI("urn:test.judo-meta-asm"))
-                .build());
-        asmResource = asmModelResourceSupport.getResource();
-        final MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.loadMeasure(MeasureModelResourceSupport.LoadArguments.measureLoadArgumentsBuilder()
-                .file(new File("src/test/model/measure.model"))
-                .uri(URI.createURI("urn:test.judo-meta-measure"))
-                .build());
-        measureResource = measureModelResourceSupport.getResource();
+        initResources(null);
+    }
 
-        expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
-                .uri(URI.createURI("urn:test.judo-meta-expression"))
-                .build();
+    private void initResources(EPackage customPackage) {
+        try {
+            final AsmModelResourceSupport asmModelResourceSupport = AsmModelResourceSupport.loadAsm(AsmModelResourceSupport.LoadArguments.asmLoadArgumentsBuilder()
+                    .file(new File("src/test/model/asm.model"))
+                    .uri(URI.createURI("urn:test.judo-meta-asm"))
+                    .build());
+            asmResource = asmModelResourceSupport.getResource();
+            if (customPackage != null) {
+                asmResource.getContents().clear();
+                asmResource.getContents().add(customPackage);
+            }
+            final MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.loadMeasure(MeasureModelResourceSupport.LoadArguments.measureLoadArgumentsBuilder()
+                    .file(new File("src/test/model/measure.model"))
+                    .uri(URI.createURI("urn:test.judo-meta-measure"))
+                    .build());
+            measureResource = measureModelResourceSupport.getResource();
 
-        modelAdapter = new AsmModelAdapter(asmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
-        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+            expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
+                    .uri(URI.createURI("urn:test.judo-meta-expression"))
+                    .build();
 
-        asmUtils = new AsmUtils(asmModelResourceSupport.getResourceSet());
+            modelAdapter = new AsmModelAdapter(asmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
+            expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+
+            asmUtils = new AsmUtils(asmModelResourceSupport.getResourceSet());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
@@ -337,7 +351,7 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testDateOperations() {
-        createExpression("`2019-12-31`!difference(`2020-01-01`)");
+        createExpression("`2019-12-31`!elapsedTimeFrom(`2020-01-01`)");
         createExpression("`2019-12-31` < `2020-01-01`");
         createExpression("`2019-12-31` > `2020-01-01`");
         createExpression("`2019-12-31` == `2020-01-01`");
@@ -352,7 +366,32 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testTimestampOperations() {
-        createExpression("`2019-12-31T00:00:00.000+0100`!difference(`2019-12-31T00:00:00.000+0200`)");
+        EDataType dateType = newEDataTypeBuilder().withName("Date").withInstanceTypeName("java.util.Date").build();
+        EDataType dayType = newEDataTypeBuilder().withName("Day").withInstanceTypeName("java.lang.Integer").build();
+        EAnnotation entityAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
+                .build();
+        entityAnnotation.getDetails().put("value", "true");
+        EAnnotation dayAnnotation = newEAnnotationBuilder()
+                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
+                .build();
+        dayAnnotation.getDetails().put("measure", "demo.measures.Time");
+        dayAnnotation.getDetails().put("unit", "day");
+        EClass productType = newEClassBuilder().withName("Entity")
+                .withEAnnotations(entityAnnotation)
+                .withEStructuralFeatures(Arrays.asList(newEAttributeBuilder()
+                        .withName("producedOn")
+                        .withEType(dateType).build()
+                        ,newEAttributeBuilder().withName("ripeningTime").withEType(dayType).withEAnnotations(dayAnnotation).build()
+                )).build();
+        initResources(
+                newEPackageBuilder().withName("tests")
+                        .withEClassifiers(Arrays.asList(dateType, productType)).build());
+        createExpression(productType, "self.producedOn + self.ripeningTime");
+        Expression expression = createExpression(productType, "self.producedOn + 10.5[day]");
+        assertThat(expression, instanceOf(DateExpression.class));
+        TimestampDifferenceExpression elapsedTimeFrom = (TimestampDifferenceExpression) createExpression("`2019-12-31T00:00:00.000+0100`!elapsedTimeFrom(`2019-12-31T00:00:00.000+0200`)");
+        assertThat(elapsedTimeFrom.getMeasure(), notNullValue());
         createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` < `2019-12-31T00:00:00.000+0200`");
         createExpression("`2019-12-31T00:00:00.000+0100` == `2019-12-31T00:00:00.000+0200`");
@@ -362,6 +401,7 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-12-31T00:00:00.000+0100` + 1[week]");
         createExpression("`2019-12-31T00:00:00.000+0100` - 1[demo::measures::Time#day]");
         assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+0100` + 1"));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+0100` - 1"));
         assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31T00:00:00.000+0100`"));
     }
 
@@ -643,7 +683,7 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
         Expression timeStampAddition = createExpression("demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
-        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!difference(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
+        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
         Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == #RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));

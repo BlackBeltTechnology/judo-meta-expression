@@ -4,7 +4,7 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.IntegerExpression;
 import hu.blackbelt.judo.meta.expression.OrderedCollectionExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
@@ -18,7 +18,7 @@ import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
 public class JqlTailFunctionTransformer extends AbstractJqlFunctionTransformer<OrderedCollectionExpression> {
 
-    public JqlTailFunctionTransformer(JqlTransformers jqlTransformers) {
+    public JqlTailFunctionTransformer(ExpressionTransformer jqlTransformers) {
         super(jqlTransformers);
     }
 
