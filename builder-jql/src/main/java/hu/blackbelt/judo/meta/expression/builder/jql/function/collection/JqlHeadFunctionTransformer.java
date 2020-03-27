@@ -7,7 +7,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableR
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import java.math.BigInteger;
 
@@ -22,7 +22,7 @@ public class JqlHeadFunctionTransformer extends AbstractJqlFunctionTransformer<O
     }
 
     @Override
-    public Expression apply(OrderedCollectionExpression argument, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
+    public Expression apply(OrderedCollectionExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         if (functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) {
             return newObjectSelectorExpressionBuilder().withCollectionExpression(argument).withOperator(ObjectSelector.HEAD).build();
         } else {

@@ -13,9 +13,11 @@ import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
+import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -598,17 +600,21 @@ public class AsmJqlExpressionBuilderTest {
         Expression roundedConstant = createExpression("1.2!round()");
         assertThat(roundedConstant, instanceOf(IntegerExpression.class));
         EClass product = findBase("Product");
-        Expression roundedAttribute = createGetterExpression(product, "self.unitPrice!round()", "unitPriceRound", ATTRIBUTE);
+        Expression roundedAttribute = createGetterExpression(product, "(self.unitPrice)!round()", "unitPriceRound", ATTRIBUTE);
         assertThat(roundedAttribute, instanceOf(IntegerExpression.class));
     }
 
     @Test
     void testSelectorFunctions() {
         EClass category = findBase("Category");
-        createExpression("demo::entities::Product!sort()");
-        createExpression("demo::entities::Product!sort()!head()");
-        createExpression("demo::entities::Product!sort()!head().weight");
-        createExpression(category, "self.products!sort()!head().weight");
+        Expression expression = createExpression("demo::entities::Product!sort()");
+        assertThat(expression, instanceOf(SortExpression.class));
+        expression = createExpression("demo::entities::Product!sort()!head()");
+        assertThat(expression, instanceOf(ObjectSelectorExpression.class));
+        expression = createExpression("demo::entities::Product!sort()!head().weight");
+        assertThat(expression, instanceOf(AttributeSelector.class));
+        expression = createExpression(category, "self.products!sort()!head().weight");
+        assertThat(expression, instanceOf(AttributeSelector.class));
     }
 
     @Test

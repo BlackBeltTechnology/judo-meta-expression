@@ -9,7 +9,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctio
 import hu.blackbelt.judo.meta.expression.collection.OrderByItem;
 import hu.blackbelt.judo.meta.expression.collection.util.builder.SortExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<C
     }
 
     @Override
-    public Expression apply(CollectionExpression collection, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
+    public Expression apply(CollectionExpression collection, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         List<OrderByItem> orderByItems = new ArrayList<>();
         functionCall.getParameters().forEach((param) -> {
                     DataExpression orderByItemExpression = (DataExpression) jqlTransformers.transform(param.getExpression(), context);

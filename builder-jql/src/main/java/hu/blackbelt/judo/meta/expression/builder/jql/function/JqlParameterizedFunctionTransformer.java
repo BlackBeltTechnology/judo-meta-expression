@@ -3,8 +3,8 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -25,9 +25,9 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
     }
 
     @Override
-    public RESULT apply(BASE argument, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
+    public RESULT apply(BASE argument, JqlFunction function, ExpressionBuildingVariableResolver context) {
         Object parameter;
-        JqlExpression jqlParameterExpression = functionCall.getParameters().get(0).getExpression();
+        JqlExpression jqlParameterExpression = function.getParameters().get(0).getExpression();
         if (parameterMapper != null) {
             parameter = parameterMapper.apply(jqlParameterExpression);
         } else {
@@ -37,7 +37,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
             PARAM castParam = (PARAM) parameter;
             return builder.apply(argument, castParam);
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException(String.format("Error in expression %s!%s, illegal argument type: %s (%s)", argument, functionCall.getFunction().getName(), argument.getClass(), e.getMessage()));
+            throw new IllegalArgumentException(String.format("Error in expression %s!%s, illegal argument type: %s (%s)", argument, function.getName(), argument.getClass(), e.getMessage()));
         }
 
     }
