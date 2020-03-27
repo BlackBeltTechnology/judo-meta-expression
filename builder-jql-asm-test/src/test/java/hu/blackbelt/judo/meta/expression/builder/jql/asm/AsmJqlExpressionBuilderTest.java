@@ -273,12 +273,15 @@ public class AsmJqlExpressionBuilderTest {
     void testStaticExpressions() {
         Expression allProducts = createExpression("demo::entities::Product");
         assertThat(allProducts, instanceOf(CollectionExpression.class));
+        allProducts = createExpression("(demo::entities::Product)");
+        assertThat(allProducts, instanceOf(CollectionExpression.class));
         Expression allOrdersCount = createExpression("demo::entities::Order!count()");
         assertThat(allOrdersCount, instanceOf(IntegerExpression.class));
         Expression allEmployeeOrders = createExpression("demo::entities::Employee=>orders");
         assertThat(allEmployeeOrders, instanceOf(CollectionExpression.class));
         assertThat(allEmployeeOrders, collectionOf("Order"));
         Expression allProductsSorted = createExpression("demo::entities::Product!sort()");
+        assertThat(allProductsSorted, instanceOf(SortExpression.class));
     }
 
     @Test
@@ -287,9 +290,14 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.orderDetails", "orderDetails", RELATION);
         Expression orderCategories = createGetterExpression(order, "self.orderDetails.product.category", "categories", RELATION);
         assertThat(orderCategories, collectionOf("Category"));
+        orderCategories = createGetterExpression(order, "((((self).orderDetails).product).category)", "categories", RELATION);
+        assertThat(orderCategories, collectionOf("Category"));
+
 
         createGetterExpression(order, "self.shipper.companyName", "shipperName", ATTRIBUTE);
+        createGetterExpression(order, "(self).shipper.companyName", "shipperName", ATTRIBUTE);
         createGetterExpression(order, "self.shipper", "shipper", RELATION);
+        createGetterExpression(order, "(self.shipper)", "shipper", RELATION);
         createGetterExpression(order, "self.orderDate", "orderDate", ATTRIBUTE);
 
         EClass internationalOrder = findBase("InternationalOrder");

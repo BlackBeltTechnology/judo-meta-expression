@@ -75,20 +75,20 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                     }
                     return newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(typeNameFromResource).build();
                 },
-                (jqlExpression) -> ((NavigationExpression) jqlExpression).getBase()
+                (jqlExpression) -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()
         ));
         functionTransformers.put("typeof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
                 (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(expressionBuilder.getTypeNameFromResource(parameter)).build(),
-                (jqlExpression -> ((NavigationExpression) jqlExpression).getBase())
+                (jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase())
         ));
 
         functionTransformers.put("astype", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
                 (expression, parameter) -> newCastObjectBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
-                jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
+                jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()));
 
         functionTransformers.put("container", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
                 (expression, parameter) -> newContainerExpressionBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
-                jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
+                jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()));
 
     }
 
@@ -122,7 +122,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 
         functionTransformers.put("ascollection", new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
                 (expression, parameter) -> newCastCollectionBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withCollectionExpression(expression).build(),
-                jqlExpression -> ((NavigationExpression) jqlExpression).getBase()));
+                jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()));
 
     }
 

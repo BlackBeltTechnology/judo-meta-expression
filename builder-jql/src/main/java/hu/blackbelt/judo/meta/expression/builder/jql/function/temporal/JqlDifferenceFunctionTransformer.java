@@ -47,7 +47,7 @@ public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransfo
     private MeasureName findMeasure(JqlFunction functionCall) {
         if ( functionCall.getParameters().size() > 1) {
             FunctionParameter measureNameParam = functionCall.getParameters().get(1);
-            QualifiedName measureQName = ((NavigationExpression) measureNameParam.getExpression()).getBase();
+            QualifiedName measureQName = (QualifiedName) ((NavigationExpression) measureNameParam.getExpression()).getBase();
             MeasureName measureName = measureProvider.getDurationMeasureName(measureQName);
             if (measureName == null) {
                 throw new IllegalArgumentException("Measure is not a duration");
