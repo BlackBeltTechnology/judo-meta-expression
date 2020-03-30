@@ -7,15 +7,12 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
-import hu.blackbelt.judo.meta.jql.jqldsl.util.builder.NavigationExpressionBuilder;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
@@ -50,7 +47,9 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         if (jqlExpression.getBase() != null) {
             // parenthesized expression
             str.append("(");
-            str.append(navigationString((NavigationExpression) jqlExpression.getBase()));
+            if (jqlExpression.getBase() instanceof NavigationExpression) {
+                str.append(navigationString((NavigationExpression) jqlExpression.getBase()));
+            }
             str.append(")");
         } else {
             QualifiedName qName = jqlExpression.getQName();
@@ -63,11 +62,13 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         return str.toString();
     }
 
-    private JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> findBase(NavigationExpression navigation, ExpressionBuildingVariableResolver context) {
+    protected JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> findBase(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+        // According to the JQL grammar a Navigation's base is not necessarily a NavigationExpression. This is used by JCL.
+        NavigationExpression navigation = (NavigationExpression) jqlExpression;
         Expression baseExpression = null;
         C navigationBase;
         if (navigation.getBase() != null) {
-            JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase((NavigationExpression) navigation.getBase(), context);
+            JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(navigation.getBase(), context);
             baseExpression = base.baseExpression;
             navigationBase = base.navigationBase;
         } else {
