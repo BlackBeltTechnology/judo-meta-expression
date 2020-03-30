@@ -2,14 +2,14 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.builder.jql.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
-import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.jqldsl.util.builder.NavigationExpressionBuilder;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,21 +34,28 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 
-    private JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> featureTransformer;
+    private final JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> featureTransformer;
 
     public JqlNavigationTransformer(JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers) {
         super(jqlTransformers);
         featureTransformer = new JqlNavigationFeatureTransformer<>(jqlTransformers);
     }
 
+    protected JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> getFeatureTransformer() {
+        return featureTransformer;
+    }
+
     private static String navigationString(NavigationExpression jqlExpression) {
         StringBuilder str = new StringBuilder();
-        QualifiedName qName = (QualifiedName)jqlExpression.getBase();
-        if (!qName.getNamespaceElements().isEmpty()) {
-            str.append(qName);
-            str.append("::");
+        if (jqlExpression.getBase() != null) {
+            // parenthesized expression
+            str.append("(");
+            str.append(navigationString((NavigationExpression) jqlExpression.getBase()));
+            str.append(")");
+        } else {
+            QualifiedName qName = jqlExpression.getQName();
+            str.append(JqlExpressionBuilder.getFqString(qName.getNamespaceElements(), qName.getName()));
         }
-        str.append(qName.getName());
         for (Feature feature : jqlExpression.getFeatures()) {
             str.append(".");
             str.append(feature.getName());
@@ -56,70 +63,70 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         return str.toString();
     }
 
-    public Expression doTransform(NavigationExpression jqlExpression, ExpressionBuildingVariableResolver context) {
-        NavigationExpression navigation = flattenNavigationExpression(jqlExpression);
-        LOG.debug("Transform navigation: {}", navigationString(navigation));
+    private JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> findBase(NavigationExpression navigation, ExpressionBuildingVariableResolver context) {
         Expression baseExpression = null;
         C navigationBase;
-
-        TypeName typeName = jqlTransformers.getTypeNameFromResource((QualifiedName)navigation.getBase());
-        if (typeName != null) {
-            if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
-                baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
-                navigationBase = null;
-            } else {
-                baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();
-                navigationBase = (C) getModelAdapter().get(typeName).get();
-            }
+        if (navigation.getBase() != null) {
+            JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase((NavigationExpression) navigation.getBase(), context);
+            baseExpression = base.baseExpression;
+            navigationBase = base.navigationBase;
         } else {
-            Expression contextBaseExpression = context.peekBaseExpression();
-            String name = ((QualifiedName)navigation.getBase()).getName();
-            if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
-                baseExpression = EcoreUtil.copy(contextBaseExpression);
-                navigationBase = (C) context.peekBase();
+            TypeName typeName = jqlTransformers.getTypeNameFromResource(navigation.getQName());
+            if (typeName != null) {
+                if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
+                    baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
+                    navigationBase = null;
+                } else {
+                    baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();
+                    navigationBase = (C) getModelAdapter().get(typeName).get();
+                }
             } else {
-                Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> new IllegalStateException("Base variable " + navigation.getBase() + " not found"));
-                navigationBase = null;
-                if (baseVariable instanceof ObjectVariable) {
-                    navigationBase = (C) ((ObjectVariable) baseVariable).getObjectType(getModelAdapter());
-                    baseExpression = newObjectVariableReferenceBuilder().withVariable((ObjectVariable) baseVariable).build();
-                } else if (baseVariable instanceof CollectionVariable) {
-                    navigationBase = (C) ((CollectionVariable) baseVariable).getObjectType(getModelAdapter());
-                    baseExpression = newCollectionVariableReferenceBuilder().withVariable((CollectionVariable) baseVariable).build();
-                } else if (baseVariable instanceof IntegerVariable) {
-                    baseExpression = newIntegerVariableReferenceBuilder().withVariable((IntegerVariable)baseVariable).build();
-                } else if (baseVariable instanceof StringVariable) {
-                    baseExpression = newStringVariableReferenceBuilder().withVariable((StringVariable) baseVariable).build();
-                } else if (baseVariable instanceof DecimalVariable) {
-                    baseExpression = newDecimalVariableReferenceBuilder().withVariable((DecimalVariable) baseVariable).build();
-                } else if (baseVariable instanceof BooleanVariable) {
-                    baseExpression = newBooleanVariableReferenceBuilder().withVariable((BooleanVariable) baseVariable).build();
-                } else if (baseVariable instanceof DateVariable) {
-                    baseExpression = newDateVariableReferenceBuilder().withVariable((DateVariable) baseVariable).build();
-                } else if (baseVariable instanceof TimestampVariable) {
-                    baseExpression = newTimestampVariableReferenceBuilder().withVariable((TimestampVariable) baseVariable).build();
-                } else if (baseVariable instanceof CustomVariable) {
-                    baseExpression = newCustomVariableReferenceBuilder().withVariable((CustomVariable) baseVariable).build();
-                } else if (baseVariable instanceof EnumerationVariable) {
-                    baseExpression = newEnumerationVariableReferenceBuilder().withVariable((EnumerationVariable) baseVariable).build();
+                Expression contextBaseExpression = context.peekBaseExpression();
+                String name = navigation.getQName().getName();
+                if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
+                    baseExpression = EcoreUtil.copy(contextBaseExpression);
+                    navigationBase = (C) context.peekBase();
+                } else {
+                    Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> new IllegalStateException("Base variable " + navigation.getBase() + " not found"));
+                    navigationBase = null;
+                    if (baseVariable instanceof ObjectVariable) {
+                        navigationBase = (C) ((ObjectVariable) baseVariable).getObjectType(getModelAdapter());
+                        baseExpression = newObjectVariableReferenceBuilder().withVariable((ObjectVariable) baseVariable).build();
+                    } else if (baseVariable instanceof CollectionVariable) {
+                        navigationBase = (C) ((CollectionVariable) baseVariable).getObjectType(getModelAdapter());
+                        baseExpression = newCollectionVariableReferenceBuilder().withVariable((CollectionVariable) baseVariable).build();
+                    } else if (baseVariable instanceof IntegerVariable) {
+                        baseExpression = newIntegerVariableReferenceBuilder().withVariable((IntegerVariable) baseVariable).build();
+                    } else if (baseVariable instanceof StringVariable) {
+                        baseExpression = newStringVariableReferenceBuilder().withVariable((StringVariable) baseVariable).build();
+                    } else if (baseVariable instanceof DecimalVariable) {
+                        baseExpression = newDecimalVariableReferenceBuilder().withVariable((DecimalVariable) baseVariable).build();
+                    } else if (baseVariable instanceof BooleanVariable) {
+                        baseExpression = newBooleanVariableReferenceBuilder().withVariable((BooleanVariable) baseVariable).build();
+                    } else if (baseVariable instanceof DateVariable) {
+                        baseExpression = newDateVariableReferenceBuilder().withVariable((DateVariable) baseVariable).build();
+                    } else if (baseVariable instanceof TimestampVariable) {
+                        baseExpression = newTimestampVariableReferenceBuilder().withVariable((TimestampVariable) baseVariable).build();
+                    } else if (baseVariable instanceof CustomVariable) {
+                        baseExpression = newCustomVariableReferenceBuilder().withVariable((CustomVariable) baseVariable).build();
+                    } else if (baseVariable instanceof EnumerationVariable) {
+                        baseExpression = newEnumerationVariableReferenceBuilder().withVariable((EnumerationVariable) baseVariable).build();
+                    }
                 }
             }
         }
-        LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
-        return featureTransformer.transform(navigation, baseExpression, navigationBase, context).baseExpression;
+        return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
     }
 
-    private NavigationExpression flattenNavigationExpression(NavigationExpression jqlExpression) {
-        EObject base = jqlExpression.getBase();
-        List<Feature> features = jqlExpression.getFeatures();
-        while (base instanceof NavigationExpression) {
-            NavigationExpression baseToFlatten = (NavigationExpression) base;
-            if (baseToFlatten.getFeatures() != null && !baseToFlatten.getFeatures().isEmpty()) {
-                features.addAll(0, baseToFlatten.getFeatures());
-            }
-            base = baseToFlatten.getBase();
-        }
-        return NavigationExpressionBuilder.create().withBase(base).withFeatures(features).build();
+    public Expression doTransform(NavigationExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+//        NavigationExpression navigation = flattenNavigationExpression(jqlExpression);
+        NavigationExpression navigation = jqlExpression;
+        LOG.debug("Transform navigation: {}", navigationString(navigation));
+        JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(jqlExpression, context);
+        Expression baseExpression = base.baseExpression;
+        C navigationBase = base.navigationBase;
+        LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
+        return baseExpression;
     }
 
 }

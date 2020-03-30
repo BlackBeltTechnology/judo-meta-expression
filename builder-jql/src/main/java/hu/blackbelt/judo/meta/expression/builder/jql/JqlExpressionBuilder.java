@@ -50,6 +50,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
+    public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
     private final ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
@@ -81,13 +82,18 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
     }
 
     public static String createQNamespaceString(QualifiedName qName) {
-        String qNamespaceString;
-        if (qName.getNamespaceElements() != null && !qName.getNamespaceElements().isEmpty()) {
-            qNamespaceString = String.join("::", qName.getNamespaceElements());
-        } else {
-            qNamespaceString = null;
+        return getFqString(qName.getNamespaceElements());
+    }
+
+    public static String getFqString(List<String> namespaceElements, String... additionalElements) {
+        List<String> allElements = new ArrayList<>();
+        if (namespaceElements != null) {
+            allElements.addAll(namespaceElements);
         }
-        return qNamespaceString;
+        if (additionalElements != null) {
+            allElements.addAll(Arrays.asList(additionalElements));
+        }
+        return String.join(NAMESPACE_SEPARATOR, allElements);
     }
 
     private void addSequences() {
@@ -101,7 +107,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         modelAdapter.getAllAccessPoints().forEach(e -> {
             TypeName typeName = modelAdapter.getTypeName(e).get();
             storeTypeName(e, typeName);
-            accessPoints.put(typeName.getNamespace() + "::" + typeName.getName(), typeName);
+            accessPoints.put(typeName.getNamespace() + NAMESPACE_SEPARATOR + typeName.getName(), typeName);
         });
     }
 
@@ -109,7 +115,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         modelAdapter.getAllEnums().forEach(e -> {
             TypeName enumTypeName = modelAdapter.getEnumerationTypeName(e).get();
             storeTypeName(e, enumTypeName);
-            enumTypes.put(enumTypeName.getNamespace() + "::" + enumTypeName.getName(), enumTypeName);
+            enumTypes.put(enumTypeName.getNamespace() + NAMESPACE_SEPARATOR + enumTypeName.getName(), enumTypeName);
         });
     }
 
@@ -155,7 +161,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                     .anyMatch(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace(), measureName.getNamespace()));
             if (!alreadyAdded) {
                 expressionResource.getContents().add(measureName);
-                String measureNameString = String.join("::", measureName.getNamespace(), measureName.getName());
+                String measureNameString = String.join(NAMESPACE_SEPARATOR, measureName.getNamespace(), measureName.getName());
                 measureNames.put(measureNameString, measureName);
                 modelAdapter.getUnits(measure).stream().filter(modelAdapter::isDurationSupportingAddition).findAny().ifPresent(u -> durationMeasures.put(measureNameString, measureName));
             }
@@ -233,7 +239,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         if (entityType != null) {
             typeName = entityInstances.get(entityType).getElementName();
         } else if (accessPoint != null) {
-            typeName = accessPoints.get(modelAdapter.getTypeName(accessPoint).map(tn -> tn.getNamespace() + "::" + tn.getName()).get());
+            typeName = accessPoints.get(modelAdapter.getTypeName(accessPoint).map(tn -> tn.getNamespace() + NAMESPACE_SEPARATOR+ tn.getName()).get());
         } else {
             throw new IllegalArgumentException("Entity type or access point must be specified");
         }
@@ -345,7 +351,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
         String namespace = createQNamespaceString(qName);
-        if (namespace != null) {
+        if (!namespace.isEmpty()) {
             String name = qName.getName();
             TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
             NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException(String.valueOf(typeName)));
@@ -393,7 +399,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         }
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
 

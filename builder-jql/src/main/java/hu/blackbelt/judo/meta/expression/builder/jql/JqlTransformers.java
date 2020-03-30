@@ -75,20 +75,20 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                     }
                     return newInstanceOfExpressionBuilder().withObjectExpression(expression).withElementName(typeNameFromResource).build();
                 },
-                (jqlExpression) -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()
+                (jqlExpression) -> ((NavigationExpression) jqlExpression).getQName()
         ));
         functionTransformers.put("typeof", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
                 (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression).withElementName(expressionBuilder.getTypeNameFromResource(parameter)).build(),
-                (jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase())
+                (jqlExpression -> ((NavigationExpression) jqlExpression).getQName())
         ));
 
         functionTransformers.put("astype", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
                 (expression, parameter) -> newCastObjectBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
-                jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()));
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
 
         functionTransformers.put("container", new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
                 (expression, parameter) -> newContainerExpressionBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withObjectExpression(expression).build(),
-                jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()));
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
 
     }
 
@@ -122,7 +122,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 
         functionTransformers.put("ascollection", new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
                 (expression, parameter) -> newCastCollectionBuilder().withElementName(expressionBuilder.getTypeNameFromResource(parameter)).withCollectionExpression(expression).build(),
-                jqlExpression -> (QualifiedName) ((NavigationExpression) jqlExpression).getBase()));
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
 
     }
 
@@ -218,7 +218,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                         objectType = (C) castObject.getElementName().get(getModelAdapter());
                     }
                     JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlNavigationFeatureTransformer = new JqlNavigationFeatureTransformer<>(this);
-                    JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> transformResult = jqlNavigationFeatureTransformer.transform(functionCall, subject, objectType, context);
+                    JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> transformResult = jqlNavigationFeatureTransformer.transform(functionCall.getFeatures(), subject, objectType, context);
                     subject = transformResult.baseExpression;
                     objectType = transformResult.navigationBase;
                     if (functionCall.getFunction().getLambdaArgument() != null) {
@@ -281,7 +281,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 
     @Override
     public MeasureName getDurationMeasureName(QualifiedName qualifiedName) {
-        return expressionBuilder.getDurationMeasureName(JqlExpressionBuilder.createQNamespaceString(qualifiedName) + "::" + qualifiedName.getName());
+        return expressionBuilder.getDurationMeasureName(JqlExpressionBuilder.getFqString(qualifiedName.getNamespaceElements(), qualifiedName.getName()));
     }
 
     @Override
@@ -307,7 +307,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         return expressionBuilder;
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers, ? extends JqlExpressionTransformerFunction> transformer) {
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
             transformers.put(jqlType, transformer.apply(this));
     }
 

@@ -13,6 +13,7 @@ import org.eclipse.emf.common.util.EList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
@@ -36,16 +37,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
         this.jqlTransformers = jqlTransformers;
     }
 
-    public JqlFeatureTransformResult<C> transform(JqlExpression expression, Expression subject, C navigationBase, ExpressionBuildingVariableResolver context) {
+    public JqlFeatureTransformResult<C> transform(List<Feature> features, Expression subject, C navigationBase, ExpressionBuildingVariableResolver context) {
         Expression baseExpression = subject;
-        EList<Feature> features;
-        if (expression instanceof NavigationExpression) {
-            features = ((NavigationExpression) expression).getFeatures();
-        } else if (expression instanceof FunctionCall) {
-            features = ((FunctionCall) expression).getFeatures();
-        } else {
-            throw new IllegalStateException("Feature transformer called on object with no features");
-        }
         for (Feature jqlFeature : features) {
             Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
             Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
@@ -60,8 +53,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
                 navigationBase = transformResult.navigationBase;
             } else if (sequence.isPresent()) {
                 baseExpression = newObjectSequenceBuilder().withObjectExpression((ObjectExpression) baseExpression).withSequenceName(jqlFeature.getName()).build();
-            } else if (isExtendedFeaturePresent(expression, jqlFeature, context)) {
-                JqlFeatureTransformResult<C> transformResult = transformExtendedFeature(expression, context, baseExpression, navigationBase, jqlFeature);
+            } else if (isExtendedFeature(jqlFeature, context)) {
+                JqlFeatureTransformResult<C> transformResult = transformExtendedFeature(jqlFeature, context, baseExpression, navigationBase);
                 baseExpression = transformResult.baseExpression;
                 navigationBase = transformResult.navigationBase;
             } else {
@@ -72,17 +65,16 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
         return new JqlFeatureTransformResult<>(navigationBase, baseExpression);
     }
 
-    protected boolean isExtendedFeaturePresent(JqlExpression jqlExpression, Feature jqlFeature, ExpressionBuildingVariableResolver context) {
+    protected boolean isExtendedFeature(Feature jqlFeature, ExpressionBuildingVariableResolver context) {
         return false;
     }
 
-    protected JqlFeatureTransformResult<C> transformExtendedFeature(JqlExpression jqlExpression,
-                                                                    ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase,
-                                                                    Feature jqlFeature) {
+    protected JqlFeatureTransformResult<C> transformExtendedFeature(Feature jqlFeature,
+                                                                    ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase) {
         return null;
     }
 
-    private ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
+    protected ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
         return jqlTransformers.getModelAdapter();
     }
 
