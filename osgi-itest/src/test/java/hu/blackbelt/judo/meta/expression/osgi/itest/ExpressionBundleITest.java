@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -38,6 +39,7 @@ import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Ignore
 public class ExpressionBundleITest {
 
     public static final String HU_BLACKBELT_JUDO_META_EXPRESSION_OSGI = "hu.blackbelt.judo.meta.expression.osgi";

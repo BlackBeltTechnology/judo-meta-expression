@@ -14,6 +14,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadA
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 
+@Disabled
 public class PsmMeasureSupportTest {
 
     private PsmModel measureModel;

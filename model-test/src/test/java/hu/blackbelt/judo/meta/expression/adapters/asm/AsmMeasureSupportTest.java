@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 
+@Disabled
 public class AsmMeasureSupportTest {
 
     private MeasureModel measureModel;

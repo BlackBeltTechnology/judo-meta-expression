@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
@@ -19,6 +20,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
+@Disabled
 public class EvaluationAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach

@@ -4,8 +4,10 @@ import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidator
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 class MinimalAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
