@@ -11,7 +11,6 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -25,7 +24,6 @@ import java.util.stream.StreamSupport;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
 import static org.hamcrest.CoreMatchers.is;
 
-@Disabled
 public class PsmMeasureProviderTest {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmMeasureProviderTest.class);

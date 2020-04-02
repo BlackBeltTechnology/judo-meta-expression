@@ -2,14 +2,12 @@ package hu.blackbelt.judo.meta.expression.runtime;
 
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
 
-@Disabled
 class OrderAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach

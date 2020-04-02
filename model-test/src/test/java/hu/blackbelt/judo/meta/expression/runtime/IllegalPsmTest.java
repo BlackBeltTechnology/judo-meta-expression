@@ -3,7 +3,6 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,7 +10,6 @@ import java.io.File;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.LoadArguments.expressionLoadArgumentsBuilder;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Disabled
 public class IllegalPsmTest extends ExecutionContextOnPsmTest {
 	
 	@BeforeEach

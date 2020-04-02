@@ -5,7 +5,6 @@ import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -16,7 +15,6 @@ import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBu
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
 
-@Disabled
 public class MeasuredTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach

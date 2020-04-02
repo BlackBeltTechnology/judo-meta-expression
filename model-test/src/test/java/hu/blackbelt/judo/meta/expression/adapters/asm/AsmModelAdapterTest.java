@@ -17,11 +17,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -41,7 +39,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
 public class AsmModelAdapterTest {
 
     private MeasureModel measureModel;
