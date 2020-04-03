@@ -2,7 +2,7 @@
 <feature
       id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature"
       label="Judo Expression JQL Builder for ASM Feature"
-      version="1.0.0.qualifier"
+      version="1.0.1.qualifier"
       provider-name="BlackBelt Technology">
 
    <description url="http://www.blackbelt.hu">
