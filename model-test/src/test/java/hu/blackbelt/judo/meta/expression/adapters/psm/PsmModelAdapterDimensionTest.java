@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.psm.data.EntityType;
 import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
@@ -16,6 +15,7 @@ import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
@@ -51,7 +51,7 @@ public class PsmModelAdapterDimensionTest {
         resource = resourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
         measureProvider = new PsmMeasureProvider(resourceSet);
 
-        final ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
+        final ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, TransferObjectType, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
 
         Mockito.doAnswer(invocationOnMock -> {
             final Object[] args = invocationOnMock.getArguments();

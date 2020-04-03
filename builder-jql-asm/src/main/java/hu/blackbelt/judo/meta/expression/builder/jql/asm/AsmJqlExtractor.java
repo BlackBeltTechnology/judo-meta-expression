@@ -347,9 +347,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                 final JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER);
                                 final JqlExpressionBuilder.BindingContext setterBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.SETTER);
 
-                                if (!reference.isDerived()) {
-                                    throw new IllegalStateException("References of access points must be derived");
-                                } else {
+                                if (reference.isDerived()) {
                                     if (log.isTraceEnabled()) {
                                         log.trace("  - extracting JQL expressions of navigation property: {}", AsmUtils.getReferenceFQName(reference));
                                     }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: hu.blackbelt.judo.meta.expression.model.adapter.psm;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
 Bundle-Localization: plugin
@@ -24,12 +24,12 @@ Import-Package: hu.blackbelt.epsilon.runtime.execution,
  hu.blackbelt.judo.meta.measure,
  hu.blackbelt.judo.meta.measure.runtime,
  hu.blackbelt.judo.meta.psm,
- hu.blackbelt.judo.meta.psm.accesspoint,
  hu.blackbelt.judo.meta.psm.data,
  hu.blackbelt.judo.meta.psm.derived,
  hu.blackbelt.judo.meta.psm.measure,
  hu.blackbelt.judo.meta.psm.namespace,
  hu.blackbelt.judo.meta.psm.runtime,
+ hu.blackbelt.judo.meta.psm.service,
  hu.blackbelt.judo.meta.psm.type,
  org.eclipse.emf.common.notify,
  org.eclipse.emf.ecore,

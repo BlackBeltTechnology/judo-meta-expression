@@ -11,7 +11,6 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.derived.ReferenceAccessor;
@@ -21,6 +20,7 @@ import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import org.eclipse.emf.common.notify.Notifier;
@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for PSM models.
  */
-public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> {
+public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, TransferObjectType, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
@@ -372,7 +372,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<AccessPoint> getAllAccessPoints() {
-        return ECollections.asEList(getPsmElement(AccessPoint.class).collect(toList()));
+    public EList<TransferObjectType> getAllAccessPoints() {
+        return ECollections.asEList(getPsmElement(TransferObjectType.class).filter(t -> t.isAccessPoint()).collect(toList()));
     }
 }
