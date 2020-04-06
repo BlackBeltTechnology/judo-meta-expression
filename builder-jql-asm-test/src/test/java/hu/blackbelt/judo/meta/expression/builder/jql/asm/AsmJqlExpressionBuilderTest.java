@@ -13,9 +13,11 @@ import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
+import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -271,12 +273,15 @@ public class AsmJqlExpressionBuilderTest {
     void testStaticExpressions() {
         Expression allProducts = createExpression("demo::entities::Product");
         assertThat(allProducts, instanceOf(CollectionExpression.class));
+        allProducts = createExpression("(demo::entities::Product)");
+        assertThat(allProducts, instanceOf(CollectionExpression.class));
         Expression allOrdersCount = createExpression("demo::entities::Order!count()");
         assertThat(allOrdersCount, instanceOf(IntegerExpression.class));
         Expression allEmployeeOrders = createExpression("demo::entities::Employee=>orders");
         assertThat(allEmployeeOrders, instanceOf(CollectionExpression.class));
         assertThat(allEmployeeOrders, collectionOf("Order"));
         Expression allProductsSorted = createExpression("demo::entities::Product!sort()");
+        assertThat(allProductsSorted, instanceOf(SortExpression.class));
     }
 
     @Test
@@ -285,9 +290,14 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.orderDetails", "orderDetails", RELATION);
         Expression orderCategories = createGetterExpression(order, "self.orderDetails.product.category", "categories", RELATION);
         assertThat(orderCategories, collectionOf("Category"));
+        orderCategories = createGetterExpression(order, "((((self).orderDetails).product).category)", "categories", RELATION);
+        assertThat(orderCategories, collectionOf("Category"));
+
 
         createGetterExpression(order, "self.shipper.companyName", "shipperName", ATTRIBUTE);
+        createGetterExpression(order, "(self).shipper.companyName", "shipperName", ATTRIBUTE);
         createGetterExpression(order, "self.shipper", "shipper", RELATION);
+        createGetterExpression(order, "(self.shipper)", "shipper", RELATION);
         createGetterExpression(order, "self.orderDate", "orderDate", ATTRIBUTE);
 
         EClass internationalOrder = findBase("InternationalOrder");
@@ -511,7 +521,13 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testCustomAttributes() {
         EClass category = findBase("Category");
+    }
 
+    @Test
+    void testParenNavigation() {
+        EClass order = findBase("Order");
+        Expression expression = createExpression(order, "(self.shipper).companyName");
+        System.out.println(expression);
     }
 
     @Test
@@ -574,7 +590,7 @@ public class AsmJqlExpressionBuilderTest {
     void testEnums() {
         EClass order = findBase("Order");
         createGetterExpression(order, "self.shipAddress.country == demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
-        createGetterExpression(order, "self.shipAddress.country == #AT", "countryCheck2", ATTRIBUTE);
+        createGetterExpression(order, "self.shipAddress.country == Countries#AT", "countryCheck2", ATTRIBUTE);
 
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::types::Countries#AT : demo::types::Titles#MR"));
@@ -598,17 +614,21 @@ public class AsmJqlExpressionBuilderTest {
         Expression roundedConstant = createExpression("1.2!round()");
         assertThat(roundedConstant, instanceOf(IntegerExpression.class));
         EClass product = findBase("Product");
-        Expression roundedAttribute = createGetterExpression(product, "self.unitPrice!round()", "unitPriceRound", ATTRIBUTE);
+        Expression roundedAttribute = createGetterExpression(product, "(self.unitPrice)!round()", "unitPriceRound", ATTRIBUTE);
         assertThat(roundedAttribute, instanceOf(IntegerExpression.class));
     }
 
     @Test
     void testSelectorFunctions() {
         EClass category = findBase("Category");
-        createExpression("demo::entities::Product!sort()");
-        createExpression("demo::entities::Product!sort()!head()");
-        createExpression("demo::entities::Product!sort()!head().weight");
-        createExpression(category, "self.products!sort()!head().weight");
+        Expression expression = createExpression("demo::entities::Product!sort()");
+        assertThat(expression, instanceOf(SortExpression.class));
+        expression = createExpression("demo::entities::Product!sort()!head()");
+        assertThat(expression, instanceOf(ObjectSelectorExpression.class));
+        expression = createExpression("demo::entities::Product!sort()!head().weight");
+        assertThat(expression, instanceOf(AttributeSelector.class));
+        expression = createExpression(category, "self.products!sort()!head().weight");
+        assertThat(expression, instanceOf(AttributeSelector.class));
     }
 
     @Test
@@ -685,7 +705,7 @@ public class AsmJqlExpressionBuilderTest {
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
-        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == #RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
+        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == Country#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));
     }
 

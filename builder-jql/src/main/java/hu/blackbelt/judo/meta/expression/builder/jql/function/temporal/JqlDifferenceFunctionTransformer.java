@@ -5,10 +5,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableR
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionMeasureProvider;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
-import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
+import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
 import java.util.Optional;
 
@@ -25,7 +22,7 @@ public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransfo
     }
 
     @Override
-    public Expression apply(DataExpression argument, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
+    public Expression apply(DataExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         if (argument instanceof DateExpression) {
             DateExpression startDate = (DateExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
             DateExpression endDate = (DateExpression) argument;
@@ -47,10 +44,10 @@ public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransfo
         }
     }
 
-    private MeasureName findMeasure(FunctionCall functionCall) {
+    private MeasureName findMeasure(JqlFunction functionCall) {
         if ( functionCall.getParameters().size() > 1) {
             FunctionParameter measureNameParam = functionCall.getParameters().get(1);
-            QualifiedName measureQName = ((NavigationExpression) measureNameParam.getExpression()).getBase();
+            QualifiedName measureQName = ((NavigationExpression) measureNameParam.getExpression()).getQName();
             MeasureName measureName = measureProvider.getDurationMeasureName(measureQName);
             if (measureName == null) {
                 throw new IllegalArgumentException("Measure is not a duration");

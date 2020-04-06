@@ -14,7 +14,7 @@
     <artifactId>hu.blackbelt.judo.meta.expression.adapter.measure.feature</artifactId>
     <packaging>eclipse-feature</packaging>
 
-    <name>Judo :: Expression :: Adapter :: Measute :: Eclipse feature</name>
+    <name>Judo :: Expression :: Adapter :: Measure :: Eclipse feature</name>
     <description>Judo Expression measure adapter feature</description>
     
 </project>

@@ -8,7 +8,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newSubCollectionExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newCountExpressionBuilder;
@@ -23,7 +23,7 @@ public class JqlTailFunctionTransformer extends AbstractJqlFunctionTransformer<O
     }
 
     @Override
-    public Expression apply(OrderedCollectionExpression collection, FunctionCall functionCall, ExpressionBuildingVariableResolver context) {
+    public Expression apply(OrderedCollectionExpression collection, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         if (functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) {
             return newObjectSelectorExpressionBuilder().withCollectionExpression(collection).withOperator(ObjectSelector.TAIL).build();
         } else {
