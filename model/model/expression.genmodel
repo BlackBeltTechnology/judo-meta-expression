@@ -936,6 +936,8 @@
             body="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
         <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/toString"
             body="&#x9;&#x9;if (getCollectionExpression().getVariableName() == null) {&#xA;&#x9;&#x9;    return getCollectionExpression() + &quot; as e orderedBy e.id&quot;;&#xA;&#x9;&#x9;} else {&#xA;&#x9;&#x9;    return getCollectionExpression() + &quot; as &quot; + getCollectionExpression().getVariableName() + &quot; orderedBy &quot; + String.join(&quot;, &quot;, getOrderBy().toString());&#xA;&#x9;&#x9;}&#xA;"/>
+        <genOperations ecoreOperation="expression.ecore#//collection/SortExpression/getVariableName"
+            body="return getCollectionExpression().getVariableName();"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//collection/SubCollectionExpression">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
