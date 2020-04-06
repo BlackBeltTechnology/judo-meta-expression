@@ -76,6 +76,27 @@
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDfCDlEeqA1rnNh8KDMw" name="shipper" eType="_1WUK_SDlEeqA1rnNh8KDMw" eOpposite="_1WZDhSDlEeqA1rnNh8KDMw"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDjiDlEeqA1rnNh8KDMw" name="shipAddress" eType="_1WUK8iDlEeqA1rnNh8KDMw" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDjyDlEeqA1rnNh8KDMw" name="orderDetails" lowerBound="1" upperBound="-1" eType="_1WUK-CDlEeqA1rnNh8KDMw" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_F6iW0HWLEeqrmtLpPNN12w" name="countryCheck" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_Me738HWLEeqrmtLpPNN12w" name="countryCheck2" eType="_1Wxd-CDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_QztDUHWMEeqrmtLpPNN12w" name="shipperNameLower" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_R7OFAHWMEeqrmtLpPNN12w" name="shipperNameUpper" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_SdGqEHWMEeqrmtLpPNN12w" name="shipperNameSubStringEnd" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_S-ff4HWMEeqrmtLpPNN12w" name="shipperNameReplace1" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_TlAtUHWMEeqrmtLpPNN12w" name="shipperNameReplace2" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_UVB1AHWMEeqrmtLpPNN12w" name="shipperTrim" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_U67-cHWMEeqrmtLpPNN12w" name="shipperFirst" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_Vfy_AHWMEeqrmtLpPNN12w" name="last" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_FYpf0HWNEeqrmtLpPNN12w" name="shipperNameLength" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_GF2kEHWNEeqrmtLpPNN12w" name="shipperNameLowerLength" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_GvA10HWNEeqrmtLpPNN12w" name="shipperNameSubString1" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_HPpdsHWNEeqrmtLpPNN12w" name="shipperNamePosition" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_IVd2QHWNEeqrmtLpPNN12w" name="shipperNamePosition2" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_I3_7kHWNEeqrmtLpPNN12w" name="shipperNameMatches" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_3B_RYHWOEeqrmtLpPNN12w" name="shipperNameConcat" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_6uZRsHWOEeqrmtLpPNN12w" name="shipperNameConcat2" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_-szA8HWOEeqrmtLpPNN12w" name="stringSwitch" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_feP9cHgDEeqQrOTT3nqYCQ" name="category" eType="_1WTj9yDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_pfv3kHgDEeqQrOTT3nqYCQ" name="otherShipper" eType="_1WUK8CDlEeqA1rnNh8KDMw"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_1WUK8yDlEeqA1rnNh8KDMw" name="InternationalOrder" eSuperTypes="_1WUK9yDlEeqA1rnNh8KDMw">
       <eAnnotations xmi:id="_1WTj6CDlEeqA1rnNh8KDMw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/entity">
@@ -99,6 +120,7 @@
       </eAnnotations>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDdCDlEeqA1rnNh8KDMw" name="orders" upperBound="-1" eType="_1WUK9yDlEeqA1rnNh8KDMw" eOpposite="_1WZDeyDlEeqA1rnNh8KDMw"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDjCDlEeqA1rnNh8KDMw" name="addresses" upperBound="-1" eType="_1WTj9iDlEeqA1rnNh8KDMw" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_QsnagHWlEeqrmtLpPNN12w" name="customerAddresses" ordered="false" upperBound="-1" eType="_1WTj9iDlEeqA1rnNh8KDMw" derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_1WTj-SDlEeqA1rnNh8KDMw" name="Company" eSuperTypes="_1WTj-iDlEeqA1rnNh8KDMw">
       <eAnnotations xmi:id="_1WTj4yDlEeqA1rnNh8KDMw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/entity">
@@ -196,6 +218,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDgiDlEeqA1rnNh8KDMw" name="manufacturers" upperBound="-1" eType="_1WTj-SDlEeqA1rnNh8KDMw" eOpposite="_1WZDcyDlEeqA1rnNh8KDMw"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDgSDlEeqA1rnNh8KDMw" name="supplier" eType="_1WUK_yDlEeqA1rnNh8KDMw" eOpposite="_1WZDiCDlEeqA1rnNh8KDMw"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDgyDlEeqA1rnNh8KDMw" name="store" eType="_1WUK_iDlEeqA1rnNh8KDMw" eOpposite="_1WZDhyDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_HkBnsHWMEeqrmtLpPNN12w" name="unitPriceRound" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_1WTj9yDlEeqA1rnNh8KDMw" name="Category">
       <eAnnotations xmi:id="_1WTj4SDlEeqA1rnNh8KDMw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/entity">
@@ -224,6 +247,27 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDcSDlEeqA1rnNh8KDMw" name="products" upperBound="-1" eType="_1WUK-yDlEeqA1rnNh8KDMw" eOpposite="_1WZDgCDlEeqA1rnNh8KDMw"/>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDciDlEeqA1rnNh8KDMw" name="owner" eType="_1WUK8CDlEeqA1rnNh8KDMw" eOpposite="_1WZDeSDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_wpLVMHWOEeqrmtLpPNN12w" name="productListOrdered" eType="_1Ww24iDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_HpAG8HWPEeqrmtLpPNN12w" name="productListLength" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_IgIjQHWPEeqrmtLpPNN12w" name="cheapProductsCount" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_I27SoHWPEeqrmtLpPNN12w" name="lowestQty" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JNvQIHWPEeqrmtLpPNN12w" name="highestQty" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_JlS0gHWPEeqrmtLpPNN12w" name="sumQty" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_J9OMUHWPEeqrmtLpPNN12w" name="productListCount" eType="_1Ww25SDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_e9MmMHWPEeqrmtLpPNN12w" name="cheapestPrice" ordered="false" eType="_1Wxd8CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_fdAusHWPEeqrmtLpPNN12w" name="highestPrice" ordered="false" eType="_1Wxd8CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_gBriAHWPEeqrmtLpPNN12w" name="sumOfPrices" ordered="false" eType="_1Wxd8CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_gcU2oHWPEeqrmtLpPNN12w" name="avgOfPrices" ordered="false" eType="_1Wxd8CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_gyFEMHWPEeqrmtLpPNN12w" name="avgQty" ordered="false" eType="_1Wxd8CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_hIW2MHWPEeqrmtLpPNN12w" name="cheapProductsAvgPrice" ordered="false" eType="_1Wxd8CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_U8bY8HWcEeqrmtLpPNN12w" name="containsProduct" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_ee7C4HWcEeqrmtLpPNN12w" name="productMemberOf" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_kQIMgHWcEeqrmtLpPNN12w" name="productComparison2" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_lBmswHWcEeqrmtLpPNN12w" name="productComparison1" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_dwrb0HWnEeqrmtLpPNN12w" name="productListHead" upperBound="-1" eType="_1WUK-yDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_q6iiIHW0EeqrmtLpPNN12w" name="productListTail" upperBound="-1" eType="_1WUK-yDlEeqA1rnNh8KDMw" derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_xQleMHW0EeqrmtLpPNN12w" name="cheapProducts" upperBound="-1" eType="_1WUK-yDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_LhStgHgIEeqQrOTT3nqYCQ" name="product" eType="_1WUK-yDlEeqA1rnNh8KDMw"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_1WUK-CDlEeqA1rnNh8KDMw" name="OrderDetail">
       <eAnnotations xmi:id="_1WTj7SDlEeqA1rnNh8KDMw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/entity">
@@ -297,6 +341,7 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="_1WZDfiDlEeqA1rnNh8KDMw" name="product" lowerBound="1" eType="_1WUK-yDlEeqA1rnNh8KDMw"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="_wfS4EHWcEeqrmtLpPNN12w" name="productType" eType="_1Wxd-CDlEeqA1rnNh8KDMw" derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" xmi:id="_1WTj9iDlEeqA1rnNh8KDMw" name="Address">
       <eAnnotations xmi:id="_1WTj4CDlEeqA1rnNh8KDMw" source="http://blackbelt.hu/judo/meta/ExtendedMetadata/entity">

@@ -665,7 +665,7 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipper.companyName!first(5)", "shipperFirst", ATTRIBUTE);
 
         // Last
-        createGetterExpression(order, "self.shipper.companyName!last(1)", "Last", ATTRIBUTE);
+        createGetterExpression(order, "self.shipper.companyName!last(1)", "last", ATTRIBUTE);
 
         // Matches
         createGetterExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')", "shipperNameMatches", ATTRIBUTE);

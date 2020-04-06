@@ -1,0 +1,24 @@
+context EXPR!ReferenceBinding {
+	
+	constraint ReferenceExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!ReferenceExpression)
+		check: modelAdapter.getSuperTypes(self.expression.getObjectType(modelAdapter)).including(self.expression.getObjectType(modelAdapter))
+			.includes(modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get().eReferenceType)
+		message: "Reference named " + self.referenceName + " of object type " + modelAdapter.get(self.typeName).get().name + 
+			" does not match expression type " + self.expression.getObjectType(modelAdapter).name
+	}
+	
+	constraint ObjectExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!ObjectExpression)
+		check: not modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get().isMany()
+		message: "Reference named " + self.referenceName + " of object type " + modelAdapter.get(self.typeName).get().name + 
+			" is a collection, but the expression " + self.expression.getObjectType(modelAdapter).name + " evaluates to an object."
+	}
+	
+	constraint CollectionExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!CollectionExpression)
+		check: modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get().isMany()
+		message: "Reference named " + self.referenceName + " of object type " + modelAdapter.get(self.typeName).get().name + 
+			" is an object, but the expression " + self.expression.getObjectType(modelAdapter).name + " evaluates to a collection."
+	}
+}
