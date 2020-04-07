@@ -32,6 +32,7 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
@@ -242,6 +243,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                 context.pushVariable(variable);
             } else {
                 collection.getIteratorVariable().setName(lambdaArgument);
+                context.pushVariable(collection.getIteratorVariable());
             }
         } else if (subject instanceof ObjectVariable) {
             ObjectVariable variable = (ObjectVariable) subject;
