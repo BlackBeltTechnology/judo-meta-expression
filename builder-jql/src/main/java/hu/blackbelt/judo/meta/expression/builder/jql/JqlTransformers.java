@@ -233,6 +233,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                 context.pushVariable(variable);
             } else {
                 collection.getIteratorVariable().setName(lambdaArgument);
+                context.pushVariable(collection.getIteratorVariable());
             }
         } else if (subject instanceof ObjectVariable) {
             ObjectVariable variable = (ObjectVariable) subject;
