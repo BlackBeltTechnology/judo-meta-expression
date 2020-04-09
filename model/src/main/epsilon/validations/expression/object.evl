@@ -21,6 +21,13 @@ context EXPR!ObjectSelectorExpression {
         check: self.getObjectType(modelAdapter).isDefined()
         message: "Type of object selector expression is not defined: " + self
     }
+    
+    constraint ObjectSelectorOperatorIsValid {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: (self.operator == EXPR!ObjectSelector#head or self.operator == EXPR!ObjectSelector#tail) implies self.collectionExpression.isKindOf(EXPR!OrderedCollectionExpression)
+        message: "Head and Tail operations need ordered collection: " + self
+    }
 }
 
 context EXPR!ObjectFilterExpression {

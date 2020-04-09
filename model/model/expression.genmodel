@@ -282,6 +282,7 @@
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/ObjectSelector">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/ObjectSelector/head"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/ObjectSelector/tail"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/ObjectSelector/any"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/IntegerOperator">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/add"/>

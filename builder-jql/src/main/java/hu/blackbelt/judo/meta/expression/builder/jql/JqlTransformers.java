@@ -97,6 +97,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("head", new JqlHeadFunctionTransformer(this));
         functionTransformers.put("tail", new JqlTailFunctionTransformer(this));
+        functionTransformers.put("any", new JqlAnyFunctionTransformer(this));
         functionTransformers.put("filter", new JqlParameterizedFunctionTransformer<ReferenceExpression, LogicalExpression, FilteringExpression>(this,
                 (expression, parameter) -> {
                     if (expression instanceof ObjectExpression) {

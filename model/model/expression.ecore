@@ -422,6 +422,7 @@
     <eClassifiers xsi:type="ecore:EEnum" name="ObjectSelector">
       <eLiterals name="head" value="8"/>
       <eLiterals name="tail" value="9" literal="tail"/>
+      <eLiterals name="any" value="10" literal="any"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="IntegerOperator">
       <eLiterals name="add" literal="+"/>
@@ -1288,7 +1289,7 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
-          lowerBound="1" eType="#//OrderedCollectionExpression" containment="true"/>
+          lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/ObjectSelector"/>
     </eClassifiers>
