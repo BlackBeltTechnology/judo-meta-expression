@@ -262,12 +262,12 @@ public class AsmJqlExpressionBindingTest {
                 .build());
         validateExpressions(expressionModelResourceSupport.getResource(),
         		ImmutableList.of(
-        				"StringExpressionMatchesBinding|Attribute named orderDate of object type Order must be string type, because the assigned expression evaluates to a string.",
-        				"TimestampExpressionMatchesBinding|Attribute named freight of object type Order must be timestamp type, because the assigned expression evaluates to a timestamp.",
-        				"DecimalExpressionMatchesBinding|Attribute named customsDescription of object type InternationalOrder must be decimal type, because the assigned expression evaluates to a decimal.",
-        				"DateExpressionMatchesBinding|Attribute named productName of object type Product must be date type, because the assigned expression evaluates to a date.",
-        				"EnumerationExpressionMatchesBinding|Attribute named unitPrice of object type Product must be enumeration type, because the assigned expression evaluates to an enumeration.",
-        				"BooleanExpressionMatchesBinding|Attribute named weight of object type Product must be boolean type, because the assigned expression evaluates to a boolean.",
+        				"StringExpressionMatchesBinding|Attribute named orderDate must be string type, because the assigned expression evaluates to a string.",
+        				"TimestampExpressionMatchesBinding|Attribute named freight must be timestamp type, because the assigned expression evaluates to a timestamp.",
+        				"DecimalExpressionMatchesBinding|Attribute named customsDescription must be decimal type, because the assigned expression evaluates to a decimal.",
+        				"DateExpressionMatchesBinding|Attribute named productName must be date type, because the assigned expression evaluates to a date.",
+        				"EnumerationExpressionMatchesBinding|Attribute named unitPrice must be enumeration type, because the assigned expression evaluates to an enumeration.",
+        				"BooleanExpressionMatchesBinding|Attribute named weight must be boolean type, because the assigned expression evaluates to a boolean.",
         				"IntegerExpressionMatchesBinding|Attribute named price of object type OrderDetail must be integer type, because the assigned expression evaluates to an integer."),
         		Collections.emptyList());
     }
@@ -288,9 +288,9 @@ public class AsmJqlExpressionBindingTest {
                 .validateModel(false)
                 .build());
         validateExpressions(expressionModelResourceSupport.getResource(),ImmutableList.of(
-				"CollectionExpressionMatchesBinding|Reference named category of object type Order is an object, but the expression Category evaluates to a collection.",
-				"ReferenceExpressionMatchesBinding|Reference named otherShipper of object type Order does not match expression type Shipper",
-				"ObjectExpressionMatchesBinding|Reference named products of object type Category is a collection, but the expression Product evaluates to an object."),
+				"CollectionExpressionMatchesBinding|Reference named category refers to an object but the assigned expression evaluates to a collection.",
+				"ReferenceExpressionMatchesBinding|Reference named otherShipper does not match the type of the assigned expression",
+				"ObjectExpressionMatchesBinding|Reference named products refers to a collection but the assigned expression evaluates to an object."),
 		Collections.emptyList());
     }
 }
