@@ -10,3 +10,5 @@ import "numeric.evl";
 import "object.evl";
 import "string.evl";
 import "temporal.evl";
+import "attributeBinding.evl";
+import "referenceBinding.evl";

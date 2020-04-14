@@ -1,0 +1,50 @@
+context EXPR!AttributeBinding {
+	
+	constraint IntegerExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!IntegerExpression)
+		check: modelAdapter.isInteger(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " of object type " + modelAdapter.get(self.typeName).get().name + " must be integer type, because the assigned expression evaluates to an integer."
+	}
+	
+	constraint DecimalExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!DecimalExpression)
+		check: modelAdapter.isDecimal(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be decimal type, because the assigned expression evaluates to a decimal."
+	}
+	
+	constraint BooleanExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!LogicalExpression)
+		check: modelAdapter.isBoolean(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be boolean type, because the assigned expression evaluates to a boolean."
+	}
+	
+	constraint StringExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!StringExpression)
+		check: modelAdapter.isString(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be string type, because the assigned expression evaluates to a string."
+	}
+	
+	constraint EnumerationExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!EnumerationExpression)
+		check: modelAdapter.isEnumeration(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be enumeration type, because the assigned expression evaluates to an enumeration."
+	}
+	
+	constraint DateExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!DateExpression)
+		check: modelAdapter.isDate(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be date type, because the assigned expression evaluates to a date."
+	}
+	
+	constraint TimestampExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!TimestampExpression)
+		check: modelAdapter.isTimestamp(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be timestamp type, because the assigned expression evaluates to a timestamp."
+	}
+	
+	constraint CustomExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!CustomExpression)
+		check: modelAdapter.isCustom(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be custom type, because the assigned expression evaluates to a custom type."
+	}
+}
