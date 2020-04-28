@@ -11,12 +11,11 @@ import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.namespace.util.builder.PackageBuilder;
 import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.DataFeature;
-import hu.blackbelt.judo.meta.esm.structure.DataMemberType;
+import hu.blackbelt.judo.meta.esm.structure.MemberType;
 import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.Generalization;
 import hu.blackbelt.judo.meta.esm.structure.RelationFeature;
-import hu.blackbelt.judo.meta.esm.structure.RelationMemberType;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.DataMemberBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.EntityTypeBuilder;
@@ -174,14 +173,14 @@ public class EsmTestModelCreator {
     public static RelationFeature createRelation(String name, Class target, int upperBound, String getterExpression) {
         OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
         builder.withGetterExpression(getterExpression);
-        builder.withRelationMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? RelationMemberType.PROPERTY : RelationMemberType.RELATION);
+        builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? MemberType.DERIVED : MemberType.STORED);
         return builder.build();
     }
 
     public static DataFeature createAttribute(String name, Primitive datatype, String getterExpression) {
         DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
         builder.withGetterExpression(getterExpression);
-        builder.withDataMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? DataMemberType.PROPERTY : DataMemberType.ATTRIBUTE);
+        builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? MemberType.DERIVED : MemberType.STORED);
         return builder.build();
     }
 

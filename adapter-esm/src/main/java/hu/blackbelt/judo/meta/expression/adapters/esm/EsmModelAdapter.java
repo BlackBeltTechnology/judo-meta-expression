@@ -320,7 +320,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isDerivedAttribute(PrimitiveTypedElement attribute) {
-        return attribute instanceof DataMember && ((DataMember) attribute).getDataMemberType() == DataMemberType.PROPERTY;
+        return attribute instanceof DataMember && ((DataMember) attribute).getMemberType() == MemberType.DERIVED;
     }
 
     @Override
@@ -335,7 +335,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public boolean isDerivedReference(ReferenceTypedElement reference) {
         if (reference instanceof OneWayRelationMember) {
-            return ((OneWayRelationMember) reference).getRelationMemberType() == RelationMemberType.PROPERTY;
+            return ((OneWayRelationMember) reference).getMemberType() == MemberType.DERIVED;
         } else {
             return false;
         }
@@ -408,7 +408,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                 .filter(
                         container -> container.getRelations().stream()
                                 .anyMatch(relation -> (relation instanceof OneWayRelationMember)
-                                        && ((OneWayRelationMember) relation).isContainment()
+                                        && ((OneWayRelationMember) relation).isComposition()
                                         && EcoreUtil.equals(relation.getTarget(), clazz)))
                 .flatMap(
                         container -> Stream.concat(
