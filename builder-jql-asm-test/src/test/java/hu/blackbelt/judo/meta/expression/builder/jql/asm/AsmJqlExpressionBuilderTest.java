@@ -37,6 +37,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -104,6 +106,7 @@ public class AsmJqlExpressionBuilderTest {
 
     @AfterEach
     void tearDown(final TestInfo testInfo) throws Exception {
+        Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
         expressionModelResourceSupport.saveExpression(expressionSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, testInfo.getDisplayName().replace("(", "").replace(")", "") + "-expression.model"))
                 .validateModel(false)
@@ -593,7 +596,14 @@ public class AsmJqlExpressionBuilderTest {
         createGetterExpression(order, "self.shipAddress.country == Countries#AT", "countryCheck2", ATTRIBUTE);
 
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
+        createExpression("demo::types::Countries#AT == demo::types::Countries#RO");
+
+    }
+
+    @Test
+    void testEnumTypeDifference() {
         assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::types::Countries#AT : demo::types::Titles#MR"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression("demo::types::Countries#AT == demo::types::Titles#MR"));
     }
 
     @Test
