@@ -593,7 +593,7 @@ public class AsmJqlExpressionBuilderTest {
     void testEnums() {
         EClass order = findBase("Order");
         createGetterExpression(order, "self.shipAddress.country == demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
-        createGetterExpression(order, "self.shipAddress.country == Countries#AT", "countryCheck2", ATTRIBUTE);
+        assertThrows(IllegalArgumentException.class, () -> createGetterExpression(order, "self.shipAddress.country == Countries#AT", "countryCheck2", ATTRIBUTE));
 
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         createExpression("demo::types::Countries#AT == demo::types::Countries#RO");
@@ -715,7 +715,7 @@ public class AsmJqlExpressionBuilderTest {
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
 
-        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == Country#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
+        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == demo::types::Countries#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));
     }
 

@@ -41,7 +41,7 @@
       <genOperations ecoreOperation="expression.ecore#//AttributeSelector/getOperands"
           body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
       <genOperations ecoreOperation="expression.ecore#//AttributeSelector/getAttributeType"
-          body="return modelAdapter.getAttributeType(getObjectExpression().getObjectType(modelAdapter), getAttributeName());">
+          body="// returns Optional&lt;NE>&#xA;return modelAdapter.getAttributeType(getObjectExpression().getObjectType(modelAdapter), getAttributeName());">
         <genParameters ecoreParameter="expression.ecore#//AttributeSelector/getAttributeType/modelAdapter"/>
       </genOperations>
     </genClasses>
@@ -737,7 +737,7 @@
         fileExtensions="judo-meta-expression-enumeration" ecorePackage="expression.ecore#//enumeration">
       <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationAttribute">
         <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationAttribute/getEnumeration"
-            body="return (hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(getAttributeType(modelAdapter)).get();">
+            body="return (hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(((java.util.Optional)getAttributeType(modelAdapter)).get()).get();">
           <genParameters ecoreParameter="expression.ecore#//enumeration/EnumerationAttribute/getEnumeration/modelAdapter"/>
         </genOperations>
       </genClasses>
