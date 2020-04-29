@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
@@ -40,7 +40,7 @@
                         <configuration>
                             <mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
                             <arguments>
-                                <argument>${project.basedir}/src/workflow/generateModel.mwe2</argument>
+                                <argument>/${project.basedir}/src/workflow/generateModel.mwe2</argument>
                                 <argument>-p</argument>
                                 <argument>rootPath=${project.basedir}</argument>
                             </arguments>

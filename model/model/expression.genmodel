@@ -41,7 +41,7 @@
       <genOperations ecoreOperation="expression.ecore#//AttributeSelector/getOperands"
           body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectExpression());"/>
       <genOperations ecoreOperation="expression.ecore#//AttributeSelector/getAttributeType"
-          body="return modelAdapter.getAttributeType(getObjectExpression().getObjectType(modelAdapter), getAttributeName());">
+          body="// returns Optional&lt;NE>&#xA;return modelAdapter.getAttributeType(getObjectExpression().getObjectType(modelAdapter), getAttributeName());">
         <genParameters ecoreParameter="expression.ecore#//AttributeSelector/getAttributeType/modelAdapter"/>
       </genOperations>
     </genClasses>
@@ -737,7 +737,7 @@
         fileExtensions="judo-meta-expression-enumeration" ecorePackage="expression.ecore#//enumeration">
       <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationAttribute">
         <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationAttribute/getEnumeration"
-            body="return getAttributeType(modelAdapter);">
+            body="return (hu.blackbelt.judo.meta.expression.TypeName) modelAdapter.getTypeName(((java.util.Optional)getAttributeType(modelAdapter)).get()).get();">
           <genParameters ecoreParameter="expression.ecore#//enumeration/EnumerationAttribute/getEnumeration/modelAdapter"/>
         </genOperations>
       </genClasses>
@@ -745,7 +745,7 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//enumeration/EnumerationSwitchExpression/elementName"/>
         <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationSwitchExpression/getEnumeration"
-            body="return null;">
+            body="return getElementName();">
           <genParameters ecoreParameter="expression.ecore#//enumeration/EnumerationSwitchExpression/getEnumeration/modelAdapter"/>
         </genOperations>
       </genClasses>
@@ -756,6 +756,10 @@
             body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationVariableReference/getVariableName"
             body="return toString();"/>
+        <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationVariableReference/getEnumeration"
+            body="return getVariable().getTypeName();">
+          <genParameters ecoreParameter="expression.ecore#//enumeration/EnumerationVariableReference/getEnumeration/modelAdapter"/>
+        </genOperations>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Object" resource="XMI" disposableProviderFactory="true"
