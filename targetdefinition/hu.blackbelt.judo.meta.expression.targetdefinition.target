@@ -46,8 +46,8 @@
 		  <repository location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.2"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="1.1.0.20200403_164144_e150e23_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20200403_164144_e150e23_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="1.1.0.20200429_152412_8eb5bcd_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20200429_152412_8eb5bcd_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="1.1.0.20200429_111041_6ed178c_develop"/>
