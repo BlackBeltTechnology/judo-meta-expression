@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpre
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
@@ -151,6 +152,11 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
     }
 
     private Expression createEnumerationOperation(EnumerationExpression left, EnumerationExpression right, String operator) {
+        TypeName leftType = left.getEnumeration(getModelAdapter());
+        TypeName rightType = right.getEnumeration(getModelAdapter());
+        if (!(Objects.equals(leftType.getName(), rightType.getName()) && Objects.equals(leftType.getNamespace(), rightType.getNamespace()))) {
+            throw new IllegalArgumentException(String.format("Operands are not of the same enumeration, %s <-> %s", leftType, rightType));
+        }
         switch (operator) {
             case "==":
                 return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
