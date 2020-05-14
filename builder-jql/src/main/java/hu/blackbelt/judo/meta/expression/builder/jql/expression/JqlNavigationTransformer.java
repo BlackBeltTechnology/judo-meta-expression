@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newBooleanVariableReferenceBuilder;
@@ -58,6 +59,10 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         for (Feature feature : jqlExpression.getFeatures()) {
             str.append(".");
             str.append(feature.getName());
+        }
+        if (jqlExpression.getEnumValue() != null) {
+            str.append("#");
+            str.append(jqlExpression.getEnumValue());
         }
         return str.toString();
     }
@@ -123,11 +128,25 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
 //        NavigationExpression navigation = flattenNavigationExpression(jqlExpression);
         NavigationExpression navigation = jqlExpression;
         LOG.debug("Transform navigation: {}", navigationString(navigation));
-        JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(jqlExpression, context);
-        Expression baseExpression = base.baseExpression;
-        C navigationBase = base.navigationBase;
-        LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
-        return baseExpression;
+        if (jqlExpression.getEnumValue() != null) {
+            return createEnumLiteral(jqlExpression);
+        } else {
+            JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(jqlExpression, context);
+            Expression baseExpression = base.baseExpression;
+            C navigationBase = base.navigationBase;
+            LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
+            return baseExpression;
+        }
+    }
+
+    private Expression createEnumLiteral(NavigationExpression jqlExpression) {
+        String enumValue = jqlExpression.getEnumValue();
+        String enumName = JqlExpressionBuilder.getFqString(jqlExpression.getQName().getNamespaceElements(), jqlExpression.getQName().getName());
+        TypeName enumTypeName = jqlTransformers.getEnumType(enumName);
+        if (enumTypeName == null) {
+            throw new IllegalArgumentException("Unknown enum: " + enumName);
+        }
+        return newLiteralBuilder().withEnumeration(enumTypeName).withValue(enumValue).build();
     }
 
 }

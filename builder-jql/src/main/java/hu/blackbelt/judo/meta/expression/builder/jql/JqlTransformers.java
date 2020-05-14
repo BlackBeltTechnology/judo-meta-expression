@@ -184,7 +184,6 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
         transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
-        transformers.put(EnumLiteral.class, new JqlEnumLiteralTransformer<>(this));
     }
 
     @Override
