@@ -1,20 +1,20 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
-import hu.blackbelt.judo.meta.expression.variable.Variable;
-
 import java.util.ArrayDeque;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.variable.Variable;
+
 public class JqlExpressionBuildingContext implements ExpressionBuildingVariableResolver {
 
-    private Deque<Variable> variables = new ArrayDeque<>();
-    private Deque<Object> resolvedAccessors = new ArrayDeque<>();
-    private Deque<Object> resolvedBases = new ArrayDeque<>();
-    private Deque<Expression> baseExpressions = new ArrayDeque<>();
+    private final Deque<Variable> variables = new ArrayDeque<>();
+	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
+    private final Deque<Object> resolvedBases = new ArrayDeque<>();
+    private final Deque<Expression> baseExpressions = new ArrayDeque<>();
 
     @Override
     public void pushAccessor(Object accessor) {
@@ -79,5 +79,11 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
     public Expression peekBaseExpression() {
         return baseExpressions.peek();
     }
+    
+    @Override
+    public Collection<Variable> getVariables() {
+		return variables;
+	}
+
 
 }
