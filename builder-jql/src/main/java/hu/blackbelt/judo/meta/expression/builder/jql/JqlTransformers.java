@@ -51,6 +51,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
     private final JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
+	private boolean resolveDerived = true;
 
     public JqlTransformers(JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
@@ -206,11 +207,15 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
             while (functionCall != null) {
                 String functionName = functionCall.getFunction().getName().toLowerCase();
                 JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
-                if (functionCall.getFunction().getLambdaArgument() != null) {
-                    addLambdaVariable(subject, context, functionCall.getFunction().getLambdaArgument());
-                }
                 if (functionTransformer != null) {
+                	try {
+                        if (functionCall.getFunction().getLambdaArgument() != null) {
+                            addLambdaVariable(subject, context, functionCall.getFunction().getLambdaArgument());
+                        }
                     subject = functionTransformer.apply(subject, functionCall.getFunction(), context);
+                	} catch (Exception e) {
+                    	throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), functionCall)));
+                	}
                     if (subject instanceof CastCollection) {
                         CastCollection castCollection = (CastCollection) subject;
                         objectType = (C) castCollection.getElementName().get(getModelAdapter());
@@ -227,7 +232,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 //                    context.popVariable();
                     }
                 } else {
-                    throw new IllegalStateException("Unknown function: " + functionName);
+                	throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError("Unknown function: " + functionName, functionCall)));
                 }
                 functionCall = (FunctionCall) functionCall.getCall();
             }
@@ -312,5 +317,13 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
             transformers.put(jqlType, transformer.apply(this));
     }
+
+	public void setResolveDerived(boolean resolveDerived) {
+		this.resolveDerived = resolveDerived;
+	}
+
+	public boolean isResolveDerived() {
+		return resolveDerived;
+	}
 
 }

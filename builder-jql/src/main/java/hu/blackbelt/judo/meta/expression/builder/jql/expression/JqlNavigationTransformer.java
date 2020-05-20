@@ -3,7 +3,9 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
@@ -27,6 +29,8 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
+
+import java.util.Arrays;
 
 public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, AP, RTE, S, M, U> {
 
@@ -93,7 +97,11 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
-                    Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> new IllegalStateException("Base variable " + navigation.getBase() + " not found"));
+                    Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> {
+                    	String errorMessage = "Base variable " + navigation.getBase() + " not found";
+                    	JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, navigation);
+                    	throw new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
+                    });
                     navigationBase = null;
                     if (baseVariable instanceof ObjectVariable) {
                         navigationBase = (C) ((ObjectVariable) baseVariable).getObjectType(getModelAdapter());

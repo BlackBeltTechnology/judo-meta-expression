@@ -73,7 +73,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         addSequences();
 
     }
-
+    
     @SuppressWarnings("unchecked")
     private static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
         final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
@@ -403,8 +403,9 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
 
-    public Collection<String> s() {
-        return new ArrayList<>();
+    public void setResolveDerived(boolean resolveDerived) {
+		jqlTransformers.setResolveDerived(resolveDerived);
     }
+
 
 }
