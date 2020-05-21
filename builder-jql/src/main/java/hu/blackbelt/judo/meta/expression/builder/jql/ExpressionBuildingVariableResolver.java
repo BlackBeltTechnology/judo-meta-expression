@@ -1,9 +1,10 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
+import java.util.Collection;
+import java.util.Optional;
+
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
-
-import java.util.Optional;
 
 public interface ExpressionBuildingVariableResolver {
     void pushAccessor(Object accessor);
@@ -29,4 +30,6 @@ public interface ExpressionBuildingVariableResolver {
     Expression popBaseExpression();
 
     Expression peekBaseExpression();
+
+	Collection<Variable> getVariables();
 }

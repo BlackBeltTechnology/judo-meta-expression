@@ -3,7 +3,9 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newBooleanVariableReferenceBuilder;
@@ -26,6 +29,8 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
+
+import java.util.Arrays;
 
 public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, AP, RTE, S, M, U> {
 
@@ -59,6 +64,10 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
             str.append(".");
             str.append(feature.getName());
         }
+        if (jqlExpression.getEnumValue() != null) {
+            str.append("#");
+            str.append(jqlExpression.getEnumValue());
+        }
         return str.toString();
     }
 
@@ -88,7 +97,11 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
-                    Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> new IllegalStateException("Base variable " + navigation.getBase() + " not found"));
+                    Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> {
+                    	String errorMessage = "Base variable " + navigation.getBase() + " not found";
+                    	JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, navigation);
+                    	return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
+                    });
                     navigationBase = null;
                     if (baseVariable instanceof ObjectVariable) {
                         navigationBase = (C) ((ObjectVariable) baseVariable).getObjectType(getModelAdapter());
@@ -123,11 +136,25 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
 //        NavigationExpression navigation = flattenNavigationExpression(jqlExpression);
         NavigationExpression navigation = jqlExpression;
         LOG.debug("Transform navigation: {}", navigationString(navigation));
-        JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(jqlExpression, context);
-        Expression baseExpression = base.baseExpression;
-        C navigationBase = base.navigationBase;
-        LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
-        return baseExpression;
+        if (jqlExpression.getEnumValue() != null) {
+            return createEnumLiteral(jqlExpression);
+        } else {
+            JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(jqlExpression, context);
+            Expression baseExpression = base.baseExpression;
+            C navigationBase = base.navigationBase;
+            LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
+            return baseExpression;
+        }
+    }
+
+    private Expression createEnumLiteral(NavigationExpression jqlExpression) {
+        String enumValue = jqlExpression.getEnumValue();
+        String enumName = JqlExpressionBuilder.getFqString(jqlExpression.getQName().getNamespaceElements(), jqlExpression.getQName().getName());
+        TypeName enumTypeName = jqlTransformers.getEnumType(enumName);
+        if (enumTypeName == null) {
+            throw new IllegalArgumentException("Unknown enum: " + enumName);
+        }
+        return newLiteralBuilder().withEnumeration(enumTypeName).withValue(enumValue).build();
     }
 
 }
