@@ -127,7 +127,7 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, PTE, E extends P, C
     }
 
     private Expression createMeasuredTemporalAddition(NumericExpression duration, Supplier<Expression> supplier) {
-        return getModelAdapter().getUnit(duration).filter(getModelAdapter()::isDurationSupportingAddition).
+        return getModelAdapter().getMeasure(duration).filter(m -> getModelAdapter().getUnits(m).stream().anyMatch(getModelAdapter()::isDurationSupportingAddition)).
                 map(unit -> supplier.get()).orElseThrow(() -> new UnsupportedOperationException("Operand is not a temporal duration"));
     }
 
