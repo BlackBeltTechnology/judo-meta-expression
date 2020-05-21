@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
 import hu.blackbelt.judo.meta.expression.numeric.Length;
@@ -59,8 +60,8 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         Expression email1Concat = createExpression(person, "self.email1 + self.email1Trimmed");
         assertThat(email1Concat, instanceOf(Concatenate.class));
 
-        assertThrows(CircularReferenceException.class, () -> createExpression(person, "self.emailWrong1"));
-        assertThrows(CircularReferenceException.class, () -> createExpression(person, "self.email1!matches(self.emailWrong1)"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(person, "self.emailWrong1"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(person, "self.email1!matches(self.emailWrong1)"));
     }
 
     @Test
@@ -136,9 +137,9 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         initResources(createTestModel(stringType, entityParent, entityA, entityB));
         createExpression(entityA, "self.p");
         createExpression(entityA, "self.parentP");
-        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.wrong1"));
-        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.parentWrong"));
-        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.q"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(entityA, "self.wrong1"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(entityA, "self.parentWrong"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(entityA, "self.q"));
     }
 
     @Test
@@ -280,7 +281,7 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         initResources(createTestModel(entityA, entityB, entityC, stringType));
         assertThat(createExpression(entityA, "self.c.a.aField"), hasToString("self->b->c->a.aField"));
         assertThat(createExpression(entityA, "self.c.c"), hasToString("self->b->c->a->b->c"));
-        assertThrows(CircularReferenceException.class, () -> createExpression(entityA, "self.w"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(entityA, "self.w"));
     }
 
     @Test

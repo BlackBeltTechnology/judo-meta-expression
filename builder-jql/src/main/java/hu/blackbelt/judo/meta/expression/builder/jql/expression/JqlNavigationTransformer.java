@@ -100,7 +100,7 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
                     Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> {
                     	String errorMessage = "Base variable " + navigation.getBase() + " not found";
                     	JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, navigation);
-                    	throw new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
+                    	return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
                     });
                     navigationBase = null;
                     if (baseVariable instanceof ObjectVariable) {
