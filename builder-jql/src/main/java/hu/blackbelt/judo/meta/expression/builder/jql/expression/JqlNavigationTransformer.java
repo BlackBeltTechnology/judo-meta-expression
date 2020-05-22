@@ -43,7 +43,7 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
         featureTransformer = new JqlNavigationFeatureTransformer<>(jqlTransformers);
     }
 
-    protected JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> getFeatureTransformer() {
+    public JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> getFeatureTransformer() {
         return featureTransformer;
     }
 

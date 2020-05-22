@@ -197,7 +197,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         return transformedExpression;
     }
     
-    private Optional<JqlExpressionTransformerFunction>findTransformer(Class<? extends JqlExpression> jqlExpressionClass) {
+    private Optional<JqlExpressionTransformerFunction> findTransformer(Class<? extends JqlExpression> jqlExpressionClass) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpressionClass))
                 .findAny()
@@ -229,7 +229,9 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                         CastObject castObject = (CastObject) subject;
                         objectType = (C) castObject.getElementName().get(getModelAdapter());
                     }
-                    JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlNavigationFeatureTransformer = new JqlNavigationFeatureTransformer<>(this);
+                    // might be overridden via overrideTransformer, so we need to ask for it
+                    JqlNavigationTransformer jqlNavigationTransformer = (JqlNavigationTransformer) findTransformer(NavigationExpression.class).get();
+                    JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlNavigationFeatureTransformer = jqlNavigationTransformer.getFeatureTransformer();
                     JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> transformResult = jqlNavigationFeatureTransformer.transform(functionCall.getFeatures(), subject, objectType, context);
                     subject = transformResult.baseExpression;
                     objectType = transformResult.navigationBase;
