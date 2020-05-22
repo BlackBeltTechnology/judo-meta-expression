@@ -18,12 +18,14 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperati
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
@@ -189,14 +191,18 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
 
     @Override
     public Expression transform(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
-        Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
-                .filter(entry -> entry.getKey().isAssignableFrom(jqlExpression.getClass()))
-                .findAny()
-                .map(Map.Entry::getValue);
-        Expression transformedExpression = foundTransformer
+        Expression transformedExpression = findTransformer(jqlExpression.getClass())
                 .orElseThrow(() -> new UnsupportedOperationException("Not implemented transformation for " + jqlExpression.getClass()))
                 .apply(jqlExpression, context);
         return transformedExpression;
+    }
+    
+    private Optional<JqlExpressionTransformerFunction>findTransformer(Class<? extends JqlExpression> jqlExpressionClass) {
+        Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
+                .filter(entry -> entry.getKey().isAssignableFrom(jqlExpressionClass))
+                .findAny()
+                .map(Map.Entry::getValue);
+        return foundTransformer;
     }
 
     public Expression applyFunctions(JqlExpression jqlExpression, Expression baseExpression, C objectType, ExpressionBuildingVariableResolver context) {
@@ -241,8 +247,8 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
     }
 
     private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
-        if (subject instanceof CollectionVariable) {
-            CollectionVariable collection = (CollectionVariable) subject;
+        if (subject instanceof CollectionVariable || subject instanceof CollectionVariableReference) {
+            CollectionVariable collection = subject instanceof CollectionVariable ? (CollectionVariable) subject : ((CollectionVariableReference)subject).getVariable();
             if (collection.getIteratorVariable() == null) {
                 ObjectVariable variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
                 context.pushVariable(variable);
@@ -250,8 +256,8 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                 collection.getIteratorVariable().setName(lambdaArgument);
                 context.pushVariable(collection.getIteratorVariable());
             }
-        } else if (subject instanceof ObjectVariable) {
-            ObjectVariable variable = (ObjectVariable) subject;
+        } else if (subject instanceof ObjectVariable || subject instanceof ObjectVariableReference) {
+            ObjectVariable variable = subject instanceof ObjectVariable ? (ObjectVariable) subject : ((ObjectVariableReference)subject).getVariable();
             variable.setName(lambdaArgument);
             context.pushVariable(variable);
         } else if (subject instanceof ObjectFilterExpression) {

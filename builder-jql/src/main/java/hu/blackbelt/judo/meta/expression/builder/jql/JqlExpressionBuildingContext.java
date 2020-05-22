@@ -85,5 +85,10 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
 		return variables;
 	}
 
+	@Override
+	public void removeVariable(Variable variable) {
+		variables.remove(variable);
+	}
+
 
 }
