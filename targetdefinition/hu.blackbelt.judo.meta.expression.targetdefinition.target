@@ -62,8 +62,8 @@
 		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200319_171617_08a456f_develop"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.1.20200403_152428_8c86f5e_develop"/>
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20200403_152428_8c86f5e_develop"/>
+		  <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="1.0.1.20200521_155107_6b8bb88_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20200521_155107_6b8bb88_develop"/>
 	  </location>
 
   </locations>
