@@ -32,4 +32,6 @@ public interface ExpressionBuildingVariableResolver {
     Expression peekBaseExpression();
 
 	Collection<Variable> getVariables();
+	
+	void removeVariable(Variable variable);
 }
