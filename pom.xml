@@ -109,7 +109,7 @@
         <judo-meta-asm-version>1.1.0.20200429_152412_8eb5bcd_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20200603_131000_3690e9d_feature_JNG_1160_Refactor_access_points_and_exposed_graphs</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20200603_170418_52386d5_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
         <judo-meta-jql-version>1.0.1.20200522_124420_d3e619e_develop</judo-meta-jql-version>
