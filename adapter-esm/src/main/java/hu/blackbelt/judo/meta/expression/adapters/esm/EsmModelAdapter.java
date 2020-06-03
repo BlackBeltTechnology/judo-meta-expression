@@ -1,6 +1,5 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
-import hu.blackbelt.judo.meta.esm.accesspoint.AccessPoint;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
@@ -44,7 +43,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ESM models.
  */
-public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, AccessPoint, ReferenceTypedElement, Sequence, Measure, Unit> {
+public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, TransferObjectType, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(EsmModelAdapter.class);
@@ -428,7 +427,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<AccessPoint> getAllAccessPoints() {
-        return ECollections.asEList(getEsmElement(AccessPoint.class).collect(toList()));
+    public EList<TransferObjectType> getAllAccessPoints() {
+        return ECollections.asEList(getEsmElement(TransferObjectType.class).filter(t -> t.isAccesspoint()).collect(toList()));
     }
 }
