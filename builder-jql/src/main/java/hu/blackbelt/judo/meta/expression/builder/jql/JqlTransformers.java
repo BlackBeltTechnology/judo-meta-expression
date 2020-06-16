@@ -26,10 +26,7 @@ import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
-import hu.blackbelt.judo.meta.expression.operator.DecimalAggregator;
-import hu.blackbelt.judo.meta.expression.operator.IntegerAggregator;
-import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
-import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
+import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
@@ -116,10 +113,10 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         functionTransformers.put("empty", (expression, functionCall, variables) -> newEmptyBuilder().withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
-        functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN));
-        functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX));
-        functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM));
-        functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG));
+        functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN, StringAggregator.MIN, DateAggregator.MIN, TimestampAggregator.MIN));
+        functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX, StringAggregator.MAX, DateAggregator.MAX, TimestampAggregator.MAX));
+        functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM, null, null, null));
+        functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG, null, DateAggregator.AVG, TimestampAggregator.AVG));
         functionTransformers.put("contains", new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(this,
                 (expression, parameter) -> newContainsExpressionBuilder().withCollectionExpression(expression).withObjectExpression(parameter).build()));
         functionTransformers.put("memberof", new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(this,

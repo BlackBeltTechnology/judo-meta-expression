@@ -5,10 +5,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/workflow"/>
 	<classpathentry kind="src" path="src/main/epsilon"/>
-	<classpathentry kind="src" path="src-gen">
-		<attributes>
-			<attribute name="ignore_optional_problems" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="src" path="src-gen"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

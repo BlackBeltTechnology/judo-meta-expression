@@ -328,6 +328,20 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/SequenceOperator/current"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/SequenceOperator/next"/>
       </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/StringAggregator">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/StringAggregator/min"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/StringAggregator/max"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/DateAggregator">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DateAggregator/min"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DateAggregator/max"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DateAggregator/avg"/>
+      </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/TimestampAggregator">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/TimestampAggregator/min"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/TimestampAggregator/max"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/TimestampAggregator/avg"/>
+      </genEnums>
     </nestedGenPackages>
     <nestedGenPackages prefix="Numeric" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -731,6 +745,18 @@
         <genOperations ecoreOperation="expression.ecore#//string/StringVariableReference/getVariableName"
             body="return toString();"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/StringAggregatedExpression">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//string/StringAggregatedExpression/operator"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/StringAggregatedExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//string/StringAggregatedExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/StringAggregatedExpression/isMeasured"
+            body="return false;">
+          <genParameters ecoreParameter="expression.ecore#//string/StringAggregatedExpression/isMeasured/modelAdapter"/>
+        </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//string/StringAggregatedExpression/toString"
+            body="return getOperator() + &quot;(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -1081,6 +1107,30 @@
             body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateVariableReference/getVariableName"
             body="return toString();"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/DateAggregatedExpression">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/DateAggregatedExpression/operator"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateAggregatedExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/DateAggregatedExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/DateAggregatedExpression/isMeasured"
+            body="return false;">
+          <genParameters ecoreParameter="expression.ecore#//temporal/DateAggregatedExpression/isMeasured/modelAdapter"/>
+        </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//temporal/DateAggregatedExpression/toString"
+            body="return getOperator() + &quot;(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimestampAggregatedExpression">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampAggregatedExpression/operator"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampAggregatedExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAggregatedExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAggregatedExpression/isMeasured"
+            body="return false;">
+          <genParameters ecoreParameter="expression.ecore#//temporal/TimestampAggregatedExpression/isMeasured/modelAdapter"/>
+        </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAggregatedExpression/toString"
+            body="return getOperator() + &quot;(&quot; + getCollectionExpression().getVariableName() + &quot; on &quot; + getCollectionExpression() + &quot; : &quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"

@@ -98,3 +98,21 @@ context EXPR!TimestampDifferenceExpression {
         message: "Difference of timestamps is not duration"
     }
 }
+
+context EXPR!DateAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
+    }
+}
+
+context EXPR!TimestampAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
+    }
+}
