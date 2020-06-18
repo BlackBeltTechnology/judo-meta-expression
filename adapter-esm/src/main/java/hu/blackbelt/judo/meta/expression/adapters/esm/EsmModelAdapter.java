@@ -430,4 +430,44 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public EList<TransferObjectType> getAllAccessPoints() {
         return ECollections.asEList(getEsmElement(TransferObjectType.class).filter(t -> t.isAccesspoint()).collect(toList()));
     }
+    
+	@Override
+	public Optional<hu.blackbelt.judo.meta.esm.structure.Class> getReferenceType(TypeName elementName,
+			String referenceName) {
+		
+		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		
+		if (!ne.isPresent()) {
+			return Optional.empty();
+		} else if (ne.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
+			
+			 Optional<? extends ReferenceTypedElement> reference = this.getReference((hu.blackbelt.judo.meta.esm.structure.Class)ne.get(), referenceName);
+			 
+			 if (!reference.isPresent()) {
+				 return Optional.empty();
+			 } else if (this.getTarget(reference.get()).isMapped()){
+				 TransferObjectType target = (TransferObjectType)this.getTarget(reference.get());
+				 return Optional.of(target.getMapping().getTarget());
+			 } else {
+				 return Optional.empty();
+			 }
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public boolean isCollectionReference(TypeName elementName, String referenceName) {
+		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		
+		if (ne.isPresent() && ne.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class &&
+				this.getReference((hu.blackbelt.judo.meta.esm.structure.Class)ne.get(), referenceName).isPresent()) {
+			
+			ReferenceTypedElement reference = this.getReference((hu.blackbelt.judo.meta.esm.structure.Class)ne.get(), referenceName).get();
+			return this.isCollectionReference(reference);
+			
+		} else {
+			return false;
+		}
+	}
 }

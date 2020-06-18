@@ -393,4 +393,48 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
         return asmUtils;
     }
 
+	@Override
+	public Optional<EClass> getReferenceType(TypeName elementName, String referenceName) {
+		
+		Optional<? extends EClassifier> ne = this.get(elementName);
+		
+		if (!ne.isPresent()) {
+			return Optional.empty();
+		} else if (ne.get() instanceof EClass) {
+			
+			 Optional<? extends EReference> reference = this.getReference((EClass)ne.get(), referenceName);
+			 
+			 if (!reference.isPresent()) {
+				 return Optional.empty();
+			 } else if (asmUtils.isEntityType(this.getTarget(reference.get()))){
+				 
+				 return Optional.of(this.getTarget(reference.get()));
+				 
+			 } else if (asmUtils.isMappedTransferObjectType(this.getTarget(reference.get()))) {
+				 
+				 return asmUtils.getMappedEntityType(this.getTarget(reference.get()));
+				 
+			 } else {
+				 return Optional.empty();
+			 }
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public boolean isCollectionReference(TypeName elementName, String referenceName) {
+		Optional<? extends EClassifier> ne = this.get(elementName);
+		
+		if (ne.isPresent() && ne.get() instanceof EClass &&
+				this.getReference((EClass)ne.get(), referenceName).isPresent()) {
+			
+			EReference reference = this.getReference((EClass)ne.get(), referenceName).get();
+			return this.isCollectionReference(reference);
+			
+		} else {
+			return false;
+		}
+	}
+
 }
