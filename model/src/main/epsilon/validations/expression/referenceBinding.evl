@@ -9,13 +9,13 @@ context EXPR!ReferenceBinding {
 	
 	constraint ObjectExpressionMatchesBinding {
 		guard: self.expression.isKindOf(EXPR!ObjectExpression)
-		check: not modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get().isMany()
+		check: not modelAdapter.isCollectionReference(modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get())
 		message: "Reference named " + self.referenceName + " refers to a collection but the assigned expression evaluates to an object."
 	}
 	
 	constraint CollectionExpressionMatchesBinding {
 		guard: self.expression.isKindOf(EXPR!CollectionExpression)
-		check: modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get().isMany()
+		check: modelAdapter.isCollectionReference(modelAdapter.getReference(modelAdapter.get(self.typeName).get(), self.referenceName).get())
 		message: "Reference named " + self.referenceName + " refers to an object but the assigned expression evaluates to a collection."
 	}
 }
