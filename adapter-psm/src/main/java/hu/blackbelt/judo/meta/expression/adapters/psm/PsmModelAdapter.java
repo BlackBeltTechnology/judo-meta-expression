@@ -20,6 +20,8 @@ import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
+import hu.blackbelt.judo.meta.psm.service.MappedTransferObjectType;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
@@ -375,4 +377,65 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public EList<TransferObjectType> getAllAccessPoints() {
         return ECollections.asEList(getPsmElement(TransferObjectType.class).filter(t -> t.isAccessPoint()).collect(toList()));
     }
+    
+	public Optional<? extends TransferObjectRelation> getTransferRelation(TransferObjectType clazz,
+			String referenceName) {
+		return PsmUtils.getAllTransferObjectRelations(clazz).stream().filter(r -> r.getName().equalsIgnoreCase(referenceName)).findAny();
+	}
+	
+	public TransferObjectType getTransferRelationTarget(TransferObjectRelation relation) {
+		return relation.getTarget();
+	}
+	
+	public boolean isCollectionTransferRelation(TransferObjectRelation relation) {
+		return relation.isCollection();
+	}
+    
+	@Override
+	public Optional<EntityType> getReferenceType(TypeName elementName, String referenceName) {
+		
+		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		
+		if (!ne.isPresent()) {
+			return Optional.empty();
+		} else if (ne.get() instanceof EntityType &&
+				this.getReference((EntityType)ne.get(), referenceName).isPresent()) {
+			
+			ReferenceTypedElement reference = this.getReference((EntityType)ne.get(), referenceName).get();
+			return Optional.of(this.getTarget(reference));
+			
+		} else if (ne.get() instanceof TransferObjectType &&
+				this.getTransferRelation((TransferObjectType)ne.get(), referenceName).isPresent() &&
+				this.getTransferRelationTarget(getTransferRelation((TransferObjectType)ne.get(), referenceName).get()) instanceof MappedTransferObjectType) {
+			
+			MappedTransferObjectType target = (MappedTransferObjectType)this.getTransferRelationTarget(getTransferRelation((TransferObjectType)ne.get(), referenceName).get());
+			return Optional.of((target.getEntityType()));
+			
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public boolean isCollectionReference(TypeName elementName, String referenceName) {
+		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		
+		if (!ne.isPresent()) {
+			return false;
+		} else if (ne.get() instanceof EntityType &&
+				this.getReference((EntityType)ne.get(), referenceName).isPresent()) {
+			
+			ReferenceTypedElement reference = this.getReference((EntityType)ne.get(), referenceName).get();
+			return this.isCollectionReference(reference);
+			
+		} else if (ne.get() instanceof TransferObjectType &&
+				this.getTransferRelation((TransferObjectType)ne.get(), referenceName).isPresent()) {
+			
+			TransferObjectRelation reference = this.getTransferRelation((TransferObjectType)ne.get(), referenceName).get();
+			return this.isCollectionTransferRelation(reference);
+			
+		} else {
+			return false;
+		}
+	}
 }
