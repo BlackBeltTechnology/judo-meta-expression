@@ -1,9 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExtractor;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
-import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -24,17 +22,12 @@ public class AsmJqlExtractorTest {
     private JqlExtractor jqlExtractor;
     private ResourceSet expressionResourceSet;
 
+    private ModelLoader modelLoader;
+
     @BeforeEach
-    void setUp() throws Exception {
-        final AsmModelResourceSupport asmModelResourceSupport = AsmModelResourceSupport.loadAsm(AsmModelResourceSupport.LoadArguments.asmLoadArgumentsBuilder()
-                .file(new File("src/test/model/asm.model"))
-                .uri(URI.createURI("urn:test.judo-meta-asm"))
-                .build());
-        final MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.loadMeasure(MeasureModelResourceSupport.LoadArguments.measureLoadArgumentsBuilder()
-                .file(new File("src/test/model/measure.model"))
-                .uri(URI.createURI("urn:test.judo-meta-measure"))
-                .build());
-        jqlExtractor = new AsmJqlExtractor(asmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet(), URI.createURI("urn:test.judo-meta-expression"));
+    void setUp() {
+        modelLoader = new ModelLoader();
+        jqlExtractor = new AsmJqlExtractor(modelLoader.getAsmModel().getResourceSet(), modelLoader.getMeasureModel().getResourceSet(), URI.createURI("urn:test.judo-meta-expression"));
     }
 
     @AfterEach

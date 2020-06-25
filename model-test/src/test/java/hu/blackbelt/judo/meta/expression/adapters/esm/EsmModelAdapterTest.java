@@ -107,11 +107,11 @@ public class EsmModelAdapterTest {
         Package entities = createPackage("entities", category);
         Package superpackage = createPackage("superpackage", entities, customer);
         initResources(createTestModel(superpackage, order));
-        assertThat(modelAdapter.getTypeName(order).get(), hasToString("demo::Order"));
-        assertThat(modelAdapter.getTypeName(category).get(), hasToString("demo::superpackage::entities::Category"));
-        assertThat(modelAdapter.getTypeName(entities).get(), hasToString("demo::superpackage::entities"));
-        assertThat(modelAdapter.getTypeName(customer).get(), hasToString("demo::superpackage::Customer"));
-        assertThat(modelAdapter.getTypeName(superpackage).get(), hasToString("demo::superpackage"));
+        assertThat(modelAdapter.buildTypeName(order).get(), hasToString("demo::Order"));
+        assertThat(modelAdapter.buildTypeName(category).get(), hasToString("demo::superpackage::entities::Category"));
+        assertThat(modelAdapter.buildTypeName(entities).get(), hasToString("demo::superpackage::entities"));
+        assertThat(modelAdapter.buildTypeName(customer).get(), hasToString("demo::superpackage::Customer"));
+        assertThat(modelAdapter.buildTypeName(superpackage).get(), hasToString("demo::superpackage"));
     }
 
     @Test
@@ -119,8 +119,8 @@ public class EsmModelAdapterTest {
         EnumerationType countries = createEnum("Countries", "HU", "AT");
         EnumerationType titles = createEnum("Titles", "MR", "MRS");
         initResources(createTestModel(countries, createPackage("enums", titles)));
-        assertThat(modelAdapter.getEnumerationTypeName(countries).get(), hasToString("demo::Countries"));
-        assertThat(modelAdapter.getEnumerationTypeName(titles).get(), hasToString("demo::enums::Titles"));
+        assertThat(modelAdapter.buildTypeName(countries).get(), hasToString("demo::Countries"));
+        assertThat(modelAdapter.buildTypeName(titles).get(), hasToString("demo::enums::Titles"));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class EsmModelAdapterTest {
     @Test
     public void testGetMeasureName() {
         initResources(null);
-        assertThat(modelAdapter.getMeasureName(measureMap.get("Length")).get(), hasToString("demo::measures::Length"));
+        assertThat(modelAdapter.buildMeasureName(measureMap.get("Length")).get(), hasToString("demo::measures::Length"));
     }
 
     @Test
@@ -146,7 +146,7 @@ public class EsmModelAdapterTest {
         Measure measure = modelAdapter.getMeasure(
                 newDecimalArithmeticExpressionBuilder().withLeft(
                         newMeasuredDecimalBuilder()
-                                .withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get())
+                                .withMeasure(modelAdapter.buildMeasureName(measureMap.get("Time")).get())
                                 .withUnitName("s")
                                 .withValue(BigDecimal.ONE)
                                 .build()).withOperator(DecimalOperator.MULTIPLY).withRight(
@@ -162,13 +162,13 @@ public class EsmModelAdapterTest {
         ObjectVariableReference variableReference = createVariableReference(vehicle);
         Unit speedUnit = modelAdapter.getUnit(newDecimalAttributeBuilder().withAttributeName("speed").withObjectExpression(variableReference).build()).get();
         assertThat(speedUnit, is(measureMap.get("Velocity").getUnits().get(0)));
-        MeasuredDecimal decimalLength = newMeasuredDecimalBuilder().withMeasure(modelAdapter.getMeasureName(measureMap.get("Length")).get()).withUnitName("m").withValue(BigDecimal.ONE).build();
+        MeasuredDecimal decimalLength = newMeasuredDecimalBuilder().withMeasure(modelAdapter.buildMeasureName(measureMap.get("Length")).get()).withUnitName("m").withValue(BigDecimal.ONE).build();
         assertThat(modelAdapter.getUnit(decimalLength).get(), is(measureMap.get("Length").getUnits().get(0)));
-        MeasuredInteger integerTime = newMeasuredIntegerBuilder().withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get()).withUnitName("s").withValue(BigInteger.ONE).build();
+        MeasuredInteger integerTime = newMeasuredIntegerBuilder().withMeasure(modelAdapter.buildMeasureName(measureMap.get("Time")).get()).withUnitName("s").withValue(BigInteger.ONE).build();
         assertThat(modelAdapter.getUnit(integerTime).get(), is(measureMap.get("Time").getUnits().get(0)));
         DecimalArithmeticExpression arithmeticExpression = newDecimalArithmeticExpressionBuilder().withLeft(
                 newMeasuredDecimalBuilder()
-                        .withMeasure(modelAdapter.getMeasureName(measureMap.get("Time")).get())
+                        .withMeasure(modelAdapter.buildMeasureName(measureMap.get("Time")).get())
                         .withUnitName("s")
                         .withValue(BigDecimal.ONE)
                         .build()).withOperator(DecimalOperator.MULTIPLY).withRight(
@@ -303,7 +303,7 @@ public class EsmModelAdapterTest {
 
 
     private ObjectVariableReference createVariableReference(EntityType entityType) {
-        Instance vehicleInstance  = newInstanceBuilder().withName("self").withElementName(modelAdapter.getTypeName(entityType).get()).build();
+        Instance vehicleInstance  = newInstanceBuilder().withName("self").withElementName(modelAdapter.buildTypeName(entityType).get()).build();
         return newObjectVariableReferenceBuilder().withVariable(vehicleInstance).build();
     }
 

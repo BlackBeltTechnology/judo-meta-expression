@@ -141,7 +141,11 @@ public class EsmTestModelCreator {
             if (!sequences.isEmpty()) {
                 builder.withSequences(sequences);
             }
-            return builder.build();
+            EntityType entityType = builder.build();
+            useEntityType(entityType)
+                    .withMapping(newMappingBuilder().withTarget(entityType).build())
+                    .build();
+            return entityType;
         }
 
         public EntityCreator withTwoWayRelation(TwoWayRelationMember partner) {

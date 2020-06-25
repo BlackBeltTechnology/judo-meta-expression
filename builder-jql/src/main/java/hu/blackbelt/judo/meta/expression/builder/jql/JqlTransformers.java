@@ -2,7 +2,6 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
@@ -31,7 +30,6 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
@@ -309,10 +307,6 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
         } else {
             return Optional.empty();
         }
-    }
-
-    public Optional<? extends Binding> getBinding(C baseType, String feature) {
-        return expressionBuilder.getBinding(baseType, feature);
     }
 
     public JqlExpressionBuilder<NE, P, PTE, E, C, AP, RTE, S, M, U> getExpressionBuilder() {

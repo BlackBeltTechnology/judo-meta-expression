@@ -581,6 +581,24 @@
                 <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                <version>${judo-meta-psm-version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm2asm</artifactId>
+                <version>${judo-tatami-maven-plugin-version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.tatami</groupId>
+                <artifactId>judo-tatami-psm2measure</artifactId>
+                <version>${judo-tatami-maven-plugin-version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>

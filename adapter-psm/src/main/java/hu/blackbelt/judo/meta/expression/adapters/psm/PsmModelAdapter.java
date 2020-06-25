@@ -66,16 +66,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<TypeName> getTypeName(final NamespaceElement namespaceElement) {
+    public Optional<TypeName> buildTypeName(final NamespaceElement namespaceElement) {
         return getPsmElement(Namespace.class)
                 .filter(ns -> ns.getElements().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namespaceElement.getName()).build())
                 .findAny();
-    }
-
-    @Override
-    public Optional<TypeName> getEnumerationTypeName(EnumerationType enumeration) {
-        return getTypeName(enumeration);
     }
 
     @Override
@@ -277,7 +272,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<EntityType> getAllClasses() {
+    public EList<EntityType> getAllEntityTypes() {
         return ECollections.asEList(getPsmElement(EntityType.class).collect(toList()));
     }
 
@@ -367,15 +362,15 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<MeasureName> getMeasureName(Measure measure) {
+    public Optional<MeasureName> buildMeasureName(Measure measure) {
         return measureProvider.getMeasures()
                 .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
                 .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getSymbol()).build());
     }
 
     @Override
-    public EList<TransferObjectType> getAllAccessPoints() {
-        return ECollections.asEList(getPsmElement(TransferObjectType.class).filter(t -> t.isAccessPoint()).collect(toList()));
+    public EList<TransferObjectType> getAllTransferObjectTypes() {
+        return ECollections.asEList(getPsmElement(TransferObjectType.class).collect(toList()));
     }
     
 	public Optional<? extends TransferObjectRelation> getTransferRelation(TransferObjectType clazz,
