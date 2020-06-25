@@ -310,7 +310,7 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
      * @param referenceName name of referenced typed element or transfer relation
      * @return class
      */
-    Optional<C> getReferenceType(TypeName elementName, String referenceName);
+    Optional<C> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName, String transferObjectRelationName);
     
     /**
      * Check multiplicity of the reference of the given element.

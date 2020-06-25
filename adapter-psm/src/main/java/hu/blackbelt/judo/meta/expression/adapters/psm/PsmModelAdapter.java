@@ -392,24 +392,41 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 	}
     
 	@Override
-	public Optional<EntityType> getReferenceType(TypeName elementName, String referenceName) {
+	public Optional<EntityType> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName, String transferObjectRelationName) {
 		
-		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		Optional<? extends NamespaceElement> transferObjectType = get(transferObjectTypeName);
 		
-		if (!ne.isPresent()) {
+		if (!transferObjectType.isPresent()) {
+			
 			return Optional.empty();
-		} else if (ne.get() instanceof EntityType &&
-				this.getReference((EntityType)ne.get(), referenceName).isPresent()) {
 			
-			ReferenceTypedElement reference = this.getReference((EntityType)ne.get(), referenceName).get();
-			return Optional.of(this.getTarget(reference));
+		} else if (transferObjectType.get() instanceof EntityType) {
 			
-		} else if (ne.get() instanceof TransferObjectType &&
-				this.getTransferRelation((TransferObjectType)ne.get(), referenceName).isPresent() &&
-				this.getTransferRelationTarget(getTransferRelation((TransferObjectType)ne.get(), referenceName).get()) instanceof MappedTransferObjectType) {
+			Optional<? extends ReferenceTypedElement> relation = getReference((EntityType)transferObjectType.get(), transferObjectRelationName);
 			
-			MappedTransferObjectType target = (MappedTransferObjectType)this.getTransferRelationTarget(getTransferRelation((TransferObjectType)ne.get(), referenceName).get());
-			return Optional.of((target.getEntityType()));
+			if(relation.isPresent()) {
+				return Optional.of(getTarget(relation.get()));
+			} else {
+				 return Optional.empty();
+			}
+			
+		} else if (transferObjectType.get() instanceof TransferObjectType) {
+			
+			Optional<? extends TransferObjectRelation> transferObjectRelation = getTransferRelation((TransferObjectType)transferObjectType.get(), transferObjectRelationName);
+			
+			if (transferObjectRelation.isPresent()) {
+				
+				TransferObjectType transferObjectRelationTarget = getTransferRelationTarget(transferObjectRelation.get());
+				
+				if (transferObjectRelationTarget instanceof MappedTransferObjectType) {
+					return Optional.of((((MappedTransferObjectType)transferObjectRelationTarget).getEntityType()));
+				} else {
+					return Optional.empty();
+				}
+				
+			} else {
+				return Optional.empty();
+			}
 			
 		} else {
 			return Optional.empty();
@@ -418,21 +435,31 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
 	@Override
 	public boolean isCollectionReference(TypeName elementName, String referenceName) {
-		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		Optional<? extends NamespaceElement> element = this.get(elementName);
 		
-		if (!ne.isPresent()) {
+		if (!element.isPresent()) {
+			
 			return false;
-		} else if (ne.get() instanceof EntityType &&
-				this.getReference((EntityType)ne.get(), referenceName).isPresent()) {
 			
-			ReferenceTypedElement reference = this.getReference((EntityType)ne.get(), referenceName).get();
-			return this.isCollectionReference(reference);
+		} else if (element.get() instanceof EntityType) {
+
+			Optional<? extends ReferenceTypedElement> relation = getReference((EntityType)element.get(), referenceName);
 			
-		} else if (ne.get() instanceof TransferObjectType &&
-				this.getTransferRelation((TransferObjectType)ne.get(), referenceName).isPresent()) {
+			if (relation.isPresent()) {
+				return isCollectionReference(relation.get());
+			} else {
+				return false;
+			}
 			
-			TransferObjectRelation reference = this.getTransferRelation((TransferObjectType)ne.get(), referenceName).get();
-			return this.isCollectionTransferRelation(reference);
+		} else if (element.get() instanceof TransferObjectType) {
+			
+			Optional<? extends TransferObjectRelation> transferObjectRelation = getTransferRelation((TransferObjectType)element.get(), referenceName);
+			
+			if (transferObjectRelation.isPresent()) {
+				return isCollectionTransferRelation(transferObjectRelation.get());
+			} else {
+				return false;
+			}
 			
 		} else {
 			return false;
