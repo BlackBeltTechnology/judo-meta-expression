@@ -28,8 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newAttributeBindingBuilder;
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
@@ -291,6 +290,12 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                         .withTypeName(typeName)
                         .withReferenceName(bindingContext.getFeatureName())
                         .withRole(referenceBindingRole)
+                        .build();
+                break;
+            case FILTER:
+                binding = newFilterBindingBuilder()
+                        .withExpression(expression)
+                        .withTypeName(typeName)
                         .build();
                 break;
             default:

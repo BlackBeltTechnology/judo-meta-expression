@@ -339,7 +339,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                             final JqlExpressionBuilder.BindingContext filterBindingContext = new JqlExpressionBuilder.BindingContext(null, JqlExpressionBuilder.BindingType.FILTER, JqlExpressionBuilder.BindingRole.GETTER);
 
                             if (JQL_DIALECT.equals(filterDialect.get())) {
-                                final Expression expression = builder.createExpression(null, filterJql.get());
+                                final Expression expression = builder.createExpression(asmUtils.getMappedEntityType(mappedTransferObjectType).get(), filterJql.get());
                                 builder.createBinding(filterBindingContext, null, mappedTransferObjectType, expression);
                             } else if (filterDialect.isPresent()) {
                                 log.warn("Dialect {} of filter is not supported", filterDialect.get());
