@@ -12,3 +12,4 @@ import "string.evl";
 import "temporal.evl";
 import "attributeBinding.evl";
 import "referenceBinding.evl";
+import "filterBinding.evl";
