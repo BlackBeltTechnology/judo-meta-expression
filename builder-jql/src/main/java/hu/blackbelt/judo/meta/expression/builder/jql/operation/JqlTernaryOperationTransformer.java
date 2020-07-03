@@ -33,7 +33,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, PTE, E extends P, 
                 CollectionSwitchExpressionBuilder builder = newCollectionSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression);
                 Expression thenExpression = thenCase.getExpression();
                 C collectionType = getCommonAncestor((CollectionExpression) thenExpression, (CollectionExpression) elseExpression);
-                TypeName typeName = getModelAdapter().getTypeName(collectionType).get();
+                TypeName typeName = getModelAdapter().buildTypeName(collectionType).get();
                 builder.withElementName(jqlTransformers.getTypeNameFromResource(typeName.getNamespace(), typeName.getName()));
                 return builder.build();
 
@@ -49,7 +49,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, PTE, E extends P, 
                 ObjectSwitchExpressionBuilder builder = newObjectSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression);
                 Expression thenExpression = thenCase.getExpression();
                 C collectionType = getCommonAncestor((ObjectExpression) thenExpression, (ObjectExpression) elseExpression);
-                TypeName typeName = getModelAdapter().getTypeName(collectionType).get();
+                TypeName typeName = getModelAdapter().buildTypeName(collectionType).get();
                 builder.withElementName(jqlTransformers.getTypeNameFromResource(typeName.getNamespace(), typeName.getName()));
                 return builder.build();
             });

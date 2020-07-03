@@ -142,7 +142,7 @@ public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C exte
             JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(jqlExpression, context);
             Expression baseExpression = base.baseExpression;
             C navigationBase = base.navigationBase;
-            LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().getTypeName(navigationBase).orElse(null));
+            LOG.debug("Base: {} ({})", baseExpression, getModelAdapter().buildTypeName(navigationBase).orElse(null));
             return baseExpression;
         }
     }

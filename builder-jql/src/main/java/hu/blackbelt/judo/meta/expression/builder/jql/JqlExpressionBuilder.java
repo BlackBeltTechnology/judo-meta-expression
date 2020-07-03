@@ -4,7 +4,6 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBinding;
 import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
@@ -16,6 +15,7 @@ import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -28,8 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newAttributeBindingBuilder;
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
@@ -46,32 +45,31 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
  * @param <M>   measure
  * @param <U>   unit
  */
-public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> {
+public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends NE, T extends NE, RTE, S, M, U> {
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
-    private final ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> modelAdapter;
+    private final ModelAdapter<NE, P, PTE, E, C, T, RTE, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
-    private final Map<String, TypeName> accessPoints = new ConcurrentHashMap<>();
+    private final EMap<T, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
-    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> modelAdapter, final Resource expressionResource) {
+    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, T, RTE, S, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
 
         addMeasures();
-        addAccessPoints();
-        addClasses();
+        addEntityTypes();
         addEnums();
         addSequences();
-
+        addTransferObjectTypes();
     }
     
     @SuppressWarnings("unchecked")
@@ -98,31 +96,30 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
 
     private void addSequences() {
         modelAdapter.getAllStaticSequences().forEach(e -> {
-            TypeName typeName = modelAdapter.getTypeName(e).get();
+            TypeName typeName = modelAdapter.buildTypeName(e).get();
             storeTypeName(e, typeName);
         });
     }
 
-    private void addAccessPoints() {
-        modelAdapter.getAllAccessPoints().forEach(e -> {
-            TypeName typeName = modelAdapter.getTypeName(e).get();
-            storeTypeName(e, typeName);
-            accessPoints.put(typeName.getNamespace() + NAMESPACE_SEPARATOR + typeName.getName(), typeName);
+    private void addTransferObjectTypes() {
+        modelAdapter.getAllTransferObjectTypes().forEach(t -> {
+            TypeName typeName = modelAdapter.buildTypeName(t).get();
+            storeTypeName(t, typeName);
+            transferObjectTypes.put(t, typeName);
         });
     }
 
     private void addEnums() {
         modelAdapter.getAllEnums().forEach(e -> {
-            TypeName enumTypeName = modelAdapter.getEnumerationTypeName(e).get();
+            TypeName enumTypeName = modelAdapter.buildTypeName(e).get();
             storeTypeName(e, enumTypeName);
             enumTypes.put(enumTypeName.getNamespace() + NAMESPACE_SEPARATOR + enumTypeName.getName(), enumTypeName);
         });
     }
 
-    private void addClasses() {
-        modelAdapter.getAllClasses().forEach(clazz -> {
-            final TypeName typeName = getTypeName(clazz).get();
-
+    private void addEntityTypes() {
+        modelAdapter.getAllEntityTypes().forEach(clazz -> {
+            final TypeName typeName = modelAdapter.buildTypeName(clazz).get();
             storeTypeName(clazz, typeName);
 
             Optional<Instance> foundSelf = all(expressionResource.getResourceSet(), Instance.class)
@@ -132,7 +129,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
             final Instance self;
             if (!foundSelf.isPresent()) {
                 self = newInstanceBuilder()
-                        .withElementName(typeName)
+                        .withElementName(typeName.eResource() != null ? typeName : getTypeName(typeName.getNamespace(), typeName.getName()))
                         .withName(SELF_NAME)
                         .build();
                 expressionResource.getContents().add(self);
@@ -156,7 +153,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
 
     private void addMeasures() {
         modelAdapter.getAllMeasures().forEach(measure -> {
-            MeasureName measureName = modelAdapter.getMeasureName(measure).get();
+            MeasureName measureName = modelAdapter.buildMeasureName(measure).get();
             boolean alreadyAdded = all(expressionResource.getResourceSet(), MeasureName.class)
                     .anyMatch(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace(), measureName.getNamespace()));
             if (!alreadyAdded) {
@@ -175,8 +172,8 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
      * @param clazz entity type of data model
      * @return type name (expression metamodel element)
      */
-    public Optional<TypeName> getTypeName(final C clazz) {
-        return modelAdapter.getTypeName(clazz);
+    public Optional<TypeName> buildTypeName(final NE clazz) {
+        return modelAdapter.buildTypeName(clazz);
     }
 
     public JqlExpression parseJqlString(String jqlString) {
@@ -234,14 +231,14 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
      * @param expression     expression
      * @return expression binding
      */
-    public Binding createBinding(final BindingContext bindingContext, final C entityType, AP accessPoint, final Expression expression) {
+    public Binding createBinding(final BindingContext bindingContext, final C entityType, T transferObjectType, final Expression expression) {
         final TypeName typeName;
         if (entityType != null) {
             typeName = entityInstances.get(entityType).getElementName();
-        } else if (accessPoint != null) {
-            typeName = accessPoints.get(modelAdapter.getTypeName(accessPoint).map(tn -> tn.getNamespace() + NAMESPACE_SEPARATOR+ tn.getName()).get());
+        } else if (transferObjectType != null) {
+            typeName = transferObjectTypes.get(transferObjectType);
         } else {
-            throw new IllegalArgumentException("Entity type or access point must be specified");
+            throw new IllegalArgumentException("Entity type or transfer object type must be specified");
         }
 
         final Binding binding;
@@ -295,6 +292,12 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                         .withRole(referenceBindingRole)
                         .build();
                 break;
+            case FILTER:
+                binding = newFilterBindingBuilder()
+                        .withExpression(expression)
+                        .withTypeName(typeName)
+                        .build();
+                break;
             default:
                 throw new IllegalStateException("Unsupported feature");
         }
@@ -310,22 +313,11 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         return binding;
     }
 
-    public Optional<? extends Binding> getBinding(C base, String feature) {
-        TypeName typeName = getModelAdapter().getTypeName(base).get();
-        Optional<AttributeBinding> first = all(expressionResource.getResourceSet(), AttributeBinding.class)
-                .filter(b -> b.getTypeName() != null &&
-                        Objects.equals(b.getTypeName().getName(), typeName.getName()) &&
-                        Objects.equals(b.getTypeName().getNamespace(), typeName.getNamespace()) &&
-                        Objects.equals(b.getAttributeName(), feature)).findFirst();
-        return first;
-    }
-
-
     private Expression transformJqlToExpression(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         return jqlTransformers.transform(jqlExpression, context);
     }
 
-    public ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
+    public ModelAdapter<NE, P, PTE, E, C, T, RTE, S, M, U> getModelAdapter() {
         return modelAdapter;
     }
 
@@ -355,7 +347,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
             String name = qName.getName();
             TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
             NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException(String.valueOf(typeName)));
-            TypeName resolvedTypeName = modelAdapter.getTypeName(ne).get();
+            TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
             return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
         } else {
             return null;
@@ -371,7 +363,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
     }
 
     public enum BindingType {
-        ATTRIBUTE, RELATION
+        ATTRIBUTE, RELATION, FILTER
     }
 
     public static class BindingContext {
@@ -399,7 +391,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         }
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, PTE, E, C, T, RTE, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
 

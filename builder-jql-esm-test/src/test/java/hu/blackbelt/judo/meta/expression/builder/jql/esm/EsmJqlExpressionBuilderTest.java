@@ -97,7 +97,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         createExpression("5[demo::measures::Mass#mg]");
         NumericExpression velocityExpression = (NumericExpression) createExpression(vehicle, "self.maxSpeed * 5[demo::measures::Time#s]");
         assertTrue(modelAdapter.isMeasured(velocityExpression));
-        assertThat(modelAdapter.getMeasureName(modelAdapter.getMeasure(velocityExpression).get()).get().getName(), is("Length"));
+        assertThat(modelAdapter.buildMeasureName(modelAdapter.getMeasure(velocityExpression).get()).get().getName(), is("Length"));
     }
 
     @Test

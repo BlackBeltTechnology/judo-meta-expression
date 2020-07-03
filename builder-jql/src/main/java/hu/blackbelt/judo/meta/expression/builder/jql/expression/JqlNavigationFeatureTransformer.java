@@ -8,10 +8,6 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionCall;
-import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
-import org.eclipse.emf.common.util.EList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +70,7 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
 				} else {
 					LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
 					String errorMessage = String.format("Feature %s of %s not found", jqlFeature.getName(),
-							getModelAdapter().getTypeName(navigationBase).orElse(null));
+							getModelAdapter().buildTypeName(navigationBase).orElse(null));
 					JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, jqlFeature);
 					throw new JqlExpressionBuildException(subject, Arrays.asList(error));
 				}

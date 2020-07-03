@@ -77,7 +77,7 @@ public class AsmModelAdapterTest {
 
     @Test
     public void testGetTypeName() {
-        Optional<TypeName> categoryTypeName = modelAdapter.getTypeName(asmUtils.resolve("demo.entities.Category").get());
+        Optional<TypeName> categoryTypeName = modelAdapter.buildTypeName(asmUtils.resolve("demo.entities.Category").get());
 
         assertTrue(categoryTypeName.isPresent());
         assertThat(categoryTypeName.get().getName(), is("Category")); //TODO: check, seems kinda silly (+psm)
@@ -204,7 +204,7 @@ public class AsmModelAdapterTest {
     //TODO
     //@Test
     void testGetUnit() {
-        TypeName type = modelAdapter.getTypeName(asmUtils.resolve("demo.entities.Product").get()).get();
+        TypeName type = modelAdapter.buildTypeName(asmUtils.resolve("demo.entities.Product").get()).get();
         Instance instance = newInstanceBuilder().withElementName(type).build();
         //EClass eClass = newEClassBuilder().withName("Product")..build();
 

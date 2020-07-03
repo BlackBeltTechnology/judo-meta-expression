@@ -5,10 +5,7 @@ import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBinding;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
-import hu.blackbelt.judo.meta.expression.binding.ReferenceBinding;
-import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
+import hu.blackbelt.judo.meta.expression.binding.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExtractor;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -57,7 +54,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                         log.trace("Extracting JQL expressions of entity type {}", AsmUtils.getClassifierFQName(entityType));
                     }
 
-                    final Optional<TypeName> typeName = builder.getTypeName(entityType);
+                    final Optional<TypeName> typeName = builder.buildTypeName(entityType);
 
                     if (!typeName.isPresent()) {
                         throw new IllegalStateException("Illegal type name");
@@ -317,19 +314,56 @@ public class AsmJqlExtractor implements JqlExtractor {
                 });
 
         asmUtils.all(EClass.class)
-                .filter(c -> AsmUtils.isAccessPoint(c))
-                .forEach(accessPoint -> {
+                .filter(c -> asmUtils.isMappedTransferObjectType(c))
+                .forEach(mappedTransferObjectType -> {
                     if (log.isTraceEnabled()) {
-                        log.trace("Extracting JQL expressions of access point {}", AsmUtils.getClassifierFQName(accessPoint));
+                        log.trace("Extracting JQL expressions of mapped transfer object type {}", AsmUtils.getClassifierFQName(mappedTransferObjectType));
                     }
 
-                    final Optional<TypeName> typeName = builder.getTypeName(accessPoint);
+                    final Optional<String> filterJql = AsmUtils.getExtensionAnnotationCustomValue(mappedTransferObjectType, "mappedEntityType", "filter", false);
+                    final Optional<String> filterDialect = AsmUtils.getExtensionAnnotationCustomValue(mappedTransferObjectType, "mappedEntityType", "filter.dialect", false);
+
+                    if (filterJql.isPresent()) {
+                        final Optional<TypeName> typeName = builder.buildTypeName(mappedTransferObjectType);
+
+                        if (!typeName.isPresent()) {
+                            throw new IllegalStateException("Illegal type name");
+                        }
+
+                        final boolean hasFilterBinding = all(expressionResourceSet, FilterBinding.class)
+                                .anyMatch(b -> b.getTypeName() != null &&
+                                        Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
+                                        Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()));
+
+                        if (!hasFilterBinding) {
+                            final JqlExpressionBuilder.BindingContext filterBindingContext = new JqlExpressionBuilder.BindingContext(null, JqlExpressionBuilder.BindingType.FILTER, JqlExpressionBuilder.BindingRole.GETTER);
+
+                            if (JQL_DIALECT.equals(filterDialect.get())) {
+                                final Expression expression = builder.createExpression(asmUtils.getMappedEntityType(mappedTransferObjectType).get(), filterJql.get());
+                                builder.createBinding(filterBindingContext, null, mappedTransferObjectType, expression);
+                            } else if (filterDialect.isPresent()) {
+                                log.warn("Dialect {} of filter is not supported", filterDialect.get());
+                            }
+                        } else {
+                            log.debug("Filter expression already extracted for mapped transfer object type: {}", AsmUtils.getClassifierFQName(mappedTransferObjectType));
+                        }
+                    }
+                });
+
+        asmUtils.all(EClass.class)
+                .filter(c -> !AsmUtils.isEntityType(c) && !asmUtils.isMappedTransferObjectType(c))
+                .forEach(unmappedTransferObjectType -> {
+                    if (log.isTraceEnabled()) {
+                        log.trace("Extracting JQL expressions of unmapped transfer object type {}", AsmUtils.getClassifierFQName(unmappedTransferObjectType));
+                    }
+
+                    final Optional<TypeName> typeName = builder.buildTypeName(unmappedTransferObjectType);
 
                     if (!typeName.isPresent()) {
                         throw new IllegalStateException("Illegal type name");
                     }
 
-                    accessPoint.getEReferences()
+                    unmappedTransferObjectType.getEReferences()
                             .forEach(reference -> {
                                 final boolean hasGetterBinding = all(expressionResourceSet, ReferenceBinding.class)
                                         .anyMatch(b -> b.getTypeName() != null &&
@@ -361,7 +395,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
                                             if (getterJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(null, getterJql.get());
-                                                builder.createBinding(getterBindingContext, null, accessPoint, expression);
+                                                builder.createBinding(getterBindingContext, null, unmappedTransferObjectType, expression);
                                             } else {
                                                 throw new IllegalStateException("Getter reference JQL not found");
                                             }
@@ -371,14 +405,14 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of getter reference is not specified, skipped expression: {}", getterJql.get());
                                         }
                                     } else {
-                                        log.debug("Getter expression already extracted for navigation property: {}", reference);
+                                        log.debug("Getter expression already extracted for navigation property: {}", AsmUtils.getReferenceFQName(reference));
                                     }
 
                                     if (!hasSetterBinding) {
                                         if (setterDialect.isPresent() && JQL_DIALECT.equals(setterDialect.get())) {
                                             if (setterJql.isPresent()) {
                                                 final Expression expression = builder.createExpression(null, setterJql.get());
-                                                builder.createBinding(setterBindingContext, null, accessPoint, expression);
+                                                builder.createBinding(setterBindingContext, null, unmappedTransferObjectType, expression);
                                             } else {
                                                 throw new IllegalStateException("Setter reference JQL not found");
                                             }
@@ -388,7 +422,7 @@ public class AsmJqlExtractor implements JqlExtractor {
                                             log.warn("Dialect of setter reference is not specified, skipped expression: {}", setterJql.get());
                                         }
                                     } else {
-                                        log.debug("Setter expression already extracted for navigation property: {}", reference);
+                                        log.debug("Setter expression already extracted for navigation property: {}", AsmUtils.getReferenceFQName(reference));
                                     }
                                 }
                             });

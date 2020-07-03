@@ -18,7 +18,7 @@ import java.util.Optional;
  * @param <PTE> primitive typed element (ie. attribute)
  * @param <E>   enumeration
  * @param <C>   class
- * @param <AP>  access point
+ * @param <AP>  transfer object type
  * @param <RTE> reference typed element (ie. reference)
  * @param <S> sequence
  * @param <M>   measure
@@ -33,9 +33,7 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
      * @param namespaceElement namespace element
      * @return type name
      */
-    Optional<TypeName> getTypeName(NE namespaceElement);
-
-    Optional<TypeName> getEnumerationTypeName(E enumeration);
+    Optional<TypeName> buildTypeName(NE namespaceElement);
 
     /**
      * Get a namespace element by element name.
@@ -268,7 +266,7 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
      *
      * @return list of classes
      */
-    EList<C> getAllClasses();
+    EList<C> getAllEntityTypes();
 
     /** Returns all measures that can be used in expression.
      *
@@ -276,13 +274,13 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
      */
     EList<M> getAllMeasures();
 
-    Optional<MeasureName> getMeasureName(M measure);
+    Optional<MeasureName> buildMeasureName(M measure);
 
     EList<E> getAllEnums();
 
     EList<NE> getAllStaticSequences();
 
-    EList<AP> getAllAccessPoints();
+    EList<AP> getAllTransferObjectTypes();
 
     /**
      * Get object sequence by name.

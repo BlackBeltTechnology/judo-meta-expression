@@ -61,7 +61,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<TypeName> getTypeName(final NamespaceElement namespaceElement) {
+    public Optional<TypeName> buildTypeName(final NamespaceElement namespaceElement) {
         return getEsmElement(Namespace.class)
                 .filter(ns -> ns.getElements().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namespaceElement.getName()).build())
@@ -69,12 +69,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<TypeName> getEnumerationTypeName(EnumerationType enumeration) {
-        return getTypeName(enumeration);
-    }
-
-    @Override
-    public Optional<MeasureName> getMeasureName(Measure measure) {
+    public Optional<MeasureName> buildMeasureName(Measure measure) {
         return measureProvider.getMeasures()
                 .filter(mn -> Objects.equals(measureProvider.getMeasureNamespace(mn), measureProvider.getMeasureNamespace(measure)) && Objects.equals(mn.getName(), measure.getName()))
                 .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(measureProvider.getMeasureNamespace(measure)).build());
@@ -289,8 +284,8 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<hu.blackbelt.judo.meta.esm.structure.Class> getAllClasses() {
-        return ECollections.asEList(getEsmElement(hu.blackbelt.judo.meta.esm.structure.Class.class).collect(toList()));
+    public EList<hu.blackbelt.judo.meta.esm.structure.Class> getAllEntityTypes() {
+        return ECollections.asEList(getEsmElement(hu.blackbelt.judo.meta.esm.structure.EntityType.class).collect(toList()));
     }
 
     @Override
@@ -427,8 +422,8 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<TransferObjectType> getAllAccessPoints() {
-        return ECollections.asEList(getEsmElement(TransferObjectType.class).filter(t -> t.isAccesspoint()).collect(toList()));
+    public EList<TransferObjectType> getAllTransferObjectTypes() {
+        return ECollections.asEList(getEsmElement(TransferObjectType.class).collect(toList()));
     }
     
 	@Override

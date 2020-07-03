@@ -6,6 +6,7 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.*;
@@ -24,17 +25,17 @@ import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.model.northwind.Demo;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -46,9 +47,15 @@ import java.util.List;
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.calculatePsm2MeasureTransformationScriptURI;
+import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -63,45 +70,23 @@ public class AsmJqlExpressionBuilderTest {
 
     private JqlExpressionBuilder<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> expressionBuilder;
 
-    private Resource asmResource;
-    private Resource measureResource;
     private AsmModelAdapter modelAdapter;
     private AsmUtils asmUtils;
     private ExpressionModelResourceSupport expressionModelResourceSupport;
 
+    private ModelLoader modelLoader;
+
     @BeforeEach
-    void setUp() throws Exception {
-        initResources(null);
-    }
+    void setUp() {
+        modelLoader = new ModelLoader();
 
-    private void initResources(EPackage customPackage) {
-        try {
-            final AsmModelResourceSupport asmModelResourceSupport = AsmModelResourceSupport.loadAsm(AsmModelResourceSupport.LoadArguments.asmLoadArgumentsBuilder()
-                    .file(new File("src/test/model/asm.model"))
-                    .uri(URI.createURI("urn:test.judo-meta-asm"))
-                    .build());
-            asmResource = asmModelResourceSupport.getResource();
-            if (customPackage != null) {
-                asmResource.getContents().clear();
-                asmResource.getContents().add(customPackage);
-            }
-            final MeasureModelResourceSupport measureModelResourceSupport = MeasureModelResourceSupport.loadMeasure(MeasureModelResourceSupport.LoadArguments.measureLoadArgumentsBuilder()
-                    .file(new File("src/test/model/measure.model"))
-                    .uri(URI.createURI("urn:test.judo-meta-measure"))
-                    .build());
-            measureResource = measureModelResourceSupport.getResource();
+        expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
+                .uri(URI.createURI("urn:test.judo-meta-expression"))
+                .build();
 
-            expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
-                    .uri(URI.createURI("urn:test.judo-meta-expression"))
-                    .build();
-
-            modelAdapter = new AsmModelAdapter(asmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
-            expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
-
-            asmUtils = new AsmUtils(asmModelResourceSupport.getResourceSet());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        modelAdapter = new AsmModelAdapter(modelLoader.getAsmModel().getResourceSet(), modelLoader.getMeasureModel().getResourceSet());
+        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+        asmUtils = new AsmUtils(modelLoader.getAsmModel().getResourceSet());
     }
 
     @AfterEach
@@ -113,8 +98,6 @@ public class AsmJqlExpressionBuilderTest {
                 .build());
         validateExpressions(expressionModelResourceSupport.getResource());
 
-        asmResource = null;
-        measureResource = null;
         modelAdapter = null;
         asmUtils = null;
         expressionModelResourceSupport = null;
@@ -127,14 +110,14 @@ public class AsmJqlExpressionBuilderTest {
                         .name("NORTHWIND")
                         .validateModel(false)
                         .aliases(ImmutableList.of("ASM"))
-                        .resource(asmResource)
+                        .resource(modelLoader.getAsmModel().getResource())
                         .build(),
                 wrappedEmfModelContextBuilder()
                         .log(log)
                         .name("NORTHWIND_MEASURES")
                         .validateModel(false)
                         .aliases(ImmutableList.of("MEASURES"))
-                        .resource(measureResource)
+                        .resource(modelLoader.getMeasureModel().getResource())
                         .build(),
                 wrappedEmfModelContextBuilder()
                         .log(log)
@@ -180,12 +163,6 @@ public class AsmJqlExpressionBuilderTest {
         return expression;
     }
 
-    private Expression createGetterExpression(EClass clazz, String jqlExpressionString, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Expression expression = createExpression(clazz, jqlExpressionString);
-        expressionBuilder.createGetterBinding(clazz, expression, feature, bindingType);
-        return expression;
-    }
-
     private Matcher<Expression> collectionOf(String typeName) {
         return new DiagnosingMatcher<Expression>() {
 
@@ -199,7 +176,7 @@ public class AsmJqlExpressionBuilderTest {
                 boolean result = false;
                 if (item instanceof CollectionExpression) {
                     CollectionExpression collection = (CollectionExpression) item;
-                    TypeName collectionTypeName = modelAdapter.getTypeName((EClassifier) (collection).getObjectType(modelAdapter)).get();
+                    TypeName collectionTypeName = modelAdapter.buildTypeName((EClassifier) (collection).getObjectType(modelAdapter)).get();
                     if (collectionTypeName.getName().equals(typeName)) {
                         result = true;
                     } else {
@@ -227,7 +204,7 @@ public class AsmJqlExpressionBuilderTest {
                 boolean result = false;
                 if (item instanceof ObjectExpression) {
                     ObjectExpression oe = (ObjectExpression) item;
-                    TypeName objectTypeName = modelAdapter.getTypeName((EClassifier) (oe).getObjectType(modelAdapter)).get();
+                    TypeName objectTypeName = modelAdapter.buildTypeName((EClassifier) (oe).getObjectType(modelAdapter)).get();
                     if (objectTypeName.getName().equals(typeName)) {
                         result = true;
                     } else {
@@ -290,43 +267,43 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testSimpleDaoTest() {
         EClass order = findBase("Order");
-        createGetterExpression(order, "self.orderDetails", "orderDetails", RELATION);
-        Expression orderCategories = createGetterExpression(order, "self.orderDetails.product.category", "categories", RELATION);
+        createExpression(order, "self.orderDetails");
+        Expression orderCategories = createExpression(order, "self.orderDetails.product.category");
         assertThat(orderCategories, collectionOf("Category"));
-        orderCategories = createGetterExpression(order, "((((self).orderDetails).product).category)", "categories", RELATION);
+        orderCategories = createExpression(order, "((((self).orderDetails).product).category)");
         assertThat(orderCategories, collectionOf("Category"));
 
 
-        createGetterExpression(order, "self.shipper.companyName", "shipperName", ATTRIBUTE);
-        createGetterExpression(order, "(self).shipper.companyName", "shipperName", ATTRIBUTE);
-        createGetterExpression(order, "self.shipper", "shipper", RELATION);
-        createGetterExpression(order, "(self.shipper)", "shipper", RELATION);
-        createGetterExpression(order, "self.orderDate", "orderDate", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName");
+        createExpression(order, "(self).shipper.companyName");
+        createExpression(order, "self.shipper");
+        createExpression(order, "(self.shipper)");
+        createExpression(order, "self.orderDate");
 
         EClass internationalOrder = findBase("InternationalOrder");
-        createGetterExpression(internationalOrder, "self.customsDescription", "customsDescription", ATTRIBUTE);
-        createGetterExpression(internationalOrder, "self.exciseTax", "exciseTax", ATTRIBUTE);
+        createExpression(internationalOrder, "self.customsDescription");
+        createExpression(internationalOrder, "self.exciseTax");
 
         EClass product = findBase("Product");
-        createGetterExpression(product, "self.category", "category", RELATION);
-        createGetterExpression(product, "self.productName", "productName", ATTRIBUTE);
-        createGetterExpression(product, "self.unitPrice", "unitPrice", ATTRIBUTE);
+        createExpression(product, "self.category");
+        createExpression(product, "self.productName");
+        createExpression(product, "self.unitPrice");
 
         EClass shipper = findBase("Shipper");
-        createGetterExpression(shipper, "self.companyName", "companyName", ATTRIBUTE);
+        createExpression(shipper, "self.companyName");
 
         EClass category = findBase("Category");
-        createGetterExpression(category, "self.products", "products", RELATION);
-        createGetterExpression(category, "self.categoryName", "categoryName", ATTRIBUTE);
+        createExpression(category, "self.products");
+        createExpression(category, "self.categoryName");
 
         EClass orderDetail = findBase("OrderDetail");
-        createGetterExpression(orderDetail, "self.product", "product", RELATION);
-        createGetterExpression(orderDetail, "self.product.category", "category", RELATION);
-        createGetterExpression(orderDetail, "self.product.productName", "productName", ATTRIBUTE);
-        createGetterExpression(orderDetail, "self.unitPrice", "unitPrice", ATTRIBUTE);
-        createGetterExpression(orderDetail, "self.quantity", "quantity", ATTRIBUTE);
-        createGetterExpression(orderDetail, "self.discount", "discount", ATTRIBUTE);
-        createGetterExpression(orderDetail, "self.quantity * self.unitPrice * (1 - self.discount)", "price", ATTRIBUTE);
+        createExpression(orderDetail, "self.product");
+        createExpression(orderDetail, "self.product.category");
+        createExpression(orderDetail, "self.product.productName");
+        createExpression(orderDetail, "self.unitPrice");
+        createExpression(orderDetail, "self.quantity");
+        createExpression(orderDetail, "self.discount");
+        createExpression(orderDetail, "self.quantity * self.unitPrice * (1 - self.discount)");
 
     }
 
@@ -379,30 +356,10 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testTimestampOperations() {
-        EDataType dateType = newEDataTypeBuilder().withName("Date").withInstanceTypeName("java.util.Date").build();
-        EDataType dayType = newEDataTypeBuilder().withName("Day").withInstanceTypeName("java.lang.Integer").build();
-        EAnnotation entityAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/entity")
-                .build();
-        entityAnnotation.getDetails().put("value", "true");
-        EAnnotation dayAnnotation = newEAnnotationBuilder()
-                .withSource("http://blackbelt.hu/judo/meta/ExtendedMetadata/constraints")
-                .build();
-        dayAnnotation.getDetails().put("measure", "demo.measures.Time");
-        dayAnnotation.getDetails().put("unit", "day");
-        EClass productType = newEClassBuilder().withName("Entity")
-                .withEAnnotations(entityAnnotation)
-                .withEStructuralFeatures(Arrays.asList(newEAttributeBuilder()
-                        .withName("producedOn")
-                        .withEType(dateType).build()
-                        ,newEAttributeBuilder().withName("ripeningTime").withEType(dayType).withEAnnotations(dayAnnotation).build()
-                )).build();
-        initResources(
-                newEPackageBuilder().withName("tests")
-                        .withEClassifiers(Arrays.asList(dateType, productType)).build());
-        createExpression(productType, "self.producedOn + self.ripeningTime");
-        Expression expression = createExpression(productType, "self.producedOn + 10.5[day]");
-        assertThat(expression, instanceOf(DateExpression.class));
+        EClass orderType = asmUtils.getClassByFQName("demo.entities.Order").get();
+        //createExpression(orderType, "self.orderDate + self.shipmentDuration");
+        Expression expression = createExpression(orderType, "self.orderDate + 10.5[day]");
+        assertThat(expression, instanceOf(TimestampExpression.class));
         TimestampDifferenceExpression elapsedTimeFrom = (TimestampDifferenceExpression) createExpression("`2019-12-31T00:00:00.000+0100`!elapsedTimeFrom(`2019-12-31T00:00:00.000+0200`)");
         assertThat(elapsedTimeFrom.getMeasure(), notNullValue());
         createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
@@ -447,9 +404,8 @@ public class AsmJqlExpressionBuilderTest {
         Expression decimalSwitch2 = createExpression("true ? 1.0 : 2");
         assertThat(decimalSwitch2, instanceOf(DecimalSwitchExpression.class));
 
-
-        EClass order = findBase("Order");
-        createGetterExpression(order, "false ? self.shipper.companyName : 'b'", "stringSwitch", ATTRIBUTE);
+        Expression stringSwitch = createExpression("false ? demo::entities::Order!any().shipper.companyName : 'b'");
+        assertThat(stringSwitch, instanceOf(StringExpression.class));
 
         Expression sametype = createExpression("true ? demo::entities::Order : demo::entities::Order");
         assertThat(((CollectionSwitchExpression) sametype).getElementName().getName(), is("Order"));
@@ -482,43 +438,42 @@ public class AsmJqlExpressionBuilderTest {
 
     @Test
     void testCollectionVariableNames() {
-        EClass category = findBase("Category");
-        Expression productListOrdered = createGetterExpression(category, "self=>products!sort(e | e.unitPrice ASC, e.productName DESC)!sort(p | p.unitPrice)!join(s | s.productName, ',')", "productListOrdered", ATTRIBUTE);
+        Expression productListOrdered = createExpression("demo::entities::Category=>products!sort(e | e.unitPrice ASC, e.productName DESC)!sort(p | p.unitPrice)!join(s | s.productName, ',')");
         assertThat(productListOrdered, instanceOf(StringExpression.class));
     }
 
     @Test
     void testCollectionOperations() {
         EClass category = findBase("Category");
-        Expression products = createGetterExpression(category, "self.products", "products", RELATION);
+        Expression products = createExpression(category, "self.products");
         assertThat(products, collectionOf("Product"));
 
-        createGetterExpression(category, "self=>products!count()", "productListCount", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!join(p1 | p1.productName, ', ')!length()", "productListLength", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!head(5)", "productListHead", RELATION);
-        Expression productListTail = createGetterExpression(category, "self=>products!sort(e | e.unitPrice)!tail(5)", "productListTail", RELATION);
+        createExpression(category, "self=>products!count()");
+        createExpression(category, "self=>products!join(p1 | p1.productName, ', ')!length()");
+        createExpression(category, "self=>products!sort(e | e.unitPrice)!head(5)");
+        Expression productListTail = createExpression(category, "self=>products!sort(e | e.unitPrice)!tail(5)");
         assertThat(productListTail, collectionOf("Product"));
-        Expression cheapProducts = createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)", "cheapProducts", RELATION);
+        Expression cheapProducts = createExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)");
         assertThat(cheapProducts, collectionOf("Product"));
-        createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!count()", "cheapProductsCount", ATTRIBUTE);
+        createExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!count()");
 
-        createGetterExpression(category, "self=>products!min(p | p.unitPrice)", "cheapestPrice", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!max(p | p.unitPrice)", "highestPrice", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!sum(p | p.unitPrice)", "sumOfPrices", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!avg(p | p.unitPrice)", "avgOfPrices", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!min(p | p.quantityPerUnit)", "lowestQty", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!max(p | p.quantityPerUnit)", "highestQty", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!sum(p | p.quantityPerUnit)", "sumQty", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!avg(p | p.quantityPerUnit)", "avgQty", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!avg(p | p.unitPrice)", "cheapProductsAvgPrice", ATTRIBUTE);
+        createExpression(category, "self=>products!min(p | p.unitPrice)");
+        createExpression(category, "self=>products!max(p | p.unitPrice)");
+        createExpression(category, "self=>products!sum(p | p.unitPrice)");
+        createExpression(category, "self=>products!avg(p | p.unitPrice)");
+        createExpression(category, "self=>products!min(p | p.quantityPerUnit)");
+        createExpression(category, "self=>products!max(p | p.quantityPerUnit)");
+        createExpression(category, "self=>products!sum(p | p.quantityPerUnit)");
+        createExpression(category, "self=>products!avg(p | p.quantityPerUnit)");
+        createExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!avg(p | p.unitPrice)");
 
-        Expression productHead = createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head()", "productHead", ATTRIBUTE);
+        Expression productHead = createExpression(category, "self=>products!sort(p | p.unitPrice)!head()");
         assertThat(productHead, objectOf("Product"));
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()", "productTail", ATTRIBUTE);
+        createExpression(category, "self=>products!sort(p | p.unitPrice)!tail()");
 
-        Expression containsProduct = createGetterExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())", "containsProduct", ATTRIBUTE);
+        Expression containsProduct = createExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())");
         assertThat(containsProduct, instanceOf(LogicalExpression.class));
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!tail()!memberOf(self=>products)", "productMemberOf", ATTRIBUTE);
+        createExpression(category, "self=>products!sort(p | p.unitPrice)!tail()!memberOf(self=>products)");
     }
 
     @Test
@@ -544,10 +499,9 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(category, "self.categoryName != 'c'");
 
         // Concatenate
-        EClass order = findBase("Order");
         createExpression("'a'+'b'");
-        createGetterExpression(order, "self.shipper.companyName + self.shipper.companyName", "shipperNameConcat", ATTRIBUTE);
-        createGetterExpression(order, "'_' + self.shipper.companyName", "shipperNameConcat2", ATTRIBUTE);
+        createExpression("demo::entities::Order!any().shipper.companyName + demo::entities::Order!any().shipper.companyName");
+        createExpression("'_' + demo::entities::Order!any().shipper.companyName");
     }
 
     @Test
@@ -562,12 +516,11 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testObjectOperations() {
         EClass category = findBase("Category");
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>products!sort(q | q.unitPrice)!tail()", "productComparison1", ATTRIBUTE);
-        createGetterExpression(category, "self=>products!sort(p | p.unitPrice)!head() != self=>products!sort(p | p.unitPrice)!tail()", "productComparison2", ATTRIBUTE);
+        createExpression(category, "demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() == p.category=>products!sort(q | q.unitPrice)!tail()");
+        createExpression(category, "demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != p.category=>products!sort(p | p.unitPrice)!tail()");
 
-        EClass orderDetail = findBase("OrderDetail");
-        createGetterExpression(orderDetail, "not self.product!kindof(demo::entities::Product)", "productType", ATTRIBUTE);
-        createGetterExpression(orderDetail, "self.product!typeof(demo::entities::Product)", "productType", ATTRIBUTE);
+        createExpression("not demo::entities::OrderDetail!any().product!kindof(demo::entities::Product)");
+        createExpression("demo::entities::OrderDetail!any().product!typeof(demo::entities::Product)");
 
         EClass order = findBase("Order");
         createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName == 'joe')");
@@ -592,8 +545,8 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testEnums() {
         EClass order = findBase("Order");
-        createGetterExpression(order, "self.shipAddress.country == demo::types::Countries#AT", "countryCheck", ATTRIBUTE);
-        assertThrows(IllegalArgumentException.class, () -> createGetterExpression(order, "self.shipAddress.country == Countries#AT", "countryCheck2", ATTRIBUTE));
+        createExpression(order, "self.shipAddress.country == demo::types::Countries#AT");
+        assertThrows(IllegalArgumentException.class, () -> createExpression(order, "self.shipAddress.country == Countries#AT"));
 
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         createExpression("demo::types::Countries#AT == demo::types::Countries#RO");
@@ -623,8 +576,7 @@ public class AsmJqlExpressionBuilderTest {
     void testNumericFunctions() {
         Expression roundedConstant = createExpression("1.2!round()");
         assertThat(roundedConstant, instanceOf(IntegerExpression.class));
-        EClass product = findBase("Product");
-        Expression roundedAttribute = createGetterExpression(product, "(self.unitPrice)!round()", "unitPriceRound", ATTRIBUTE);
+        Expression roundedAttribute = createExpression("(demo::entities::Product!any().unitPrice)!round()");
         assertThat(roundedAttribute, instanceOf(IntegerExpression.class));
     }
 
@@ -646,39 +598,39 @@ public class AsmJqlExpressionBuilderTest {
         EClass order = findBase("Order");
 
         // LowerCase
-        createGetterExpression(order, "self.shipper.companyName!lowerCase()", "shipperNameLower", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!lowerCase()");
 
         // UpperCase
-        createGetterExpression(order, "self.shipper.companyName!upperCase()", "shipperNameUpper", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!upperCase()");
 
         // Length
-        Expression shipperNameLength = createGetterExpression(order, "self.shipper.companyName!length()", "shipperNameLength", ATTRIBUTE);
+        Expression shipperNameLength = createExpression(order, "self.shipper.companyName!length()");
         assertThat(shipperNameLength, instanceOf(NumericExpression.class));
-        createGetterExpression(order, "self.shipper.companyName!lowerCase()!length() > 0", "shipperNameLowerLength", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!lowerCase()!length() > 0");
 
         // SubString
-        createGetterExpression(order, "self.shipper.companyName!substring(1, 4)!length() > 0", "shipperNameSubString1", ATTRIBUTE);
-        createGetterExpression(order, "self.shipper.companyName!substring(1, self.shipper.companyName!length()-1)", "shipperNameSubStringEnd", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!substring(1, 4)!length() > 0");
+        createExpression(order, "self.shipper.companyName!substring(1, self.shipper.companyName!length()-1)");
 
         // Position
-        createGetterExpression(order, "self.shipper.companyName!position('a') > 0", "shipperNamePosition", ATTRIBUTE);
-        createGetterExpression(order, "self.shipper.companyName!position(self.shipper.companyName) > 0", "shipperNamePosition2", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!position('a') > 0");
+        createExpression(order, "self.shipper.companyName!position(self.shipper.companyName) > 0");
 
         // Replace
-        createGetterExpression(order, "self.shipper.companyName!replace('\\n', '')", "shipperNameReplace1", ATTRIBUTE);
-        createGetterExpression(order, "self.shipper.companyName!replace('$', self.shipper.companyName)", "shipperNameReplace2", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!replace('\\n', '')");
+        createExpression(order, "self.shipper.companyName!replace('$', self.shipper.companyName)");
 
         // Trim
-        createGetterExpression(order, "self.shipper.companyName!trim()", "shipperTrim", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!trim()");
 
         // First
-        createGetterExpression(order, "self.shipper.companyName!first(5)", "shipperFirst", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!first(5)");
 
         // Last
-        createGetterExpression(order, "self.shipper.companyName!last(1)", "last", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!last(1)");
 
         // Matches
-        createGetterExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')", "shipperNameMatches", ATTRIBUTE);
+        createExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')");
     }
 
     @Test
@@ -698,7 +650,7 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     public void test002() {
         EClass customer = findBase("Customer");
-        createGetterExpression(customer, "self.addresses", "customerAddresses", RELATION);
+        createExpression(customer, "self.addresses");
 
         createExpression("-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
         createExpression("demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
@@ -723,7 +675,7 @@ public class AsmJqlExpressionBuilderTest {
     public void test003() {
         createExpression("demo::entities::Employee!filter(e | e.lastName == 'Gipsz' and e.firstName == 'Jakab')!sort()!head()=>orders!sort(o | o.orderDate DESC)");
         createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture!isDefined())");
-        createExpression(findBase("Order"), "self=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
+        createExpression("demo::entities::Order!any()=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
     }
 
 }

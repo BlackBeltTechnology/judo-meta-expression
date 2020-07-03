@@ -101,12 +101,13 @@
 
    <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
    <!-- The tycho plugin 1.5.0 will fix it -->
-   <repository-reference location="http://download.eclipse.org/epsilon/updates/" enabled="true" />
+   <!--
+   <repository-reference location="https://download.eclipse.org/epsilon/updates/1.5/" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.2" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20200619_161113_927157f_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20200619_155646_34c22b5_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200619_155210_ec4f76d_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200619_154219_0665452_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20200619_161236_570d40a_develop" enabled="true" />
-
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20200702_130733_7926a0b_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20200630_233632_fb7cd5d_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20200702_134819_321333e_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20200630_232902_b6ce25f_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20200630_232815_ed6c349_develop" enabled="true" />
+   -->
 </site>

@@ -73,7 +73,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public Optional<TypeName> getTypeName(final EClassifier namespaceElement) {
+    public Optional<TypeName> buildTypeName(final EClassifier namespaceElement) {
         return getAsmElement(EPackage.class)
                 .filter(ns -> ns.getEClassifiers().contains(namespaceElement))
                 .map(ns -> newTypeNameBuilder().withNamespace(AsmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR)).withName(namespaceElement.getName()).build())
@@ -81,12 +81,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public Optional<TypeName> getEnumerationTypeName(EEnum enumeration) {
-        return getTypeName(enumeration);
-    }
-
-    @Override
-    public Optional<MeasureName> getMeasureName(Measure measure) {
+    public Optional<MeasureName> buildMeasureName(Measure measure) {
         return measureProvider.getMeasures()
                 .filter(mn -> Objects.equals(mn.getNamespace(), measure.getNamespace()) && Objects.equals(mn.getName(), measure.getName()))
                 .findAny().map(m -> newMeasureNameBuilder().withName(m.getName()).withNamespace(m.getNamespace()).build());
@@ -270,7 +265,7 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public EList<EClass> getAllClasses() {
+    public EList<EClass> getAllEntityTypes() {
         return ECollections.asEList(getAsmElement(EClass.class)
                 .filter(c -> AsmUtils.isEntityType(c))
                 .collect(toList()));
@@ -383,9 +378,9 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
-    public EList<EClass> getAllAccessPoints() {
+    public EList<EClass> getAllTransferObjectTypes() {
         return ECollections.asEList(getAsmElement(EClass.class)
-                .filter(c -> AsmUtils.isAccessPoint(c))
+                .filter(c -> !AsmUtils.isEntityType(c) || asmUtils.isMappedTransferObjectType(c))
                 .collect(toList()));
     }
 

@@ -78,7 +78,7 @@ public class PsmModelAdapterTest {
     public void testGetTypeName() {
         log.info("Testing: getTypeName(NE): TypeName");
 
-        Optional<TypeName> categoryTypeName = modelAdapter.getTypeName(getEntityTypeByName("Category").get());
+        Optional<TypeName> categoryTypeName = modelAdapter.buildTypeName(getEntityTypeByName("Category").get());
 
         assertTrue(categoryTypeName.isPresent());
         assertThat(categoryTypeName.get().getName(), is("Category"));
@@ -246,7 +246,7 @@ public class PsmModelAdapterTest {
     void testGetUnit() {
         log.debug("Testing: Opt<Unit> getUnit(NumExpr)...");
         //--------------------------
-        TypeName type = modelAdapter.getTypeName(getEntityTypeByName("Product").get()).get();
+        TypeName type = modelAdapter.buildTypeName(getEntityTypeByName("Product").get()).get();
         Instance instance = newInstanceBuilder().withElementName(type).build();
 
         Optional<Unit> kilogram = getPsmElement(Unit.class).filter(u -> "kilogram".equals(u.getName())).findAny();

@@ -137,7 +137,7 @@
                             <update.site.description>Use this URL in Eclipse to install</update.site.description>
                         </symbols>
                         <associateSites>
-                            <site>http://download.eclipse.org/epsilon/updates/</site>
+                            <site>https://download.eclipse.org/epsilon/updates/1.5/</site>
                             <site>https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/${epsilon-runtime-eclipse-version}/</site>
                             <site>https://nexus.judo.technology/repository/p2/judo-meta-asm/${judo-meta-asm-version}/</site>
                             <site>https://nexus.judo.technology/repository/p2/judo-meta-psm/${judo-meta-psm-version}/</site>

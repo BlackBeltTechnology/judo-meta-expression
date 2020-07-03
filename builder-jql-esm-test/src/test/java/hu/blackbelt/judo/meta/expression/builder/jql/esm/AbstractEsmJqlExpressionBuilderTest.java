@@ -12,7 +12,6 @@ import hu.blackbelt.judo.meta.esm.measure.Unit;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
-import hu.blackbelt.judo.meta.esm.runtime.EsmUtils;
 import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.PrimitiveTypedElement;
 import hu.blackbelt.judo.meta.esm.structure.ReferenceTypedElement;
@@ -68,7 +67,6 @@ public class AbstractEsmJqlExpressionBuilderTest {
     protected EsmModelAdapter modelAdapter;
     private ExpressionModelResourceSupport expressionModelResourceSupport;
     private EsmModelResourceSupport esmModelResourceSupport;
-    private EsmUtils esmUtils;
     protected Map<String, Measure> measureMap = new HashMap<>();
     private Model measureModel;
 
@@ -98,7 +96,6 @@ public class AbstractEsmJqlExpressionBuilderTest {
         }
         modelAdapter = new EsmModelAdapter(esmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
         esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
-        esmUtils = new EsmUtils();
     }
 
     protected Model createMeasureModel() {
@@ -137,7 +134,6 @@ public class AbstractEsmJqlExpressionBuilderTest {
         modelAdapter = null;
         expressionModelResourceSupport = null;
         esmModelResourceSupport = null;
-        esmUtils = null;
     }
 
     private void validateExpressions(final Resource expressionResource) throws Exception {
@@ -212,7 +208,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
                 boolean result = false;
                 if (item instanceof CollectionExpression) {
                     CollectionExpression collection = (CollectionExpression) item;
-                    TypeName collectionTypeName = modelAdapter.getTypeName((NamespaceElement) (collection).getObjectType(modelAdapter)).get();
+                    TypeName collectionTypeName = modelAdapter.buildTypeName((NamespaceElement) (collection).getObjectType(modelAdapter)).get();
                     if (collectionTypeName.getName().equals(typeName)) {
                         result = true;
                     } else {
@@ -240,7 +236,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
                 boolean result = false;
                 if (item instanceof ObjectExpression) {
                     ObjectExpression oe = (ObjectExpression) item;
-                    TypeName objectTypeName = modelAdapter.getTypeName((NamespaceElement) (oe).getObjectType(modelAdapter)).get();
+                    TypeName objectTypeName = modelAdapter.buildTypeName((NamespaceElement) (oe).getObjectType(modelAdapter)).get();
                     if (objectTypeName.getName().equals(typeName)) {
                         result = true;
                     } else {
