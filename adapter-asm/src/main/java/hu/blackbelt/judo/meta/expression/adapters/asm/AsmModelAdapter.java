@@ -389,29 +389,38 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
 	@Override
-	public Optional<EClass> getReferenceType(TypeName elementName, String referenceName) {
-		
-		Optional<? extends EClassifier> ne = this.get(elementName);
-		
-		if (!ne.isPresent()) {
-			return Optional.empty();
-		} else if (ne.get() instanceof EClass) {
+	public Optional<EClass> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName,
+			String transferObjectRelationName) {
+
+		Optional<? extends EClassifier> transferObjectType = this.get(transferObjectTypeName);
+
+		if (!transferObjectType.isPresent()) {
 			
-			 Optional<? extends EReference> reference = this.getReference((EClass)ne.get(), referenceName);
-			 
-			 if (!reference.isPresent()) {
-				 return Optional.empty();
-			 } else if (asmUtils.isEntityType(this.getTarget(reference.get()))){
-				 
-				 return Optional.of(this.getTarget(reference.get()));
-				 
-			 } else if (asmUtils.isMappedTransferObjectType(this.getTarget(reference.get()))) {
-				 
-				 return asmUtils.getMappedEntityType(this.getTarget(reference.get()));
-				 
-			 } else {
-				 return Optional.empty();
-			 }
+			return Optional.empty();
+			
+		} else if (transferObjectType.get() instanceof EClass) {
+
+			Optional<? extends EReference> eReference = this.getReference((EClass) transferObjectType.get(),
+					transferObjectRelationName);
+
+			if (!eReference.isPresent()) {
+				return Optional.empty();
+			} else {
+				EClass referenceTarget = getTarget(eReference.get());
+
+				if (asmUtils.isEntityType(referenceTarget)) {
+					
+					return Optional.of(referenceTarget);
+					
+				} else if (asmUtils.isMappedTransferObjectType(referenceTarget)) {
+					
+					return asmUtils.getMappedEntityType(referenceTarget);
+					
+				} else {
+					return Optional.empty();
+				}
+			}
+			
 		} else {
 			return Optional.empty();
 		}
@@ -419,17 +428,20 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
 	@Override
 	public boolean isCollectionReference(TypeName elementName, String referenceName) {
-		Optional<? extends EClassifier> ne = this.get(elementName);
 		
-		if (ne.isPresent() && ne.get() instanceof EClass &&
-				this.getReference((EClass)ne.get(), referenceName).isPresent()) {
+		Optional<? extends EClassifier> element = this.get(elementName);
+
+		if (element.isPresent() && element.get() instanceof EClass) {
 			
-			EReference reference = this.getReference((EClass)ne.get(), referenceName).get();
-			return this.isCollectionReference(reference);
+			Optional<? extends EReference> reference = getReference((EClass) element.get(), referenceName);
 			
+			if (reference.isPresent()) {
+				return isCollectionReference(reference.get());
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
 	}
-
 }

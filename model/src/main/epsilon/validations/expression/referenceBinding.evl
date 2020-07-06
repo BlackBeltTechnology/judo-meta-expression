@@ -1,10 +1,16 @@
 context EXPR!ReferenceBinding {
 	
+	constraint ReferenceBindingExpressionIsValid {
+		check: self.expression.isKindOf(EXPR!ReferenceExpression)
+		message: "Expression of reference binding for reference named: " + self.referenceName + " must be reference expression"
+	}
+	
 	constraint ReferenceExpressionMatchesBinding {
-		guard: self.expression.isKindOf(EXPR!ReferenceExpression)
-		check: modelAdapter.getReferenceType(self.typeName, self.referenceName).isPresent() and modelAdapter.getSuperTypes(self.expression.getObjectType(modelAdapter)).including(self.expression.getObjectType(modelAdapter))
-			.includes(modelAdapter.getReferenceType(self.typeName, self.referenceName).get())
-		message: "Reference named " + self.referenceName + " does not match the type of the assigned expression"
+		guard: self.satisfies("ReferenceBindingExpressionIsValid")
+		check: modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).isPresent() and 
+		modelAdapter.getSuperTypes(self.expression.getObjectType(modelAdapter)).including(self.expression.getObjectType(modelAdapter))
+			.includes(modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).get())
+		message: "Reference named " + self.referenceName + " does not match the type of the assigned expression" 
 	}
 	
 	constraint ObjectExpressionMatchesBinding {

@@ -215,12 +215,12 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isCustom(Primitive primitive) {
-        return isBoolean(primitive)
-                && isNumeric(primitive)
-                && isString(primitive)
-                && isEnumeration(primitive)
-                && isDate(primitive)
-                && isTimestamp(primitive);
+        return !isBoolean(primitive)
+                && !isNumeric(primitive)
+                && !isString(primitive)
+                && !isEnumeration(primitive)
+                && !isDate(primitive)
+                && !isTimestamp(primitive);
     }
 
     @Override
@@ -427,24 +427,26 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
     
 	@Override
-	public Optional<hu.blackbelt.judo.meta.esm.structure.Class> getReferenceType(TypeName elementName,
-			String referenceName) {
+	public Optional<hu.blackbelt.judo.meta.esm.structure.Class> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName,
+			String transferObjectRelationName) {
 		
-		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		Optional<? extends NamespaceElement> transferObjectType = get(transferObjectTypeName);
 		
-		if (!ne.isPresent()) {
+		if (!transferObjectType.isPresent()) {
 			return Optional.empty();
-		} else if (ne.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
+		} else if (transferObjectType.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
 			
-			 Optional<? extends ReferenceTypedElement> reference = this.getReference((hu.blackbelt.judo.meta.esm.structure.Class)ne.get(), referenceName);
+			 Optional<? extends ReferenceTypedElement> transferObjectRelation = getReference((hu.blackbelt.judo.meta.esm.structure.Class)transferObjectType.get(), transferObjectRelationName);
 			 
-			 if (!reference.isPresent()) {
+			 if (!transferObjectRelation.isPresent()) {
 				 return Optional.empty();
-			 } else if (this.getTarget(reference.get()).isMapped()){
-				 TransferObjectType target = (TransferObjectType)this.getTarget(reference.get());
-				 return Optional.of(target.getMapping().getTarget());
 			 } else {
-				 return Optional.empty();
+				 TransferObjectType transferObjectRelationTarget = (TransferObjectType)getTarget(transferObjectRelation.get());
+				 if (transferObjectRelationTarget.isMapped()) {
+					 return Optional.of(transferObjectRelationTarget.getMapping().getTarget());
+				 } else {
+					 return Optional.empty();
+				 }
 			 }
 		} else {
 			return Optional.empty();
@@ -453,14 +455,19 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
 	@Override
 	public boolean isCollectionReference(TypeName elementName, String referenceName) {
-		Optional<? extends NamespaceElement> ne = this.get(elementName);
+		Optional<? extends NamespaceElement> element = this.get(elementName);
 		
-		if (ne.isPresent() && ne.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class &&
-				this.getReference((hu.blackbelt.judo.meta.esm.structure.Class)ne.get(), referenceName).isPresent()) {
-			
-			ReferenceTypedElement reference = this.getReference((hu.blackbelt.judo.meta.esm.structure.Class)ne.get(), referenceName).get();
-			return this.isCollectionReference(reference);
-			
+		if (element.isPresent()) {
+			if (element.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
+				Optional<? extends ReferenceTypedElement> reference = getReference((hu.blackbelt.judo.meta.esm.structure.Class)element.get(), referenceName);
+				if (reference.isPresent()) {
+					return isCollectionReference(reference.get());
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}
