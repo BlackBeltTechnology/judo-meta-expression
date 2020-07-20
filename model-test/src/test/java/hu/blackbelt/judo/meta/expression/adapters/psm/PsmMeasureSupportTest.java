@@ -1,12 +1,24 @@
 package hu.blackbelt.judo.meta.expression.adapters.psm;
 
-import com.google.common.collect.ImmutableList;
-import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.measure.Unit;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.support.PsmModelResourceSupport;
-import hu.blackbelt.judo.meta.psm.type.Primitive;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newDerivedMeasureBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newDurationUnitBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasureBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasureDefinitionTermBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newUnitBuilder;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.useModel;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.usePackage;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -16,17 +28,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import com.google.common.collect.ImmutableList;
 
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
+import hu.blackbelt.judo.meta.psm.measure.DurationType;
+import hu.blackbelt.judo.meta.psm.measure.Measure;
+import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.namespace.Model;
+import hu.blackbelt.judo.meta.psm.namespace.Package;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.type.Primitive;
 
 public class PsmMeasureSupportTest {
 
@@ -39,21 +51,15 @@ public class PsmMeasureSupportTest {
     private Primitive kgType;
     private Primitive cmType;
 
-    private PsmUtils psmUtils;
-
     @BeforeEach
     public void setUp() throws Exception {
-        measureModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
-                .name("test")
-                // TODO: check model
-                .validateModel(false)
-                .build());
+        measureModel = buildPsmModel().name("test").build();
+        populateMeasureModel();
 
-
-        psmResourceSet = PsmModelResourceSupport.createPsmResourceSet();
-        final Resource psmResource = psmResourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
-
+        PsmModel psmModel = buildPsmModel().name("test").build();
+        
+        Model model = newModelBuilder().withName("demo").build();
+        
         final Primitive stringType = newStringTypeBuilder()
                 .withName("String")
                 .build();
@@ -87,15 +93,88 @@ public class PsmMeasureSupportTest {
                         newAttributeBuilder().withName("weight").withDataType(kgType).build(),
                         newAttributeBuilder().withName("height").withDataType(cmType).build()
                 )).build();
-
-        psmUtils = new PsmUtils();
-
-        //TODO
-
-
-        psmResource.getContents().addAll(Arrays.asList(stringType, doubleType, product));
+        
+        useModel(model).withElements(stringType,doubleType,kgType,cmType,product).build();
+        psmModel.addContent(model);
+        
+        psmResourceSet = psmModel.getResourceSet();
+        final Resource psmResource = psmResourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
 
         modelAdapter = new PsmModelAdapter(psmResourceSet, measureModel.getResourceSet());
+    }
+    
+    private void populateMeasureModel() {  	  
+    	  
+    	Model demo = newModelBuilder().withName("demo").build();
+    	Package measures = newPackageBuilder().withName("measures").build();
+    	useModel(demo).withPackages(measures).build();
+    	
+        Measure time = newMeasureBuilder().withName("Time").withUnits(
+        		newDurationUnitBuilder().withName("nanosecond").withSymbol("ns").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0E+9)).withUnitType(DurationType.NANOSECOND).build(),
+        		newDurationUnitBuilder().withName("microsecond").withSymbol("μs").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1000000.0)).withUnitType(DurationType.MICROSECOND).build(),
+    			newDurationUnitBuilder().withName("millisecond").withSymbol("ms").withRateDividend(new Double(0.001)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.MILLISECOND).build(),
+    			newDurationUnitBuilder().withName("second").withSymbol("s").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.SECOND).build(),
+    			newDurationUnitBuilder().withName("minute").withSymbol("min").withRateDividend(new Double(60.0)).withRateDivisor(new Double(1.0)).build(),
+    			newDurationUnitBuilder().withName("hour").withSymbol("h").withRateDividend(new Double(3600.0)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.HOUR).build(),
+    			newDurationUnitBuilder().withName("day").withSymbol("").withRateDividend(new Double(86400.0)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.DAY).build(),
+    			newDurationUnitBuilder().withName("week").withSymbol("").withRateDividend(new Double(604800.0)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.WEEK).build(),
+    			newDurationUnitBuilder().withName("halfDay").withSymbol("").withRateDividend(new Double(43200.0)).withRateDivisor(new Double(1.0)).build())
+        	.build();
+        
+        Measure monthBasedTime = newMeasureBuilder().withName("MonthBasedTime").withUnits(
+    			newDurationUnitBuilder().withName("month").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.MONTH).build(),
+    			newDurationUnitBuilder().withName("year").withRateDividend(new Double(12.0)).withRateDivisor(new Double(1.0)).withUnitType(DurationType.YEAR).build())
+        	.build();
+        
+        Measure mass = newMeasureBuilder().withName("Mass").withUnits(
+        		newUnitBuilder().withName("milligram").withSymbol("mg").withRateDividend(new Double(0.0000010)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("gram").withSymbol("g").withRateDividend(new Double(0.001)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("dekagram").withSymbol("dkg").withRateDividend(new Double(0.01)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("kilogram").withSymbol("kg").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("quintal").withSymbol("q").withRateDividend(new Double(100.0)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("tonne").withSymbol("t").withRateDividend(new Double(1000.0)).withRateDivisor(new Double(1.0)).build())
+    		.build();
+        
+        Measure length = newMeasureBuilder().withName("Length").withUnits(
+        		newUnitBuilder().withName("nanometre").withSymbol("nm").withRateDividend(new Double(1.0E-9)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("micrometre").withSymbol("μm").withRateDividend(new Double(0.0000010)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("millimetre").withSymbol("mm").withRateDividend(new Double(0.001)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("centimetre").withSymbol("cm").withRateDividend(new Double(0.01)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("decimetre").withSymbol("dm").withRateDividend(new Double(0.1)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("metre").withSymbol("m").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("kilometre").withSymbol("km").withRateDividend(new Double(1000.0)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("inch").withSymbol("&quot;").withRateDividend(new Double(0.0254)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("foot").withSymbol("ft").withRateDividend(new Double(0.3048)).withRateDivisor(new Double(1.0)).build(),
+        		newUnitBuilder().withName("mile").withSymbol("mi").withRateDividend(new Double(1609.344)).withRateDivisor(new Double(1.0)).build())
+    		.build();
+        
+        DerivedMeasure velocity = newDerivedMeasureBuilder().withName("Velocity").withUnits(
+        		newUnitBuilder().withName("kilometrePerHour").withSymbol("km/h").withRateDividend(new Double(1.0)).withRateDivisor(new Double(3.6)).build(),
+        		newUnitBuilder().withName("metrePerSecond").withSymbol("m/s").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).build())
+        		.withTerms(newMeasureDefinitionTermBuilder().withExponent(1).withUnit(length.getUnits().get(6)).build())
+        		.withTerms(newMeasureDefinitionTermBuilder().withExponent(-1).withUnit(time.getUnits().get(5)).build())
+    		.build();
+        
+    	DerivedMeasure area = newDerivedMeasureBuilder().withName("Area").withUnits(
+      			newUnitBuilder().withName("squareMillimetre").withSymbol("mm²").withRateDividend(new Double(0.0000010)).withRateDivisor(new Double(1.0)).build(),
+      			newUnitBuilder().withName("squareCentimetre").withSymbol("cm²").withRateDividend(new Double(0.00010)).withRateDivisor(new Double(1.0)).build(),
+      			newUnitBuilder().withName("squareDecimetre").withSymbol("dm²").withRateDividend(new Double(0.01)).withRateDivisor(new Double(1.0)).build(),
+      			newUnitBuilder().withName("squareMetre").withSymbol("m²").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).build(),
+      			newUnitBuilder().withName("hectare").withSymbol("ha").withRateDividend(new Double(10000.0)).withRateDivisor(new Double(1.0)).build(),
+      			newUnitBuilder().withName("squareKilometre").withSymbol("km²").withRateDividend(new Double(1000000.0)).withRateDivisor(new Double(1.0)).build())
+    			.withTerms(newMeasureDefinitionTermBuilder().withExponent(2).withUnit(length.getUnits().get(0)).build())
+    	.build();
+    	
+        DerivedMeasure force = newDerivedMeasureBuilder().withName("Force").withUnits(
+        		newUnitBuilder().withName("newton").withSymbol("N").withRateDividend(new Double(1.0)).withRateDivisor(new Double(1.0)).build())
+        		.withTerms(newMeasureDefinitionTermBuilder().withExponent(-2).withUnit(time.getUnits().get(0)).build())
+        		.withTerms(newMeasureDefinitionTermBuilder().withExponent(1).withUnit(mass.getUnits().get(0)).build())
+        		.withTerms(newMeasureDefinitionTermBuilder().withExponent(1).withUnit(length.getUnits().get(0)).build())
+    		.build();
+        
+        usePackage(measures).withElements(time,mass,length,velocity,area,force,monthBasedTime).build();
+        
+        measureModel.addContent(demo);
     }
 
     @AfterEach
@@ -116,7 +195,7 @@ public class PsmMeasureSupportTest {
         Assert.assertTrue(modelAdapter.getUnit(product, "height").isPresent());
     }
 
-    //@Test
+    @Test
     public void testGetUnitOfAttributeWithUnknownUnit() {
         product.getAttributes().addAll(ImmutableList.of(
            newAttributeBuilder().withName("vat").withDataType(doubleType).build(),

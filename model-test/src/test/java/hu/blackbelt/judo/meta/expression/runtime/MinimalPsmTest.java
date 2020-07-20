@@ -1,10 +1,11 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
-import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
+import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 
 class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
@@ -29,6 +30,7 @@ class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
     @Test
     void test() throws Exception {
+    	
         ExpressionEpsilonValidatorOnPsm.validateExpressionOnPsm(log,
                 psmModel, expressionModel,
                 ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());

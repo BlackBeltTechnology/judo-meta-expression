@@ -1,5 +1,51 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newDecimalConstantBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newTimestampConstantBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newDecimalComparisonBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newIntegerComparisonBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAggregatedExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalOppositeExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAggregatedExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerArithmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerOppositeExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newRoundExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newSwitchCaseBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.TreeMap;
+
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
@@ -14,29 +60,6 @@ import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
-import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.slf4j.Logger;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.*;
-
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newDecimalComparisonBuilder;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newIntegerComparisonBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class MeasureAdapterTest {
 

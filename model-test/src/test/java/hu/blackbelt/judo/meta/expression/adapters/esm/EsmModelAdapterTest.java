@@ -1,5 +1,41 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
+import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport.esmModelResourceSupportBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasToString;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.emf.common.util.URI;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import hu.blackbelt.judo.meta.esm.measure.DurationType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
@@ -17,40 +53,12 @@ import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
-import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalArithmeticExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
-import org.eclipse.emf.common.util.URI;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport.esmModelResourceSupportBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EsmModelAdapterTest {
 
