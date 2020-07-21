@@ -215,7 +215,7 @@ public class JqlTransformers<NE, P extends NE, PTE, E extends P, C extends NE, A
                         }
                     subject = functionTransformer.apply(subject, functionCall.getFunction(), context);
                 	} catch (Exception e) {
-                    	throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), functionCall)));
+                    	throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), functionCall)), e);
                 	}
                     if (subject instanceof CastCollection) {
                         CastCollection castCollection = (CastCollection) subject;

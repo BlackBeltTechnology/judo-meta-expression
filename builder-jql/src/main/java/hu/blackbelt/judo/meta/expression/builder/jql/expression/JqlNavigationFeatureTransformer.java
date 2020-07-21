@@ -76,7 +76,7 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
 				}
 			} catch (Exception e) {
 				throw new JqlExpressionBuildException(baseExpression,
-						Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), jqlFeature)));
+						Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), jqlFeature)), e);
 			}
 		}
 		return new JqlFeatureTransformResult<>(navigationBase, baseExpression);
@@ -99,16 +99,16 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
 			Expression baseExpression, C navigationBase, Feature jqlFeature) {
 		C resultNavigationBase = navigationBase;
 		Expression resultBaseExpression = baseExpression;
-		if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedReference(accessor)) {
+		Optional<String> getterExpression = getModelAdapter().getReferenceGetter(accessor);
+		if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedReference(accessor) && getterExpression.isPresent()) {
 			if (context.containsAccessor(accessor)) {
 				throw new CircularReferenceException(accessor.toString());
 			} else {
 				context.pushAccessor(accessor);
 			}
-			String getterExpression = getModelAdapter().getReferenceGetter(accessor).get();
 			context.pushBaseExpression(resultBaseExpression);
 			context.pushBase(resultNavigationBase);
-			resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
+			resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression.get(), context);
 			context.popBaseExpression();
 			context.popBase();
 			context.popAccessor();
@@ -124,16 +124,16 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
 			Expression baseExpression, C navigationBase, Feature jqlFeature) {
 		C resultNavigationBase = navigationBase;
 		Expression resultBaseExpression = baseExpression;
-		if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedAttribute(accessor)) {
+		Optional<String> getterExpression = getModelAdapter().getAttributeGetter(accessor);
+		if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedAttribute(accessor) && getterExpression.isPresent()) {
 			if (context.containsAccessor(accessor)) {
 				throw new CircularReferenceException(accessor.toString());
 			} else {
 				context.pushAccessor(accessor);
 			}
-			String getterExpression = getModelAdapter().getAttributeGetter(accessor).get();
 			context.pushBaseExpression(resultBaseExpression);
 			context.pushBase(resultNavigationBase);
-			resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression, context);
+			resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression.get(), context);
 			context.popBaseExpression();
 			context.popBase();
 			context.popAccessor();

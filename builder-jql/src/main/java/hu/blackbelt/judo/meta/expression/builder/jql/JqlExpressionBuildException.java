@@ -27,6 +27,13 @@ public class JqlExpressionBuildException extends RuntimeException {
 		this.partialExpression = partialExpression;
 		this.errors.addAll(errors);
 	}
+
+	public JqlExpressionBuildException(Expression partialExpression, List<JqlExpressionBuildingError> errors, final Throwable throwable) {
+		super("Errors during building expression: " + errors, throwable);
+		this.jclObject = null;
+		this.partialExpression = partialExpression;
+		this.errors.addAll(errors);
+	}
 	
 	public List<JqlExpressionBuildingError> getErrors() {
 		return errors;
