@@ -1,12 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAssociationEndBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
 import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newContainmentBuilder;
@@ -30,6 +23,8 @@ import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newEnume
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCustomTypeBuilder;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
@@ -37,7 +32,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +40,7 @@ import com.google.common.collect.ImmutableList;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.EvlScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.psm.PsmModelAdapterTest;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.constant.Instance;
-import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
-import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
 import hu.blackbelt.judo.meta.psm.PsmEpsilonValidator;
 import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
 import hu.blackbelt.judo.meta.psm.data.Containment;
@@ -82,68 +69,13 @@ abstract class ExecutionContextOnPsmTest {
         psmModel = buildPsmModel().name("test").build();
         populatePsmModel();
         
-        final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
-                .uri(URI.createURI("expression:test"))
-                .build();
-
-        final TypeName orderType = newTypeNameBuilder().withNamespace("demo::entities").withName("Order").build();
-        final TypeName orderDetailType = newTypeNameBuilder().withNamespace("demo::entities").withName("OrderDetail").build();
-
-        final Instance orderVar = newInstanceBuilder()
-                .withElementName(orderType)
-                .withName("self")
-                .build();
-        final ObjectVariableReference ref = newObjectVariableReferenceBuilder()
-                .withVariable(orderVar)
-                .build();
-        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
-                .withObjectExpression(ref)
-                .withAttributeName("orderDate")
-                .build();
-
-        final StringExpression shipperName = newStringAttributeBuilder()
-                .withObjectExpression(newObjectNavigationExpressionBuilder()
-                        .withObjectExpression(newObjectVariableReferenceBuilder()
-                                .withVariable(orderVar)
-                                .build())
-                        .withName("s")
-                        .withReferenceName("shipper")
-                        .build())
-                .withAttributeName("companyName")
-                .build();
-
-        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(orderVar)
-                        .build())
-                .withReferenceName("orderDetails")
-                .build();
-
-        expressionModelResourceSupport.addContent(orderVar);
-        expressionModelResourceSupport.addContent(orderType);
-        expressionModelResourceSupport.addContent(orderDetailType);
-        expressionModelResourceSupport.addContent(orderDate);
-        expressionModelResourceSupport.addContent(shipperName);
-        expressionModelResourceSupport.addContent(orderDetails);
-        
-        expressionModel = ExpressionModel.buildExpressionModel()
-                .name("expression")
-                .expressionModelResourceSupport(expressionModelResourceSupport)
-                .build();
-        
         log.info(psmModel.getDiagnosticsAsString());
     	assertTrue(psmModel.isValid());
-    	log.info(expressionModel.getDiagnosticsAsString());
-    	assertTrue(expressionModel.isValid());
     	runEpsilon();
     }
     
     protected PsmModel getAsmModel() throws Exception {
         return psmModel;
-    }
-    
-    protected ExpressionModel getExpressionModel() throws Exception {
-    	return expressionModel;
     }
     
     private void populateMeasureModel(Package measures) {  	  
@@ -230,13 +162,31 @@ abstract class ExecutionContextOnPsmTest {
                 .withName("Timestamp")
                 .build();
         
+        Primitive phoneType = newStringTypeBuilder()
+                .withName("Phone")
+                .withMaxLength(256)
+                .build();
+        
+        Primitive booleanType = newBooleanTypeBuilder()
+                .withName("Boolean")
+                .build();
+        
+        Primitive integerType = newNumericTypeBuilder()
+                .withName("Integer")
+                .withPrecision(8)
+                .build();
+        
         Primitive stringType = newStringTypeBuilder()
         		.withMaxLength(256)
                 .withName("String")
                 .build();
+        
+        Primitive binaryType = newCustomTypeBuilder()
+                .withName("Binary")
+                .build();
 
         Primitive doubleType = newNumericTypeBuilder()
-                .withName("Integer")
+                .withName("Double")
                 .withScale(7)
                 .withPrecision(18)
                 .build();
@@ -254,12 +204,27 @@ abstract class ExecutionContextOnPsmTest {
                 .withScale(7)
                 .withStoreUnit(getMeasureElement(Unit.class).filter(u -> "cm".equals(u.getSymbol())).findAny().get())
                 .build();
+        
+        EnumerationType countries = newEnumerationTypeBuilder().withName("Countries").withMembers(
+        		newEnumerationMemberBuilder().withName("HU").withOrdinal(0).build(),
+        		newEnumerationMemberBuilder().withName("AT").withOrdinal(1).build(),
+        		newEnumerationMemberBuilder().withName("RO").withOrdinal(2).build(),
+        		newEnumerationMemberBuilder().withName("SK").withOrdinal(3).build()
+        		).build();
+        EnumerationType titles = newEnumerationTypeBuilder().withName("Titles").withMembers(
+        		newEnumerationMemberBuilder().withName("MS").withOrdinal(0).build(),
+        		newEnumerationMemberBuilder().withName("MRS").withOrdinal(1).build(),
+        		newEnumerationMemberBuilder().withName("MR").withOrdinal(2).build(),
+        		newEnumerationMemberBuilder().withName("DR").withOrdinal(3).build()
+        		).build();
 
         EntityType product = newEntityTypeBuilder()
                 .withName("Product")
                 .withAttributes(ImmutableList.of(
                         newAttributeBuilder().withName("discount").withDataType(doubleType).build(),
+                        newAttributeBuilder().withName("discounted").withDataType(booleanType).build(),
                         newAttributeBuilder().withName("url").withDataType(stringType).build(),
+                        newAttributeBuilder().withName("productName").withDataType(stringType).build(),
                         newAttributeBuilder().withName("unitPrice").withDataType(doubleType).build(),
                         newAttributeBuilder().withName("weight").withDataType(kgType).build(),
                         newAttributeBuilder().withName("height").withDataType(cmType).build()
@@ -276,11 +241,21 @@ abstract class ExecutionContextOnPsmTest {
         
         EntityType order = newEntityTypeBuilder()
         		.withName("Order")
-        		.withAttributes(newAttributeBuilder().withName("orderDate").withDataType(timestampType).build())
+        		.withAttributes(newAttributeBuilder().withName("orderDate").withDataType(timestampType).build(),
+        				newAttributeBuilder().withName("shippedDate").withDataType(timestampType).build(),
+        				newAttributeBuilder().withName("exciseTax").withDataType(doubleType).build())
+        		.build();
+        
+        EntityType internationalOrder = newEntityTypeBuilder()
+        		.withName("InternationalOrder")
+        		.withSuperEntityTypes(order)
         		.build();
         
         EntityType orderDetail = newEntityTypeBuilder()
         		.withName("OrderDetail")
+        		.withAttributes(newAttributeBuilder().withName("unitPrice").withDataType(doubleType).build(),
+        				newAttributeBuilder().withName("discount").withDataType(doubleType).build(),
+        				newAttributeBuilder().withName("quantity").withDataType(integerType).build())
         		.build();
         
         EntityType shipper = newEntityTypeBuilder()
@@ -290,41 +265,58 @@ abstract class ExecutionContextOnPsmTest {
         
         EntityType category = newEntityTypeBuilder()
         		.withName("Category")
-        		.withAttributes(newAttributeBuilder().withName("categoryName").withDataType(stringType).build())
+        		.withAttributes(newAttributeBuilder().withName("categoryName").withDataType(stringType).build(),
+        				newAttributeBuilder().withName("picture").withDataType(binaryType).build())
+        		.build();
+        
+        EntityType address = newEntityTypeBuilder()
+        		.withName("Address")
+        		.withAttributes(newAttributeBuilder().withName("postalCode").withDataType(phoneType).build())
+        		.build();
+        
+        EntityType employee = newEntityTypeBuilder()
+        		.withName("Employee")
+        		.withAttributes(newAttributeBuilder().withName("firstName").withDataType(stringType).build(),
+        				newAttributeBuilder().withName("lastName").withDataType(stringType).build())
+        		.build();
+        
+        EntityType intAddress = newEntityTypeBuilder().withName("InternationalAddress").withSuperEntityTypes(address)
+        		.withAttributes(newAttributeBuilder().withName("country").withDataType(countries).build())
         		.build();
         
         AssociationEnd products = newAssociationEndBuilder().withName("products").withTarget(product)
 				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build()).build();
+        AssociationEnd customerForOrder = newAssociationEndBuilder().withName("customer").withTarget(customer)
+				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(1).build()).build();
+        AssociationEnd productOrderDetail = newAssociationEndBuilder().withName("product").withTarget(product)
+				.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
         AssociationEnd categoryRef = newAssociationEndBuilder().withName("category").withTarget(category)
 				.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
         Containment orderDetails = newContainmentBuilder().withName("orderDetails").withTarget(orderDetail)
 				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build()).build();
+        Containment addresses = newContainmentBuilder().withName("addresses").withTarget(address)
+				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build()).build();
         AssociationEnd shipperRef = newAssociationEndBuilder().withName("shipper").withTarget(shipper)
 				.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
+        AssociationEnd emplRef = newAssociationEndBuilder().withName("employee").withTarget(employee)
+				.withCardinality(newCardinalityBuilder().withLower(1).withUpper(1).build()).build();
+        AssociationEnd orders = newAssociationEndBuilder().withName("orders").withTarget(order)
+				.withCardinality(newCardinalityBuilder().withLower(0).withUpper(-1).build()).build();
 		
         useAssociationEnd(products).withPartner(categoryRef).build();
         useAssociationEnd(categoryRef).withPartner(products).build();
+        useAssociationEnd(orders).withPartner(emplRef).build();
+        useAssociationEnd(emplRef).withPartner(orders).build();
         
-        useEntityType(shipper).withRelations(shipperRef).build();
-        useEntityType(order).withRelations(orderDetails,shipperRef).build();
+        useEntityType(order).withRelations(orderDetails,shipperRef,emplRef,customerForOrder).build();
         useEntityType(category).withRelations(products).build();
         useEntityType(product).withRelations(categoryRef).build();
+        useEntityType(customer).withRelations(addresses).build();
+        useEntityType(employee).withRelations(orders).build();
+        useEntityType(orderDetail).withRelations(productOrderDetail).build();
         
-        EnumerationType countries = newEnumerationTypeBuilder().withName("Countries").withMembers(
-        		newEnumerationMemberBuilder().withName("HU").withOrdinal(0).build(),
-        		newEnumerationMemberBuilder().withName("AT").withOrdinal(1).build(),
-        		newEnumerationMemberBuilder().withName("RO").withOrdinal(2).build(),
-        		newEnumerationMemberBuilder().withName("SK").withOrdinal(3).build()
-        		).build();
-        EnumerationType titles = newEnumerationTypeBuilder().withName("Titles").withMembers(
-        		newEnumerationMemberBuilder().withName("MS").withOrdinal(0).build(),
-        		newEnumerationMemberBuilder().withName("MRS").withOrdinal(1).build(),
-        		newEnumerationMemberBuilder().withName("MR").withOrdinal(2).build(),
-        		newEnumerationMemberBuilder().withName("DR").withOrdinal(3).build()
-        		).build();
-        
-        Package entities = newPackageBuilder().withName("entities").withElements(category,order,customer,company,product,orderDetail,shipper).build();
-        Package types = newPackageBuilder().withName("types").withElements(stringType,doubleType,kgType,cmType,countries,titles,timestampType).build();
+        Package entities = newPackageBuilder().withName("entities").withElements(category,order,customer,company,product,orderDetail,shipper,address,intAddress,internationalOrder,employee).build();
+        Package types = newPackageBuilder().withName("types").withElements(stringType,doubleType,kgType,cmType,countries,titles,timestampType,phoneType,booleanType,integerType,binaryType).build();
         
         useModel(model).withPackages(entities,types).build();
     }

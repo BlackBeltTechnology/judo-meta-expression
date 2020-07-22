@@ -1,5 +1,7 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,20 +14,18 @@ class MinimalPsmTest extends ExecutionContextOnPsmTest {
     @BeforeEach
     void setUp() throws Exception {
         super.setUp();
-    }
-
-    @Override
-    protected ExpressionModel getExpressionModel() {
         final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("expr:test"))
                 .build();
 
         MinimalExpressionFactory.createMinimalExpression().forEach(e -> expressionModelResourceSupport.addContent(e));
 
-        return ExpressionModel.buildExpressionModel()
+        expressionModel = ExpressionModel.buildExpressionModel()
                 .name("expr")
                 .expressionModelResourceSupport(expressionModelResourceSupport)
                 .build();
+        log.info(expressionModel.getDiagnosticsAsString());
+    	assertTrue(expressionModel.isValid());
     }
 
     @Test

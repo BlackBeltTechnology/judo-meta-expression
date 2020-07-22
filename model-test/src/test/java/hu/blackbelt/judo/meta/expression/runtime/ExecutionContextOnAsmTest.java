@@ -1,13 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
 import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
 import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newBaseMeasureBuilder;
 import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newBaseMeasureTermBuilder;
@@ -39,12 +32,6 @@ import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampAttribute;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.measure.BaseMeasure;
 import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.DurationType;
@@ -56,9 +43,8 @@ abstract class ExecutionContextOnAsmTest {
 
     AsmModel asmModel;
     MeasureModel measureModel;
-    ExpressionModel expressionModel;
-
 	private AsmUtils asmUtils;
+	ExpressionModel expressionModel;
     
     void setUp() throws Exception {
     	asmModel = buildAsmModel()
@@ -77,58 +63,6 @@ abstract class ExecutionContextOnAsmTest {
   		log.info(measureModel.getDiagnosticsAsString());
     	assertTrue(asmModel.isValid());
     	assertTrue(measureModel.isValid());
-    	
-        final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
-                .uri(URI.createURI("expression:test"))
-                .build();
-
-        final TypeName orderType = newTypeNameBuilder().withNamespace("demo::entities").withName("Order").build();
-        expressionModelResourceSupport.addContent(orderType);
-        expressionModelResourceSupport.addContent(newTypeNameBuilder().withNamespace("demo::entities").withName("OrderDetail").build());
-
-        final ObjectVariable order = newInstanceBuilder()
-                .withElementName(orderType)
-                .withName("self")
-                .build();
-
-        final TimestampAttribute orderDate = newTimestampAttributeBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(order)
-                        .build())
-                .withAttributeName("orderDate")
-                .build();
-
-        final StringExpression shipperName = newStringAttributeBuilder()
-                .withObjectExpression(newObjectNavigationExpressionBuilder()
-                        .withObjectExpression(newObjectVariableReferenceBuilder()
-                                .withVariable(order)
-                                .build())
-                        .withName("s")
-                        .withReferenceName("shipper")
-                        .build())
-                .withAttributeName("companyName")
-                .build();
-
-        final CollectionNavigationFromObjectExpression orderDetails = newCollectionNavigationFromObjectExpressionBuilder()
-                .withObjectExpression(newObjectVariableReferenceBuilder()
-                        .withVariable(order)
-                        .build())
-                .withReferenceName("orderDetails")
-                .build();
-
-        expressionModelResourceSupport.addContent(orderType);
-        expressionModelResourceSupport.addContent(order);
-        expressionModelResourceSupport.addContent(orderDate);
-        expressionModelResourceSupport.addContent(shipperName);
-        expressionModelResourceSupport.addContent(orderDetails);
-        
-        expressionModel = ExpressionModel.buildExpressionModel()
-                .name("expression")
-                .expressionModelResourceSupport(expressionModelResourceSupport)
-                .build();
-        
-    	log.info(expressionModel.getDiagnosticsAsString());
-    	assertTrue(expressionModel.isValid());
     }
 
     protected AsmModel getAsmModel() throws Exception {
@@ -138,11 +72,7 @@ abstract class ExecutionContextOnAsmTest {
     protected MeasureModel getMeasureModel() throws Exception {
     	return measureModel;
     }
-    
-    protected ExpressionModel getExpressionModel() throws Exception {
-    	return expressionModel;
-    }
-    
+
     private void populateAsmModel() {
     	//enum
     	EEnum countriesEnum = newEEnumBuilder().withName("Countries").withELiterals(newEEnumLiteralBuilder().withLiteral("HU").withName("HU").withValue(0).build(),
@@ -165,6 +95,7 @@ abstract class ExecutionContextOnAsmTest {
     	
     	//attributes
     	EAttribute orderDate = newEAttributeBuilder().withName("orderDate").withEType(timestamp).build();
+    	EAttribute shippedDate = newEAttributeBuilder().withName("shippedDate").withEType(timestamp).build();
     	EAttribute companyName = newEAttributeBuilder().withName("companyName").withEType(stringType).build();
     	EAttribute exciseTax = newEAttributeBuilder().withName("exciseTax").withEType(doubleType).build();
     	EAttribute customsDescription = newEAttributeBuilder().withName("customsDescription").withEType(stringType).build();
@@ -209,12 +140,12 @@ abstract class ExecutionContextOnAsmTest {
     	
     	//classes
     	EClass order = newEClassBuilder().withName("Order")
-    			.withEStructuralFeatures(orderDate,orderDetails,categories,employeeRef,shipperRef,customerOrder,shipAddress,freight).build();
+    			.withEStructuralFeatures(orderDate,orderDetails,categories,employeeRef,shipperRef,customerOrder,shipAddress,freight,exciseTax,shippedDate).build();
     	EClass orderDetail = newEClassBuilder().withName("OrderDetail").withEStructuralFeatures(productRef,unitPriceOrderDetail,quantity,discount,price).build();
     	EClass product = newEClassBuilder().withName("Product").withEStructuralFeatures(categoryRef,productName,unitPrice,quantityPerUnit,discounted,weight).build();
     	EClass category = newEClassBuilder().withName("Category").withEStructuralFeatures(productsRef,categoryName,picture,owner).build();
     	EClass employee = newEClassBuilder().withName("Employee").withEStructuralFeatures(ordersRef,categoryEmployee,firstNameEmployee,lastNameEmployee).build();
-    	EClass internationalOrder = newEClassBuilder().withName("InternationalOrder").withEStructuralFeatures(exciseTax,customsDescription)
+    	EClass internationalOrder = newEClassBuilder().withName("InternationalOrder").withEStructuralFeatures(customsDescription)
     			.withESuperTypes(order).build();
     	EClass customer = newEClassBuilder().withName("Customer").withEStructuralFeatures(ordersCustomer,addressesCustomer).build();
     	EClass address = newEClassBuilder().withName("Address").withEStructuralFeatures(postalCode).build();

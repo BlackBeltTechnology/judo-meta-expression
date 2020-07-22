@@ -20,15 +20,7 @@ public class MeasuredTest extends ExecutionContextOnAsmTest {
     @BeforeEach
     void setUp() throws Exception {
         super.setUp();
-    }
-
-    @Override
-    protected ExpressionModel getExpressionModel() {
-        return null;
-    }
-
-    @Test
-    void testAdditionOfMeasuredConstants() throws Exception {
+        
         final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("expr:test"))
                 .build();
@@ -57,10 +49,14 @@ public class MeasuredTest extends ExecutionContextOnAsmTest {
                 .withRight(newDecimalConstantBuilder().withValue(BigDecimal.TEN).build())
                 .build());
 
-        final ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
+        expressionModel = ExpressionModel.buildExpressionModel()
                 .name("expr")
                 .expressionModelResourceSupport(expressionModelResourceSupport)
                 .build();
+    }
+
+    @Test
+    void testAdditionOfMeasuredConstants() throws Exception {
 
         ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(log,
                 asmModel, measureModel, expressionModel,
