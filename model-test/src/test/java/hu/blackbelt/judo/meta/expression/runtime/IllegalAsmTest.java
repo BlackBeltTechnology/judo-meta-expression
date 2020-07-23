@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
@@ -20,7 +21,7 @@ import hu.blackbelt.judo.meta.expression.constant.Instance;
 public class IllegalAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         
         expressionModel = ExpressionModelForTest.createExpressionModel();
@@ -56,5 +57,4 @@ public class IllegalAsmTest extends ExecutionContextOnAsmTest {
                 asmModel, measureModel, expressionModel,
                 ExpressionEpsilonValidator.calculateExpressionValidationScriptURI()));
     }
-
 }

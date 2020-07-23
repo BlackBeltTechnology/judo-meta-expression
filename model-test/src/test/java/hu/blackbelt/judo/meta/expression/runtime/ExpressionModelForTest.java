@@ -288,7 +288,6 @@ public class ExpressionModelForTest {
 						.build())
 				.build();
         
-        
         DecimalComparison decimalComp = newDecimalComparisonBuilder()
         		.withLeft(newMeasuredDecimalBuilder().withValue(BigDecimal.valueOf(9)).withUnitName("mg").build())
         		.withRight(newMeasuredDecimalBuilder().withValue(BigDecimal.valueOf(2)).withUnitName("kg").build())

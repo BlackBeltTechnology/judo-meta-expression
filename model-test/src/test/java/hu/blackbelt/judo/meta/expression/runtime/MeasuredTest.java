@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -18,7 +19,7 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 public class MeasuredTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         
         final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()

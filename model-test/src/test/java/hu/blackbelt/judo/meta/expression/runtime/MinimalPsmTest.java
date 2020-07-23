@@ -6,13 +6,14 @@ import org.eclipse.emf.common.util.URI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnPsmTest;
 import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 
 class MinimalPsmTest extends ExecutionContextOnPsmTest {
 
     @BeforeEach
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("expr:test"))

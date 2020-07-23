@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class MinimalAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         final ExpressionModelResourceSupport expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("expr:test"))

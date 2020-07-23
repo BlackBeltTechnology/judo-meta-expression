@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnPsmTest;
 import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
@@ -22,7 +23,7 @@ public class IllegalPsmTest extends ExecutionContextOnPsmTest {
 	ExpressionModel expressionModel;
 	
 	@BeforeEach
-    void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         expressionModel = ExpressionModelForTest.createExpressionModel();
         
