@@ -1,19 +1,11 @@
 package hu.blackbelt.judo.meta.expression.runtime;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.common.util.UniqueEList;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExpressionUtils {
 
@@ -40,5 +32,39 @@ public class ExpressionUtils {
 
     public void setFailOnError(final boolean failOnError) {
         this.failOnError = failOnError;
+    }
+
+    /**
+     * Get stream of source iterator.
+     *
+     * @param sourceIterator source iterator
+     * @param parallel       flag controlling returned stream (serial or parallel)
+     * @param <T>            type of source iterator
+     * @return return serial (parallel = <code>false</code>) or parallel (parallel = <code>true</code>) stream
+     */
+    public static <T> Stream<T> asStream(Iterator<T> sourceIterator, boolean parallel) {
+        Iterable<T> iterable = () -> sourceIterator;
+        return StreamSupport.stream(iterable.spliterator(), parallel);
+    }
+
+    /**
+     * Get all model elements.
+     *
+     * @param <T> generic type of model elements
+     * @return model elements
+     */
+    public <T> Stream<T> all() {
+        return asStream((Iterator<T>) resourceSet.getAllContents(), false);
+    }
+    
+    /**
+     * Get model elements with specific type
+     *
+     * @param clazz class of model element types
+     * @param <T>   specific type
+     * @return all elements with clazz type
+     */
+    public <T> Stream<T> all(final Class<T> clazz) {
+        return all().filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
 }

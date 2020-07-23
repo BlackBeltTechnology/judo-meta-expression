@@ -1,53 +1,42 @@
 package hu.blackbelt.judo.meta.expression.adapters.psm;
 
-import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.psm.measure.Measure;
-import hu.blackbelt.judo.meta.psm.measure.Unit;
-import hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import static org.hamcrest.CoreMatchers.is;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.URI;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
+import com.google.common.collect.ImmutableMap;
 
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
-import static org.hamcrest.CoreMatchers.is;
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnPsmTest;
+import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
+import hu.blackbelt.judo.meta.psm.measure.Measure;
+import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders;
 
-public class PsmMeasureProviderTest {
+public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmMeasureProviderTest.class);
-    private PsmModel measureModel;
-    private PsmModel psmModel;
     private MeasureProvider<Measure, Unit> measureProvider;
 
     //private MeasureAdapter<Measure, Unit, EClass> measureAdapter;
 
     @BeforeEach
-    public void setUp() throws IOException, PsmModel.PsmValidationException {
-        psmModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
-                .name("test")
-                // TODO: check model
-                .validateModel(false)
-                .build());
-
+    public void setUp() throws Exception {
+    	super.setUp();
         measureProvider = new PsmMeasureProvider(psmModel.getResourceSet());
-        measureModel = psmModel;
         //TODO: uncomment after implementing PsmModelAdapter
         //measureAdapter = new MeasureAdapter<>(measureProvider, Mockito.mock(ModelAdapter.class));
     }
-
+    
     @AfterEach
     public void tearDown() {
         psmModel = null;
@@ -161,12 +150,12 @@ public class PsmMeasureProviderTest {
     @Test
     public void testGetMeasures() {
         log.info("Testing: getMeasures...");
-        Assert.assertThat(measureProvider.getMeasures().count(), is(29L));
+        Assert.assertThat(measureProvider.getMeasures().count(), is(7L));
 
     }
 
     private Optional<Measure> getMeasureByName(final String measureName) {
-        final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;
+        final Iterable<Notifier> measureContents = psmModel.getResourceSet()::getAllContents;
         return StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> Measure.class.isAssignableFrom(e.getClass())).map(e -> (Measure) e)
                 .filter(m -> measureName.equals(m.getName()))
@@ -174,12 +163,11 @@ public class PsmMeasureProviderTest {
     }
 
     private Optional<Unit> getUnitByName(final String unitName) {
-        final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;
+        final Iterable<Notifier> measureContents = psmModel.getResourceSet()::getAllContents;
         return StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> Measure.class.isAssignableFrom(e.getClass())).map(e -> (Measure) e)
                 .map(m -> m.getUnits().parallelStream().filter(u -> unitName.equals(u.getName())).findAny())
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .findAny();
     }
-
 }

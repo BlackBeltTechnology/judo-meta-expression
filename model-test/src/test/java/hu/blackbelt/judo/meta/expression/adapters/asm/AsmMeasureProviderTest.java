@@ -1,50 +1,35 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
-import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
-import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
-import hu.blackbelt.judo.meta.measure.Measure;
-import hu.blackbelt.judo.meta.measure.Unit;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.URI;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AsmMeasureProviderTest {
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 
-    private MeasureModel measureModel;
+import org.eclipse.emf.common.notify.Notifier;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableMap;
+
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
+import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
+import hu.blackbelt.judo.meta.measure.Measure;
+import hu.blackbelt.judo.meta.measure.Unit;
+
+public class AsmMeasureProviderTest extends ExecutionContextOnAsmTest {
+
     private MeasureProvider<Measure, Unit> measureProvider;
 
-    private MeasureAdapter<Measure, Unit> measureAdapter;
-
     @BeforeEach
-    public void setUp() throws IOException, MeasureModel.MeasureValidationException {
-    	
-        measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-measure.model").getAbsolutePath()))
-                .name("test"));
-
+    public void setUp() throws Exception {
+    	super.setUp();
         measureProvider = new AsmMeasureProvider(measureModel.getResourceSet());
-
-        measureAdapter = new MeasureAdapter<>(measureProvider, Mockito.mock(ModelAdapter.class));
     }
 
     @AfterEach
@@ -150,7 +135,7 @@ public class AsmMeasureProviderTest {
 
     @Test
     public void testGetMeasures() {
-        assertThat(measureProvider.getMeasures().count(), is(29L));
+        assertThat(measureProvider.getMeasures().count(), is(7L));
     }
 
     private Optional<Measure> getMeasureByName(final String measureName) {
@@ -169,5 +154,4 @@ public class AsmMeasureProviderTest {
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .findAny();
     }
-
 }

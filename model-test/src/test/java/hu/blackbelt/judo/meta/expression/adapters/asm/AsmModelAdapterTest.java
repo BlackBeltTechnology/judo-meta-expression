@@ -1,7 +1,37 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEEnumBuilder;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EReference;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -11,68 +41,21 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.LoadArguments.asmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.loadAsmModel;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.LoadArguments.measureLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.loadMeasureModel;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEEnumBuilder;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-public class AsmModelAdapterTest {
-
-    private MeasureModel measureModel;
-    private AsmModel asmModel;
-    private AsmUtils asmUtils;
+public class AsmModelAdapterTest extends ExecutionContextOnAsmTest {
 
     private ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> modelAdapter;
 
     @BeforeEach
     public void setUp() throws Exception {
-        measureModel = loadMeasureModel(measureLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-measure.model").getAbsolutePath()))
-                .name("northwind"));
-
-        asmModel = loadAsmModel(asmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-asm.model").getAbsolutePath()))
-                .name("northwind"));
-
+    	
+    	super.setUp();
         modelAdapter = new AsmModelAdapter(asmModel.getResourceSet(), measureModel.getResourceSet());
-        asmUtils = new AsmUtils(asmModel.getResourceSet());
     }
-
+    
     @AfterEach
     public void tearDown() {
         modelAdapter = null;
-    }
-
-    private File srcDir() {
-        String relPath = getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        File targetDir = new File(relPath + "../../src");
-        if (!targetDir.exists()) {
-            targetDir.mkdir();
-        }
-        return targetDir;
     }
 
     @Test
@@ -85,7 +68,7 @@ public class AsmModelAdapterTest {
         //TODO: negtest maaaaybe? (+psm)
     }
 
-    //@Test
+    @Test
     public void testGet() {
         //TODO: check if needed
         final TypeName orderTypeName = newTypeNameBuilder()
@@ -93,14 +76,11 @@ public class AsmModelAdapterTest {
                 .withName("Order")
                 .build();
 
-
         final Optional<? extends EClassifier> orderEClassifier = modelAdapter.get(orderTypeName);
         assertTrue(orderEClassifier.isPresent());
         assertThat(orderEClassifier.get(), instanceOf(EClass.class));
         assertThat(orderEClassifier.get().getName(), is("Order"));
         assertThat(asmUtils.getPackageFQName(orderEClassifier.get().getEPackage()), is("demo.entities"));
-
-
 
         final TypeName negtest_name_TypeName = newTypeNameBuilder()
                 .withNamespace("demo::entities")
@@ -114,7 +94,7 @@ public class AsmModelAdapterTest {
                 .withNamespace("demo::negtest")
                 .withName("negtest")
                 .build();
-        assertTrue(modelAdapter.get(negtest_namespace_TypeName) == null);
+        assertFalse(modelAdapter.get(negtest_namespace_TypeName).isPresent());
     }
 
     @Test
@@ -202,7 +182,7 @@ public class AsmModelAdapterTest {
     }
 
     //TODO
-    //@Test
+    @Test
     void testGetUnit() {
         TypeName type = modelAdapter.buildTypeName(asmUtils.resolve("demo.entities.Product").get()).get();
         Instance instance = newInstanceBuilder().withElementName(type).build();

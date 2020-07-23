@@ -53,4 +53,5 @@ Import-Package: hu.blackbelt.judo.meta.asm.runtime,
  org.slf4j;version="1.7.2"
 Export-Package: hu.blackbelt.judo.meta.expression.builder.jql.asm
 Require-Bundle: org.eclipse.emf.ecore,
- org.eclipse.emf.common
+ org.eclipse.emf.common,
+ hu.blackbelt.judo.meta.measure.model

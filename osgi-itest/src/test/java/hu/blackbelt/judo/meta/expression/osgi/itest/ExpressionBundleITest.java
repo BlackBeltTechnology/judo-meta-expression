@@ -1,12 +1,26 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
-import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
+import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.getRuntimeFeaturesForMetamodel;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.provision;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.swissbox.core.BundleUtils.getBundle;
+import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
+import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -19,22 +33,16 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-
-import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.getRuntimeFeaturesForMetamodel;
-import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.testTargetDir;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.*;
-import static org.ops4j.pax.exam.OptionUtils.combine;
-import static org.ops4j.pax.swissbox.core.BundleUtils.getBundle;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
+import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.ExpressionValidationException;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments;
+import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
@@ -67,7 +75,7 @@ public class ExpressionBundleITest {
     ExpressionModel expressionModel;
 
     @Configuration
-    public Option[] config() throws FileNotFoundException {
+    public Option[] config() throws IOException, PsmValidationException, ExpressionValidationException {
 
         return combine(getRuntimeFeaturesForMetamodel(this.getClass()),
                 mavenBundle(maven()
@@ -141,28 +149,46 @@ public class ExpressionBundleITest {
 
     }
     
-    public Option getProvisonModelBundle() throws FileNotFoundException {
+    public Option getProvisonModelBundle() throws IOException, PsmValidationException, ExpressionValidationException {
         return provision(
                 getPsmModelBundle(),
                 getExpressionModelBundle()
         );
     }
-
     
-    private InputStream getPsmModelBundle() throws FileNotFoundException {
+    private InputStream getPsmModelBundle() throws IOException, PsmValidationException {
+    	
+    	PsmModel psmModel = buildPsmModel()
+                .name(DEMO_PSM)
+                .build();
+    	
+    	ByteArrayOutputStream os = new ByteArrayOutputStream();
+    	
+    	psmModel.savePsmModel(SaveArguments.psmSaveArgumentsBuilder().outputStream(os));
+ 	
         return bundle()
                 .add( "model/" + DEMO_PSM + ".judo-meta-psm",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "northwind-psm.model")))
+                		new ByteArrayInputStream(os.toByteArray()))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_PSM + "-psm" )
                 .set( "Psm-Models", "file=model/" + DEMO_PSM + ".judo-meta-psm;version=1.0.0;name=" + DEMO_PSM + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
                 .build( withBnd());
     }
     
-    private InputStream getExpressionModelBundle() throws FileNotFoundException {
+    private InputStream getExpressionModelBundle() throws IOException, ExpressionValidationException {
+    	
+    	ExpressionModel expressionModel = buildExpressionModel()
+                .name(DEMO_EXPRESSION)
+                .build();
+    	
+    	ByteArrayOutputStream os = new ByteArrayOutputStream();
+    	
+    	expressionModel.saveExpressionModel(hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments
+    			.expressionSaveArgumentsBuilder().outputStream(os));
+    	
         return bundle()
                 .add( "model/" + DEMO_EXPRESSION + ".judo-meta-expression",
-                        new FileInputStream(new File(testTargetDir(getClass()).getAbsolutePath(),  "t002.model")))
+                		new ByteArrayInputStream(os.toByteArray()))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_EXPRESSION + "-expression" )
                 .set( "Expression-Models", "file=model/" + DEMO_EXPRESSION + ".judo-meta-expression;version=1.0.0;name=" + DEMO_EXPRESSION + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")

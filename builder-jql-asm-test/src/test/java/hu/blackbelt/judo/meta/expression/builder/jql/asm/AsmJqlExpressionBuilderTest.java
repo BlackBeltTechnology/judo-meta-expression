@@ -1,16 +1,46 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
-import hu.blackbelt.epsilon.runtime.execution.api.Log;
-import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EDataType;
+import org.eclipse.emf.ecore.EEnum;
+import org.eclipse.emf.ecore.EReference;
+import org.hamcrest.Description;
+import org.hamcrest.DiagnosingMatcher;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.asm.support.AsmModelResourceSupport;
-import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
+import hu.blackbelt.judo.meta.expression.AttributeSelector;
+import hu.blackbelt.judo.meta.expression.CollectionExpression;
+import hu.blackbelt.judo.meta.expression.DecimalExpression;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.IntegerExpression;
+import hu.blackbelt.judo.meta.expression.LogicalExpression;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.StringExpression;
+import hu.blackbelt.judo.meta.expression.TimestampExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
@@ -20,137 +50,46 @@ import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.model.northwind.Demo;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.*;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
-import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
-import static hu.blackbelt.epsilon.runtime.execution.model.emf.WrappedEmfModelContext.wrappedEmfModelContextBuilder;
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
-import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.calculatePsm2AsmTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.psm2asm.Psm2Asm.executePsm2AsmTransformation;
-import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.calculatePsm2MeasureTransformationScriptURI;
-import static hu.blackbelt.judo.tatami.psm2measure.Psm2Measure.executePsm2MeasureTransformation;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
-
-public class AsmJqlExpressionBuilderTest {
-
-    private static final String TARGET_TEST_CLASSES = "target/test-classes";
-    private static final Log log = new Slf4jLog();
+@Slf4j
+public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
     private JqlExpressionBuilder<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> expressionBuilder;
 
-    private AsmModelAdapter modelAdapter;
-    private AsmUtils asmUtils;
     private ExpressionModelResourceSupport expressionModelResourceSupport;
-
-    private ModelLoader modelLoader;
-
+    
     @BeforeEach
-    void setUp() {
-        modelLoader = new ModelLoader();
-
-        expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
+    void setUp() throws Exception {
+    	
+    	super.setUp();
+    	
+    	expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("urn:test.judo-meta-expression"))
                 .build();
-
-        modelAdapter = new AsmModelAdapter(modelLoader.getAsmModel().getResourceSet(), modelLoader.getMeasureModel().getResourceSet());
+ 	
         expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
-        asmUtils = new AsmUtils(modelLoader.getAsmModel().getResourceSet());
     }
-
+    
     @AfterEach
     void tearDown(final TestInfo testInfo) throws Exception {
-        Files.createDirectories(Paths.get(TARGET_TEST_CLASSES));
-        expressionModelResourceSupport.saveExpression(expressionSaveArgumentsBuilder()
-                .file(new File(TARGET_TEST_CLASSES, testInfo.getDisplayName().replace("(", "").replace(")", "") + "-expression.model"))
-                .validateModel(false)
-                .build());
-        validateExpressions(expressionModelResourceSupport.getResource());
+
+        ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
+                .expressionModelResourceSupport(expressionModelResourceSupport)
+                .name(asmModel.getName())
+                .build();
+        
+        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(),asmModel,measureModel,expressionModel,ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
 
         modelAdapter = null;
         asmUtils = null;
         expressionModelResourceSupport = null;
-    }
-
-    private void validateExpressions(final Resource expressionResource) throws Exception {
-        final List<ModelContext> modelContexts = Arrays.asList(
-                wrappedEmfModelContextBuilder()
-                        .log(log)
-                        .name("NORTHWIND")
-                        .validateModel(false)
-                        .aliases(ImmutableList.of("ASM"))
-                        .resource(modelLoader.getAsmModel().getResource())
-                        .build(),
-                wrappedEmfModelContextBuilder()
-                        .log(log)
-                        .name("NORTHWIND_MEASURES")
-                        .validateModel(false)
-                        .aliases(ImmutableList.of("MEASURES"))
-                        .resource(modelLoader.getMeasureModel().getResource())
-                        .build(),
-                wrappedEmfModelContextBuilder()
-                        .log(log)
-                        .name("TEST")
-                        .validateModel(false)
-                        .aliases(ImmutableList.of("EXPR"))
-                        .resource(expressionResource)
-                        .build()
-        );
-
-        ExecutionContext executionContext = executionContextBuilder()
-                .log(log)
-                .resourceSet(expressionResource.getResourceSet())
-                .metaModels(Collections.emptyList())
-                .modelContexts(modelContexts)
-                .injectContexts(ImmutableMap.of(
-                        "evaluator", new ExpressionEvaluator(),
-                        "modelAdapter", modelAdapter))
-                .build();
-
-        // run the model / metadata loading
-        executionContext.load();
-
-        // Validation script
-        executionContext.executeProgram(
-                evlExecutionContextBuilder()
-                        .source(new File("../model/src/main/epsilon/validations/expression.evl").toURI())
-                        .expectedErrors(Collections.emptyList())
-                        .expectedWarnings(Collections.emptyList())
-                        .build());
-
-        executionContext.commit();
-        executionContext.close();
     }
 
     private Expression createExpression(String jqlExpressionAsString) {
@@ -187,7 +126,6 @@ public class AsmJqlExpressionBuilderTest {
                 }
                 return result;
             }
-
         };
     }
 
@@ -230,16 +168,16 @@ public class AsmJqlExpressionBuilderTest {
         assertNotNull(expression);
 
         expressionBuilder.createGetterBinding(order, expression, "orderDate", ATTRIBUTE);
-
         log.info("Order date: " + expression);
     }
 
     @Test
     void testOrderCategories() {
         EClass order = findBase("Order");
-        Expression expression = createExpression(order, "self.orderDetails.product.category");
+        ReferenceExpression expression = (ReferenceExpression)createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
         expressionBuilder.createGetterBinding(order, expression, "categories", RELATION);
+        assertThat(expression, collectionOf("Category"));
     }
 
     @Test
@@ -272,7 +210,6 @@ public class AsmJqlExpressionBuilderTest {
         assertThat(orderCategories, collectionOf("Category"));
         orderCategories = createExpression(order, "((((self).orderDetails).product).category)");
         assertThat(orderCategories, collectionOf("Category"));
-
 
         createExpression(order, "self.shipper.companyName");
         createExpression(order, "(self).shipper.companyName");
@@ -315,7 +252,6 @@ public class AsmJqlExpressionBuilderTest {
 
         EClass order = findBase("Order");
         createExpression(order, "self=>customer!asType(demo::entities::Company)");
-
     }
 
     @Test
@@ -323,7 +259,6 @@ public class AsmJqlExpressionBuilderTest {
         EClass address = findBase("Address");
         createExpression(address, "self!container(demo::entities::Customer)");
     }
-
 
     @Test
     void testConstants() {
@@ -357,7 +292,6 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testTimestampOperations() {
         EClass orderType = asmUtils.getClassByFQName("demo.entities.Order").get();
-        //createExpression(orderType, "self.orderDate + self.shipmentDuration");
         Expression expression = createExpression(orderType, "self.orderDate + 10.5[day]");
         assertThat(expression, instanceOf(TimestampExpression.class));
         TimestampDifferenceExpression elapsedTimeFrom = (TimestampDifferenceExpression) createExpression("`2019-12-31T00:00:00.000+0100`!elapsedTimeFrom(`2019-12-31T00:00:00.000+0200`)");
@@ -510,7 +444,7 @@ public class AsmJqlExpressionBuilderTest {
         createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>products!sort(p | p.unitPrice)!tail()");
         Expression qExpression = createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>owner=>orders!sort(q | p.unitPrice)!tail()");
         // TODO handle scope change on different side of binary operations (and other expressions probably)
-//        assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
+        //assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
     }
 
     @Test
@@ -545,8 +479,7 @@ public class AsmJqlExpressionBuilderTest {
     @Test
     void testEnums() {
         EClass order = findBase("Order");
-        createExpression(order, "self.shipAddress.country == demo::types::Countries#AT");
-        assertThrows(IllegalArgumentException.class, () -> createExpression(order, "self.shipAddress.country == Countries#AT"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(order, "self.shipAddress.country == Countries#AT"));
 
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         createExpression("demo::types::Countries#AT == demo::types::Countries#RO");
@@ -666,8 +599,23 @@ public class AsmJqlExpressionBuilderTest {
         Expression timeStampAddition = createExpression("demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
-
-        Expression customerExpression = createExpression("demo::entities::Order!filter(o | o=>orderDetails->product!contains(demo::entities::Product!filter(p | p.productName == 'Lenovo B51')!sort()!head()))!asCollection(demo::entities::InternationalOrder)!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum(iod | iod.unitPrice))!sort(iof | iof.freight, iof=>orderDetails!count() DESC)!head()->customer!filter(c | c=>addresses!sort()!head()!asType(demo::entities::InternationalAddress).country == demo::types::Countries#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses");
+        
+        Expression customerExpression = createExpression(
+        		"demo::entities::Order!filter("
+        				+ "o | o=>orderDetails->product!contains("
+        					+ "demo::entities::Product!filter("
+        						+ "p | p.productName == 'Lenovo B51')!sort()!head()))"
+        		+ "!asCollection("
+        			+ "demo::entities::InternationalOrder)"
+        		+ "!filter(io | io.exciseTax > 1/2 + io=>orderDetails!sum("
+        			+ "iod | iod.unitPrice))"
+        		+ "!sort(iof | iof.freight, iof=>orderDetails!count() DESC)"
+        		+ "!head()->customer"
+        		+ "!filter(c | "
+        			+ "c=>addresses!sort()!head()"
+        			+ "!asType(demo::entities::InternationalAddress).country == demo::types::Countries#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses"
+        		
+        		);
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));
     }
 
@@ -677,5 +625,4 @@ public class AsmJqlExpressionBuilderTest {
         createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture!isDefined())");
         createExpression("demo::entities::Order!any()=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
     }
-
 }
