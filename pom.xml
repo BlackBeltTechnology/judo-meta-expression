@@ -106,7 +106,7 @@
         <judo-meta-psm-version>1.1.0.20200723_124401_9d13d4f_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.1.0-SNAPSHOT</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20200723_142719_f1bb34b_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
         <judo-meta-esm-version>1.1.0.20200715_164020_6285970_develop</judo-meta-esm-version>
@@ -115,7 +115,7 @@
         <judo-meta-jql-version>1.0.1.20200716_154230_8ac04e8_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0-SNAPSHOT</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20200723_145629_bcdf98c_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
