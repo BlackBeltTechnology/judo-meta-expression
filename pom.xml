@@ -579,31 +579,29 @@
                 <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
+                <version>${judo-meta-psm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+                <version>${judo-meta-measure-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                <version>${judo-meta-asm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
+                <version>${judo-meta-esm-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-            <version>${judo-meta-psm-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-            <version>${judo-meta-asm-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-            <version>${judo-meta-esm-version}</version>
-        </dependency>
-
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
