@@ -5,6 +5,10 @@ import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 
 import java.util.Collection;
 import java.util.Map;
@@ -15,16 +19,18 @@ import java.util.Optional;
  *
  * @param <NE>  namespace element
  * @param <P>   primitive
- * @param <PTE> primitive typed element (ie. attribute)
  * @param <E>   enumeration
- * @param <C>   class
- * @param <AP>  transfer object type
+ * @param <C>   entity type
+ * @param <PTE> primitive typed element (ie. attribute)
  * @param <RTE> reference typed element (ie. reference)
+ * @param <TO>  transfer object type
+ * @param <TA> transfer attribute
+ * @param <TR> transfer relation
  * @param <S> sequence
  * @param <M>   measure
  * @param <U>   unit
  */
-public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> {
+public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
 
     /**
      * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
@@ -280,7 +286,11 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
 
     EList<NE> getAllStaticSequences();
 
-    EList<AP> getAllTransferObjectTypes();
+    EList<TO> getAllTransferObjectTypes();
+
+    EList<TO> getAllMappedTransferObjectTypes();
+
+    EList<TO> getAllUnmappedTransferObjectTypes();
 
     /**
      * Get object sequence by name.
@@ -297,18 +307,36 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
 
     Optional<String> getAttributeGetter(PTE attribute);
 
+    Optional<String> getAttributeSetter(PTE attribute);
+
+    Optional<String> getAttributeDefault(PTE attribute);
+
     boolean isDerivedReference(RTE reference);
 
+    boolean isDerivedTransferRelation(TR relation);
+
     Optional<String> getReferenceGetter(RTE reference);
-    
-    /**
-     * Get the referenced (object) type. Returns the referenced class in case of referenced typed element, and returns the mapped class in case of transfer relation.
-     *
-     * @param elementName type name
-     * @param referenceName name of referenced typed element or transfer relation
-     * @return class
-     */
-    Optional<C> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName, String transferObjectRelationName);
+
+    Optional<String> getTransferRelationGetter(TR relation);
+
+    Optional<String> getReferenceDefault(RTE reference);
+
+    Optional<String> getReferenceRange(RTE reference);
+
+    Optional<String> getReferenceSetter(RTE reference);
+
+    Optional<String> getTransferRelationSetter(TR relation);
+
+    Optional<String> getFilter(TO transferObjectType);
+
+        /**
+         * Get the referenced (object) type. Returns the referenced class in case of referenced typed element, and returns the mapped class in case of transfer relation.
+         *
+         * @param elementName type name
+         * @param referenceName name of referenced typed element or transfer relation
+         * @return class
+         */
+    Optional<C> getEntityTypeOfTransferObjectRelationTarget(TypeName elementName, String referenceName);
     
     /**
      * Check multiplicity of the reference of the given element.
@@ -318,4 +346,19 @@ public interface ModelAdapter<NE, P extends NE, PTE, E extends P, C extends NE, 
      * @return class
      */
     boolean isCollectionReference(TypeName elementName, String referenceName);
+
+    Optional<C> getMappedEntityType(TO mappedTransferObjectType);
+
+    String getFqName(Object object);
+
+    Optional<String> getName(Object object);
+
+    Collection<? extends PTE> getAttributes(C clazz);
+
+    Collection<? extends RTE> getReferences(C clazz);
+
+    Collection<? extends TA> getTransferAttributes(TO transferObjectType);
+
+    Collection<? extends TR> getTransferRelations(TO transferObjectType);
+
 }
