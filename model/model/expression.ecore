@@ -1895,13 +1895,10 @@
     <eClassifiers xsi:type="ecore:EEnum" name="AttributeBindingRole">
       <eLiterals name="getter"/>
       <eLiterals name="setter" value="1"/>
-      <eLiterals name="default" value="2"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="ReferenceBindingRole">
       <eLiterals name="getter"/>
       <eLiterals name="setter" value="1"/>
-      <eLiterals name="default" value="2"/>
-      <eLiterals name="range" value="3"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="FilterBinding" eSuperTypes="#//binding/Binding"/>
   </eSubpackages>

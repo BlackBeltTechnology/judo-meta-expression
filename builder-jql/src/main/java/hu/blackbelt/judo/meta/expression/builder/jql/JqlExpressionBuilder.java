@@ -15,7 +15,6 @@ import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -252,9 +251,6 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                     case SETTER:
                         attributeBindingRole = AttributeBindingRole.SETTER;
                         break;
-                    case DEFAULT:
-                        attributeBindingRole = AttributeBindingRole.DEFAULT;
-                        break;
                     default:
                         throw new IllegalStateException("Unsupported binding role");
                 }
@@ -274,12 +270,6 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                         break;
                     case SETTER:
                         referenceBindingRole = ReferenceBindingRole.SETTER;
-                        break;
-                    case DEFAULT:
-                        referenceBindingRole = ReferenceBindingRole.DEFAULT;
-                        break;
-                    case RANGE:
-                        referenceBindingRole = ReferenceBindingRole.RANGE;
                         break;
                     default:
                         throw new IllegalStateException("Unsupported binding role");
@@ -359,7 +349,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
     }
 
     public enum BindingRole {
-        GETTER, SETTER, DEFAULT, RANGE
+        GETTER, SETTER
     }
 
     public enum BindingType {

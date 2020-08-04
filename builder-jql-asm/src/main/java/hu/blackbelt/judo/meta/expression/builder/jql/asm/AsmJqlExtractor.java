@@ -104,21 +104,10 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         log.trace("  - extracting JQL expressions of data property: {}", AsmUtils.getAttributeFQName(attribute));
                                     }
 
-                                    final boolean hasDefaultBinding = all(expressionResourceSet, AttributeBinding.class)
-                                            .anyMatch(b -> b.getTypeName() != null &&
-                                                    Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
-                                                    Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
-                                                    b.getRole() == AttributeBindingRole.DEFAULT &&
-                                                    Objects.equals(b.getAttributeName(), attribute.getName()));
-
-                                    final JqlExpressionBuilder.BindingContext defaultBindingContext = new JqlExpressionBuilder.BindingContext(attribute.getName(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.DEFAULT);
-
                                     final Optional<String> getterJql = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter", false);
                                     final Optional<String> getterDialect = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.dialect", false);
                                     final Optional<String> setterJql = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter", false);
                                     final Optional<String> setterDialect = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter.dialect", false);
-                                    final Optional<String> defaultJql = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default", false);
-                                    final Optional<String> defaultDialect = AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default.dialect", false);
 
                                     if (!hasGetterBinding) {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
@@ -152,23 +141,6 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         }
                                     } else {
                                         log.debug("Setter expression already extracted for data property: {}", attribute);
-                                    }
-
-                                    if (!hasDefaultBinding) {
-                                        if (defaultDialect.isPresent() && JQL_DIALECT.equals(defaultDialect.get())) {
-                                            if (defaultJql.isPresent()) {
-                                                final Expression expression = builder.createExpression(entityType, defaultJql.get());
-                                                builder.createBinding(defaultBindingContext, entityType, null, expression);
-                                            } else {
-                                                throw new IllegalStateException("Default attribute JQL not found");
-                                            }
-                                        } else if (defaultDialect.isPresent()) {
-                                            log.warn("Dialect {} of default attribute is not supported", defaultDialect.get());
-                                        } else if (defaultJql.isPresent()) {
-                                            log.warn("Dialect of default attribute is not specified, skipped expression: {}", defaultJql.get());
-                                        }
-                                    } else {
-                                        log.debug("Default expression already extracted for data property: {}", attribute);
                                     }
                                 }
                             });
@@ -217,30 +189,10 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         log.trace("  - extracting JQL expressions of navigation property: {}", AsmUtils.getReferenceFQName(reference));
                                     }
 
-                                    final boolean hasDefaultBinding = all(expressionResourceSet, ReferenceBinding.class)
-                                            .anyMatch(b -> b.getTypeName() != null &&
-                                                    Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
-                                                    Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
-                                                    b.getRole() == ReferenceBindingRole.DEFAULT &&
-                                                    Objects.equals(b.getReferenceName(), reference.getName()));
-                                    final boolean hasRangeBinding = all(expressionResourceSet, ReferenceBinding.class)
-                                            .anyMatch(b -> b.getTypeName() != null &&
-                                                    Objects.equals(b.getTypeName().getName(), typeName.get().getName()) &&
-                                                    Objects.equals(b.getTypeName().getNamespace(), typeName.get().getNamespace()) &&
-                                                    b.getRole() == ReferenceBindingRole.RANGE &&
-                                                    Objects.equals(b.getReferenceName(), reference.getName()));
-
-                                    final JqlExpressionBuilder.BindingContext defaultBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.DEFAULT);
-                                    final JqlExpressionBuilder.BindingContext rangeBindingContext = new JqlExpressionBuilder.BindingContext(reference.getName(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.RANGE);
-
                                     final Optional<String> getterJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter", false);
                                     final Optional<String> getterDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.dialect", false);
                                     final Optional<String> setterJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter", false);
                                     final Optional<String> setterDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter.dialect", false);
-                                    final Optional<String> defaultJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default", false);
-                                    final Optional<String> defaultDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default.dialect", false);
-                                    final Optional<String> rangeJql = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range", false);
-                                    final Optional<String> rangeDialect = AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range.dialect", false);
 
                                     if (!hasGetterBinding) {
                                         if (getterJql.isPresent() && JQL_DIALECT.equals(getterDialect.get())) {
@@ -274,40 +226,6 @@ public class AsmJqlExtractor implements JqlExtractor {
                                         }
                                     } else {
                                         log.debug("Setter expression already extracted for navigation property: {}", reference);
-                                    }
-
-                                    if (!hasDefaultBinding) {
-                                        if (defaultDialect.isPresent() && JQL_DIALECT.equals(defaultDialect.get())) {
-                                            if (defaultJql.isPresent()) {
-                                                final Expression expression = builder.createExpression(entityType, defaultJql.get());
-                                                builder.createBinding(defaultBindingContext, entityType, null, expression);
-                                            } else {
-                                                throw new IllegalStateException("Default reference JQL not found");
-                                            }
-                                        } else if (defaultDialect.isPresent()) {
-                                            log.warn("Dialect {} of default reference is not supported", defaultDialect.get());
-                                        } else if (defaultJql.isPresent()) {
-                                            log.warn("Dialect of default reference is not specified, skipped expression: {}", defaultJql.get());
-                                        }
-                                    } else {
-                                        log.debug("Default expression already extracted for navigation property: {}", reference);
-                                    }
-
-                                    if (!hasRangeBinding) {
-                                        if (rangeDialect.isPresent() && JQL_DIALECT.equals(rangeDialect.get())) {
-                                            if (rangeJql.isPresent()) {
-                                                final Expression expression = builder.createExpression(entityType, rangeJql.get());
-                                                builder.createBinding(rangeBindingContext, entityType, null, expression);
-                                            } else {
-                                                throw new IllegalStateException("Range reference JQL not found");
-                                            }
-                                        } else if (rangeDialect.isPresent()) {
-                                            log.warn("Dialect {} of range reference is not supported", rangeDialect.get());
-                                        } else if (rangeJql.isPresent()) {
-                                            log.warn("Dialect of range reference is not specified, skipped expression: {}", rangeJql.get());
-                                        }
-                                    } else {
-                                        log.debug("Range expression already extracted for navigation property: {}", reference);
                                     }
                                 }
                             });
