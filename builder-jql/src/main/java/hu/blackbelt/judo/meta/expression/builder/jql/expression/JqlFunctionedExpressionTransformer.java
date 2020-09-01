@@ -12,11 +12,11 @@ import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JqlFunctionedExpressionTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<FunctionedExpression, NE, P, PTE, E, C, AP, RTE, S, M, U> {
+public class JqlFunctionedExpressionTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<FunctionedExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlFunctionedExpressionTransformer.class.getName());
 
-    public JqlFunctionedExpressionTransformer(JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers) {
+    public JqlFunctionedExpressionTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
         super(jqlTransformers);
     }
 

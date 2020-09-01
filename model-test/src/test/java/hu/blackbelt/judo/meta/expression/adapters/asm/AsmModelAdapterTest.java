@@ -44,7 +44,7 @@ import hu.blackbelt.judo.meta.measure.Unit;
 
 public class AsmModelAdapterTest extends ExecutionContextOnAsmTest {
 
-    private ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> modelAdapter;
+    private ModelAdapter<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> modelAdapter;
 
     @BeforeEach
     public void setUp() throws Exception {

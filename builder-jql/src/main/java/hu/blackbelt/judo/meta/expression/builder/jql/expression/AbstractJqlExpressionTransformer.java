@@ -19,11 +19,11 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
 
-public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> implements JqlExpressionTransformerFunction {
+public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> implements JqlExpressionTransformerFunction {
 
-    protected final JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers;
+    protected final JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
 
-    protected AbstractJqlExpressionTransformer(JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers) {
+    protected AbstractJqlExpressionTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
         this.jqlTransformers = jqlTransformers;
     }
 
@@ -34,7 +34,7 @@ public abstract class AbstractJqlExpressionTransformer<T extends JqlExpression, 
 
     protected abstract Expression doTransform(T jqlExpression, ExpressionBuildingVariableResolver context);
 
-    protected ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
+    protected ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
         return jqlTransformers.getModelAdapter();
     }
 

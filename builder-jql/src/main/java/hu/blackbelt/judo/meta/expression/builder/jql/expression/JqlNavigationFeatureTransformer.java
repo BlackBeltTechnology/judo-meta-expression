@@ -27,12 +27,12 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newObjectSequenceBuilder;
 
-public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> {
+public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JqlNavigationFeatureTransformer.class.getName());
-	private final JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers;
+	private final JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
 
-	public JqlNavigationFeatureTransformer(JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers) {
+	public JqlNavigationFeatureTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
 		this.jqlTransformers = jqlTransformers;
 	}
 
@@ -91,7 +91,7 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, PTE, E extends P,
 		return null;
 	}
 
-	protected ModelAdapter<NE, P, PTE, E, C, AP, RTE, S, M, U> getModelAdapter() {
+	protected ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
 		return jqlTransformers.getModelAdapter();
 	}
 
