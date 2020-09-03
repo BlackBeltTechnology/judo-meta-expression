@@ -572,6 +572,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression(order, "self.shipper!isUndefined()");
         createExpression(order, "self.shipper.companyName!isUndefined()");
         createExpression(order, "not self.shipper!isUndefined()");
+        createExpression(order, "self!isDefined()");
     }
 
 //    TODO @Test

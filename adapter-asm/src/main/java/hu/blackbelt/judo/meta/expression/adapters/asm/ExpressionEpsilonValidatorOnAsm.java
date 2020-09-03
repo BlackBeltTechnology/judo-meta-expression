@@ -69,7 +69,7 @@ public class ExpressionEpsilonValidatorOnAsm extends ExpressionEpsilonValidator 
 
             // Transformation script
             executionContext
-                    .executeProgram(evlExecutionContextBuilder().source(UriUtil.resolve("expression.evl", scriptRoot))
+                    .executeProgram(evlExecutionContextBuilder().source(UriUtil.resolve("../../../src/main/epsilon/validations/expression.evl", scriptRoot))
                             .expectedErrors(expectedErrors).expectedWarnings(expectedWarnings).build());
 
         } finally {
