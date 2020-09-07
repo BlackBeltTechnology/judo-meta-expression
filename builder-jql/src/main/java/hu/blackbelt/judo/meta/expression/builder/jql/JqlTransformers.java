@@ -145,12 +145,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
         functionTransformers.put("first", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> newSubStringBuilder()
                         .withExpression(stringExpression)
-                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build())
+                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ONE).build())
                         .withLength(parameter).build()));
         functionTransformers.put("last", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> {
                     IntegerExpression stringLength = newLengthBuilder().withExpression(copy(stringExpression)).build();
-                    IntegerExpression position = newIntegerArithmeticExpressionBuilder().withLeft(stringLength).withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+                    IntegerExpression position = newIntegerArithmeticExpressionBuilder()
+                            .withLeft(stringLength)
+                            .withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+                    position = newIntegerArithmeticExpressionBuilder().withLeft(position).withOperator(IntegerOperator.ADD).withRight(newIntegerConstantBuilder().withValue(BigInteger.ONE).build()).build();
                     return newSubStringBuilder()
                             .withExpression(stringExpression)
                             .withPosition(position)
