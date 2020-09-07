@@ -305,12 +305,22 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isDerivedTransferAttribute(TransferAttribute attribute) {
+        return attribute.getBinding() != null && isDerivedAttribute(attribute.getBinding());
+    }
+
+    @Override
     public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         if (attribute instanceof PrimitiveAccessor) {
             return Optional.of(((PrimitiveAccessor)attribute).getGetterExpression().getExpression());
         } else {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<String> getTransferAttributeGetter(TransferAttribute attribute) {
+        return getAttributeGetter(attribute.getBinding());
     }
 
     @Override
@@ -330,7 +340,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isDerivedTransferRelation(TransferObjectRelation relation) {
-        return isDerivedReference(relation.getBinding());
+        return relation.getBinding() != null && isDerivedReference(relation.getBinding());
     }
 
     @Override

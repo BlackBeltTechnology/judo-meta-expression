@@ -305,7 +305,11 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     boolean isDerivedAttribute(PTE attribute);
 
+    boolean isDerivedTransferAttribute(TA attribute);
+
     Optional<String> getAttributeGetter(PTE attribute);
+
+    Optional<String> getTransferAttributeGetter(TA attribute);
 
     Optional<String> getAttributeSetter(PTE attribute);
 

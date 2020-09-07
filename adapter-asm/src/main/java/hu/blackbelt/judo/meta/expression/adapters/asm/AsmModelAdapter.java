@@ -302,8 +302,18 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EEn
     }
 
     @Override
+    public boolean isDerivedTransferAttribute(EAttribute attribute) {
+        return isDerivedAttribute(attribute);
+    }
+
+    @Override
     public Optional<String> getAttributeGetter(EAttribute attribute) {
         return AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter", false);
+    }
+
+    @Override
+    public Optional<String> getTransferAttributeGetter(EAttribute attribute) {
+        return getAttributeGetter(attribute);
     }
 
     @Override

@@ -319,12 +319,22 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isDerivedTransferAttribute(PrimitiveTypedElement attribute) {
+        return isDerivedAttribute(attribute);
+    }
+
+    @Override
     public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         Optional<String> result = Optional.empty();
         if (isDerivedAttribute(attribute)) {
             result = Optional.of(((DataMember) attribute).getGetterExpression());
         }
         return result;
+    }
+
+    @Override
+    public Optional<String> getTransferAttributeGetter(PrimitiveTypedElement attribute) {
+        return getAttributeGetter(attribute);
     }
 
     @Override

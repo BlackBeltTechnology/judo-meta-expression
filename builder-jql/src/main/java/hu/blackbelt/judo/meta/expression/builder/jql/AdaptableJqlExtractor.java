@@ -42,6 +42,21 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
         }
         TypeName typeName = builder.buildTypeName(unmappedTransferObjectType).orElseThrow(() -> new IllegalStateException("Illegal type name"));
 
+        modelAdapter.getTransferAttributes(unmappedTransferObjectType).stream()
+                .filter(attr -> modelAdapter.isDerivedTransferAttribute(attr))
+                .forEach(attribute -> {
+                    if (log.isTraceEnabled()) {
+                        log.trace("  - extracting JQL expressions of data property: {}", modelAdapter.getFqName(attribute));
+                    }
+
+                    if (!hasAttributeBinding(typeName, modelAdapter.getName(attribute).get(), AttributeBindingRole.GETTER)) {
+                        JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(modelAdapter.getName(attribute).get(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER);
+                        modelAdapter.getTransferAttributeGetter(attribute).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, getterBindingContext, jql));
+                    } else {
+                        log.debug("Getter expression already extracted for data property: {}", modelAdapter.getFqName(attribute));
+                    }
+                });
+
         modelAdapter.getTransferRelations(unmappedTransferObjectType).stream()
                 .filter(ref -> modelAdapter.isDerivedTransferRelation(ref))
                 .forEach(reference -> {
