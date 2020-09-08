@@ -32,18 +32,18 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 
 import java.util.Arrays;
 
-public class JqlNavigationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, PTE, E, C, AP, RTE, S, M, U> {
+public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
 
-    private final JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> featureTransformer;
+    private final JqlNavigationFeatureTransformer<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> featureTransformer;
 
-    public JqlNavigationTransformer(JqlTransformers<NE, P, PTE, E, C, AP, RTE, S, M, U> jqlTransformers) {
+    public JqlNavigationTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
         super(jqlTransformers);
         featureTransformer = new JqlNavigationFeatureTransformer<>(jqlTransformers);
     }
 
-    public JqlNavigationFeatureTransformer<NE, P, PTE, E, C, AP, RTE, S, M, U> getFeatureTransformer() {
+    public JqlNavigationFeatureTransformer<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getFeatureTransformer() {
         return featureTransformer;
     }
 

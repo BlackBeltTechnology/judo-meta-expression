@@ -65,7 +65,7 @@
         <tycho-version>1.7.0</tycho-version>
         <eclipse-p2-base>https://download.eclipse.org/releases/2019-03</eclipse-p2-base>
 
-        <emf-genmodel-generator-version>1.0.0</emf-genmodel-generator-version>
+        <emf-genmodel-generator-version>1.0.1</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.0</judo-genmodel-generator-version>
 
 
@@ -103,24 +103,22 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.3</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20200713_163329_7a60b11_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20200827_135634_aa92921_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.1.0.20200716_154215_68ace55_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20200828_090731_ca60b77_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20200715_164020_6285970_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20200827_135554_4ee84e2_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.1.20200716_154230_8ac04e8_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1.20200828_091432_420a5c6_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20200716_155041_bd4be91_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20200828_092101_138d99f_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
-        <!-- For tests -->
-        <judo-tatami-maven-plugin-version>1.1.0.20200424_124359_3ac33fac_plugin</judo-tatami-maven-plugin-version>
     </properties>
 
     <build>
@@ -278,11 +276,23 @@
                             <groupId>org.eclipse.emf</groupId>
                             <artifactId>org.eclipse.emf.codegen</artifactId>
                             <version>${emf-codegen-version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>org.eclipse.emf</groupId>
+                                    <artifactId>org.eclipse.emf.codegen</artifactId>
+                                </exclusion>
+                            </exclusions>
                         </dependency>
                         <dependency>
                             <groupId>org.eclipse.emf</groupId>
                             <artifactId>org.eclipse.emf.codegen.ecore</artifactId>
                             <version>${emf-codegen-ecore-version}</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>org.eclipse.emf</groupId>
+                                    <artifactId>org.eclipse.emf.codegen</artifactId>
+                                </exclusion>
+                            </exclusions>
                         </dependency>
                         <dependency>
                             <groupId>org.eclipse.emf</groupId>
@@ -583,47 +593,27 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.psm.model.northwind</artifactId>
+                <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
                 <version>${judo-meta-psm-version}</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-psm2asm</artifactId>
-                <version>${judo-tatami-maven-plugin-version}</version>
-                <scope>test</scope>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
+                <version>${judo-meta-measure-version}</version>
             </dependency>
             <dependency>
-                <groupId>hu.blackbelt.judo.tatami</groupId>
-                <artifactId>judo-tatami-psm2measure</artifactId>
-                <version>${judo-tatami-maven-plugin-version}</version>
-                <scope>test</scope>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
+                <version>${judo-meta-asm-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.meta</groupId>
+                <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
+                <version>${judo-meta-esm-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-            <version>${judo-meta-psm-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-            <version>${judo-meta-asm-version}</version>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-            <version>${judo-meta-esm-version}</version>
-        </dependency>
-
-
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -714,8 +704,9 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
+            <artifactId>hamcrest</artifactId>
+            <version>2.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

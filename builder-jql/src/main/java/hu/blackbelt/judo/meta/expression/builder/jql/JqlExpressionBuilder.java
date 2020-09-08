@@ -15,7 +15,6 @@ import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EMap;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -35,32 +34,23 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 /**
  * Expression builder from JQL.
  *
- * @param <NE>  namespace element
- * @param <P>   primitive
- * @param <PTE> primitive typed element (ie. attribute)
- * @param <E>   enumeration
- * @param <C>   class
- * @param <RTE> reference typed element (ie. reference)
- * @param <S>   sequence
- * @param <M>   measure
- * @param <U>   unit
  */
-public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends NE, T extends NE, RTE, S, M, U> {
+public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
-    private final ModelAdapter<NE, P, PTE, E, C, T, RTE, S, M, U> modelAdapter;
+    private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
-    private final EMap<T, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
+    private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
 
-    public JqlExpressionBuilder(final ModelAdapter<NE, P, PTE, E, C, T, RTE, S, M, U> modelAdapter, final Resource expressionResource) {
+    public JqlExpressionBuilder(final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, final Resource expressionResource) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
@@ -231,7 +221,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
      * @param expression     expression
      * @return expression binding
      */
-    public Binding createBinding(final BindingContext bindingContext, final C entityType, T transferObjectType, final Expression expression) {
+    public Binding createBinding(final BindingContext bindingContext, final C entityType, TO transferObjectType, final Expression expression) {
         final TypeName typeName;
         if (entityType != null) {
             typeName = entityInstances.get(entityType).getElementName();
@@ -252,9 +242,6 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                     case SETTER:
                         attributeBindingRole = AttributeBindingRole.SETTER;
                         break;
-                    case DEFAULT:
-                        attributeBindingRole = AttributeBindingRole.DEFAULT;
-                        break;
                     default:
                         throw new IllegalStateException("Unsupported binding role");
                 }
@@ -274,12 +261,6 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
                         break;
                     case SETTER:
                         referenceBindingRole = ReferenceBindingRole.SETTER;
-                        break;
-                    case DEFAULT:
-                        referenceBindingRole = ReferenceBindingRole.DEFAULT;
-                        break;
-                    case RANGE:
-                        referenceBindingRole = ReferenceBindingRole.RANGE;
                         break;
                     default:
                         throw new IllegalStateException("Unsupported binding role");
@@ -317,7 +298,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         return jqlTransformers.transform(jqlExpression, context);
     }
 
-    public ModelAdapter<NE, P, PTE, E, C, T, RTE, S, M, U> getModelAdapter() {
+    public ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
         return modelAdapter;
     }
 
@@ -359,7 +340,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
     }
 
     public enum BindingRole {
-        GETTER, SETTER, DEFAULT, RANGE
+        GETTER, SETTER
     }
 
     public enum BindingType {
@@ -391,7 +372,7 @@ public class JqlExpressionBuilder<NE, P extends NE, PTE, E extends P, C extends 
         }
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, PTE, E, C, T, RTE, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA,TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
 

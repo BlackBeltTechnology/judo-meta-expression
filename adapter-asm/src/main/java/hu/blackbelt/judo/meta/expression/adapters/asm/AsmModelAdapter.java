@@ -34,7 +34,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ASM models.
  */
-public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAttribute, EEnum, EClass, EClass, EReference, EClassifier, Measure, Unit> {
+public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> {
 
     protected static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
@@ -302,8 +302,28 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
+    public boolean isDerivedTransferAttribute(EAttribute attribute) {
+        return isDerivedAttribute(attribute);
+    }
+
+    @Override
     public Optional<String> getAttributeGetter(EAttribute attribute) {
         return AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter", false);
+    }
+
+    @Override
+    public Optional<String> getTransferAttributeGetter(EAttribute attribute) {
+        return getAttributeGetter(attribute);
+    }
+
+    @Override
+    public Optional<String> getAttributeSetter(EAttribute attribute) {
+        return AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "setter", false);
+    }
+
+    @Override
+    public Optional<String> getAttributeDefault(EAttribute attribute) {
+        return AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "default", false);
     }
 
     @Override
@@ -312,8 +332,43 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
     }
 
     @Override
+    public boolean isDerivedTransferRelation(EReference relation) {
+        return relation.isDerived();
+    }
+
+    @Override
     public Optional<String> getReferenceGetter(EReference reference) {
         return AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter", false);
+    }
+
+    @Override
+    public Optional<String> getTransferRelationGetter(EReference relation) {
+        return getReferenceGetter(relation);
+    }
+
+    @Override
+    public Optional<String> getReferenceDefault(EReference reference) {
+        return AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "default", false);
+    }
+
+    @Override
+    public Optional<String> getReferenceRange(EReference reference) {
+        return AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "range", false);
+    }
+
+    @Override
+    public Optional<String> getFilter(EClass clazz) {
+        return AsmUtils.getExtensionAnnotationCustomValue(clazz, "mappedEntityType", "filter", false);
+    }
+
+    @Override
+    public Optional<String> getReferenceSetter(EReference reference) {
+        return AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "setter", false);
+    }
+
+    @Override
+    public Optional<String> getTransferRelationSetter(EReference relation) {
+        return getReferenceSetter(relation);
     }
 
     @Override
@@ -384,6 +439,20 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
                 .collect(toList()));
     }
 
+    @Override
+    public EList<EClass> getAllMappedTransferObjectTypes() {
+        return ECollections.asEList(getAsmElement(EClass.class)
+                .filter(asmUtils::isMappedTransferObjectType)
+                .collect(toList()));
+    }
+
+    @Override
+    public EList<EClass> getAllUnmappedTransferObjectTypes() {
+        return ECollections.asEList(getAsmElement(EClass.class)
+                .filter(c -> !AsmUtils.isEntityType(c) && !asmUtils.isMappedTransferObjectType(c))
+                .collect(toList()));
+    }
+
     public AsmUtils getAsmUtils() {
         return asmUtils;
     }
@@ -428,20 +497,57 @@ public class AsmModelAdapter implements ModelAdapter<EClassifier, EDataType, EAt
 
 	@Override
 	public boolean isCollectionReference(TypeName elementName, String referenceName) {
-		
-		Optional<? extends EClassifier> element = this.get(elementName);
-
-		if (element.isPresent() && element.get() instanceof EClass) {
-			
-			Optional<? extends EReference> reference = getReference((EClass) element.get(), referenceName);
-			
-			if (reference.isPresent()) {
-				return isCollectionReference(reference.get());
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
+		return this.get(elementName)
+                .filter(c -> c instanceof EClass)
+                .flatMap(c -> getReference((EClass) c, referenceName))
+                .map(this::isCollectionReference)
+                .filter(Boolean::booleanValue)
+                .isPresent();
 	}
+
+    @Override
+    public Optional<EClass> getMappedEntityType(EClass mappedTransferObjectType) {
+        return asmUtils.getMappedEntityType(mappedTransferObjectType);
+    }
+
+    @Override
+    public String getFqName(Object object) {
+        if (object instanceof EClassifier) {
+            return AsmUtils.getClassifierFQName((EClassifier) object);
+        } else if (object instanceof EReference) {
+            return AsmUtils.getReferenceFQName((EReference) object);
+        } else if (object instanceof EAttribute) {
+            return AsmUtils.getAttributeFQName((EAttribute) object);
+        } else return null;
+    }
+
+    @Override
+    public Optional<String> getName(Object object) {
+        if (object instanceof ENamedElement) {
+            return Optional.of(((ENamedElement) object).getName());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Collection<EAttribute> getAttributes(EClass clazz) {
+        return clazz.getEAttributes();
+    }
+
+    @Override
+    public Collection<EReference> getReferences(EClass clazz) {
+        return clazz.getEReferences();
+    }
+
+    @Override
+    public Collection<EAttribute> getTransferAttributes(EClass transferObjectType) {
+        return transferObjectType.getEAttributes();
+    }
+
+    @Override
+    public Collection<EReference> getTransferRelations(EClass transferObjectType) {
+        return transferObjectType.getEReferences();
+    }
+
 }

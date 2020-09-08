@@ -1,5 +1,36 @@
 package hu.blackbelt.judo.meta.expression.adapters.psm;
 
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
+import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
+import org.eclipse.emf.common.notify.Notifier;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnPsmTest;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
@@ -9,66 +40,37 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.data.*;
+import hu.blackbelt.judo.meta.psm.data.Attribute;
+import hu.blackbelt.judo.meta.psm.data.EntityType;
+import hu.blackbelt.judo.meta.psm.data.PrimitiveTypedElement;
+import hu.blackbelt.judo.meta.psm.data.ReferenceTypedElement;
+import hu.blackbelt.judo.meta.psm.data.Relation;
+import hu.blackbelt.judo.meta.psm.data.Sequence;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
 import hu.blackbelt.judo.meta.psm.namespace.Namespace;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectType;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
 import hu.blackbelt.judo.meta.psm.type.StringType;
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.URI;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 
-import java.io.File;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
-import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.LoadArguments.psmLoadArgumentsBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-
-public class PsmModelAdapterTest {
+public class PsmModelAdapterTest extends ExecutionContextOnPsmTest{
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapterTest.class);
-    private PsmModel measureModel;
-    private PsmModel psmModel;
 
-    private ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, EntityType, TransferObjectType, ReferenceTypedElement, Sequence, Measure, Unit> modelAdapter;
+    private ModelAdapter<NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> modelAdapter;
 
+    private static final Logger logger = LoggerFactory.getLogger(PsmModelAdapterTest.class);
+    
     @BeforeEach
     public void setUp() throws Exception {
 
-        psmModel = PsmModel.loadPsmModel(psmLoadArgumentsBuilder()
-                .uri(URI.createFileURI(new File("target/test-classes/model/northwind-psm.model").getAbsolutePath()))
-                .name("test")
-                // TODO: check model
-                .validateModel(false)
-                .build());
-
-        measureModel = psmModel;
-
-        modelAdapter = new PsmModelAdapter(psmModel.getResourceSet(), measureModel.getResourceSet());
+    	super.setUp();
+        modelAdapter = new PsmModelAdapter(psmModel.getResourceSet(), psmModel.getResourceSet());
     }
-
+    
     @AfterEach
     public void tearDown() {
         modelAdapter = null;
@@ -249,7 +251,7 @@ public class PsmModelAdapterTest {
         TypeName type = modelAdapter.buildTypeName(getEntityTypeByName("Product").get()).get();
         Instance instance = newInstanceBuilder().withElementName(type).build();
 
-        Optional<Unit> kilogram = getPsmElement(Unit.class).filter(u -> "kilogram".equals(u.getName())).findAny();
+        Optional<Unit> kilogram = getMeasureElement(Unit.class).filter(u -> "kilogram".equals(u.getName())).findAny();
         NumericAttribute numericAttribute = newIntegerAttributeBuilder()
                 .withAttributeName("weight")
                 .withObjectExpression(
@@ -283,7 +285,7 @@ public class PsmModelAdapterTest {
         assertFalse(modelAdapter.getUnit(notFoundAttributeNumericAttribute).isPresent());
         assertThat(modelAdapter.getUnit(notFoundAttributeNumericAttribute), is(Optional.empty()));
         //--------------------------
-        Optional<Unit> inch = getPsmElement(Unit.class).filter(u -> "inch".equals(u.getName())).findAny();
+        Optional<Unit> inch = getMeasureElement(Unit.class).filter(u -> "inch".equals(u.getName())).findAny();
         assertTrue(inch.isPresent());
         //5cm téll hossz, 5m as dist -> length-e
 
@@ -356,6 +358,12 @@ public class PsmModelAdapterTest {
         return StreamSupport.stream(psmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
     }
+    
+    <T> Stream<T> getMeasureElement(final Class<T> clazz) {
+        final Iterable<Notifier> measureContents = psmModel.getResourceSet()::getAllContents;
+        return StreamSupport.stream(measureContents.spliterator(), true)
+                .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
+    }
 
     private String getNamespaceFQName(final Namespace namespace) {
         final Optional<Namespace> containerNamespace;
@@ -367,5 +375,4 @@ public class PsmModelAdapterTest {
 
         return (containerNamespace.isPresent() ? getNamespaceFQName(containerNamespace.get()) + "::" : "") + namespace.getName();
     }
-
 }

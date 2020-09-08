@@ -1,9 +1,15 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
-import com.google.common.collect.ImmutableMap;
-import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
-import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.emf.common.util.ECollections;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
@@ -12,15 +18,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.collect.ImmutableMap;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.adapters.measure.model.Measure;
+import hu.blackbelt.judo.meta.expression.adapters.measure.model.Unit;
 
 public class MeasureChangeAdapterTest {
 

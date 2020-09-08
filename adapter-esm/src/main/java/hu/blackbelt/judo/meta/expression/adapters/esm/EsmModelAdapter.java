@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
+import javax.swing.text.html.Option;
 import java.lang.Class;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -43,7 +44,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ESM models.
  */
-public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, PrimitiveTypedElement, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, TransferObjectType, ReferenceTypedElement, Sequence, Measure, Unit> {
+public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(EsmModelAdapter.class);
@@ -78,8 +79,8 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Optional<? extends NamespaceElement> get(final TypeName elementName) {
         final Optional<Namespace> namespace = getEsmElement(Namespace.class)
-                .filter(p -> Objects.equals(getNamespaceFQName(p), 
-                		elementName.getNamespace() != null ? elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR) : ""))
+                .filter(p -> Objects.equals(getNamespaceFQName(p),
+                        elementName.getNamespace() != null ? elementName.getNamespace().replace(".", NAMESPACE_SEPARATOR) : ""))
                 .findAny();
 
         if (namespace.isPresent()) {
@@ -300,11 +301,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<? extends Sequence> getSequence(hu.blackbelt.judo.meta.esm.structure.Class clazz, String sequenceName) {
-    	if (clazz instanceof EntityType) {
-    		return ((EntityType) clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
-    	} else {
-    		return Optional.empty();
-    	}
+        if (clazz instanceof EntityType) {
+            return ((EntityType) clazz).getSequences().stream().filter(s -> Objects.equals(s.getName(), sequenceName)).findAny();
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -318,12 +319,32 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isDerivedTransferAttribute(PrimitiveTypedElement attribute) {
+        return isDerivedAttribute(attribute);
+    }
+
+    @Override
     public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         Optional<String> result = Optional.empty();
         if (isDerivedAttribute(attribute)) {
             result = Optional.of(((DataMember) attribute).getGetterExpression());
         }
         return result;
+    }
+
+    @Override
+    public Optional<String> getTransferAttributeGetter(PrimitiveTypedElement attribute) {
+        return getAttributeGetter(attribute);
+    }
+
+    @Override
+    public Optional<String> getAttributeSetter(PrimitiveTypedElement attribute) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getAttributeDefault(PrimitiveTypedElement attribute) {
+        return Optional.empty();
     }
 
     @Override
@@ -336,16 +357,61 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isDerivedTransferRelation(ReferenceTypedElement relation) {
+        return isDerivedReference(relation);
+    }
+
+    @Override
     public Optional<String> getReferenceGetter(ReferenceTypedElement reference) {
         Optional<String> result = Optional.empty();
-        if (isDerivedReference(reference)) {
-            if (reference instanceof StaticNavigation) {
-                result = Optional.of(((StaticNavigation) reference).getGetterExpression());
-            } else if (reference instanceof OneWayRelationMember) {
-                result = Optional.of(((OneWayRelationMember) reference).getGetterExpression());
+        if (isDerivedReference(reference) && reference instanceof OneWayRelationMember) {
+            result = Optional.of(((OneWayRelationMember) reference).getGetterExpression());
+        } else if (reference instanceof StaticNavigation) {
+            StaticNavigation staticNavigation = (StaticNavigation) reference;
+            if (staticNavigation.getGetterExpression() != null) {
+                result = Optional.of(staticNavigation.getGetterExpression());
+            } else {
+                result = Optional.empty();
             }
         }
         return result;
+    }
+
+    @Override
+    public Optional<String> getTransferRelationGetter(ReferenceTypedElement relation) {
+        return getReferenceGetter(relation);
+    }
+
+    @Override
+    public Optional<String> getReferenceDefault(ReferenceTypedElement reference) {
+        return Optional.of(reference)
+                .filter(ref -> ref instanceof RelationFeature)
+                .map(ref -> ((RelationFeature) ref).getDefaultExpression());
+    }
+
+    @Override
+    public Optional<String> getReferenceRange(ReferenceTypedElement reference) {
+        return Optional.of(reference)
+                .filter(ref -> ref instanceof RelationFeature)
+                .map(ref -> ((RelationFeature) ref).getRangeExpression());
+    }
+
+    @Override
+    public Optional<String> getReferenceSetter(ReferenceTypedElement reference) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getTransferRelationSetter(ReferenceTypedElement relation) {
+        return getReferenceSetter(relation);
+    }
+
+    @Override
+    public Optional<String> getFilter(TransferObjectType transferObjectType) {
+        return Optional.of(transferObjectType)
+                .filter(TransferObjectType::isMapped)
+                .map(TransferObjectType::getMapping)
+                .map(Mapping::getFilter);
     }
 
     @Override
@@ -425,51 +491,115 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public EList<TransferObjectType> getAllTransferObjectTypes() {
         return ECollections.asEList(getEsmElement(TransferObjectType.class).collect(toList()));
     }
-    
-	@Override
-	public Optional<hu.blackbelt.judo.meta.esm.structure.Class> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName,
-			String transferObjectRelationName) {
-		
-		Optional<? extends NamespaceElement> transferObjectType = get(transferObjectTypeName);
-		
-		if (!transferObjectType.isPresent()) {
-			return Optional.empty();
-		} else if (transferObjectType.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
-			
-			 Optional<? extends ReferenceTypedElement> transferObjectRelation = getReference((hu.blackbelt.judo.meta.esm.structure.Class)transferObjectType.get(), transferObjectRelationName);
-			 
-			 if (!transferObjectRelation.isPresent()) {
-				 return Optional.empty();
-			 } else {
-				 TransferObjectType transferObjectRelationTarget = (TransferObjectType)getTarget(transferObjectRelation.get());
-				 if (transferObjectRelationTarget.isMapped()) {
-					 return Optional.of(transferObjectRelationTarget.getMapping().getTarget());
-				 } else {
-					 return Optional.empty();
-				 }
-			 }
-		} else {
-			return Optional.empty();
-		}
-	}
 
-	@Override
-	public boolean isCollectionReference(TypeName elementName, String referenceName) {
-		Optional<? extends NamespaceElement> element = this.get(elementName);
-		
-		if (element.isPresent()) {
-			if (element.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
-				Optional<? extends ReferenceTypedElement> reference = getReference((hu.blackbelt.judo.meta.esm.structure.Class)element.get(), referenceName);
-				if (reference.isPresent()) {
-					return isCollectionReference(reference.get());
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
+    @Override
+    public EList<TransferObjectType> getAllMappedTransferObjectTypes() {
+        return ECollections.asEList(
+                getEsmElement(TransferObjectType.class)
+                        .filter(TransferObjectType::isMapped)
+                        .collect(toList()));
+    }
+
+    @Override
+    public EList<TransferObjectType> getAllUnmappedTransferObjectTypes() {
+        return ECollections.asEList(
+                getEsmElement(TransferObjectType.class)
+                        .filter(to -> !to.isMapped())
+                        .collect(toList()));
+    }
+
+    @Override
+    public Optional<hu.blackbelt.judo.meta.esm.structure.Class> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName,
+                                                                                                            String transferObjectRelationName) {
+
+        Optional<? extends NamespaceElement> transferObjectType = get(transferObjectTypeName);
+
+        if (!transferObjectType.isPresent()) {
+            return Optional.empty();
+        } else if (transferObjectType.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
+
+            Optional<? extends ReferenceTypedElement> transferObjectRelation = getReference((hu.blackbelt.judo.meta.esm.structure.Class) transferObjectType.get(), transferObjectRelationName);
+
+            if (!transferObjectRelation.isPresent()) {
+                return Optional.empty();
+            } else {
+                TransferObjectType transferObjectRelationTarget = (TransferObjectType) getTarget(transferObjectRelation.get());
+                if (transferObjectRelationTarget.isMapped()) {
+                    return Optional.of(transferObjectRelationTarget.getMapping().getTarget());
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public boolean isCollectionReference(TypeName elementName, String referenceName) {
+        Optional<? extends NamespaceElement> element = this.get(elementName);
+
+        if (element.isPresent()) {
+            if (element.get() instanceof hu.blackbelt.judo.meta.esm.structure.Class) {
+                Optional<? extends ReferenceTypedElement> reference = getReference((hu.blackbelt.judo.meta.esm.structure.Class) element.get(), referenceName);
+                if (reference.isPresent()) {
+                    return isCollectionReference(reference.get());
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Optional<hu.blackbelt.judo.meta.esm.structure.Class> getMappedEntityType(TransferObjectType mappedTransferObjectType) {
+        return Optional.of(mappedTransferObjectType)
+                .filter(TransferObjectType::isMapped)
+                .map(TransferObjectType::getMapping)
+                .map(Mapping::getTarget);
+    }
+
+    @Override
+    public String getFqName(Object object) {
+        if (object instanceof OneWayRelationMember) {
+            return EsmUtils.getOneWayRelationFQName((OneWayRelationMember) object);
+        } else if (object instanceof DataMember) {
+            return EsmUtils.getDataMemberFQName((DataMember) object);
+        } else if (object instanceof NamespaceElement) {
+            return EsmUtils.getNamespaceElementFQName((NamespaceElement) object);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Optional<String> getName(Object object) {
+        return Optional.ofNullable(object)
+                .filter(o -> object instanceof NamedElement)
+                .map(o -> ((NamedElement) o).getName());
+    }
+
+    @Override
+    public Collection<? extends PrimitiveTypedElement> getAttributes(hu.blackbelt.judo.meta.esm.structure.Class clazz) {
+        return clazz.getAttributes();
+    }
+
+    @Override
+    public Collection<? extends ReferenceTypedElement> getReferences(hu.blackbelt.judo.meta.esm.structure.Class clazz) {
+        return clazz.getRelations();
+    }
+
+    @Override
+    public Collection<? extends PrimitiveTypedElement> getTransferAttributes(TransferObjectType transferObjectType) {
+        return transferObjectType.getAttributes();
+    }
+
+    @Override
+    public Collection<? extends ReferenceTypedElement> getTransferRelations(TransferObjectType transferObjectType) {
+        return transferObjectType.getRelations();
+    }
 }

@@ -13,7 +13,7 @@ import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuil
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalOppositeExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerOppositeExpressionBuilder;
 
-public class JqlUnaryOperationTransformer<NE, P extends NE, PTE, E extends P, C extends NE, AP extends NE, RTE, S, M, U> extends AbstractJqlExpressionTransformer<UnaryOperation, NE, P, PTE, E, C, AP, RTE, S, M, U> {
+public class JqlUnaryOperationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<UnaryOperation, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
     public JqlUnaryOperationTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
