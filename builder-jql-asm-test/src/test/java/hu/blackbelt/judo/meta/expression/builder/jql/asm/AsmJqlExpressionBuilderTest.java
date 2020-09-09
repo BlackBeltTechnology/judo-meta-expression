@@ -384,9 +384,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         createExpression(category, "self=>products!count()");
         createExpression(category, "self=>products!join(p1 | p1.productName, ', ')!length()");
-        createExpression(category, "self=>products!sort(e | e.unitPrice)!head(5)");
-        Expression productListTail = createExpression(category, "self=>products!sort(e | e.unitPrice)!tail(5)");
-        assertThat(productListTail, collectionOf("Product"));
+        createExpression(category, "self=>products!sort(e | e.unitPrice)!head()");
+        Expression productListTail = createExpression(category, "self=>products!sort(e | e.unitPrice)!tail()");
         Expression cheapProducts = createExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)");
         assertThat(cheapProducts, collectionOf("Product"));
         createExpression(category, "self=>products!filter(p | p.unitPrice < 2.0)!count()");
@@ -448,10 +447,21 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    void testHeadDefault() {
+        createExpression("demo::entities::Category!any()=>products!sort()!head()");
+    }
+
+    @Test
+    void testHeadLambda() {
+        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head()");
+        createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice) != p.category=>products!tail(p | p.unitPrice)");
+        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != p.category=>products!sort(p | p.unitPrice)!tail()");
+    }
+
+    @Test
     void testObjectOperations() {
-        EClass category = findBase("Category");
-        createExpression(category, "demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() == p.category=>products!sort(q | q.unitPrice)!tail()");
-        createExpression(category, "demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != p.category=>products!sort(p | p.unitPrice)!tail()");
+        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() == p.category=>products!sort(q | q.unitPrice)!tail()");
+        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != p.category=>products!sort(p | p.unitPrice)!tail()");
 
         createExpression("not demo::entities::OrderDetail!any().product!kindof(demo::entities::Product)");
         createExpression("demo::entities::OrderDetail!any().product!typeof(demo::entities::Product)");

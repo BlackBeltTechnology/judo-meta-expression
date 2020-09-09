@@ -40,7 +40,7 @@ public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<C
         return builder.build();
     }
 
-    private boolean isDescending(String parameterExtension) {
+    public static boolean isDescending(String parameterExtension) {
         if (parameterExtension == null || parameterExtension.equalsIgnoreCase("asc")) {
             return false;
         } else if (parameterExtension.equalsIgnoreCase("desc")) {

@@ -809,6 +809,7 @@
       <genClasses ecoreClass="expression.ecore#//object/ObjectSelectorExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ObjectSelectorExpression/collectionExpression"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//object/ObjectSelectorExpression/operator"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ObjectSelectorExpression/orderBy"/>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getCollectionExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/getObjectType"
@@ -817,6 +818,8 @@
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/toString"
             body="return &quot;(&quot; + getOperator() + &quot; &quot; + getCollectionExpression() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/getLambdaFunctions"
+            body="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//object/ObjectFilterExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//object/ObjectFilterExpression/objectExpression"/>

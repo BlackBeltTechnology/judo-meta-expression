@@ -1330,10 +1330,17 @@
           <details key="body" value="return &quot;(&quot; + getOperator() + &quot; &quot; + getCollectionExpression() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getLambdaFunctions" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="collectionExpression"
           lowerBound="1" eType="#//CollectionExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/ObjectSelector"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orderBy" upperBound="-1"
+          eType="#//collection/OrderByItem" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ObjectFilterExpression" eSuperTypes="#//ObjectExpression #//FilteringExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">

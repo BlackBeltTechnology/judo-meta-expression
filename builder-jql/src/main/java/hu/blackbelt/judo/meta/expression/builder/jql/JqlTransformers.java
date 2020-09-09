@@ -21,10 +21,7 @@ import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
-import hu.blackbelt.judo.meta.expression.object.CastObject;
-import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
+import hu.blackbelt.judo.meta.expression.object.*;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -93,8 +90,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
 
     private void collectionFunctions() {
         functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
-        functionTransformers.put("head", new JqlHeadFunctionTransformer(this));
-        functionTransformers.put("tail", new JqlTailFunctionTransformer(this));
+        functionTransformers.put("head", new JqlObjectSelectorFunctionTransformer(this, ObjectSelector.HEAD));
+        functionTransformers.put("tail", new JqlObjectSelectorFunctionTransformer(this, ObjectSelector.TAIL));
         functionTransformers.put("any", new JqlAnyFunctionTransformer(this));
         functionTransformers.put("filter", new JqlParameterizedFunctionTransformer<ReferenceExpression, LogicalExpression, FilteringExpression>(this,
                 (expression, parameter) -> {
@@ -254,9 +251,11 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
                 context.pushVariable(collection.getIteratorVariable());
             }
         } else if (subject instanceof ObjectVariable || subject instanceof ObjectVariableReference) {
-            ObjectVariable variable = subject instanceof ObjectVariable ? (ObjectVariable) subject : ((ObjectVariableReference)subject).getVariable();
+            ObjectVariable variable = subject instanceof ObjectVariable ? (ObjectVariable) subject : ((ObjectVariableReference) subject).getVariable();
             variable.setName(lambdaArgument);
             context.pushVariable(variable);
+        } else if (subject instanceof ObjectSelectorExpression) {
+            addLambdaVariable(((ObjectSelectorExpression)subject).getCollectionExpression(), context, lambdaArgument);
         } else if (subject instanceof ObjectFilterExpression) {
             addLambdaVariable(((ObjectFilterExpression) subject).getObjectExpression(), context, lambdaArgument);
         } else if (subject instanceof CollectionFilterExpression) {
