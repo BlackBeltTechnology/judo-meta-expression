@@ -441,9 +441,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     void testLambdaScoping() {
         EClass category = findBase("Category");
         createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>products!sort(p | p.unitPrice)!tail()");
-        Expression qExpression = createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>owner=>orders!sort(q | p.unitPrice)!tail()");
-        // TODO handle scope change on different side of binary operations (and other expressions probably)
-        //assertThrows(IllegalStateException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() = self=>products!sort(q | p.unitPrice)!tail()"));
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(category, "self=>products!sort(p | p.unitPrice)!head() == self=>products!sort(q | p.unitPrice)!tail()"));
     }
 
     @Test
@@ -454,15 +452,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testHeadLambda() {
         createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head()");
-        createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice) != p.category=>products!tail(p | p.unitPrice)");
-        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != p.category=>products!sort(p | p.unitPrice)!tail()");
+        createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice) != demo::entities::Category!any()=>products!tail(p | p.unitPrice)");
+        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != demo::entities::Category!any()=>products!sort(p | p.unitPrice)!tail()");
     }
 
     @Test
     void testObjectOperations() {
-        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() == p.category=>products!sort(q | q.unitPrice)!tail()");
-        createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != p.category=>products!sort(p | p.unitPrice)!tail()");
-
         createExpression("not demo::entities::OrderDetail!any().product!kindof(demo::entities::Product)");
         createExpression("demo::entities::OrderDetail!any().product!typeof(demo::entities::Product)");
 
@@ -582,6 +577,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression(order, "self.shipper!isUndefined()");
         createExpression(order, "self.shipper.companyName!isUndefined()");
         createExpression(order, "not self.shipper!isUndefined()");
+        createExpression(order, "self!isDefined()");
     }
 
 //    TODO @Test

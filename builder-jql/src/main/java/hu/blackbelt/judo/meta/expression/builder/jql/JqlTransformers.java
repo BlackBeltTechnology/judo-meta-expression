@@ -40,12 +40,12 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, RTE, TO extends NE, TA, TR, S, M, U> implements ExpressionTransformer, ExpressionMeasureProvider {
+public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> implements ExpressionTransformer, ExpressionMeasureProvider {
 
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
-	private boolean resolveDerived = true;
+    private boolean resolveDerived = true;
 
     public JqlTransformers(JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
@@ -142,12 +142,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
         functionTransformers.put("first", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> newSubStringBuilder()
                         .withExpression(stringExpression)
-                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ZERO).build())
+                        .withPosition(newIntegerConstantBuilder().withValue(BigInteger.ONE).build())
                         .withLength(parameter).build()));
         functionTransformers.put("last", new JqlParameterizedFunctionTransformer<StringExpression, IntegerExpression, Expression>(this,
                 (stringExpression, parameter) -> {
                     IntegerExpression stringLength = newLengthBuilder().withExpression(copy(stringExpression)).build();
-                    IntegerExpression position = newIntegerArithmeticExpressionBuilder().withLeft(stringLength).withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+                    IntegerExpression position = newIntegerArithmeticExpressionBuilder()
+                            .withLeft(stringLength)
+                            .withRight(copy(parameter)).withOperator(IntegerOperator.SUBSTRACT).build();
+                    position = newIntegerArithmeticExpressionBuilder().withLeft(position).withOperator(IntegerOperator.ADD).withRight(newIntegerConstantBuilder().withValue(BigInteger.ONE).build()).build();
                     return newSubStringBuilder()
                             .withExpression(stringExpression)
                             .withPosition(position)
@@ -188,7 +191,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
                 .apply(jqlExpression, context);
         return transformedExpression;
     }
-    
+
     private Optional<JqlExpressionTransformerFunction> findTransformer(Class<? extends JqlExpression> jqlExpressionClass) {
         Optional<JqlExpressionTransformerFunction> foundTransformer = transformers.entrySet().stream()
                 .filter(entry -> entry.getKey().isAssignableFrom(jqlExpressionClass))
@@ -202,18 +205,20 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
         if (jqlExpression instanceof FunctionedExpression) {
             FunctionedExpression functionedExpression = (FunctionedExpression) jqlExpression;
             FunctionCall functionCall = (FunctionCall) functionedExpression.getFunctionCall();
+            int i = 0;
             while (functionCall != null) {
                 String functionName = functionCall.getFunction().getName().toLowerCase();
                 JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
                 if (functionTransformer != null) {
-                	try {
+                    try {
                         if (functionCall.getFunction().getLambdaArgument() != null) {
                             addLambdaVariable(subject, context, functionCall.getFunction().getLambdaArgument());
+                            i++;
                         }
-                    subject = functionTransformer.apply(subject, functionCall.getFunction(), context);
-                	} catch (Exception e) {
-                    	throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), functionCall)), e);
-                	}
+                        subject = functionTransformer.apply(subject, functionCall.getFunction(), context);
+                    } catch (Exception e) {
+                        throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), functionCall)), e);
+                    }
                     if (subject instanceof CastCollection) {
                         CastCollection castCollection = (CastCollection) subject;
                         objectType = (C) castCollection.getElementName().get(getModelAdapter());
@@ -227,14 +232,14 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
                     JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> transformResult = jqlNavigationFeatureTransformer.transform(functionCall.getFeatures(), subject, objectType, context);
                     subject = transformResult.baseExpression;
                     objectType = transformResult.navigationBase;
-                    if (functionCall.getFunction().getLambdaArgument() != null) {
-                        // TODO handle scoping of lambda variables
-//                    context.popVariable();
-                    }
                 } else {
-                	throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError("Unknown function: " + functionName, functionCall)));
+                    throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError("Unknown function: " + functionName, functionCall)));
                 }
                 functionCall = (FunctionCall) functionCall.getCall();
+            }
+            while (i > 0) {
+                context.popVariable();
+                i--;
             }
         }
         return subject;
@@ -242,7 +247,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
 
     private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
         if (subject instanceof CollectionVariable || subject instanceof CollectionVariableReference) {
-            CollectionVariable collection = subject instanceof CollectionVariable ? (CollectionVariable) subject : ((CollectionVariableReference)subject).getVariable();
+            CollectionVariable collection = subject instanceof CollectionVariable ? (CollectionVariable) subject : ((CollectionVariableReference) subject).getVariable();
             if (collection.getIteratorVariable() == null) {
                 ObjectVariable variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
                 context.pushVariable(variable);
@@ -313,15 +318,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE,  PTE, 
     }
 
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
-            transformers.put(jqlType, transformer.apply(this));
+        transformers.put(jqlType, transformer.apply(this));
     }
 
-	public void setResolveDerived(boolean resolveDerived) {
-		this.resolveDerived = resolveDerived;
-	}
+    public void setResolveDerived(boolean resolveDerived) {
+        this.resolveDerived = resolveDerived;
+    }
 
-	public boolean isResolveDerived() {
-		return resolveDerived;
-	}
+    public boolean isResolveDerived() {
+        return resolveDerived;
+    }
 
 }

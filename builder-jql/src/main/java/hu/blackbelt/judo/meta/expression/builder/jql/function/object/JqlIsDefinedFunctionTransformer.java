@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.object;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
+import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
@@ -26,9 +27,9 @@ public class JqlIsDefinedFunctionTransformer extends AbstractJqlFunctionTransfor
         if (expression instanceof AttributeSelector) {
             AttributeSelector attributeSelector = (AttributeSelector) expression;
             comparisonExpression = newUndefinedAttributeComparisonBuilder().withAttributeSelector(attributeSelector).build();
-        } else if (expression instanceof ObjectNavigationExpression) {
-            ObjectNavigationExpression objectNavigationExpression = (ObjectNavigationExpression) expression;
-            comparisonExpression = newUndefinedNavigationComparisonBuilder().withObjectNavigationExpression(objectNavigationExpression).build();
+        } else if (expression instanceof ObjectExpression) {
+            ObjectExpression objectExpression = (ObjectExpression) expression;
+            comparisonExpression = newUndefinedNavigationComparisonBuilder().withObjectNavigationExpression(objectExpression).build();
         } else {
             throw new IllegalArgumentException("Not an attribute selector or object navigation: " + expression);
         }
