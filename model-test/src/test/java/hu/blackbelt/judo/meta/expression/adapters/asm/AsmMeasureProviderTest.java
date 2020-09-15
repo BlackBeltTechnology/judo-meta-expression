@@ -49,7 +49,7 @@ public class AsmMeasureProviderTest extends ExecutionContextOnAsmTest {
     @Test
     public void testGetMeasureName() {
         final Optional<Measure> length = measureProvider.getMeasures()
-                .filter(m -> m.getUnits().parallelStream().anyMatch(u -> "metre".equals(u.getName())))
+                .filter(m -> m.getUnits().stream().anyMatch(u -> "metre".equals(u.getName())))
                 .findAny();
 
         assertTrue(length.isPresent());
@@ -150,7 +150,7 @@ public class AsmMeasureProviderTest extends ExecutionContextOnAsmTest {
         final Iterable<Notifier> measureContents = measureModel.getResourceSet()::getAllContents;
         return StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> Measure.class.isAssignableFrom(e.getClass())).map(e -> (Measure) e)
-                .map(m -> m.getUnits().parallelStream().filter(u -> unitName.equals(u.getName())).findAny())
+                .map(m -> m.getUnits().stream().filter(u -> unitName.equals(u.getName())).findAny())
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .findAny();
     }

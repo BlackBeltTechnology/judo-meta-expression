@@ -103,7 +103,7 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
 
     @Override
     public Optional<Measure> getMeasure(final String namespace, final String name) {
-        return measures.parallelStream()
+        return measures.stream()
                 .filter(m -> Objects.equals(m.getNamespace(), namespace) && Objects.equals(m.getName(), name))
                 .findAny();
     }
@@ -137,12 +137,12 @@ public class DummyMeasureProvider implements MeasureProvider<Measure, Unit> {
     @Override
     public Optional<Unit> getUnitByNameOrSymbol(final Optional<Measure> measure, final String nameOrSymbol) {
         if (measure.isPresent()) {
-            return measure.get().getUnits().parallelStream()
+            return measure.get().getUnits().stream()
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny();
         } else {
-            final Optional<Unit> unit = measures.parallelStream()
-                    .map(m -> m.getUnits().parallelStream()
+            final Optional<Unit> unit = measures.stream()
+                    .map(m -> m.getUnits().stream()
                             .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || Objects.equals(u.getSymbol(), nameOrSymbol))
                             .findAny())
                     .filter(us -> us.isPresent()).map(us -> us.get())
