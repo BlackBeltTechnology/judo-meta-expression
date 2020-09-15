@@ -58,7 +58,7 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
     void testGetMeasureName() {
         log.info("Testing: getMeasureName...");
         final Optional<Measure> mass = measureProvider.getMeasures()
-                .filter(m -> m.getUnits().parallelStream().anyMatch(u -> "kilogram".equals(u.getName())))
+                .filter(m -> m.getUnits().stream().anyMatch(u -> "kilogram".equals(u.getName())))
                 .findAny();
 
         Assert.assertTrue(mass.isPresent());
@@ -166,7 +166,7 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
         final Iterable<Notifier> measureContents = psmModel.getResourceSet()::getAllContents;
         return StreamSupport.stream(measureContents.spliterator(), true)
                 .filter(e -> Measure.class.isAssignableFrom(e.getClass())).map(e -> (Measure) e)
-                .map(m -> m.getUnits().parallelStream().filter(u -> unitName.equals(u.getName())).findAny())
+                .map(m -> m.getUnits().stream().filter(u -> unitName.equals(u.getName())).findAny())
                 .filter(u -> u.isPresent()).map(u -> u.get())
                 .findAny();
     }

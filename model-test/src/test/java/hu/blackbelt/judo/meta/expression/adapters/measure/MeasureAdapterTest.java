@@ -213,8 +213,8 @@ public class MeasureAdapterTest {
         when(modelAdapter.get(personType)).thenReturn(Optional.of(person));
         when(modelAdapter.get(orderItemType)).thenReturn(Optional.of(orderItem));
 
-        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
-        attributeUnits.put("daysLeftToShip", measureProvider.getTime().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "d")).findAny().get());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("daysLeftToShip", measureProvider.getTime().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "d")).findAny().get());
 
         Assert.assertTrue(measureAdapter.isMeasured(weight));
         Assert.assertTrue(measureAdapter.isMeasured(daysLeftToShip));
@@ -228,10 +228,10 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
-        attributeUnits.put("height", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
-        attributeUnits.put("width", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
-        attributeUnits.put("length", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("height", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("width", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("length", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
         final NumericExpression addition = newIntegerArithmeticExpressionBuilder()
                 .withLeft(newIntegerAttributeBuilder()
@@ -419,10 +419,10 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
-        attributeUnits.put("height", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
-        attributeUnits.put("width", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
-        attributeUnits.put("length", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("height", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("width", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("length", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
         final NumericExpression addition = newDecimalArithmeticExpressionBuilder()
                 .withLeft(newDecimalAttributeBuilder()
@@ -634,7 +634,7 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
 
         final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
         final CollectionExpression allPackages = newImmutableCollectionBuilder()
@@ -662,7 +662,7 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        attributeUnits.put("weight", measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
+        attributeUnits.put("weight", measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny().get());
 
         final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
         final CollectionExpression allPackages = newImmutableCollectionBuilder()
@@ -712,8 +712,8 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        attributeUnits.put("a", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "m")).findAny().get());
-        attributeUnits.put("b", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("a", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "m")).findAny().get());
+        attributeUnits.put("b", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
         final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
 
@@ -759,8 +759,8 @@ public class MeasureAdapterTest {
         final Object pkg = new Object();
 
         when(modelAdapter.get(packageType)).thenReturn(Optional.of(pkg));
-        attributeUnits.put("a", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "m")).findAny().get());
-        attributeUnits.put("b", measureProvider.getLength().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
+        attributeUnits.put("a", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "m")).findAny().get());
+        attributeUnits.put("b", measureProvider.getLength().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "cm")).findAny().get());
 
         final Instance packageInstance = newInstanceBuilder().withElementName(packageType).build();
 
@@ -830,8 +830,8 @@ public class MeasureAdapterTest {
     @Test
     public void testGetUnit() {
         //Assert.assertThat(measureAdapter.getUnit());
-        Assert.assertThat(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "kg"), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-        Assert.assertThat(measureAdapter.getUnit(Optional.of("base"), Optional.of("Mass"), "kg"), is(measureProvider.getMass().getUnits().parallelStream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+        Assert.assertThat(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "kg"), is(measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
+        Assert.assertThat(measureAdapter.getUnit(Optional.of("base"), Optional.of("Mass"), "kg"), is(measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
         Assert.assertFalse(measureAdapter.getUnit(Optional.of("custom"), Optional.of("Mass"), "kg").isPresent());
         Assert.assertFalse(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "μg").isPresent());
     }
