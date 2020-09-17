@@ -60,7 +60,6 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
 
     public JqlTernaryOperationTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);
-
     }
 
     @Override
@@ -105,9 +104,9 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
         if (thenType.equals(elseType)) {
             return thenType;
         }
-        if (isKindOf(thenType, elseType)) {
+        if (jqlTransformers.isKindOf(thenType, elseType)) {
             return elseType;
-        } else if (isKindOf(elseType, thenType)) {
+        } else if (jqlTransformers.isKindOf(elseType, thenType)) {
             return thenType;
         }
         // Determine least upper bound, ie. a single shared supertype that is more specific than any other shared supertype
@@ -141,7 +140,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
             Set<C> otherTypes = new LinkedHashSet<>(commonSupertypes);
             otherTypes.remove(commonSuperType);
             for (C otherType : otherTypes) {
-                if (isKindOf(commonSuperType, otherType)) {
+                if (jqlTransformers.isKindOf(commonSuperType, otherType)) {
                     alreadySupertypes.add(otherType);
                 }
             }
@@ -154,20 +153,6 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
         } else {
             return commonSupertypes.stream().findAny().get();
         }
-    }
-
-    private boolean isKindOf(C c1, C c2) {
-        Set<C> checkedSuperTypes = new LinkedHashSet<>();
-        Collection<? extends C> superTypes = getModelAdapter().getSuperTypes(c1);
-        checkedSuperTypes.addAll(superTypes);
-        for (C c : checkedSuperTypes) {
-            if (c.equals(c2)) {
-                return true;
-            } else {
-                checkedSuperTypes.addAll(getModelAdapter().getSuperTypes(c));
-            }
-        }
-        return false;
     }
 
     private void validateEnumTypes(EnumerationExpression thenExpression, EnumerationExpression elseExpression) {

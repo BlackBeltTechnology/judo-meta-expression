@@ -328,5 +328,19 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     public boolean isResolveDerived() {
         return resolveDerived;
     }
+    
+    public boolean isKindOf(C c1, C c2) {
+        Set<C> checkedSuperTypes = new LinkedHashSet<>();
+        Collection<? extends C> superTypes = getModelAdapter().getSuperTypes(c1);
+        checkedSuperTypes.addAll(superTypes);
+        for (C c : checkedSuperTypes) {
+            if (c.equals(c2)) {
+                return true;
+            } else {
+                checkedSuperTypes.addAll(getModelAdapter().getSuperTypes(c));
+            }
+        }
+        return false;
+    }
 
 }
