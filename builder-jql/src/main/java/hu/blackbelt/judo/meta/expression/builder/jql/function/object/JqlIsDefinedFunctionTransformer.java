@@ -1,5 +1,9 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.object;
 
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newNegationExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newUndefinedAttributeComparisonBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newUndefinedNavigationComparisonBuilder;
+
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.LogicalExpression;
@@ -7,10 +11,7 @@ import hu.blackbelt.judo.meta.expression.ObjectExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.object.ObjectNavigationExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
-
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 
 public class JqlIsDefinedFunctionTransformer extends AbstractJqlFunctionTransformer<Expression> {
 

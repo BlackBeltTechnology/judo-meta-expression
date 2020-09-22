@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
 import hu.blackbelt.judo.meta.expression.binding.Binding;
 import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
@@ -119,7 +120,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
             final Instance self;
             if (!foundSelf.isPresent()) {
                 self = newInstanceBuilder()
-                        .withElementName(typeName.eResource() != null ? typeName : getTypeName(typeName.getNamespace(), typeName.getName()))
+                        .withElementName(typeName.eResource() != null ? typeName : buildTypeName(typeName.getNamespace(), typeName.getName()))
                         .withName(SELF_NAME)
                         .build();
                 expressionResource.getContents().add(self);
@@ -324,19 +325,30 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
         String namespace = createQNamespaceString(qName);
+        String name = qName.getName();
+        return getTypeNameFromResource(namespace, name);
+    }
+
+    public TypeName getTypeNameFromResource(String namespace, String name) {
         if (!namespace.isEmpty()) {
-            String name = qName.getName();
-            TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-            NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException(String.valueOf(typeName)));
-            TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
+        	TypeName resolvedTypeName = buildTypeName(namespace, name);
             return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
         } else {
             return null;
         }
     }
 
-    public TypeName getTypeName(String namespace, String name) {
-        return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), name) && Objects.equals(tn.getNamespace(), namespace)).findAny().orElse(null);
+    public TypeName buildTypeName(QualifiedName qName) {
+        String namespace = createQNamespaceString(qName);
+        String name = qName.getName();
+        return buildTypeName(namespace, name);
+    }
+
+    public TypeName buildTypeName(String namespace, String name) {
+    	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
+        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException(String.valueOf(typeName)));
+        TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
+        return resolvedTypeName;
     }
 
     public enum BindingRole {
@@ -374,6 +386,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
 
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA,TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
+    }
+    
+    public void addFunctionTransformer(String functionName, Function<JqlTransformers, JqlFunctionTransformer<? extends Expression>> transformer) {
+    	jqlTransformers.addFunctionTransformer(functionName, transformer);
     }
 
     public void setResolveDerived(boolean resolveDerived) {

@@ -31,6 +31,8 @@ import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
 
+import org.eclipse.emf.common.util.EList;
+
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
@@ -284,8 +286,12 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return expressionBuilder.getTypeNameFromResource(qualifiedName);
     }
 
-    public TypeName getTypeNameFromResource(String namespace, String name) {
-        return expressionBuilder.getTypeName(namespace, name);
+    public TypeName buildTypeName(String namespace, String name) {
+        return expressionBuilder.buildTypeName(namespace, name);
+    }
+    
+    public TypeName buildTypeName(QualifiedName qualifiedName) {
+        return expressionBuilder.buildTypeName(qualifiedName);
     }
 
     @Override
@@ -320,6 +326,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         transformers.put(jqlType, transformer.apply(this));
     }
+    
+    public void addFunctionTransformer(String functionName, Function<JqlTransformers, JqlFunctionTransformer<? extends Expression>> transformer) {
+    	functionTransformers.put(functionName, transformer.apply(this));
+    }
 
     public void setResolveDerived(boolean resolveDerived) {
         this.resolveDerived = resolveDerived;
@@ -329,6 +339,9 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return resolveDerived;
     }
     
+    /**
+     * Returns true if c2 is a supertype of c1
+     */
     public boolean isKindOf(C c1, C c2) {
         Set<C> checkedSuperTypes = new LinkedHashSet<>();
         Collection<? extends C> superTypes = getModelAdapter().getSuperTypes(c1);
@@ -342,5 +355,20 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         }
         return false;
     }
+    
+    public boolean isCompatibleType(TO from, TO to) {
+    	boolean result;
+    	result = from.equals(to);
+    	if (!result) {
+	    	EList<TO> allMappedTransferObjectTypes = getModelAdapter().getAllMappedTransferObjectTypes();
+	    	if (allMappedTransferObjectTypes.contains(from) && allMappedTransferObjectTypes.contains(to)) {
+	    		C mappedEntityFrom = getModelAdapter().getMappedEntityType(from).get();
+	    		C mappedEntityTo = getModelAdapter().getMappedEntityType(to).get();
+	    		result = mappedEntityFrom.equals(mappedEntityTo) || isKindOf(mappedEntityTo, mappedEntityFrom) || isKindOf(mappedEntityFrom, mappedEntityTo);
+	    	}
+    	}
+    	return result;
+    }
+
 
 }
