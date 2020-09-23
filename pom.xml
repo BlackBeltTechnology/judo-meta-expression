@@ -112,7 +112,7 @@
         <judo-meta-esm-version>1.1.0.20200911_111742_b774166_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.1-SNAPSHOT</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1.20200923_145801_54834ca_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
         <judo-meta-measure-version>1.0.0.20200911_151807_a1d34f8_develop</judo-meta-measure-version>
