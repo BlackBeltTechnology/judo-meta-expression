@@ -141,12 +141,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                         }
 
                         if (!hasGetterBinding) {
-                            buildAndBind(entityType, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + "." + modelAdapter.getName(attribute).get());
+                            buildAndBind(entityType, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(attribute).get());
                         } else {
                             log.debug("Getter expression already extracted for attribute: {}", attribute);
                         }
                         if (!hasSetterBinding) {
-                            buildAndBind(entityType, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + "." + modelAdapter.getName(attribute).get());
+                            buildAndBind(entityType, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(attribute).get());
                         } else {
                             log.debug("Setter expression already extracted for attribute: {}", attribute);
                         }
@@ -187,12 +187,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                             log.trace("  - extracting JQL expressions of relation: {}", modelAdapter.getFqName(reference));
                         }
                         if (!hasGetterBinding) {
-                            buildAndBind(entityType, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + "." + modelAdapter.getName(reference).get());
+                            buildAndBind(entityType, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(reference).get());
                         } else {
                             log.debug("Getter expression already extracted for relation: {}", reference);
                         }
                         if (!hasSetterBinding) {
-                            buildAndBind(entityType, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + "." + modelAdapter.getName(reference).get());
+                            buildAndBind(entityType, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(reference).get());
                         } else {
                             log.debug("Setter expression already extracted for relation: {}", reference);
                         }

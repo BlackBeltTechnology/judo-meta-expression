@@ -587,6 +587,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 //    }
 
     @Test
+    public void testSpawnOperator() {
+        EClass order = findBase("Order");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression(order, "self.shipper as demo::entities::Shipper"));
+    }
+
+    @Test
     public void test002() {
         EClass customer = findBase("Customer");
         createExpression(customer, "self.addresses");

@@ -15,6 +15,11 @@
 	<description>Judo Expression Test</description>
 
 	<dependencies>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
+            <version>${judo-meta-esm-version}</version>
+        </dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
