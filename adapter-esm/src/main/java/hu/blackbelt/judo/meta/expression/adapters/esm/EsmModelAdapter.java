@@ -504,7 +504,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public EList<TransferObjectType> getAllUnmappedTransferObjectTypes() {
         return ECollections.asEList(
                 getEsmElement(TransferObjectType.class)
-                        .filter(to -> !to.isMapped())
+                        .filter(to -> !(to instanceof EntityType) && !to.isMapped())
                         .collect(toList()));
     }
 
