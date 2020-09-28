@@ -395,6 +395,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public void setResolveDerived(boolean resolveDerived) {
 		jqlTransformers.setResolveDerived(resolveDerived);
     }
+    
+    public boolean isCompatibleTypes(TO from, TO to) {
+    	return jqlTransformers.isCompatibleType(from, to);
+    }
 
 
 }
