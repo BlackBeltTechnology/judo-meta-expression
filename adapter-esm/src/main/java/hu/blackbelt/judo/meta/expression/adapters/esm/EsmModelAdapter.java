@@ -419,7 +419,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         return ECollections.asEList(measureProvider.getMeasures().collect(toList()));
     }
 
-    <T> Stream<T> getEsmElement(final Class<T> clazz) {
+    public <T> Stream<T> getEsmElement(final Class<T> clazz) {
         final Iterable<Notifier> esmContents = esmResourceSet::getAllContents;
         return StreamSupport.stream(esmContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
