@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
+import hu.blackbelt.judo.meta.psm.accesspoint.AbstractActorType;
 import hu.blackbelt.judo.meta.psm.data.*;
 import hu.blackbelt.judo.meta.psm.derived.PrimitiveAccessor;
 import hu.blackbelt.judo.meta.psm.derived.ReferenceAccessor;
@@ -36,6 +37,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -559,5 +561,19 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Collection<TransferObjectRelation> getTransferRelations(TransferObjectType transferObjectType) {
         return transferObjectType.getRelations();
     }
+
+	@Override
+	public List<NamespaceElement> getAllActorTypes() {
+		return new ArrayList<NamespaceElement>(getPsmElement(AbstractActorType.class).collect(Collectors.toList()));
+	}
+
+	@Override
+	public TransferObjectType getPrincipal(NamespaceElement actorType) {
+		if (actorType instanceof AbstractActorType) {
+			return ((AbstractActorType)actorType).getTransferObjectType();
+		} else {
+			throw new IllegalArgumentException(String.format("Not an actor type: %s", actorType));
+		}
+	}
 
 }

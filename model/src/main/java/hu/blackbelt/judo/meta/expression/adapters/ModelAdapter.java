@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -364,5 +365,9 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     Collection<? extends TA> getTransferAttributes(TO transferObjectType);
 
     Collection<? extends TR> getTransferRelations(TO transferObjectType);
+
+    List<NE> getAllActorTypes();
+    
+    TO getPrincipal(NE actorType);   
 
 }
