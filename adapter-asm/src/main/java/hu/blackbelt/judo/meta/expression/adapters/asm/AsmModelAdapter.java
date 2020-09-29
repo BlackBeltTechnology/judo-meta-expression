@@ -573,14 +573,9 @@ public class AsmModelAdapter implements
 				Optional<OperationBehaviour> behaviour = AsmUtils.getBehaviour(operation)
 						.filter(b -> b.equals(OperationBehaviour.GET_PRINCIPAL));
 				if (behaviour.isPresent()) {
-					Optional<? extends ENamedElement> ownerOfOperation = asmUtils
-							.getOwnerOfOperationWithDefaultBehaviour(operation);
-					if (ownerOfOperation.isPresent()) {
-						ENamedElement eNamedElement = ownerOfOperation.get();
-						if (eNamedElement instanceof EClass) {
-							principal = (EClass) eNamedElement;
-							break;
-						}
+					EClassifier eType = operation.getEType();
+					if (eType instanceof EClass) {
+						principal = (EClass) eType;
 					}
 				}
 			}
