@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.esm;
 
+import hu.blackbelt.judo.meta.esm.accesspoint.ActorType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
@@ -602,4 +603,18 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Collection<? extends ReferenceTypedElement> getTransferRelations(TransferObjectType transferObjectType) {
         return transferObjectType.getRelations();
     }
+    
+	@Override
+	public List<NamespaceElement> getAllActorTypes() {
+		return ECollections.asEList(getEsmElement(ActorType.class).collect(toList()));
+	}
+
+	@Override
+	public TransferObjectType getPrincipal(NamespaceElement actorType) {
+		if (actorType instanceof ActorType) {
+			return ((ActorType)actorType).getPrincipal();
+		} else {
+			throw new IllegalArgumentException(String.format("Not an actor type: %s", actorType));
+		}
+	}
 }
