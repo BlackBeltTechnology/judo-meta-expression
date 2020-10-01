@@ -14,7 +14,6 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
-import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -26,7 +25,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
@@ -43,15 +41,12 @@ public class AsmModelAdapter implements
 
 	private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
-	private final ResourceSet asmResourceSet;
 	private final MeasureProvider<Measure, Unit> measureProvider;
 	private final MeasureAdapter<Measure, Unit> measureAdapter;
 
 	private final AsmUtils asmUtils;
 
 	public AsmModelAdapter(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet) {
-		this.asmResourceSet = asmResourceSet;
-
 		asmUtils = new AsmUtils(asmResourceSet);
 		measureProvider = new AsmMeasureProvider(measureResourceSet);
 
@@ -383,9 +378,7 @@ public class AsmModelAdapter implements
 	}
 
 	protected <T> Stream<T> getAsmElement(final Class<T> clazz) {
-		final Iterable<Notifier> asmContents = asmResourceSet::getAllContents;
-		return StreamSupport.stream(asmContents.spliterator(), true).filter(e -> clazz.isAssignableFrom(e.getClass()))
-				.map(e -> (T) e);
+		return asmUtils.all(clazz);
 	}
 
 	Optional<Unit> getUnit(final EClass objectType, final String attributeName) {
