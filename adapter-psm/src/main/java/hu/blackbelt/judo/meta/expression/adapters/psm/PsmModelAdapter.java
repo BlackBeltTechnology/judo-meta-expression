@@ -449,7 +449,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     public Optional<? extends TransferObjectRelation> getTransferRelation(TransferObjectType clazz,
 			String referenceName) {
-		return PsmUtils.getAllTransferObjectRelations(clazz).stream().filter(r -> r.getName().equalsIgnoreCase(referenceName)).findAny();
+		return clazz.getRelations().stream().filter(r -> r.getName().equalsIgnoreCase(referenceName)).findAny();
 	}
 	
 	public TransferObjectType getTransferRelationTarget(TransferObjectRelation relation) {
