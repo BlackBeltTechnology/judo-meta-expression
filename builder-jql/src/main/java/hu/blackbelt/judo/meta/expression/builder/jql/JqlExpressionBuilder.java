@@ -61,6 +61,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         addEnums();
         addSequences();
         addTransferObjectTypes();
+        addActors();
     }
     
     @SuppressWarnings("unchecked")
@@ -99,6 +100,14 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
             transferObjectTypes.put(t, typeName);
         });
     }
+    
+    private void addActors() {
+        modelAdapter.getAllActorTypes().forEach(t -> {
+            TypeName typeName = modelAdapter.buildTypeName(t).get();
+            storeTypeName(t, typeName);
+        });
+    }
+
 
     private void addEnums() {
         modelAdapter.getAllEnums().forEach(e -> {
