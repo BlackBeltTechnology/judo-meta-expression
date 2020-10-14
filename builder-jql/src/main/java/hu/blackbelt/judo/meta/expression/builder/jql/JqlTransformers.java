@@ -227,6 +227,9 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                     } else if (subject instanceof CastObject) {
                         CastObject castObject = (CastObject) subject;
                         objectType = (C) castObject.getElementName().get(getModelAdapter());
+                    } else if (subject instanceof ContainerExpression) {
+                        ContainerExpression containerObject = (ContainerExpression) subject;
+                        objectType = (C) containerObject.getElementName().get(getModelAdapter());
                     }
                     // might be overridden via overrideTransformer, so we need to ask for it
                     JqlNavigationTransformer jqlNavigationTransformer = (JqlNavigationTransformer) findTransformer(NavigationExpression.class).get();
