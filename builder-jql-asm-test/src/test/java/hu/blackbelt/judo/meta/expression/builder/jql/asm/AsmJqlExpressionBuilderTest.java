@@ -454,7 +454,6 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testHeadToFilter() {
     	Expression expression = createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice).category");
-    	System.out.println(expression);
     }
 
     @Test

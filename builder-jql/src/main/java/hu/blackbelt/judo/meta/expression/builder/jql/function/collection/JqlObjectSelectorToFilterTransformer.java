@@ -1,9 +1,6 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
 
-import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.DataExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.LogicalExpression;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
@@ -16,6 +13,7 @@ import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.*;
@@ -47,20 +45,20 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
         FunctionParameter functionParameter = functionCall.getParameters().get(0);
         DataExpression sortingExpression = (DataExpression) jqlTransformers.transform(functionParameter.getExpression(), context);
         boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
-        LogicalExpression condition = null;
+        LogicalExpression condition;
         if (!(argument instanceof CollectionVariable || argument instanceof CollectionVariableReference)) {
             throw new IllegalArgumentException("Expected iterable collection");
         }
-        CollectionVariable collectionWithVariable = argument instanceof CollectionVariable ? (CollectionVariable) argument : ((CollectionVariableReference) argument).getVariable();
-        ObjectVariable iteratorVariable = collectionWithVariable.getIteratorVariable();
         CollectionExpression filteringBase = EcoreUtil.copy(argument);
-        CollectionVariable filteringBaseWithVariable = filteringBase instanceof CollectionVariable ? (CollectionVariable) filteringBase : ((CollectionVariableReference) filteringBase).getVariable();
-        ObjectVariable filteringBaseIterator = filteringBaseWithVariable.getIteratorVariable();
-        DataExpression sortingExpressionCopy = EcoreUtil.copy(sortingExpression);
-        sortingExpressionCopy.eContents().stream().filter(e -> e instanceof ObjectVariableReference && ((ObjectVariableReference) e).getVariable().equals(iteratorVariable))
-                .forEach(objectVariableReference -> {
-                    ((ObjectVariableReference) objectVariableReference).setVariable(filteringBaseIterator);
+        AugmentedCopier copier = new AugmentedCopier();
+        sortingExpression.eContents().stream().filter(e -> e instanceof VariableReference)
+                .forEach(variableReference -> {
+                    copier.copy(variableReference);
+                    copier.copyReferences();
                 });
+        copier.setUseOriginalReferences(false);
+        DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
+        copier.copyReferences();
         Expression aggregationExpression;
         JqlAggregatedExpressionTransformer aggregatedExpressionTransformer =
                 ((selector == HEAD || selector == HEADS) && descending || (selector == TAIL || selector == TAILS) && !descending) ?
@@ -79,6 +77,24 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
             result = new JqlAnyFunctionTransformer(jqlTransformers).apply(collectionFilterExpression, null, context);
         }
         return result;
+    }
+
+    /* This class is used to refine copying logic. We can prepare some copies (containing references to original objects), but then make sure we use the existing copy if needed.
+     */
+    private static class AugmentedCopier extends EcoreUtil.Copier {
+
+        public void setUseOriginalReferences(boolean v) {
+            this.useOriginalReferences = v;
+        }
+
+        @Override
+        protected EObject createCopy(EObject eObject) {
+            if (containsKey(eObject)) {
+                return get(eObject);
+            } else {
+                return super.createCopy(eObject);
+            }
+        }
     }
 
 }
