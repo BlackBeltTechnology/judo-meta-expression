@@ -67,26 +67,21 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     
     @BeforeEach
     void setUp() throws Exception {
-    	
     	super.setUp();
-    	
     	expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("urn:test.judo-meta-expression"))
                 .build();
- 	
         expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
     }
     
     @AfterEach
     void tearDown(final TestInfo testInfo) throws Exception {
-
         ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
                 .expressionModelResourceSupport(expressionModelResourceSupport)
                 .name(asmModel.getName())
                 .build();
         
         ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(),asmModel,measureModel,expressionModel,ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
-
         modelAdapter = null;
         asmUtils = null;
         expressionModelResourceSupport = null;
@@ -454,6 +449,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head()");
         createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice) != demo::entities::Category!any()=>products!tail(p | p.unitPrice)");
         createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != demo::entities::Category!any()=>products!sort(p | p.unitPrice)!tail()");
+    }
+    
+    @Test
+    void testHeadToFilter() {
+    	Expression expression = createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice).category");
+    	System.out.println(expression);
     }
 
     @Test

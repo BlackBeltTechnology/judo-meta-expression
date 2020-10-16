@@ -8,7 +8,7 @@
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
         <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     
     <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
@@ -22,6 +22,10 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
         </dependency>
     </dependencies>
 </project>
