@@ -37,7 +37,6 @@ public class IllegalAsmTest extends ExecutionContextOnAsmTest {
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(orderVar)
                                 .build())
-                        .withName("s")
                         .withReferenceName("shippers")
                         .build())
                 .withAttributeName("companyName")

@@ -59,13 +59,15 @@ public class ExpressionModelForTest {
                 .build();
 
         final TypeName order = newTypeNameBuilder().withNamespace("demo::entities").withName("Order").build();
+		final TypeName customerType = newTypeNameBuilder().withNamespace("demo::entities").withName("Customer").build();
         final TypeName orderDetail = newTypeNameBuilder().withNamespace("demo::entities").withName("OrderDetail").build();
         final TypeName intAddress = newTypeNameBuilder().withNamespace("demo::entities").withName("InternationalAddress").build();
         final TypeName intOrder = newTypeNameBuilder().withNamespace("demo::entities").withName("InternationalOrder").build();
         final TypeName product = newTypeNameBuilder().withNamespace("demo::entities").withName("Product").build();
         final TypeName category = newTypeNameBuilder().withNamespace("demo::entities").withName("Category").build();
         final TypeName employee = newTypeNameBuilder().withNamespace("demo::entities").withName("Employee").build();
-        
+
+		expressionModelResourceSupport.addContent(customerType);
         expressionModelResourceSupport.addContent(order);
         expressionModelResourceSupport.addContent(orderDetail);
         expressionModelResourceSupport.addContent(intAddress);
@@ -85,7 +87,7 @@ public class ExpressionModelForTest {
 		.withObjectExpression(newObjectSelectorExpressionBuilder()
 				.withCollectionExpression(newSortExpressionBuilder()
 						.withCollectionExpression(newCollectionFilterExpressionBuilder()
-								.withCollectionExpression(newImmutableCollectionBuilder().withName("p").withElementName(product)
+								.withCollectionExpression(newImmutableCollectionBuilder().withElementName(product)
 										.withIteratorVariable(pIterator).build())
 								.withCondition(newStringComparisonBuilder().withOperator(StringComparator.EQUAL)
 										.withLeft(newStringAttributeBuilder().withAttributeName("productName")
@@ -99,14 +101,15 @@ public class ExpressionModelForTest {
         
         Instance ioOrderDetailsIterator = newInstanceBuilder().withName("ioOrderDetailsIterator").withElementName(orderDetail).build();
         
-        ObjectNavigationExpression customer = newObjectNavigationExpressionBuilder().withReferenceName("customer").withName("c")
+        ObjectNavigationExpression customer = newObjectNavigationExpressionBuilder().withReferenceName("customer")
+				.withIteratorVariable(newInstanceBuilder().withName("c").withElementName(customerType).build())
 				.withObjectExpression(newObjectSelectorExpressionBuilder()
 						.withCollectionExpression(newSortExpressionBuilder()
 								.withCollectionExpression(newCollectionFilterExpressionBuilder()
-										.withCollectionExpression(newCastCollectionBuilder().withName("io").withElementName(intOrder)
+										.withCollectionExpression(newCastCollectionBuilder().withElementName(intOrder)
 												.withIteratorVariable(ioIterator)
 												.withCollectionExpression(newCollectionFilterExpressionBuilder()
-														.withCollectionExpression(newImmutableCollectionBuilder().withName("o").withElementName(order)
+														.withCollectionExpression(newImmutableCollectionBuilder().withElementName(order)
 																.withIteratorVariable(oIterator).build())
 														.withCondition(condition).build()).build())
 										.withCondition(newDecimalComparisonBuilder().withOperator(NumericComparator.GREATER_THAN)
@@ -118,7 +121,7 @@ public class ExpressionModelForTest {
 																.withRight(newIntegerConstantBuilder().withValue(BigInteger.valueOf(1)).build())
 																.build())
 														.withRight(newDecimalAggregatedExpressionBuilder().withOperator(DecimalAggregator.SUM)
-																.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withName("od").withReferenceName("orderDetails")
+																.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("orderDetails")
 																		.withIteratorVariable(ioOrderDetailsIterator)
 																		.withObjectExpression(newObjectVariableReferenceBuilder().withVariable(ioIterator).build()).build())
 																.withExpression(newDecimalArithmeticExpressionBuilder().withOperator(DecimalOperator.MULTIPLY)
@@ -144,9 +147,10 @@ public class ExpressionModelForTest {
 								.build())
 						.build())
 				.build();
-        
+
         CollectionNavigationFromObjectExpression addresses = newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("addresses")
-        		.withObjectExpression(newObjectFilterExpressionBuilder()
+				.withIteratorVariable(newInstanceBuilder().withName("c").withElementName(customerType).build())
+				.withObjectExpression(newObjectFilterExpressionBuilder()
         				.withObjectExpression(customer)
         				.withCondition(newKleeneExpressionBuilder().withOperator(LogicalOperator.AND)
         						.withLeft(newMatchesBuilder()
@@ -154,7 +158,7 @@ public class ExpressionModelForTest {
         										.withObjectExpression(newObjectSelectorExpressionBuilder()
         												.withCollectionExpression(newSortExpressionBuilder()
         														.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("addresses")
-        																.withObjectExpression(newObjectVariableReferenceBuilder().withVariable(customer).build())
+        																.withObjectExpression(newObjectVariableReferenceBuilder().withVariable(customer.getIteratorVariable()).build())
         																.build())
         														.build())
         												.build())
@@ -163,11 +167,11 @@ public class ExpressionModelForTest {
         								.build())
         						.withRight(newEnumerationComparisonBuilder().withOperator(ObjectComparator.EQUAL)
         								.withLeft(newEnumerationAttributeBuilder().withAttributeName("country")
-        										.withObjectExpression(newCastObjectBuilder().withName("ia").withElementName(intAddress)
+        										.withObjectExpression(newCastObjectBuilder().withElementName(intAddress)
         												.withObjectExpression(newObjectSelectorExpressionBuilder()
         														.withCollectionExpression(newSortExpressionBuilder()
         																.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("addresses")
-        																		.withObjectExpression(newObjectVariableReferenceBuilder().withVariable(customer).build())
+        																		.withObjectExpression(newObjectVariableReferenceBuilder().withVariable(customer.getIteratorVariable()).build())
         																		.build())
         																.build())
         														.build())
@@ -189,7 +193,7 @@ public class ExpressionModelForTest {
         		.withRight(newInstanceOfExpressionBuilder().withElementName(intOrder)
         				.withObjectExpression(newObjectSelectorExpressionBuilder()
         						.withCollectionExpression(newSortExpressionBuilder()
-        								.withCollectionExpression(newImmutableCollectionBuilder().withName("ord").withElementName(order).build())
+        								.withCollectionExpression(newImmutableCollectionBuilder().withElementName(order).build())
         								.build())
         						.build())
         				.build())
@@ -207,7 +211,7 @@ public class ExpressionModelForTest {
         				.withCondition(newIntegerComparisonBuilder().withOperator(NumericComparator.GREATER_THAN)
         						.withLeft(newCountExpressionBuilder()
         								.withCollectionExpression(newCollectionFilterExpressionBuilder()
-        										.withCollectionExpression(newImmutableCollectionBuilder().withName("pr").withElementName(product)
+        										.withCollectionExpression(newImmutableCollectionBuilder().withElementName(product)
         												.withIteratorVariable(prIterator)
         												.build())
         										.withCondition(newLogicalAttributeBuilder().withAttributeName("discounted")
@@ -225,15 +229,15 @@ public class ExpressionModelForTest {
         Instance prodIterator = newInstanceBuilder().withName("prodIterator").withElementName(product).build();
         
         CollectionFilterExpression catCollectionFilter = newCollectionFilterExpressionBuilder()
-				.withCollectionExpression(newImmutableCollectionBuilder().withName("cat").withElementName(category)
+				.withCollectionExpression(newImmutableCollectionBuilder().withElementName(category)
 						.withIteratorVariable(catIterator).build())
 				.withCondition(newIntegerComparisonBuilder().withOperator(NumericComparator.GREATER_THAN)
 						.withLeft(newCountExpressionBuilder()
 								.withCollectionExpression(newCollectionFilterExpressionBuilder()
-										.withCollectionExpression(newImmutableCollectionBuilder().withName("prod").withElementName(product)
+										.withCollectionExpression(newImmutableCollectionBuilder().withElementName(product)
 												.withIteratorVariable(prodIterator).build())
 										.withCondition(newObjectComparisonBuilder()
-												.withLeft(newObjectNavigationExpressionBuilder().withName("").withReferenceName("category")
+												.withLeft(newObjectNavigationExpressionBuilder().withReferenceName("category")
 														.withObjectExpression(newObjectVariableReferenceBuilder().withVariable(prodIterator).build())
 														.build())
 												.withRight(newObjectVariableReferenceBuilder().withVariable(catIterator).build())
@@ -258,7 +262,7 @@ public class ExpressionModelForTest {
         				.withLeft(newDecimalAttributeBuilder().withAttributeName("weight")
         						.withObjectExpression(newObjectSelectorExpressionBuilder()
         								.withCollectionExpression(newSortExpressionBuilder()
-        										.withCollectionExpression(newImmutableCollectionBuilder().withName("").withElementName(product).build())
+        										.withCollectionExpression(newImmutableCollectionBuilder().withElementName(product).build())
         										.build())
         								.build())
         						.build())
@@ -348,7 +352,6 @@ public class ExpressionModelForTest {
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(orderVar)
                                 .build())
-                        .withName("s")
                         .withReferenceName("shipper")
                         .build())
                 .withAttributeName("companyName")
@@ -371,13 +374,13 @@ public class ExpressionModelForTest {
         
         SortExpression sortExpr = newSortExpressionBuilder()
         		.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder()
-        				.withName("o").withReferenceName("orders")
+        				.withReferenceName("orders")
         				.withIteratorVariable(oIterator2)
         				.withObjectExpression(newObjectSelectorExpressionBuilder()
         						.withCollectionExpression(newSortExpressionBuilder()
         								.withCollectionExpression(newCollectionFilterExpressionBuilder()
         										.withCollectionExpression(
-        												newImmutableCollectionBuilder().withName("e").withElementName(employee)
+        												newImmutableCollectionBuilder().withElementName(employee)
         												.withIteratorVariable(eIterator).build())
         										.withCondition(newKleeneExpressionBuilder().withOperator(LogicalOperator.AND)
         												.withLeft(newStringComparisonBuilder().withOperator(StringComparator.EQUAL)
@@ -412,7 +415,7 @@ public class ExpressionModelForTest {
         		.build();
         
         StringAttribute companyName = newStringAttributeBuilder().withAttributeName("companyName")
-        		.withObjectExpression(newObjectNavigationExpressionBuilder().withName("").withReferenceName("shipper")
+        		.withObjectExpression(newObjectNavigationExpressionBuilder().withReferenceName("shipper")
         				.withObjectExpression(newInstanceBuilder().withElementName(order).build())
         				.build())
         		.build();
@@ -424,7 +427,7 @@ public class ExpressionModelForTest {
         Instance odOrderDetailsIterator = newInstanceBuilder().withName("odOrderDetailsIterator").withElementName(orderDetail).build();
         
         CollectionFilterExpression filterExpr = newCollectionFilterExpressionBuilder()
-        		.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withName("od").withReferenceName("orderDetails")
+        		.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("orderDetails")
         				.withIteratorVariable(odOrderDetailsIterator)
         				.withObjectExpression(newInstanceBuilder().withElementName(order).build()).build())
         		.withCondition(newUndefinedAttributeComparisonBuilder().withAttributeSelector(newCustomAttributeBuilder().withAttributeName("picture")
@@ -442,7 +445,7 @@ public class ExpressionModelForTest {
         		.build();
         
         StringAttribute productName = newStringAttributeBuilder().withAttributeName("productName")
-        		.withObjectExpression(newObjectNavigationExpressionBuilder().withName("").withReferenceName("product")
+        		.withObjectExpression(newObjectNavigationExpressionBuilder().withReferenceName("product")
         				.withObjectExpression(newInstanceBuilder().withElementName(orderDetail).build())
         				.build())
         		.build();
@@ -474,7 +477,7 @@ public class ExpressionModelForTest {
         Instance odOrderDetailsIterator3 = newInstanceBuilder().withName("odOrderDetailsIterator3").withElementName(orderDetail).build();
         
         DecimalAggregatedExpression decimalAggrExpr = newDecimalAggregatedExpressionBuilder().withOperator(DecimalAggregator.SUM)
-				.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withName("od").withReferenceName("orderDetails")
+				.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("orderDetails")
 						.withIteratorVariable(odOrderDetailsIterator2)
 						.withObjectExpression(newInstanceBuilder().withElementName(order).build()).build())
 				.withExpression(newDecimalArithmeticExpressionBuilder().withOperator(DecimalOperator.MULTIPLY)
@@ -496,7 +499,7 @@ public class ExpressionModelForTest {
 				.build();
         
         DecimalAggregatedExpression decimalAggrExpr2 = newDecimalAggregatedExpressionBuilder().withOperator(DecimalAggregator.SUM)
-				.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withName("od").withReferenceName("orderDetails")
+				.withCollectionExpression(newCollectionNavigationFromObjectExpressionBuilder().withReferenceName("orderDetails")
 						.withIteratorVariable(odOrderDetailsIterator3)
 						.withObjectExpression(newInstanceBuilder().withElementName(order).build()).build())
 				.withExpression(newDecimalArithmeticExpressionBuilder().withOperator(DecimalOperator.MULTIPLY)

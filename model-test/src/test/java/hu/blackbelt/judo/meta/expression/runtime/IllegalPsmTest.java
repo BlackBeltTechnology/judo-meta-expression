@@ -38,7 +38,6 @@ public class IllegalPsmTest extends ExecutionContextOnPsmTest {
                         .withObjectExpression(newObjectVariableReferenceBuilder()
                                 .withVariable(orderVar)
                                 .build())
-                        .withName("s")
                         .withReferenceName("shippers")
                         .build())
                 .withAttributeName("companyName")

@@ -29,6 +29,7 @@ import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.eclipse.emf.common.util.EList;
 
+import java.lang.Iterable;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
@@ -253,19 +254,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
-        if (subject instanceof CollectionVariable || subject instanceof CollectionVariableReference) {
-            CollectionVariable collection = subject instanceof CollectionVariable ? (CollectionVariable) subject : ((CollectionVariableReference) subject).getVariable();
-            if (collection.getIteratorVariable() == null) {
-                ObjectVariable variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+        if (subject instanceof IterableExpression) {
+            IterableExpression iterableExpression = (IterableExpression) subject;
+            if (iterableExpression.getIteratorVariable() == null) {
+                ObjectVariable variable = iterableExpression.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
                 context.pushVariable(variable);
             } else {
-                collection.getIteratorVariable().setName(lambdaArgument);
-                context.pushVariable(collection.getIteratorVariable());
+                iterableExpression.getIteratorVariable().setName(lambdaArgument);
+                context.pushVariable(iterableExpression.getIteratorVariable());
             }
-        } else if (subject instanceof ObjectVariable || subject instanceof ObjectVariableReference) {
-            ObjectVariable variable = subject instanceof ObjectVariable ? (ObjectVariable) subject : ((ObjectVariableReference) subject).getVariable();
-            variable.setName(lambdaArgument);
-            context.pushVariable(variable);
         } else if (subject instanceof ObjectSelectorExpression) {
             addLambdaVariable(((ObjectSelectorExpression)subject).getCollectionExpression(), context, lambdaArgument);
         } else if (subject instanceof ObjectFilterExpression) {

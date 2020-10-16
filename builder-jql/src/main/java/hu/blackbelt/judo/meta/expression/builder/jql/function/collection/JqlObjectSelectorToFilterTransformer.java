@@ -46,7 +46,7 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
         DataExpression sortingExpression = (DataExpression) jqlTransformers.transform(functionParameter.getExpression(), context);
         boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
         LogicalExpression condition;
-        if (!(argument instanceof CollectionVariable || argument instanceof CollectionVariableReference)) {
+        if (!(argument instanceof CollectionExpression)) {
             throw new IllegalArgumentException("Expected iterable collection");
         }
         CollectionExpression filteringBase = EcoreUtil.copy(argument);

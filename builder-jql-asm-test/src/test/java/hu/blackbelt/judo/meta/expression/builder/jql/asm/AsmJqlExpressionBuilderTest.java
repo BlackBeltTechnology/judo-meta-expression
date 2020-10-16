@@ -464,7 +464,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EClass order = findBase("Order");
         createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName == 'joe')");
         ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')");
-        assertThat(objectFilter.getVariableName(), is("s"));
+        assertThat(objectFilter.getObjectExpression().getIteratorVariableName(), is("s"));
 
     }
 

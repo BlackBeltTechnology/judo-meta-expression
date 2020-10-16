@@ -312,6 +312,6 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
                 .withDerivedAttribute("bCount", intType, "self->bFiltered!count()")
                 .create();
         initResources(createTestModel(entityA, entityB, intType, stringType));
-        assertThat(createExpression(entityA, "self.bCount"), hasToString("COUNT(self=>bs[b | (LENGTH(b.bField) > 0)])"));
+        assertThat(createExpression(entityA, "self.bCount"), hasToString("self=>bs!filter(b | (LENGTH(b.bField) > 0))!count()"));
     }
 }
