@@ -25,8 +25,8 @@ context EXPR!ObjectSelectorExpression {
     constraint ObjectSelectorOperatorIsValid {
         guard: self.satisfiesAll("Resolved")
         
-        check: ((self.operator == EXPR!ObjectSelector#head or self.operator == EXPR!ObjectSelector#tail) and self.orderBy.isEmpty()) implies self.collectionExpression.isKindOf(EXPR!OrderedCollectionExpression)
-        message: "Head and Tail operations need ordered collection: " + self
+        check: self.operator == EXPR!ObjectSelector#any
+        message: "Only 'any' is supported: " + self
     }
 }
 
