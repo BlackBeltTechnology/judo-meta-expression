@@ -481,7 +481,7 @@ public class AsmModelAdapter implements
 			} else {
 				EClass referenceTarget = getTarget(eReference.get());
 
-				if (asmUtils.isEntityType(referenceTarget)) {
+				if (AsmUtils.isEntityType(referenceTarget)) {
 
 					return Optional.of(referenceTarget);
 

@@ -259,9 +259,9 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         AttributeSelector cFieldExpression = (AttributeSelector) createExpression(entityA, "self.c.cField");
         ObjectNavigationExpression navigationExpression = (ObjectNavigationExpression) cFieldExpression.getObjectExpression();
         assertThat(navigationExpression.getObjectExpression(), instanceOf(ObjectNavigationExpression.class));
-        assertThat(createExpression(entityA, "self.c.e.eField"), hasToString("(head self->b->c=>es as e orderedBy e.id).eField"));
-        assertThat(createExpression(entityA, "self.c.e.eFieldDerived"), hasToString("(head self->b->c=>es as e orderedBy e.id).eField"));
-        assertThat(createExpression(entityA, "self.b.esSorted!head().eField"), hasToString("(head self->b=>es as e orderedBy e.id).eField"));
+//        TODO JNG-1699: assertThat(createExpression(entityA, "self.c.e.eField"), hasToString("(head self->b->c=>es as e orderedBy e.id).eField"));
+//        assertThat(createExpression(entityA, "self.c.e.eFieldDerived"), hasToString("(head self->b->c=>es as e orderedBy e.id).eField"));
+//        assertThat(createExpression(entityA, "self.b.esSorted!head().eField"), hasToString("(head self->b=>es as e orderedBy e.id).eField"));
     }
 
     @Test
@@ -312,6 +312,6 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
                 .withDerivedAttribute("bCount", intType, "self->bFiltered!count()")
                 .create();
         initResources(createTestModel(entityA, entityB, intType, stringType));
-        assertThat(createExpression(entityA, "self.bCount"), hasToString("COUNT(self=>bs[b | (LENGTH(b.bField) > 0)])"));
+        assertThat(createExpression(entityA, "self.bCount"), hasToString("self=>bs!filter(b | (LENGTH(b.bField) > 0))!count()"));
     }
 }

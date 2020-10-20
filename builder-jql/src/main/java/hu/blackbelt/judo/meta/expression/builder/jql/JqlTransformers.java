@@ -22,16 +22,17 @@ import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
 import hu.blackbelt.judo.meta.expression.object.*;
-import hu.blackbelt.judo.meta.expression.operator.*;
+import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
+import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
+import org.eclipse.emf.common.util.EList;
 
+import java.lang.Iterable;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
-
-import org.eclipse.emf.common.util.EList;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
@@ -92,8 +93,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     private void collectionFunctions() {
         functionTransformers.put("count", (expression, functionCall, variables) -> newCountExpressionBuilder().withCollectionExpression((CollectionExpression) expression).build());
-        functionTransformers.put("head", new JqlObjectSelectorFunctionTransformer(this, ObjectSelector.HEAD));
-        functionTransformers.put("tail", new JqlObjectSelectorFunctionTransformer(this, ObjectSelector.TAIL));
+        functionTransformers.put("head", new JqlObjectSelectorToFilterTransformer(this, JqlObjectSelectorToFilterTransformer.ObjectSelector.HEAD));
+        functionTransformers.put("heads", new JqlObjectSelectorToFilterTransformer(this, JqlObjectSelectorToFilterTransformer.ObjectSelector.HEADS));
+        functionTransformers.put("tail", new JqlObjectSelectorToFilterTransformer(this, JqlObjectSelectorToFilterTransformer.ObjectSelector.TAIL));
+        functionTransformers.put("tails", new JqlObjectSelectorToFilterTransformer(this, JqlObjectSelectorToFilterTransformer.ObjectSelector.TAILS));
         functionTransformers.put("any", new JqlAnyFunctionTransformer(this));
         functionTransformers.put("filter", new JqlParameterizedFunctionTransformer<ReferenceExpression, LogicalExpression, FilteringExpression>(this,
                 (expression, parameter) -> {
@@ -110,10 +113,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("empty", (expression, functionCall, variables) -> newEmptyBuilder().withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
         functionTransformers.put("sort", new JqlSortFunctionTransformer(this));
-        functionTransformers.put("min", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MIN, DecimalAggregator.MIN, StringAggregator.MIN, DateAggregator.MIN, TimestampAggregator.MIN));
-        functionTransformers.put("max", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.MAX, DecimalAggregator.MAX, StringAggregator.MAX, DateAggregator.MAX, TimestampAggregator.MAX));
-        functionTransformers.put("sum", new JqlAggregatedExpressionTransformer(this, IntegerAggregator.SUM, DecimalAggregator.SUM, null, null, null));
-        functionTransformers.put("avg", new JqlAggregatedExpressionTransformer(this, null, DecimalAggregator.AVG, null, DateAggregator.AVG, TimestampAggregator.AVG));
+        functionTransformers.put("min", JqlAggregatedExpressionTransformer.createMinInstance(this));
+        functionTransformers.put("max", JqlAggregatedExpressionTransformer.createMaxInstance(this));
+        functionTransformers.put("sum", JqlAggregatedExpressionTransformer.createSumInstance(this));
+        functionTransformers.put("avg", JqlAggregatedExpressionTransformer.createAvgInstance(this));
         functionTransformers.put("contains", new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(this,
                 (expression, parameter) -> newContainsExpressionBuilder().withCollectionExpression(expression).withObjectExpression(parameter).build()));
         functionTransformers.put("memberof", new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(this,
@@ -206,7 +209,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         Expression subject = baseExpression;
         if (jqlExpression instanceof FunctionedExpression) {
             FunctionedExpression functionedExpression = (FunctionedExpression) jqlExpression;
-            FunctionCall functionCall = (FunctionCall) functionedExpression.getFunctionCall();
+            FunctionCall functionCall = functionedExpression.getFunctionCall();
             int i = 0;
             while (functionCall != null) {
                 String functionName = functionCall.getFunction().getName().toLowerCase();
@@ -251,19 +254,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
-        if (subject instanceof CollectionVariable || subject instanceof CollectionVariableReference) {
-            CollectionVariable collection = subject instanceof CollectionVariable ? (CollectionVariable) subject : ((CollectionVariableReference) subject).getVariable();
-            if (collection.getIteratorVariable() == null) {
-                ObjectVariable variable = collection.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+        if (subject instanceof IterableExpression) {
+            IterableExpression iterableExpression = (IterableExpression) subject;
+            if (iterableExpression.getIteratorVariable() == null) {
+                ObjectVariable variable = iterableExpression.createIterator(lambdaArgument, expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
                 context.pushVariable(variable);
             } else {
-                collection.getIteratorVariable().setName(lambdaArgument);
-                context.pushVariable(collection.getIteratorVariable());
+                iterableExpression.getIteratorVariable().setName(lambdaArgument);
+                context.pushVariable(iterableExpression.getIteratorVariable());
             }
-        } else if (subject instanceof ObjectVariable || subject instanceof ObjectVariableReference) {
-            ObjectVariable variable = subject instanceof ObjectVariable ? (ObjectVariable) subject : ((ObjectVariableReference) subject).getVariable();
-            variable.setName(lambdaArgument);
-            context.pushVariable(variable);
         } else if (subject instanceof ObjectSelectorExpression) {
             addLambdaVariable(((ObjectSelectorExpression)subject).getCollectionExpression(), context, lambdaArgument);
         } else if (subject instanceof ObjectFilterExpression) {

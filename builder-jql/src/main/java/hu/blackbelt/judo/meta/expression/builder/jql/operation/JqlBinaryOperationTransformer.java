@@ -28,6 +28,10 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
         Expression left = jqlTransformers.transform(binaryOperation.getLeftOperand(), context);
         Expression right = jqlTransformers.transform(binaryOperation.getRightOperand(), context);
         String operator = binaryOperation.getOperator();
+        return createBinaryOperationExpression(left, right, operator);
+    }
+
+    public Expression createBinaryOperationExpression(Expression left, Expression right, String operator) {
         if ((left instanceof IntegerExpression) && (right instanceof IntegerExpression)) {
             return createIntegerOperation((IntegerExpression) left, (IntegerExpression) right, operator);
         } else if ((left instanceof NumericExpression) && (right instanceof NumericExpression)) {
@@ -48,8 +52,10 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
             return createTimestampAdditionOperation(left, right, operator);
         } else if (left instanceof ObjectExpression && right instanceof ObjectExpression) {
             return createObjectSelectorOperation((ObjectExpression) left, (ObjectExpression) right, operator);
+        } else {
+            throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), operator, right.getClass()));
         }
-        throw new UnsupportedOperationException(String.format("Not supported operand types: %s %s %s", left.getClass(), binaryOperation, right.getClass()));
+
     }
 
     private Expression createObjectSelectorOperation(ObjectExpression left, ObjectExpression right, String operator) {

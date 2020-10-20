@@ -8,6 +8,7 @@
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
         <version>1.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     
     <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>

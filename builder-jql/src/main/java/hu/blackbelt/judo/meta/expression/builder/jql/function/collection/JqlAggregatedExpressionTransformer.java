@@ -3,7 +3,9 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
@@ -21,9 +23,9 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
     private final DateAggregator dateAggregator;
     private final TimestampAggregator timestampAggregator;
 
-    public JqlAggregatedExpressionTransformer(ExpressionTransformer jqlTransformers, IntegerAggregator integerAggregator,
-                                              DecimalAggregator decimalAggregator, StringAggregator stringAggregator,
-                                              DateAggregator dateAggregator, TimestampAggregator timestampAggregator) {
+    private JqlAggregatedExpressionTransformer(ExpressionTransformer jqlTransformers, IntegerAggregator integerAggregator,
+                                               DecimalAggregator decimalAggregator, StringAggregator stringAggregator,
+                                               DateAggregator dateAggregator, TimestampAggregator timestampAggregator) {
         super(jqlTransformers);
         this.integerAggregator = integerAggregator;
         this.decimalAggregator = decimalAggregator;
@@ -32,9 +34,29 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
         this.timestampAggregator = timestampAggregator;
     }
 
+    public static JqlAggregatedExpressionTransformer createMinInstance(ExpressionTransformer jqlTransformers) {
+        return new JqlAggregatedExpressionTransformer(jqlTransformers, IntegerAggregator.MIN, DecimalAggregator.MIN, StringAggregator.MIN, DateAggregator.MIN, TimestampAggregator.MIN);
+    }
+
+    public static JqlAggregatedExpressionTransformer createMaxInstance(ExpressionTransformer jqlTransformers) {
+        return new JqlAggregatedExpressionTransformer(jqlTransformers, IntegerAggregator.MAX, DecimalAggregator.MAX, StringAggregator.MAX, DateAggregator.MAX, TimestampAggregator.MAX);
+    }
+
+    public static JqlAggregatedExpressionTransformer createSumInstance(ExpressionTransformer jqlTransformers) {
+        return new JqlAggregatedExpressionTransformer(jqlTransformers, IntegerAggregator.SUM, DecimalAggregator.SUM, null, null, null);
+    }
+
+    public static JqlAggregatedExpressionTransformer createAvgInstance(ExpressionTransformer jqlTransformers) {
+        return new JqlAggregatedExpressionTransformer(jqlTransformers, null, DecimalAggregator.AVG, null, DateAggregator.AVG, TimestampAggregator.AVG);
+    }
+
     @Override
     public Expression apply(CollectionExpression collection, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
+        return createAggregatedExpression(collection, parameter);
+    }
+
+    public DataExpression createAggregatedExpression(CollectionExpression collection, Expression parameter) {
         if (parameter instanceof IntegerExpression && integerAggregator != null) {
             return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression) parameter).withOperator(integerAggregator).build();
         } else if ((parameter instanceof DecimalExpression || parameter instanceof IntegerExpression) && decimalAggregator != null) {
