@@ -55,8 +55,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.2.2</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.2</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.2.4</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.2.5.20201022_015722_171aff5_develop</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -103,19 +103,19 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.3</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20201001_105005_43299d9_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20201022_120942_1b9bdff_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.1.0.20201009_135744_e2ee8ed_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20201022_124927_294646c_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20201014_130201_70888f5_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20201022_120939_3a8b473_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.1.20201009_140430_1d6f14c_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1.20201022_124948_eab0a7e_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20201009_141245_f1a287b_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20201022_125543_5c46723_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
