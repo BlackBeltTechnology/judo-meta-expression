@@ -9,6 +9,8 @@
   <genPackages prefix="Expression" basePackage="hu.blackbelt.judo.meta" resource="XMI"
       disposableProviderFactory="true" dataTypeConverters="true" extensibleProviderFactory="true"
       childCreationExtenders="true" fileExtensions="expression" ecorePackage="expression.ecore#/">
+    <genDataTypes ecoreDataType="expression.ecore#//LocalDate"/>
+    <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime"/>
     <genClasses image="false" ecoreClass="expression.ecore#//Expression">
       <genOperations ecoreOperation="expression.ecore#//Expression/getOperands"/>
       <genOperations ecoreOperation="expression.ecore#//Expression/getLambdaFunctions"
@@ -214,12 +216,12 @@
       <genClasses ecoreClass="expression.ecore#//constant/DateConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/DateConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/DateConstant/toString"
-            body="return getValue() != null ? &quot;`&quot; + new java.text.SimpleDateFormat(&quot;yyyy-MM-dd&quot;).format(getValue()) + &quot;`&quot; : &quot;null&quot;;"/>
+            body="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)+ &quot;`&quot; : &quot;null&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//constant/TimestampConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/TimestampConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/TimestampConstant/toString"
-            body="return String.format(&quot;`%s`&quot;, getValue());"/>
+            body="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//constant/DataConstant">
         <genOperations ecoreOperation="expression.ecore#//constant/DataConstant/getValue"/>
@@ -281,8 +283,6 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/LogicalOperator/implies"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/ObjectSelector">
-        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/ObjectSelector/head"/>
-        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/ObjectSelector/tail"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/ObjectSelector/any"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/IntegerOperator">

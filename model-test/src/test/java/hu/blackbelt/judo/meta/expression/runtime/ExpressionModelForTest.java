@@ -15,6 +15,7 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
 import java.math.BigInteger;
+import java.time.OffsetDateTime;
 
 import org.eclipse.emf.common.util.URI;
 
@@ -298,7 +299,7 @@ public class ExpressionModelForTest {
         		.build();
         
         TimestampAdditionExpression tsAddExpr1 = newTimestampAdditionExpressionBuilder()
-        		.withTimestamp(newTimestampConstantBuilder().withValue("2019-01-02 03:04:05.678+01:00 [Europe/Budapest]").build())
+        		.withTimestamp(newTimestampConstantBuilder().withValue(OffsetDateTime.parse("2019-01-02T03:04:05.678+01:00")).build())
         		.withDuration(newMeasuredDecimalBuilder().withValue(BigDecimal.valueOf(102)).withUnitName("s").build())
         		.build();
         
@@ -314,8 +315,8 @@ public class ExpressionModelForTest {
         		.build();
         
         TimestampDifferenceExpression tsDiffExpr = newTimestampDifferenceExpressionBuilder()
-        		.withStartTimestamp(newTimestampConstantBuilder().withValue("2019-01-02 03:04:05.678+01:00 [Europe/Budapest]").build())
-        		.withEndTimestamp(newTimestampConstantBuilder().withValue("2019-01-30 15:57:08.123+01:00 [Europe/Budapest]").build())
+        		.withStartTimestamp(newTimestampConstantBuilder().withValue(OffsetDateTime.parse("2019-01-02T03:04:05.678+01:00")).build())
+        		.withEndTimestamp(newTimestampConstantBuilder().withValue(OffsetDateTime.parse("2019-01-30T15:57:08.123+01:00")).build())
         		.build();
         
         ContainerExpression contExpr = newContainerExpressionBuilder().withElementName(order)

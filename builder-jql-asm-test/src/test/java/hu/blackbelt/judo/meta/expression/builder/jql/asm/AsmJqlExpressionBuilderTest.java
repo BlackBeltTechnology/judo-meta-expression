@@ -265,7 +265,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("\"\"");
         createExpression("\"b\"");
         DateConstant dateConstant = (DateConstant) createExpression("`2019-12-31`");
-        createExpression("`2019-12-31T13:52:03 Europe/Budapest`");
+        createExpression("`2019-12-31T13:52:03+02:00`");
         createExpression("demo::entities::Category!sort()!head().picture");
     }
 
@@ -289,19 +289,19 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EClass orderType = asmUtils.getClassByFQName("demo.entities.Order").get();
         Expression expression = createExpression(orderType, "self.orderDate + 10.5[day]");
         assertThat(expression, instanceOf(TimestampExpression.class));
-        TimestampDifferenceExpression elapsedTimeFrom = (TimestampDifferenceExpression) createExpression("`2019-12-31T00:00:00.000+0100`!elapsedTimeFrom(`2019-12-31T00:00:00.000+0200`)");
+        TimestampDifferenceExpression elapsedTimeFrom = (TimestampDifferenceExpression) createExpression("`2019-12-31T00:00:00.000+01:00`!elapsedTimeFrom(`2019-12-31T00:00:00.000+02:00`)");
         assertThat(elapsedTimeFrom.getMeasure(), notNullValue());
-        createExpression("`2019-12-31T00:00:00.000+0100` > `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` < `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` == `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` != `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` <= `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` >= `2019-12-31T00:00:00.000+0200`");
-        createExpression("`2019-12-31T00:00:00.000+0100` + 1[week]");
-        createExpression("`2019-12-31T00:00:00.000+0100` - 1[demo::measures::Time#day]");
-        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+0100` + 1"));
-        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+0100` - 1"));
-        assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31T00:00:00.000+0100`"));
+        createExpression("`2019-12-31T00:00:00.000+01:00` > `2019-12-31T00:00:00.000+02:00`");
+        createExpression("`2019-12-31T00:00:00.000+01:00` < `2019-12-31T00:00:00.000+02:00`");
+        createExpression("`2019-12-31T00:00:00.000+01:00` == `2019-12-31T00:00:00.000+02:00`");
+        createExpression("`2019-12-31T00:00:00.000+01:00` != `2019-12-31T00:00:00.000+02:00`");
+        createExpression("`2019-12-31T00:00:00.000+01:00` <= `2019-12-31T00:00:00.000+02:00`");
+        createExpression("`2019-12-31T00:00:00.000+01:00` >= `2019-12-31T00:00:00.000+02:00`");
+        createExpression("`2019-12-31T00:00:00.000+01:00` + 1[week]");
+        createExpression("`2019-12-31T00:00:00.000+01:00` - 1[demo::measures::Time#day]");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+01:00` + 1"));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+01:00` - 1"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31T00:00:00.000+01:00`"));
     }
 
     @Test
@@ -362,7 +362,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         createExpression("true ? 'a' : demo::entities::Category!sort()!head().categoryName");
         createExpression("true ? `2019-10-12` : `2019-10-23`");
-        createExpression("true ? `2019-10-12T` : `2019-10-23T`");
+        createExpression("true ? `2019-10-12T00:00:00+00:00` : `2019-10-23T00:00:00+00:00`");
     }
 
     @Test
@@ -607,10 +607,10 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("(2 + 4) * 8[kg] * 60[kilometrePerHour] / 3[s]");
         createExpression("9[mm]/(1/45[cm])");
         createExpression("9[mg] < 2[kg]");
-        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]` + 102[s]");
+        createExpression("`2019-01-02T03:04:05.678+01:00` + 102[s]");
         Expression timeStampAddition = createExpression("demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
-        createExpression("`2019-01-02T03:04:05.678+01:00 [Europe/Budapest]`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00 [Europe/Budapest]`)");
+        createExpression("`2019-01-02T03:04:05.678+01:00`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00`)");
         
         Expression customerExpression = createExpression(
         		"demo::entities::Order!filter("

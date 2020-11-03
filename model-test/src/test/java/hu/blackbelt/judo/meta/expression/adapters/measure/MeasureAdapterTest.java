@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -804,10 +805,10 @@ public class MeasureAdapterTest {
     public void testIsMeasuredTimestampDifferenceExpression() {
         final NumericExpression duration = newTimestampDifferenceExpressionBuilder()
                 .withStartTimestamp(newTimestampConstantBuilder()
-                        .withValue("2019-01-01 12:00:00Z")
+                        .withValue(OffsetDateTime.parse("2019-01-01T12:00:00+00:00"))
                         .build())
                 .withEndTimestamp(newTimestampConstantBuilder()
-                        .withValue("2019-01-01 13:00:00Z")
+                        .withValue(OffsetDateTime.parse("2019-01-01T12:00:00+00:00"))
                         .build())
                 .build();
 
