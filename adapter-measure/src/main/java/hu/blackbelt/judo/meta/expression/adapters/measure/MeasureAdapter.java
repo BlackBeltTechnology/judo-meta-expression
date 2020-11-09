@@ -9,6 +9,8 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
+import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
+import hu.blackbelt.judo.meta.expression.variable.MeasuredIntegerEnvironmentVariable;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -74,6 +76,12 @@ public class MeasureAdapter<M, U> {
             return true;
         } else if (numericExpression instanceof MeasuredDecimal) {
             // measured decimal (constant) is always measured
+            return true;
+        } else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
+            // measured integer environment variable is always measured
+            return true;
+        } else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
+            // measured decimal environment variable is always measured
             return true;
         } else if (numericExpression instanceof NumericAttribute) {
             return getMeasure(numericExpression).isPresent();
@@ -188,6 +196,16 @@ public class MeasureAdapter<M, U> {
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof MeasuredInteger) {
+            return modelAdapter.getUnit(numericExpression)
+                    .map(u -> getMeasure(u))
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
+        } else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
+            return modelAdapter.getUnit(numericExpression)
+                    .map(u -> getMeasure(u))
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
+        } else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
             return modelAdapter.getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))

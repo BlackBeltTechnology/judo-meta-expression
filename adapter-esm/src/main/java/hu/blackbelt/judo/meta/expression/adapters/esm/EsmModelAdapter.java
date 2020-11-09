@@ -21,6 +21,8 @@ import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
+import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
+import hu.blackbelt.judo.meta.expression.variable.MeasuredIntegerEnvironmentVariable;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
@@ -259,6 +261,16 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                     measuredDecimal.getUnitName());
         } else if (numericExpression instanceof MeasuredInteger) {
             final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
+            return measureAdapter.getUnit(measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getNamespace()) : Optional.empty(),
+                    measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName()) : Optional.empty(),
+                    measuredInteger.getUnitName());
+        } else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
+            final MeasuredDecimalEnvironmentVariable measuredDecimal = (MeasuredDecimalEnvironmentVariable) numericExpression;
+            return measureAdapter.getUnit(measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
+                    measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
+                    measuredDecimal.getUnitName());
+        } else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
+            final MeasuredIntegerEnvironmentVariable measuredInteger = (MeasuredIntegerEnvironmentVariable) numericExpression;
             return measureAdapter.getUnit(measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getNamespace()) : Optional.empty(),
                     measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName()) : Optional.empty(),
                     measuredInteger.getUnitName());
