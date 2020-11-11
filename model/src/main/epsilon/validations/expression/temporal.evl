@@ -90,6 +90,20 @@ context EXPR!DateConstant {
     }
 }
 
+context EXPR!TimestampEnvironmentVariable {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!DateEnvironmentVariable {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
 context EXPR!TimestampDifferenceExpression {
     constraint Resolved {
         guard: self.startTimestamp.satisfiesAll("Resolved") and self.endTimestamp.satisfiesAll("Resolved")

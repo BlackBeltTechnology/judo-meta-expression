@@ -406,6 +406,121 @@
     <eClassifiers xsi:type="ecore:EClass" name="EnumerationVariable" eSuperTypes="#//variable/TypedVariable"/>
     <eClassifiers xsi:type="ecore:EClass" name="TypedObjectVariable" eSuperTypes="#//variable/TypedVariable #//variable/ObjectVariable"/>
     <eClassifiers xsi:type="ecore:EClass" name="TypedCollectionVariable" eSuperTypes="#//variable/TypedVariable #//variable/CollectionVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EnvironmentVariable" abstract="true"
+        eSuperTypes="#//variable/Variable #//DataExpression">
+      <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getTypeName().get(modelAdapter);"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;%s!getVariable(%s / %s)&quot;, getTypeName(), getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="typeName" lowerBound="1"
+          eType="#//TypeName" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//IntegerExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//DecimalExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BooleanEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//LogicalExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StringEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//StringExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LiteralEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//EnumerationExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return java.util.Objects.toString(getEnumeration(), &quot;&quot;) + &quot;#&quot; + String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getEnumeration" lowerBound="1" eType="#//TypeName">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return basicGetEnumeration();"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="enumeration" eType="#//TypeName"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CustomEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//CustomExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeasuredIntegerEnvironmentVariable"
+        eSuperTypes="#//variable/EnvironmentVariable #//IntegerExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s [%s%s]&quot;, getCategory(), getVariableName(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return true;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimalEnvironmentVariable"
+        eSuperTypes="#//variable/EnvironmentVariable #//DecimalExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s [%s%s]&quot;, getCategory(), getVariableName(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return true;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DateEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//DateExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//TimestampExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
