@@ -615,8 +615,13 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Collection<? extends ReferenceTypedElement> getTransferRelations(TransferObjectType transferObjectType) {
         return transferObjectType.getRelations();
     }
-    
-	@Override
+
+    @Override
+    public Primitive getTransferAttributeType(PrimitiveTypedElement transferAttribute) {
+        return transferAttribute.getDataType();
+    }
+
+    @Override
 	public List<NamespaceElement> getAllActorTypes() {
 		return ECollections.asEList(getEsmElement(ActorType.class).collect(toList()));
 	}

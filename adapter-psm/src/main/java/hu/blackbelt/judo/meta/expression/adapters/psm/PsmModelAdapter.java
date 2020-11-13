@@ -575,7 +575,12 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         return transferObjectType.getRelations();
     }
 
-	@Override
+    @Override
+    public Primitive getTransferAttributeType(TransferAttribute transferAttribute) {
+        return transferAttribute.getDataType();
+    }
+
+    @Override
 	public List<NamespaceElement> getAllActorTypes() {
 		return new ArrayList<NamespaceElement>(getPsmElement(AbstractActorType.class).collect(Collectors.toList()));
 	}

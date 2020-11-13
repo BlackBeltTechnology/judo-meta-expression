@@ -7,7 +7,6 @@ import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.builder.jql.CircularReferenceException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
@@ -314,4 +313,5 @@ public class EsmJqlDerivedExpressionTest extends  AbstractEsmJqlExpressionBuilde
         initResources(createTestModel(entityA, entityB, intType, stringType));
         assertThat(createExpression(entityA, "self.bCount"), hasToString("self=>bs!filter(b | (LENGTH(b.bField) > 0))!count()"));
     }
+
 }

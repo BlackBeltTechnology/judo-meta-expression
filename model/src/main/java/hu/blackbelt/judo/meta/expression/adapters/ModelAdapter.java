@@ -366,6 +366,8 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     Collection<? extends TR> getTransferRelations(TO transferObjectType);
 
+    P getTransferAttributeType(TA transferAttribute);
+
     List<NE> getAllActorTypes();
     
     TO getPrincipal(NE actorType);   

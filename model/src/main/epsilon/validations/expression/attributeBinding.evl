@@ -2,7 +2,7 @@ context EXPR!AttributeBinding {
 	
 	constraint IntegerExpressionMatchesBinding {
 		guard: self.expression.isKindOf(EXPR!IntegerExpression)
-		check: modelAdapter.isInteger(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		check: modelAdapter.isNumeric(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
 		message: "Attribute named " + self.attributeName + " of object type " + modelAdapter.get(self.typeName).get().name + " must be integer type, because the assigned expression evaluates to an integer."
 	}
 	

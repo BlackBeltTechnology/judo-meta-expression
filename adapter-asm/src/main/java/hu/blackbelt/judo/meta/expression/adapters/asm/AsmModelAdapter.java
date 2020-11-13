@@ -573,6 +573,11 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public EDataType getTransferAttributeType(EAttribute transferAttribute) {
+		return transferAttribute.getEAttributeType();
+	}
+
+	@Override
 	public List<EClassifier> getAllActorTypes() {
 		return new ArrayList<>(asmUtils.getAllActorTypes());
 	}
