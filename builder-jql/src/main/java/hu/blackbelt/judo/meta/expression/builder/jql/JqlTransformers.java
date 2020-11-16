@@ -259,6 +259,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
             int i = 0;
             try {
                 while (functionCall != null) {
+                	if (functionCall.getFunction().getName() == null) {
+                		throw new JqlExpressionBuildException(subject, Arrays.asList(
+                                new JqlExpressionBuildingError("Function name required", functionCall)));
+                	}
                     String functionName = functionCall.getFunction().getName().toLowerCase();
                     JqlFunctionTransformer functionTransformer = functionTransformers.get(functionName);
                     if (functionTransformer != null) {

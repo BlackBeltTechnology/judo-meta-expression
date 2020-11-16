@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
 
@@ -22,14 +23,18 @@ public class JqlExpressionBuildException extends RuntimeException {
 	}
 	
 	public JqlExpressionBuildException(Expression partialExpression, List<JqlExpressionBuildingError> errors) {
-		super("Errors during building expression: " + errors);
+		super("Errors during building expression: " + errorDescriptions(errors));
 		this.jclObject = null;
 		this.partialExpression = partialExpression;
 		this.errors.addAll(errors);
 	}
 
+	private static String errorDescriptions(List<JqlExpressionBuildingError> errors) {
+		return errors.stream().map(JqlExpressionBuildingError::getDescription).collect(Collectors.joining());
+	}
+
 	public JqlExpressionBuildException(Expression partialExpression, List<JqlExpressionBuildingError> errors, final Throwable throwable) {
-		super("Errors during building expression: " + errors, throwable);
+		super("Errors during building expression: " + errorDescriptions(errors), throwable);
 		this.jclObject = null;
 		this.partialExpression = partialExpression;
 		this.errors.addAll(errors);
