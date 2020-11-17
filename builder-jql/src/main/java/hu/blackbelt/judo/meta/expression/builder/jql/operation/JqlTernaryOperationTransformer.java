@@ -104,9 +104,9 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
         if (thenType.equals(elseType)) {
             return thenType;
         }
-        if (jqlTransformers.isKindOf(thenType, elseType)) {
+        if (jqlTransformers.getExpressionBuilder().isKindOf(thenType, elseType)) {
             return elseType;
-        } else if (jqlTransformers.isKindOf(elseType, thenType)) {
+        } else if (jqlTransformers.getExpressionBuilder().isKindOf(elseType, thenType)) {
             return thenType;
         }
         // Determine least upper bound, ie. a single shared supertype that is more specific than any other shared supertype
@@ -140,7 +140,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
             Set<C> otherTypes = new LinkedHashSet<>(commonSupertypes);
             otherTypes.remove(commonSuperType);
             for (C otherType : otherTypes) {
-                if (jqlTransformers.isKindOf(commonSuperType, otherType)) {
+                if (jqlTransformers.getExpressionBuilder().isKindOf(commonSuperType, otherType)) {
                     alreadySupertypes.add(otherType);
                 }
             }

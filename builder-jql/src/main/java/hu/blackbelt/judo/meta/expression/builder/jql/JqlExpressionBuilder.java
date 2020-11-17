@@ -15,6 +15,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.EMap;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -405,9 +406,48 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
 		jqlTransformers.setResolveDerived(resolveDerived);
     }
     
-    public boolean isCompatibleTypes(TO from, TO to) {
-    	return jqlTransformers.isCompatibleType(from, to);
+    /**
+     * Returns true if c2 equals c1 or, c2 is a supertype of c1
+     */
+    public boolean isKindOf(C c1, C c2) {
+    	if (c1.equals(c2)) {
+    		return true;
+    	}
+        Set<C> checkedSuperTypes = new LinkedHashSet<>();
+        Collection<? extends C> superTypes = getModelAdapter().getSuperTypes(c1);
+        checkedSuperTypes.addAll(superTypes);
+        for (C c : checkedSuperTypes) {
+            if (c.equals(c2)) {
+                return true;
+            } else {
+                checkedSuperTypes.addAll(getModelAdapter().getSuperTypes(c));
+            }
+        }
+        return false;
     }
-
-
+    
+    public MappedTransferObjectCompatibility getMappedTransferObjectTypeCompatibility(TO from, TO to) {
+    	MappedTransferObjectCompatibility result = MappedTransferObjectCompatibility.NONE;
+        if (from.equals(to)) {
+        	result = MappedTransferObjectCompatibility.KINDOF;
+        }
+        if (result == MappedTransferObjectCompatibility.NONE) {
+            EList<TO> allMappedTransferObjectTypes = getModelAdapter().getAllMappedTransferObjectTypes();
+            if (allMappedTransferObjectTypes.contains(from) && allMappedTransferObjectTypes.contains(to)) {
+                C mappedEntityFrom = getModelAdapter().getMappedEntityType(from).get();
+                C mappedEntityTo = getModelAdapter().getMappedEntityType(to).get();
+                if (isKindOf(mappedEntityFrom, mappedEntityTo)) {
+                	result = MappedTransferObjectCompatibility.KINDOF;
+                } else if (isKindOf(mappedEntityTo, mappedEntityFrom)) {
+                	result = MappedTransferObjectCompatibility.SUPERTYPE;
+                }
+            }
+        }
+        return result;
+    }
+    
+    public enum MappedTransferObjectCompatibility {
+    	NONE, KINDOF, SUPERTYPE
+    }
+    
 }

@@ -406,36 +406,4 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return resolveDerived;
     }
 
-    /**
-     * Returns true if c2 is a supertype of c1
-     */
-    public boolean isKindOf(C c1, C c2) {
-        Set<C> checkedSuperTypes = new LinkedHashSet<>();
-        Collection<? extends C> superTypes = getModelAdapter().getSuperTypes(c1);
-        checkedSuperTypes.addAll(superTypes);
-        for (C c : checkedSuperTypes) {
-            if (c.equals(c2)) {
-                return true;
-            } else {
-                checkedSuperTypes.addAll(getModelAdapter().getSuperTypes(c));
-            }
-        }
-        return false;
-    }
-
-    public boolean isCompatibleType(TO from, TO to) {
-        boolean result;
-        result = from.equals(to);
-        if (!result) {
-            EList<TO> allMappedTransferObjectTypes = getModelAdapter().getAllMappedTransferObjectTypes();
-            if (allMappedTransferObjectTypes.contains(from) && allMappedTransferObjectTypes.contains(to)) {
-                C mappedEntityFrom = getModelAdapter().getMappedEntityType(from).get();
-                C mappedEntityTo = getModelAdapter().getMappedEntityType(to).get();
-                result = mappedEntityFrom.equals(mappedEntityTo) || isKindOf(mappedEntityTo, mappedEntityFrom)
-                        || isKindOf(mappedEntityFrom, mappedEntityTo);
-            }
-        }
-        return result;
-    }
-
 }
