@@ -119,11 +119,11 @@ public class AsmModelAdapter implements
 
 	@Override
 	public boolean isMeasuredType(EDataType primitiveType) {
-		return getMeasure(primitiveType).isPresent();
+		return getMeasureOfType(primitiveType).isPresent();
 	}
 
 	@Override
-	public Optional<? extends Measure> getMeasure(EDataType primitiveType) {
+	public Optional<? extends Measure> getMeasureOfType(EDataType primitiveType) {
 		Optional<? extends Measure> measure = AsmUtils.getExtensionAnnotationCustomValue(primitiveType, "measured", "measure", false)
 				.flatMap(AsmModelAdapter::parseMeasureName)
 				.flatMap(this::get);
@@ -131,8 +131,8 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
-	public Optional<Unit> getUnit(EDataType primitiveType) {
-		Optional<Unit> unit = getMeasure(primitiveType)
+	public Optional<Unit> getUnitOfType(EDataType primitiveType) {
+		Optional<Unit> unit = getMeasureOfType(primitiveType)
 				.flatMap(measure -> AsmUtils.getExtensionAnnotationCustomValue(primitiveType, "measured", "unit", false)
 						.flatMap(unitName -> measureAdapter.getUnit(Optional.of(measure.getNamespace()), Optional.of(measure.getName()), unitName)
 						));

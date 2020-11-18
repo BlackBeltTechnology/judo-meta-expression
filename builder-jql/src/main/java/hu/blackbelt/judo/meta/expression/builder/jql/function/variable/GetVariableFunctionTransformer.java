@@ -36,8 +36,8 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
             P primitiveType = (P) ne;
             if (jqlTransformers.getModelAdapter().isInteger(primitiveType)) {
                 if (jqlTransformers.getModelAdapter().isMeasuredType(primitiveType)) {
-                    M measure = jqlTransformers.getModelAdapter().getMeasure(primitiveType).get();
-                    U unit = jqlTransformers.getModelAdapter().getUnit(primitiveType).get();
+                    M measure = jqlTransformers.getModelAdapter().getMeasureOfType(primitiveType).get();
+                    U unit = jqlTransformers.getModelAdapter().getUnitOfType(primitiveType).get();
                     MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();
                     result = newMeasuredIntegerEnvironmentVariableBuilder()
                             .withCategory(category)
@@ -55,8 +55,8 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
                 }
             } else if (jqlTransformers.getModelAdapter().isDecimal(primitiveType)) {
                 if (jqlTransformers.getModelAdapter().isMeasuredType(primitiveType)) {
-                    M measure = jqlTransformers.getModelAdapter().getMeasure(primitiveType).get();
-                    U unit = jqlTransformers.getModelAdapter().getUnit(primitiveType).get();
+                    M measure = jqlTransformers.getModelAdapter().getMeasureOfType(primitiveType).get();
+                    U unit = jqlTransformers.getModelAdapter().getUnitOfType(primitiveType).get();
                     MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();
                     result = newMeasuredDecimalEnvironmentVariableBuilder()
                             .withCategory(category)

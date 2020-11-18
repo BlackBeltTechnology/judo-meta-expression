@@ -70,9 +70,9 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     boolean isMeasuredType(P primitiveType);
 
-    Optional<? extends M> getMeasure(P primitiveType);
+    Optional<? extends M> getMeasureOfType(P primitiveType);
 
-    Optional<U> getUnit(P primitiveType);
+    Optional<U> getUnitOfType(P primitiveType);
 
     String getUnitName(U unit);
 

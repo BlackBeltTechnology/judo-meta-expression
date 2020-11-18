@@ -116,12 +116,12 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<Measure> getMeasure(Primitive primitiveType) {
-        return getUnit(primitiveType).map(measureAdapter::getMeasure);
+    public Optional<Measure> getMeasureOfType(Primitive primitiveType) {
+        return getUnitOfType(primitiveType).map(measureAdapter::getMeasure);
     }
 
     @Override
-    public Optional<Unit> getUnit(Primitive primitiveType) {
+    public Optional<Unit> getUnitOfType(Primitive primitiveType) {
         if (isMeasuredType(primitiveType)) {
             return Optional.ofNullable(((MeasuredType) primitiveType).getStoreUnit());
         } else {

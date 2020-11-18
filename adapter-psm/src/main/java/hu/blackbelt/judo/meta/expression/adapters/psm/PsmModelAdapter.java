@@ -115,12 +115,12 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<Measure> getMeasure(Primitive primitiveType) {
-        return getUnit(primitiveType).map(Unit::getMeasure);
+    public Optional<Measure> getMeasureOfType(Primitive primitiveType) {
+        return getUnitOfType(primitiveType).map(Unit::getMeasure);
     }
 
     @Override
-    public Optional<Unit> getUnit(Primitive primitiveType) {
+    public Optional<Unit> getUnitOfType(Primitive primitiveType) {
         if (isMeasuredType(primitiveType)) {
             return Optional.ofNullable(((MeasuredType) primitiveType).getStoreUnit());
         } else {
