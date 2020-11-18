@@ -33,7 +33,6 @@ import hu.blackbelt.judo.meta.psm.type.Primitive;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
@@ -111,7 +110,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isMeasured(Primitive primitiveType) {
+    public boolean isMeasuredType(Primitive primitiveType) {
         return primitiveType.isMeasured();
     }
 
@@ -122,7 +121,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Unit> getUnit(Primitive primitiveType) {
-        if (isMeasured(primitiveType)) {
+        if (isMeasuredType(primitiveType)) {
             return Optional.ofNullable(((MeasuredType) primitiveType).getStoreUnit());
         } else {
             return Optional.empty();

@@ -68,7 +68,7 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     boolean isPrimitiveType(NE namespaceElement);
 
-    boolean isMeasured(P primitiveType);
+    boolean isMeasuredType(P primitiveType);
 
     Optional<? extends M> getMeasure(P primitiveType);
 

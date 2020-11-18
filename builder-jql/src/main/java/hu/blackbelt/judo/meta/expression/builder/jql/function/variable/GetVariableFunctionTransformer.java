@@ -1,16 +1,15 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.variable;
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.TypeNameExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.StringConstant;
 import hu.blackbelt.judo.meta.expression.variable.EnvironmentVariable;
-import hu.blackbelt.judo.meta.expression.variable.IntegerEnvironmentVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
-
-import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
 
@@ -36,7 +35,7 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
         if (jqlTransformers.getModelAdapter().isPrimitiveType(ne)) {
             P primitiveType = (P) ne;
             if (jqlTransformers.getModelAdapter().isInteger(primitiveType)) {
-                if (jqlTransformers.getModelAdapter().isMeasured(primitiveType)) {
+                if (jqlTransformers.getModelAdapter().isMeasuredType(primitiveType)) {
                     M measure = jqlTransformers.getModelAdapter().getMeasure(primitiveType).get();
                     U unit = jqlTransformers.getModelAdapter().getUnit(primitiveType).get();
                     MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();
@@ -55,7 +54,7 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
                             .build();
                 }
             } else if (jqlTransformers.getModelAdapter().isDecimal(primitiveType)) {
-                if (jqlTransformers.getModelAdapter().isMeasured(primitiveType)) {
+                if (jqlTransformers.getModelAdapter().isMeasuredType(primitiveType)) {
                     M measure = jqlTransformers.getModelAdapter().getMeasure(primitiveType).get();
                     U unit = jqlTransformers.getModelAdapter().getUnit(primitiveType).get();
                     MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();

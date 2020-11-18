@@ -118,7 +118,7 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
-	public boolean isMeasured(EDataType primitiveType) {
+	public boolean isMeasuredType(EDataType primitiveType) {
 		return getMeasure(primitiveType).isPresent();
 	}
 

@@ -31,7 +31,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
-import javax.swing.text.html.Option;
 import java.lang.Class;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -112,7 +111,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isMeasured(Primitive primitiveType) {
+    public boolean isMeasuredType(Primitive primitiveType) {
         return primitiveType instanceof MeasuredType;
     }
 
@@ -123,7 +122,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Unit> getUnit(Primitive primitiveType) {
-        if (isMeasured(primitiveType)) {
+        if (isMeasuredType(primitiveType)) {
             return Optional.ofNullable(((MeasuredType) primitiveType).getStoreUnit());
         } else {
             return Optional.empty();
