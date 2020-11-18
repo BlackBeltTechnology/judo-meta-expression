@@ -48,6 +48,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
+    private final Map<String, TypeName> primitiveTypes = new ConcurrentHashMap<>();
     private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
@@ -63,6 +64,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         addSequences();
         addTransferObjectTypes();
         addActors();
+        addPrimitiveTypes();
     }
     
     @SuppressWarnings("unchecked")
@@ -115,6 +117,14 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
             TypeName enumTypeName = modelAdapter.buildTypeName(e).get();
             storeTypeName(e, enumTypeName);
             enumTypes.put(enumTypeName.getNamespace() + NAMESPACE_SEPARATOR + enumTypeName.getName(), enumTypeName);
+        });
+    }
+
+    private void addPrimitiveTypes() {
+        modelAdapter.getAllPrimitiveTypes().forEach(e -> {
+            TypeName primitiveTypeName = modelAdapter.buildTypeName(e).get();
+            storeTypeName(e, primitiveTypeName);
+            primitiveTypes.put(primitiveTypeName.getNamespace() + NAMESPACE_SEPARATOR + primitiveTypeName.getName(), primitiveTypeName);
         });
     }
 

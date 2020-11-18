@@ -198,6 +198,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
   <eClassifiers xsi:type="ecore:EDataType" name="OffsetDateTime" instanceClassName="java.time.OffsetDateTime"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TypeNameExpression" eSuperTypes="#//TypeName #//Expression"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true" eSuperTypes="#//Expression">
@@ -407,7 +408,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="TypedObjectVariable" eSuperTypes="#//variable/TypedVariable #//variable/ObjectVariable"/>
     <eClassifiers xsi:type="ecore:EClass" name="TypedCollectionVariable" eSuperTypes="#//variable/TypedVariable #//variable/CollectionVariable"/>
     <eClassifiers xsi:type="ecore:EClass" name="EnvironmentVariable" abstract="true"
-        eSuperTypes="#//variable/Variable #//DataExpression">
+        eSuperTypes="#//DataExpression">
       <eOperations name="getObjectType" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return getTypeName().get(modelAdapter);"/>
@@ -419,10 +420,16 @@
           <details key="body" value="return String.format(&quot;%s!getVariable(%s / %s)&quot;, getTypeName(), getCategory(), getVariableName());"/>
         </eAnnotations>
       </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.emptyEList();"/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="typeName" lowerBound="1"
           eType="#//TypeName" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="variableName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//IntegerExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">

@@ -593,6 +593,11 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    public void testEnvironmentVariables() {
+        createExpression("demo::types::Timestamp!getVariable('SYSTEM', 'current_timestamp')");
+    }
+
+    @Test
     public void test002() {
         EClass customer = findBase("Customer");
         createExpression(customer, "self.addresses");

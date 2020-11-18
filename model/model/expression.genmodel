@@ -126,6 +126,7 @@
       <genOperations ecoreOperation="expression.ecore#//IterableExpression/getIteratorVariableName"
           body="return getIteratorVariable() == null ? null : getIteratorVariable().getName();"/>
     </genClasses>
+    <genClasses ecoreClass="expression.ecore#//TypeNameExpression"/>
     <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-constant" ecorePackage="expression.ecore#//constant">
@@ -264,6 +265,79 @@
       <genClasses ecoreClass="expression.ecore#//variable/EnumerationVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/TypedObjectVariable"/>
       <genClasses ecoreClass="expression.ecore#//variable/TypedCollectionVariable"/>
+      <genClasses image="false" ecoreClass="expression.ecore#//variable/EnvironmentVariable">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/EnvironmentVariable/typeName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/EnvironmentVariable/category"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/EnvironmentVariable/variableName"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/EnvironmentVariable/getObjectType"
+            body="return getTypeName().get(modelAdapter);">
+          <genParameters ecoreParameter="expression.ecore#//variable/EnvironmentVariable/getObjectType/modelAdapter"/>
+        </genOperations>
+        <genOperations ecoreOperation="expression.ecore#//variable/EnvironmentVariable/toString"
+            body="return String.format(&quot;%s!getVariable(%s / %s)&quot;, getTypeName(), getCategory(), getVariableName());"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/EnvironmentVariable/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.emptyEList();"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/IntegerEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/IntegerEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/DecimalEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/DecimalEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/BooleanEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/BooleanEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/StringEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/StringEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/LiteralEnvironmentVariable">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//variable/LiteralEnvironmentVariable/enumeration"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/LiteralEnvironmentVariable/toString"
+            body="return java.util.Objects.toString(getEnumeration(), &quot;&quot;) + &quot;#&quot; + String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/LiteralEnvironmentVariable/getEnumeration"
+            body="return basicGetEnumeration();">
+          <genParameters ecoreParameter="expression.ecore#//variable/LiteralEnvironmentVariable/getEnumeration/modelAdapter"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/CustomEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/CustomEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/MeasuredIntegerEnvironmentVariable">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/MeasuredIntegerEnvironmentVariable/unitName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//variable/MeasuredIntegerEnvironmentVariable/measure"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/MeasuredIntegerEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s [%s%s]&quot;, getCategory(), getVariableName(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/MeasuredIntegerEnvironmentVariable/isMeasured"
+            body="return true;">
+          <genParameters ecoreParameter="expression.ecore#//variable/MeasuredIntegerEnvironmentVariable/isMeasured/modelAdapter"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/MeasuredDecimalEnvironmentVariable">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/MeasuredDecimalEnvironmentVariable/unitName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//variable/MeasuredDecimalEnvironmentVariable/measure"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/MeasuredDecimalEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s [%s%s]&quot;, getCategory(), getVariableName(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
+        <genOperations ecoreOperation="expression.ecore#//variable/MeasuredDecimalEnvironmentVariable/isMeasured"
+            body="return true;">
+          <genParameters ecoreParameter="expression.ecore#//variable/MeasuredDecimalEnvironmentVariable/isMeasured/modelAdapter"/>
+        </genOperations>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/DateEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/DateEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/TimestampEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/TimestampEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Operator" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

@@ -249,7 +249,7 @@ public class MeasureAdapter<M, U> {
      * @param unit unit
      * @return measure
      */
-    M getMeasure(final U unit) {
+    public M getMeasure(final U unit) {
         return measureProvider.getMeasures()
                 .filter(m -> measureProvider.getUnits(m).contains(unit))
                 .findAny()

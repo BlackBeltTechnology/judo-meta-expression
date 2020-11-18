@@ -29,6 +29,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
+import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
 
 import java.util.Arrays;
 
@@ -85,6 +86,9 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
             if (typeName != null) {
                 if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
                     baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
+                    navigationBase = null;
+                } else if (getModelAdapter().isPrimitiveType(getModelAdapter().get(typeName).get())) {
+                    baseExpression = newTypeNameExpressionBuilder().withName(typeName.getName()).withNamespace(typeName.getNamespace()).build();
                     navigationBase = null;
                 } else {
                     baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();

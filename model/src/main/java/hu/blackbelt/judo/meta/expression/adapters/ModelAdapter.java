@@ -66,6 +66,16 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
      */
     boolean isObjectType(NE namespaceElement);
 
+    boolean isPrimitiveType(NE namespaceElement);
+
+    boolean isMeasured(P primitiveType);
+
+    Optional<? extends M> getMeasure(P primitiveType);
+
+    Optional<U> getUnit(P primitiveType);
+
+    String getUnitName(U unit);
+
     /**
      * Get reference of a given (object) type by name.
      *
@@ -285,6 +295,8 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     EList<E> getAllEnums();
 
+    EList<P> getAllPrimitiveTypes();
+
     EList<NE> getAllStaticSequences();
 
     EList<TO> getAllTransferObjectTypes();
@@ -370,6 +382,6 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     List<NE> getAllActorTypes();
     
-    TO getPrincipal(NE actorType);   
+    TO getPrincipal(NE actorType);
 
 }

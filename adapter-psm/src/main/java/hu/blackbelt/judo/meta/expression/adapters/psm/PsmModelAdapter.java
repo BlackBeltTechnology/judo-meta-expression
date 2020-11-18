@@ -106,6 +106,35 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isPrimitiveType(NamespaceElement namespaceElement) {
+        return namespaceElement instanceof Primitive;
+    }
+
+    @Override
+    public boolean isMeasured(Primitive primitiveType) {
+        return primitiveType.isMeasured();
+    }
+
+    @Override
+    public Optional<Measure> getMeasure(Primitive primitiveType) {
+        return getUnit(primitiveType).map(Unit::getMeasure);
+    }
+
+    @Override
+    public Optional<Unit> getUnit(Primitive primitiveType) {
+        if (isMeasured(primitiveType)) {
+            return Optional.ofNullable(((MeasuredType) primitiveType).getStoreUnit());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public String getUnitName(Unit unit) {
+        return unit.getName();
+    }
+
+    @Override
     public Optional<? extends ReferenceTypedElement> getReference(final EntityType clazz, final String referenceName) {
         return Optional.ofNullable(clazz.getReference(referenceName));
     }
@@ -297,6 +326,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public EList<EnumerationType> getAllEnums() {
         return ECollections.asEList(getPsmElement(EnumerationType.class).collect(toList()));
+    }
+
+    @Override
+    public EList<Primitive> getAllPrimitiveTypes() {
+        return ECollections.asEList(getPsmElement(Primitive.class).collect(toList()));
     }
 
     @Override

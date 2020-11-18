@@ -12,6 +12,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefine
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.variable.GetVariableFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
@@ -58,6 +59,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         stringFunctions();
         numericFunctions();
         temporalFunctions();
+        environmentVariableFunctions();
         collectionFunctions();
         objectFunctions();
         sequenceFunctions();
@@ -161,6 +163,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     private void numericFunctions() {
         functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder()
                 .withExpression((DecimalExpression) expression).build());
+    }
+
+    private void environmentVariableFunctions() {
+        functionTransformers.put("getvariable", new GetVariableFunctionTransformer(this));
     }
 
     private void temporalFunctions() {

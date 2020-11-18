@@ -107,6 +107,35 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isPrimitiveType(NamespaceElement namespaceElement) {
+        return namespaceElement instanceof Primitive;
+    }
+
+    @Override
+    public boolean isMeasured(Primitive primitiveType) {
+        return primitiveType instanceof MeasuredType;
+    }
+
+    @Override
+    public Optional<Measure> getMeasure(Primitive primitiveType) {
+        return getUnit(primitiveType).map(measureAdapter::getMeasure);
+    }
+
+    @Override
+    public Optional<Unit> getUnit(Primitive primitiveType) {
+        if (isMeasured(primitiveType)) {
+            return Optional.ofNullable(((MeasuredType) primitiveType).getStoreUnit());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public String getUnitName(Unit unit) {
+        return unit.getName();
+    }
+
+    @Override
     public Optional<? extends ReferenceTypedElement> getReference(hu.blackbelt.judo.meta.esm.structure.Class clazz, String referenceName) {
         // collect all classes that can have the given reference, ie. itself and all its parents
         EList<Generalization> generalizations = getAllGeneralizations(clazz);
@@ -305,6 +334,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public EList<EnumerationType> getAllEnums() {
         return ECollections.asEList(getEsmElement(EnumerationType.class).collect(toList()));
+    }
+
+    @Override
+    public EList<Primitive> getAllPrimitiveTypes() {
+        return ECollections.asEList(getEsmElement(Primitive.class).collect(toList()));
     }
 
     @Override

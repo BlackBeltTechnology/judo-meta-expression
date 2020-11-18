@@ -113,6 +113,38 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public boolean isPrimitiveType(EClassifier namespaceElement) {
+		return namespaceElement instanceof EDataType;
+	}
+
+	@Override
+	public boolean isMeasured(EDataType primitiveType) {
+		return getMeasure(primitiveType).isPresent();
+	}
+
+	@Override
+	public Optional<? extends Measure> getMeasure(EDataType primitiveType) {
+		Optional<? extends Measure> measure = AsmUtils.getExtensionAnnotationCustomValue(primitiveType, "measured", "measure", false)
+				.flatMap(AsmModelAdapter::parseMeasureName)
+				.flatMap(this::get);
+		return measure;
+	}
+
+	@Override
+	public Optional<Unit> getUnit(EDataType primitiveType) {
+		Optional<Unit> unit = getMeasure(primitiveType)
+				.flatMap(measure -> AsmUtils.getExtensionAnnotationCustomValue(primitiveType, "measured", "unit", false)
+						.flatMap(unitName -> measureAdapter.getUnit(Optional.of(measure.getNamespace()), Optional.of(measure.getName()), unitName)
+						));
+		return unit;
+	}
+
+	@Override
+	public String getUnitName(Unit unit) {
+		return unit.getName();
+	}
+
+	@Override
 	public Optional<? extends EReference> getReference(final EClass clazz, final String referenceName) {
 		return clazz.getEAllReferences().stream().filter(r -> Objects.equals(r.getName(), referenceName)).findAny();
 	}
@@ -297,6 +329,11 @@ public class AsmModelAdapter implements
 	public EList<EEnum> getAllEnums() {
 		return ECollections
 				.asEList(getAsmElement(EEnum.class).filter(e -> AsmUtils.isEnumeration(e)).collect(toList()));
+	}
+
+	@Override
+	public EList<EDataType> getAllPrimitiveTypes() {
+		return ECollections.asEList(getAsmElement(EDataType.class).collect(toList()));
 	}
 
 	@Override
@@ -604,4 +641,5 @@ public class AsmModelAdapter implements
 			throw new IllegalArgumentException(String.format("%s principal not found", actorType));
 		}
 	}
+
 }
