@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
-<target includeMode="feature" name="hu.blackbelt.judo.meta.expression.targetdefinition.target" sequenceNumber="1604678097310">
+<target includeMode="feature" name="hu.blackbelt.judo.meta.expression.targetdefinition.target" sequenceNumber="1605824561247">
   <locations>
 
     <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -50,15 +50,15 @@
 		  <unit id="hu.blackbelt.epsilon.runtime.feature.feature.group" version="0.0.0"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20201106_190250_00d6b74_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20201118_105350_5ca3be1_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="0.0.0"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20201106_174102_2698258_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20201116_141747_9e98b3b_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="0.0.0"/>
 	  </location>	  
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20201106_174128_b89fd6f_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20201119_215316_eb9c541_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="0.0.0"/>
 	  </location>	  
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
@@ -66,7 +66,7 @@
 		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="0.0.0"/>
 	  </location>
       <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-          <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20201106_190924_7405a00_develop"/>
+          <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20201116_123832_5f6e0e8_develop"/>
           <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="0.0.0"/>
       </location>
   </locations>
