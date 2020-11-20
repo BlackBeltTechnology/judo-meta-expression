@@ -55,8 +55,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.2.4</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.5.20201106_173641_01b36ce_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.2.5.20201120_160408_045ee84_develop</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.2.5.20201120_160649_c9b3620_develop</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -103,19 +103,19 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.3</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20201119_215316_eb9c541_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20201120_161007_60d3fac_develop</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.1.0.20201118_105350_5ca3be1_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20201120_164640_704450c_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20201116_141747_9e98b3b_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20201120_160952_ae040f9_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.1.20201116_123832_5f6e0e8_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1.20201120_164716_21b6945_develop</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20201106_191635_909995e_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20201120_165456_7f525b2_develop</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
