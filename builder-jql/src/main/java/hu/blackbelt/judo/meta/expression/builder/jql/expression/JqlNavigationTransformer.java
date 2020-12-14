@@ -137,7 +137,6 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
     }
 
     public Expression doTransform(NavigationExpression jqlExpression, ExpressionBuildingVariableResolver context) {
-//        NavigationExpression navigation = flattenNavigationExpression(jqlExpression);
         NavigationExpression navigation = jqlExpression;
         LOG.debug("Transform navigation: {}", navigationString(navigation));
         if (jqlExpression.getEnumValue() != null) {

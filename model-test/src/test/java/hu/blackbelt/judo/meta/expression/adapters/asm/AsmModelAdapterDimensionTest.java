@@ -44,7 +44,7 @@ import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 
 public class AsmModelAdapterDimensionTest {
 
-    private MeasureAdapter<Measure, Unit> measureAdapter;
+    private MeasureAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, Measure, Unit> measureAdapter;
     private MeasureProvider<Measure, Unit> measureProvider;
     private Resource resource;
 

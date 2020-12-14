@@ -7,10 +7,13 @@ import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableR
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalAttribute;
+import hu.blackbelt.judo.meta.expression.numeric.IntegerAttribute;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.Attribute;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -161,8 +164,13 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
 				return newLogicalAttributeBuilder().withAttributeName(attributeName)
 						.withObjectExpression(objectExpression).build();
 			} else if (getModelAdapter().isDecimal(attributeType.get())) {
-				return newDecimalAttributeBuilder().withAttributeName(attributeName)
+				DecimalAttribute result = newDecimalAttributeBuilder().withAttributeName(attributeName)
 						.withObjectExpression(objectExpression).build();
+				getModelAdapter().getUnit(result).ifPresent(unit -> {
+					result.setRateDividend(getModelAdapter().getUnitRateDividend(unit));
+					result.setRateDivisor(getModelAdapter().getUnitRateDivisor(unit));
+				});
+				return result;
 			} else if (getModelAdapter().isDate(attributeType.get())) {
 				return newDateAttributeBuilder().withAttributeName(attributeName).withObjectExpression(objectExpression)
 						.build();
@@ -170,8 +178,19 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
 				return newEnumerationAttributeBuilder().withAttributeName(attributeName)
 						.withObjectExpression(objectExpression).build();
 			} else if (getModelAdapter().isInteger(attributeType.get())) {
-				return newIntegerAttributeBuilder().withAttributeName(attributeName)
-						.withObjectExpression(objectExpression).build();
+				AttributeSelector result;
+				if (getModelAdapter().isMeasuredType(attributeType.get())) {
+					result = newDecimalAttributeBuilder().withAttributeName(attributeName)
+							.withObjectExpression(objectExpression).build();
+					getModelAdapter().getUnit((DecimalAttribute) result).ifPresent(unit -> {
+						((DecimalAttribute)result).setRateDividend(getModelAdapter().getUnitRateDividend(unit));
+						((DecimalAttribute)result).setRateDivisor(getModelAdapter().getUnitRateDivisor(unit));
+					});
+				} else {
+					result = newIntegerAttributeBuilder().withAttributeName(attributeName)
+							.withObjectExpression(objectExpression).build();
+				}
+				return result;
 			} else if (getModelAdapter().isString(attributeType.get())) {
 				return newStringAttributeBuilder().withAttributeName(attributeName)
 						.withObjectExpression(objectExpression).build();

@@ -8,10 +8,8 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
-import hu.blackbelt.judo.meta.expression.variable.MeasuredIntegerEnvironmentVariable;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.accesspoint.AbstractActorType;
 import hu.blackbelt.judo.meta.psm.data.*;
@@ -37,6 +35,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -55,7 +54,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter<Measure, Unit> measureAdapter;
+    private final MeasureAdapter<NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> measureAdapter;
 
     /**
      * Create PSM model adapter for expressions.
@@ -65,9 +64,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
      */
     public PsmModelAdapter(final ResourceSet psmResourceSet, final ResourceSet measureResourceSet) {
         this.psmResourceSet = psmResourceSet;
-
         measureProvider = new PsmMeasureProvider(measureResourceSet);
-
         measureAdapter = new MeasureAdapter<>(measureProvider, this);
     }
 
@@ -131,6 +128,16 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public String getUnitName(Unit unit) {
         return unit.getName();
+    }
+
+    @Override
+    public BigDecimal getUnitRateDividend(Unit unit) {
+        return BigDecimal.valueOf(unit.getRateDividend());
+    }
+
+    @Override
+    public BigDecimal getUnitRateDivisor(Unit unit) {
+        return BigDecimal.valueOf(unit.getRateDivisor());
     }
 
     @Override
@@ -257,22 +264,12 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
                     measuredDecimal.getUnitName());
-        } else if (numericExpression instanceof MeasuredInteger) {
-            final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
-            return measureAdapter.getUnit(measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getNamespace()) : Optional.empty(),
-                    measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName()) : Optional.empty(),
-                    measuredInteger.getUnitName());
         } else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
             final MeasuredDecimalEnvironmentVariable measuredDecimal = (MeasuredDecimalEnvironmentVariable) numericExpression;
             return measureAdapter.getUnit(
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getNamespace()) : Optional.empty(),
                     measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName()) : Optional.empty(),
                     measuredDecimal.getUnitName());
-        } else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
-            final MeasuredIntegerEnvironmentVariable measuredInteger = (MeasuredIntegerEnvironmentVariable) numericExpression;
-            return measureAdapter.getUnit(measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getNamespace()) : Optional.empty(),
-                    measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName()) : Optional.empty(),
-                    measuredInteger.getUnitName());
         } else {
             return Optional.empty();
         }

@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,10 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     Optional<U> getUnitOfType(P primitiveType);
 
     String getUnitName(U unit);
+
+    BigDecimal getUnitRateDividend(U unit);
+
+    BigDecimal getUnitRateDivisor(U unit);
 
     /**
      * Get reference of a given (object) type by name.

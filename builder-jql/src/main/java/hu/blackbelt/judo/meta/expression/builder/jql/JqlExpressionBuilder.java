@@ -331,6 +331,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return measureNames.get(qualifiedName);
     }
 
+    public MeasureName getMeasureName(String namespace, String name) {
+        return measureNames.get(namespace.replace(".", NAMESPACE_SEPARATOR)  + NAMESPACE_SEPARATOR + name);
+    }
+
     public MeasureName getDurationMeasureName(String qualifiedName) {
         return durationMeasures.get(qualifiedName);
     }

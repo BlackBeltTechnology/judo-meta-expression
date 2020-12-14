@@ -43,7 +43,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 public class PsmModelAdapterDimensionTest {
 
-    private MeasureAdapter<Measure, Unit> measureAdapter;
+    private MeasureAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, Measure, Unit> measureAdapter;
     private MeasureProvider<Measure, Unit> measureProvider;
     private Resource resource;
 

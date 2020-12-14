@@ -1,9 +1,25 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
+import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
+import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
+import hu.blackbelt.judo.meta.measure.Measure;
+import hu.blackbelt.judo.meta.measure.Unit;
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
@@ -15,32 +31,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EReference;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
-import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.constant.Instance;
-import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
-import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
-import hu.blackbelt.judo.meta.measure.Measure;
-import hu.blackbelt.judo.meta.measure.Unit;
 
 public class AsmModelAdapterTest extends ExecutionContextOnAsmTest {
 
@@ -241,28 +231,6 @@ public class AsmModelAdapterTest extends ExecutionContextOnAsmTest {
                 ).build();
         assertFalse(modelAdapter.getUnit(measuredDecimal).isPresent());
         assertThat(modelAdapter.getUnit(measuredDecimal), is(Optional.empty()));
-        //--------------------------
-        //empty: MeasuredInteger -> NumericExpression
-        MeasuredInteger integerAttribute = newMeasuredIntegerBuilder()
-                .withUnitName("TODO")
-                .withMeasure(
-                        newMeasureNameBuilder().withNamespace("demo::measures").withName("TODO").build()
-                ).build();
-        assertFalse(modelAdapter.getUnit(integerAttribute).isPresent());
-        assertThat(modelAdapter.getUnit(integerAttribute), is(Optional.empty()));
-        //--------------------------
-        //valid: MeasuredInteger -> NumericExpression
-        MeasuredInteger kilogramMeasuredInteger = newMeasuredIntegerBuilder()
-                .withUnitName(
-                        "kilogram"
-                ).withMeasure(
-                        newMeasureNameBuilder().withNamespace("demo::measures").withName("Mass").build()
-                ).build();
-
-
-        assertTrue(kilogram.isPresent());
-        assertThat(modelAdapter.getUnit(kilogramMeasuredInteger).get(), is(kilogram.get()));
-        //--------------------------
 
         IntegerConstant integerConstant = newIntegerConstantBuilder().build();
         assertThat(modelAdapter.getUnit(integerConstant), is(Optional.empty()));

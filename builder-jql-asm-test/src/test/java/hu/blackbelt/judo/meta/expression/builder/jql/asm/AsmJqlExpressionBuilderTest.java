@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -500,9 +501,11 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testMeasures() {
         createExpression("5[demo::measures::Time#min]");
-        createExpression("1.23[min]");
-
-        Expression measuredIntDiv = createExpression("2[min] div 1");
+        MeasuredDecimal unitNoFqName = (MeasuredDecimal)createExpression("1.23[min]");
+        assertThat(unitNoFqName.getUnitName(), is("minute"));
+        assertThat(unitNoFqName.getMeasure().getNamespace(), is("demo::measures"));
+        assertThat(unitNoFqName.getMeasure().getName(), is("Time"));
+        Expression measuredIntDiv = createExpression("2[min] / 1");
         assertTrue(modelAdapter.isMeasured((NumericExpression) measuredIntDiv));
         Expression notMeasuredDecimalRatio = createExpression("2.0[min] / 1[min]");
         assertFalse(modelAdapter.isMeasured((NumericExpression) notMeasuredDecimalRatio));

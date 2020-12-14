@@ -10,10 +10,8 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
-import hu.blackbelt.judo.meta.expression.variable.MeasuredIntegerEnvironmentVariable;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import org.eclipse.emf.common.util.ECollections;
@@ -23,6 +21,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,14 +43,13 @@ public class AsmModelAdapter implements
 	private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
 	private final MeasureProvider<Measure, Unit> measureProvider;
-	private final MeasureAdapter<Measure, Unit> measureAdapter;
+	private final MeasureAdapter<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> measureAdapter;
 
 	private final AsmUtils asmUtils;
 
 	public AsmModelAdapter(final ResourceSet asmResourceSet, final ResourceSet measureResourceSet) {
 		asmUtils = new AsmUtils(asmResourceSet);
 		measureProvider = new AsmMeasureProvider(measureResourceSet);
-
 		measureAdapter = new MeasureAdapter<>(measureProvider, this);
 	}
 
@@ -142,6 +140,16 @@ public class AsmModelAdapter implements
 	@Override
 	public String getUnitName(Unit unit) {
 		return unit.getName();
+	}
+
+	@Override
+	public BigDecimal getUnitRateDividend(Unit unit) {
+		return unit.getRateDividend();
+	}
+
+	@Override
+	public BigDecimal getUnitRateDivisor(Unit unit) {
+		return unit.getRateDivisor();
 	}
 
 	@Override
@@ -269,15 +277,6 @@ public class AsmModelAdapter implements
 					measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName())
 							: Optional.empty(),
 					measuredDecimal.getUnitName());
-		} else if (numericExpression instanceof MeasuredInteger) {
-			final MeasuredInteger measuredInteger = (MeasuredInteger) numericExpression;
-			return measureAdapter.getUnit(
-					measuredInteger.getMeasure() != null
-							? Optional.ofNullable(measuredInteger.getMeasure().getNamespace())
-							: Optional.empty(),
-					measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName())
-							: Optional.empty(),
-					measuredInteger.getUnitName());
 		} else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
 			final MeasuredDecimalEnvironmentVariable measuredDecimal = (MeasuredDecimalEnvironmentVariable) numericExpression;
 			return measureAdapter.getUnit(
@@ -287,15 +286,6 @@ public class AsmModelAdapter implements
 					measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName())
 							: Optional.empty(),
 					measuredDecimal.getUnitName());
-		} else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
-			final MeasuredIntegerEnvironmentVariable measuredInteger = (MeasuredIntegerEnvironmentVariable) numericExpression;
-			return measureAdapter.getUnit(
-					measuredInteger.getMeasure() != null
-							? Optional.ofNullable(measuredInteger.getMeasure().getNamespace())
-							: Optional.empty(),
-					measuredInteger.getMeasure() != null ? Optional.ofNullable(measuredInteger.getMeasure().getName())
-							: Optional.empty(),
-					measuredInteger.getUnitName());
 		} else {
 			return Optional.empty();
 		}

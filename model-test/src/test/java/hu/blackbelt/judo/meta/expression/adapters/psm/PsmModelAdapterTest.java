@@ -3,7 +3,6 @@ package hu.blackbelt.judo.meta.expression.adapters.psm;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newIntegerConstantBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newMeasureNameBuilder;
@@ -37,7 +36,6 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.IntegerConstant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
 import hu.blackbelt.judo.meta.psm.data.Attribute;
@@ -304,28 +302,6 @@ public class PsmModelAdapterTest extends ExecutionContextOnPsmTest{
                 ).build();
         assertFalse(modelAdapter.getUnit(measuredDecimal).isPresent());
         assertThat(modelAdapter.getUnit(measuredDecimal), is(Optional.empty()));
-        //--------------------------
-        //empty: MeasuredInteger -> NumericExpression
-        MeasuredInteger integerAttribute = newMeasuredIntegerBuilder()
-                .withUnitName("TODO")
-                .withMeasure(
-                        newMeasureNameBuilder().withNamespace("demo::measures").withName("TODO").build()
-                ).build();
-        assertFalse(modelAdapter.getUnit(integerAttribute).isPresent());
-        assertThat(modelAdapter.getUnit(integerAttribute), is(Optional.empty()));
-        //--------------------------
-        //valid: MeasuredInteger -> NumericExpression
-        MeasuredInteger kilogramMeasuredInteger = newMeasuredIntegerBuilder()
-                .withUnitName(
-                        "kilogram"
-                ).withMeasure(
-                        newMeasureNameBuilder().withNamespace("demo::measures").withName("Mass").build()
-                ).build();
-
-
-        assertTrue(kilogram.isPresent());
-        assertThat(modelAdapter.getUnit(kilogramMeasuredInteger).get(), is(kilogram.get()));
-        //--------------------------
 
         IntegerConstant integerConstant = newIntegerConstantBuilder().build();
         assertThat(modelAdapter.getUnit(integerConstant), is(Optional.empty()));

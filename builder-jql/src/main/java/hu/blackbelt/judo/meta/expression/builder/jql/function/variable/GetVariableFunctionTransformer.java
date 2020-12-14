@@ -39,7 +39,7 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
                     M measure = jqlTransformers.getModelAdapter().getMeasureOfType(primitiveType).get();
                     U unit = jqlTransformers.getModelAdapter().getUnitOfType(primitiveType).get();
                     MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();
-                    result = newMeasuredIntegerEnvironmentVariableBuilder()
+                    result = newMeasuredDecimalEnvironmentVariableBuilder()
                             .withCategory(category)
                             .withVariableName(variableName)
                             .withTypeName(typeName)

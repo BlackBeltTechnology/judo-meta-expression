@@ -126,10 +126,9 @@ public class EsmMeasureProvider implements MeasureProvider<Measure, Unit> {
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || u.getSymbol() != null && Objects.equals(u.getSymbol(), nameOrSymbol))
                     .findAny().orElse(null));
         } else {
-            // NOTE - non-deterministic if multiple units exist
             return getEsmElement(Unit.class)
                     .filter(u -> Objects.equals(u.getName(), nameOrSymbol) || u.getSymbol() != null && Objects.equals(u.getSymbol(), nameOrSymbol))
-                    .findAny();
+                    .reduce((u1, u2) -> { throw new IllegalStateException("Ambiguous unit symbol, more than one measure contains " + nameOrSymbol); });
         }
     }
 
