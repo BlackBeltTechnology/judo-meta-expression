@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
@@ -78,8 +79,9 @@ public class JqlMeasuredLiteralTransformer<NE, P extends NE, E extends P, C exte
         MeasureName measureNameInModel = jqlTransformers.getExpressionBuilder().getMeasureName(resolvedMeasureName.getNamespace(), resolvedMeasureName.getName());
         result.setUnitName(resolvedUnitName);
         result.setMeasure(measureNameInModel);
-        result.setRateDividend(getModelAdapter().getUnitRateDividend(unit));
-        result.setRateDivisor(getModelAdapter().getUnitRateDivisor(unit));
+        ModelAdapter.UnitFraction unitRates = getModelAdapter().getUnitRates(unit);
+        result.setRateDividend(unitRates.getDividend());
+        result.setRateDivisor(unitRates.getDivisor());
         return result;
     }
 

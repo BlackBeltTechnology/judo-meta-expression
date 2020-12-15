@@ -1784,8 +1784,12 @@
           eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/TemporalOperator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="TimestampDifferenceExpression" eSuperTypes="#//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampDifferenceExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getStartTimestamp(), getEndTimestamp());"/>
@@ -1807,6 +1811,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="endTimestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DateAdditionExpression" eSuperTypes="#//DateExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
@@ -1825,8 +1833,12 @@
           eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/TemporalOperator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DateDifferenceExpression" eSuperTypes="#//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DateDifferenceExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getStartDate(), getEndDate());"/>
@@ -1848,6 +1860,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="endDate" lowerBound="1"
           eType="#//DateExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimestampVariableReference" eSuperTypes="#//TimestampExpression #//VariableReference">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">

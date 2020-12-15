@@ -208,6 +208,11 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
                 log.error("No base measure is defined for temporal expressions");
                 return Optional.empty();
             }
+        } else if (numericExpression instanceof DecimalVariableReference) {
+            return modelAdapter.getUnit(numericExpression)
+                    .map(u -> getMeasure(u))
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof Constant) {
             return Optional.of(Collections.emptyMap());
         } else {
@@ -486,4 +491,5 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             return result;
         }
     }
+
 }

@@ -10,8 +10,11 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
+import hu.blackbelt.judo.meta.measure.DurationType;
+import hu.blackbelt.judo.meta.measure.DurationUnit;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import org.eclipse.emf.common.util.ECollections;
@@ -22,6 +25,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -143,13 +147,58 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
-	public BigDecimal getUnitRateDividend(Unit unit) {
-		return unit.getRateDividend();
+	public UnitFraction getUnitRates(Unit unit) {
+		return new UnitFraction(unit.getRateDividend(), unit.getRateDivisor());
 	}
 
 	@Override
-	public BigDecimal getUnitRateDivisor(Unit unit) {
-		return unit.getRateDivisor();
+	public UnitFraction getBaseDurationRatio(Unit unit, DurationType targetType) {
+		if (!(unit instanceof DurationUnit)) {
+			throw new IllegalArgumentException("Unit must be duration");
+		};
+		DurationUnit durationUnit = (DurationUnit) unit;
+		// examples in comments when unit is day, the base unit is minute
+		// example2 unit is millisecond, the base unit is minute
+		BigDecimal dividendToBase = durationUnit.getRateDividend(); // 1440 |---| 1
+		BigDecimal divisorToBase = durationUnit.getRateDivisor();  // 1 |---| 60000
+		DurationType target;
+		if (hu.blackbelt.judo.meta.measure.DurationType.NANOSECOND.equals(durationUnit.getType())) {
+			target = DurationType.NANOSECOND;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.MICROSECOND.equals(durationUnit.getType())) {
+			target = DurationType.MICROSECOND;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.MILLISECOND.equals(durationUnit.getType())) {
+			target = DurationType.MILLISECOND;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.SECOND.equals(durationUnit.getType())) {
+			target = DurationType.SECOND;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.MINUTE.equals(durationUnit.getType())) {
+			target = DurationType.MINUTE;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.HOUR.equals(durationUnit.getType())) {
+			target = DurationType.HOUR;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.DAY.equals(durationUnit.getType())) {
+			target = DurationType.DAY;
+		} else if (hu.blackbelt.judo.meta.measure.DurationType.WEEK.equals(durationUnit.getType())) {
+			target = DurationType.WEEK;
+		} else {
+			throw new IllegalArgumentException("No duration ration is valid for month and year.");
+		}
+		if (targetType.equals(DurationType.SECOND)) {
+			UnitFraction secondFraction = target.getSecondUnitFraction(); // 86400/1 |---| 1/1000
+			// however, we need to return the ratio calculated in the base unit. The base unit is minute, so the result must be 60/1
+			// so the result is: secondFraction * divisorToBase/dividendToBase, that is
+			BigDecimal newDividend = secondFraction.getDividend().multiply(divisorToBase);
+			BigDecimal newDivisor = secondFraction.getDivisor().multiply(dividendToBase);
+			return new UnitFraction(newDividend, newDivisor);
+		} else if (targetType.equals(DurationType.DAY)) {
+			UnitFraction dayFraction = target.getDayUnitFraction(); // 86400/1 |---| 1/1000
+			// however, we need to return the ratio calculated in the base unit. The base unit is minute, so the result must be 60/1
+			// so the result is: dayFraction * divisorToBase/dividendToBase, that is
+			BigDecimal newDividend = dayFraction.getDividend().multiply(divisorToBase);
+			BigDecimal newDivisor = dayFraction.getDivisor().multiply(dividendToBase);
+			return new UnitFraction(newDividend, newDivisor);
+		} else {
+			throw new IllegalArgumentException("Only second and day duration type is supported.");
+		}
+
 	}
 
 	@Override
@@ -286,6 +335,10 @@ public class AsmModelAdapter implements
 					measuredDecimal.getMeasure() != null ? Optional.ofNullable(measuredDecimal.getMeasure().getName())
 							: Optional.empty(),
 					measuredDecimal.getUnitName());
+		} else if (numericExpression instanceof DecimalVariableReference) {
+			DecimalVariableReference ref = (DecimalVariableReference) numericExpression;
+			EDataType objectType = (EDataType) ref.getVariable().getObjectType(this);
+			return getUnitOfType(objectType);
 		} else {
 			return Optional.empty();
 		}

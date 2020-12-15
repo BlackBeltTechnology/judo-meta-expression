@@ -167,8 +167,9 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
 				DecimalAttribute result = newDecimalAttributeBuilder().withAttributeName(attributeName)
 						.withObjectExpression(objectExpression).build();
 				getModelAdapter().getUnit(result).ifPresent(unit -> {
-					result.setRateDividend(getModelAdapter().getUnitRateDividend(unit));
-					result.setRateDivisor(getModelAdapter().getUnitRateDivisor(unit));
+					ModelAdapter.UnitFraction unitRates = getModelAdapter().getUnitRates(unit);
+					result.setRateDividend(unitRates.getDividend());
+					result.setRateDivisor(unitRates.getDivisor());
 				});
 				return result;
 			} else if (getModelAdapter().isDate(attributeType.get())) {
@@ -183,8 +184,9 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
 					result = newDecimalAttributeBuilder().withAttributeName(attributeName)
 							.withObjectExpression(objectExpression).build();
 					getModelAdapter().getUnit((DecimalAttribute) result).ifPresent(unit -> {
-						((DecimalAttribute)result).setRateDividend(getModelAdapter().getUnitRateDividend(unit));
-						((DecimalAttribute)result).setRateDivisor(getModelAdapter().getUnitRateDivisor(unit));
+						ModelAdapter.UnitFraction unitRates = getModelAdapter().getUnitRates(unit);
+						((DecimalAttribute)result).setRateDividend(unitRates.getDividend());
+						((DecimalAttribute)result).setRateDivisor(unitRates.getDivisor());
 					});
 				} else {
 					result = newIntegerAttributeBuilder().withAttributeName(attributeName)

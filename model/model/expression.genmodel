@@ -1076,6 +1076,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampAdditionExpression/timestamp"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampAdditionExpression/duration"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampAdditionExpression/operator"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampAdditionExpression/secondDivisor"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampAdditionExpression/secondDividend"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAdditionExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getDuration());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampAdditionExpression/toString"
@@ -1086,6 +1088,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/endTimestamp"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampDifferenceExpression/measure"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampDifferenceExpression/secondDivisor"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampDifferenceExpression/secondDividend"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getStartTimestamp(), getEndTimestamp());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampDifferenceExpression/isMeasured"
@@ -1099,6 +1103,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateAdditionExpression/expression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateAdditionExpression/duration"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/DateAdditionExpression/operator"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/DateAdditionExpression/dayDivisor"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/DateAdditionExpression/dayDividend"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateAdditionExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getDuration());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateAdditionExpression/toString"
@@ -1109,6 +1115,8 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/DateDifferenceExpression/endDate"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//temporal/DateDifferenceExpression/measure"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/DateDifferenceExpression/dayDivisor"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/DateDifferenceExpression/dayDividend"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateDifferenceExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getStartDate(), getEndDate());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/DateDifferenceExpression/isMeasured"
