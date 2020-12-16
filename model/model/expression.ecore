@@ -322,22 +322,9 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MeasuredInteger" eSuperTypes="#//constant/IntegerConstant">
-      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return String.format(&quot;%s[%s%s]&quot;, getValue(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
-        </eAnnotations>
-      </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return true;"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
-      </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rateDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rateDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DateConstant" eSuperTypes="#//DateExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -480,24 +467,6 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="MeasuredIntegerEnvironmentVariable"
-        eSuperTypes="#//variable/EnvironmentVariable #//IntegerExpression">
-      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return String.format(&quot;##%s:%s [%s%s]&quot;, getCategory(), getVariableName(), getMeasure() == null ? &quot;&quot; : getMeasure()+&quot;#&quot;, getUnitName());"/>
-        </eAnnotations>
-      </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return true;"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
-      </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="unitName" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"
-          containment="true"/>
-    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="MeasuredDecimalEnvironmentVariable"
         eSuperTypes="#//variable/EnvironmentVariable #//DecimalExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -612,12 +581,6 @@
   <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric"
       nsPrefix="n">
     <eClassifiers xsi:type="ecore:EClass" name="CountExpression" eSuperTypes="#//IntegerExpression #//AggregatedExpression">
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return false;"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
-      </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return getCollectionExpression() + &quot;!count()&quot;;"/>
@@ -629,12 +592,6 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
         </eAnnotations>
-      </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return modelAdapter.isMeasured(this);"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -678,12 +635,6 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
       </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return modelAdapter.isMeasured(this);"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
-      </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return &quot;-&quot; + getExpression();"/>
@@ -713,18 +664,16 @@
           eType="#//DecimalExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerAttribute" eSuperTypes="#//IntegerExpression #//numeric/NumericAttribute"/>
-    <eClassifiers xsi:type="ecore:EClass" name="DecimalAttribute" eSuperTypes="#//DecimalExpression #//numeric/NumericAttribute"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalAttribute" eSuperTypes="#//DecimalExpression #//numeric/NumericAttribute">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rateDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rateDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerAggregatedExpression" eSuperTypes="#//IntegerExpression #//AggregatedExpression">
       <eOperations name="getLambdaFunctions" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
-      </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return modelAdapter.isMeasured(this);"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -764,12 +713,6 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
       </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return modelAdapter.isMeasured(this);"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
-      </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return &quot;ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
@@ -778,14 +721,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//DecimalExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression">
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return modelAdapter.isMeasured(this);"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
-      </eOperations>
-    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression">
       <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -813,12 +749,6 @@
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return &quot;LENGTH(&quot; + getExpression() + &quot;)&quot;;"/>
         </eAnnotations>
-      </eOperations>
-      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return false;"/>
-        </eAnnotations>
-        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
@@ -1854,8 +1784,12 @@
           eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/TemporalOperator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="TimestampDifferenceExpression" eSuperTypes="#//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampDifferenceExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getStartTimestamp(), getEndTimestamp());"/>
@@ -1877,6 +1811,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="endTimestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DateAdditionExpression" eSuperTypes="#//DateExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
@@ -1895,8 +1833,12 @@
           eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/TemporalOperator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="DateDifferenceExpression" eSuperTypes="#//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DateDifferenceExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getStartDate(), getEndDate());"/>
@@ -1918,6 +1860,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="endDate" lowerBound="1"
           eType="#//DateExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dayDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimestampVariableReference" eSuperTypes="#//TimestampExpression #//VariableReference">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">

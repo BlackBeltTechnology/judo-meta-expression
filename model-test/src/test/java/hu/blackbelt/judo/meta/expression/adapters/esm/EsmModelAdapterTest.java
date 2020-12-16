@@ -8,7 +8,6 @@ import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStrin
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
@@ -51,7 +50,6 @@ import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalArithmeticExpression;
@@ -172,8 +170,6 @@ public class EsmModelAdapterTest {
         assertThat(speedUnit, is(measureMap.get("Velocity").getUnits().get(0)));
         MeasuredDecimal decimalLength = newMeasuredDecimalBuilder().withMeasure(modelAdapter.buildMeasureName(measureMap.get("Length")).get()).withUnitName("m").withValue(BigDecimal.ONE).build();
         assertThat(modelAdapter.getUnit(decimalLength).get(), is(measureMap.get("Length").getUnits().get(0)));
-        MeasuredInteger integerTime = newMeasuredIntegerBuilder().withMeasure(modelAdapter.buildMeasureName(measureMap.get("Time")).get()).withUnitName("s").withValue(BigInteger.ONE).build();
-        assertThat(modelAdapter.getUnit(integerTime).get(), is(measureMap.get("Time").getUnits().get(0)));
         DecimalArithmeticExpression arithmeticExpression = newDecimalArithmeticExpressionBuilder().withLeft(
                 newMeasuredDecimalBuilder()
                         .withMeasure(modelAdapter.buildMeasureName(measureMap.get("Time")).get())

@@ -1,27 +1,9 @@
-context EXPR!MeasuredInteger {
-    constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved")
-        
-        check: self.isDimensionDefined()
-        message: "Measure of integer constant is invalid: " + self
-    }
-}
-
 context EXPR!MeasuredDecimal {
     constraint MeasureIsValid {
         guard: self.satisfiesAll("Resolved")
         
         check: self.isDimensionDefined()
         message: "Measure of decimal constant is invalid: " + self
-    }
-}
-
-context EXPR!MeasuredIntegerEnvironmentVariable {
-    constraint MeasureIsValid {
-        guard: self.satisfiesAll("Resolved")
-
-        check: self.isDimensionDefined()
-        message: "Measure of integer environment variable is invalid: " + self
     }
 }
 

@@ -75,7 +75,6 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         initResources(createTestModel(dateType, company));
         createExpression(company, "self.producedOn");
         Expression expression = createExpression(company, "self.producedOn + 1[day]");
-        System.out.println(expression);
     }
 
     @Test

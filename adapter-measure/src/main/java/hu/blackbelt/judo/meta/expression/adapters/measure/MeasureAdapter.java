@@ -6,11 +6,9 @@ import hu.blackbelt.judo.meta.expression.SwitchExpression;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import hu.blackbelt.judo.meta.expression.constant.MeasuredInteger;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
-import hu.blackbelt.judo.meta.expression.variable.MeasuredIntegerEnvironmentVariable;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -24,13 +22,13 @@ import java.util.stream.Collectors;
  * @param <M> measure type (in metamodel)
  * @param <U> unit type (in metamodel)
  */
-public class MeasureAdapter<M, U> {
+public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapter.class);
     /**
      * Measure adapter that is used to resolve (object) types of numeric expressions.
      */
-    private final ModelAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, M, U> modelAdapter;
+    private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
 
     /**
      * Measure provider.
@@ -42,7 +40,7 @@ public class MeasureAdapter<M, U> {
      */
     final Map<Map<MeasureId, Integer>, MeasureId> dimensions = new ConcurrentHashMap<>();
 
-    public MeasureAdapter(final MeasureProvider<M, U> measureProvider, final ModelAdapter modelAdapter) {
+    public MeasureAdapter(final MeasureProvider<M, U> measureProvider, final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
         this.measureProvider = measureProvider;
         this.modelAdapter = modelAdapter;
 
@@ -71,14 +69,8 @@ public class MeasureAdapter<M, U> {
      * @return <code>true</code> if numeric expression is measured, <code>false</code> otherwise
      */
     public boolean isMeasured(final NumericExpression numericExpression) {
-        if (numericExpression instanceof MeasuredInteger) {
-            // measured integer (constant) is always measured
-            return true;
-        } else if (numericExpression instanceof MeasuredDecimal) {
+        if (numericExpression instanceof MeasuredDecimal) {
             // measured decimal (constant) is always measured
-            return true;
-        } else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
-            // measured integer environment variable is always measured
             return true;
         } else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
             // measured decimal environment variable is always measured
@@ -195,37 +187,17 @@ public class MeasureAdapter<M, U> {
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());
-        } else if (numericExpression instanceof MeasuredInteger) {
-            return modelAdapter.getUnit(numericExpression)
-                    .map(u -> getMeasure(u))
-                    .map(m -> getDimensionOfMeasure(m))
-                    .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof MeasuredDecimalEnvironmentVariable) {
-            return modelAdapter.getUnit(numericExpression)
-                    .map(u -> getMeasure(u))
-                    .map(m -> getDimensionOfMeasure(m))
-                    .filter(d -> d.isPresent()).map(d -> d.get());
-        } else if (numericExpression instanceof MeasuredIntegerEnvironmentVariable) {
             return modelAdapter.getUnit(numericExpression)
                     .map(u -> getMeasure(u))
                     .map(m -> getDimensionOfMeasure(m))
                     .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof DecimalArithmeticExpression) {
             return getDimensionOfDecimalArithmeticExpression((DecimalArithmeticExpression) numericExpression);
-        } else if (numericExpression instanceof IntegerArithmeticExpression) {
-            return getDimensionOfIntegerArithmeticExpression((IntegerArithmeticExpression) numericExpression);
-        } else if (numericExpression instanceof IntegerOppositeExpression) {
-            return getDimension(((IntegerOppositeExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalOppositeExpression) {
             return getDimension(((DecimalOppositeExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerAggregatedExpression) {
-            return getDimension(((IntegerAggregatedExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalAggregatedExpression) {
             return getDimension(((DecimalAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof RoundExpression) {
-            return getDimension(((RoundExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerSwitchExpression) {
-            return getDimensionOfSwitchExpression((IntegerSwitchExpression) numericExpression);
         } else if (numericExpression instanceof DecimalSwitchExpression) {
             return getDimensionOfSwitchExpression((DecimalSwitchExpression) numericExpression);
         } else if (numericExpression instanceof TimestampDifferenceExpression) {
@@ -236,6 +208,11 @@ public class MeasureAdapter<M, U> {
                 log.error("No base measure is defined for temporal expressions");
                 return Optional.empty();
             }
+        } else if (numericExpression instanceof DecimalVariableReference) {
+            return modelAdapter.getUnit(numericExpression)
+                    .map(u -> getMeasure(u))
+                    .map(m -> getDimensionOfMeasure(m))
+                    .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof Constant) {
             return Optional.of(Collections.emptyMap());
         } else {
@@ -254,61 +231,6 @@ public class MeasureAdapter<M, U> {
                 .filter(m -> measureProvider.getUnits(m).contains(unit))
                 .findAny()
                 .orElse(null);
-    }
-
-    private Optional<Map<MeasureId, Integer>> getDimensionOfIntegerArithmeticExpression(final IntegerArithmeticExpression integerArithmeticExpression) {
-        final Optional<Map<MeasureId, Integer>> left = getDimension(integerArithmeticExpression.getLeft());
-        final Optional<Map<MeasureId, Integer>> right = getDimension(integerArithmeticExpression.getRight());
-
-        switch (integerArithmeticExpression.getOperator()) {
-            case ADD:
-            case SUBSTRACT:
-            case MODULO:
-                if (Objects.equals(left.orElse(Collections.emptyMap()), right.orElse(Collections.emptyMap()))) {
-                    return left;
-                } else if (!left.isPresent() || !right.isPresent()) {
-                    log.error("Addition of scalar and measured values is not allowed");
-                    return Optional.empty();
-                } else {
-                    log.error("Additional operands must match");
-                    return Optional.empty();
-                }
-            case MULTIPLY:
-            case DIVIDE:
-                final Map<MeasureId, Integer> base = new HashMap<>();
-                if (left.isPresent()) {
-                    base.putAll(left.get());
-                }
-                if (right.isPresent()) {
-                    right.get().forEach((measure, exponent) -> {
-                        final int currentExponent;
-                        if (base.containsKey(measure)) {
-                            currentExponent = base.get(measure);
-                        } else {
-                            currentExponent = 0;
-                        }
-                        final int newExponent;
-                        switch (integerArithmeticExpression.getOperator()) {
-                            case MULTIPLY:
-                                newExponent = currentExponent + exponent;
-                                break;
-                            case DIVIDE:
-                                newExponent = currentExponent - exponent;
-                                break;
-                            default:
-                                throw new IllegalStateException("Unsupported operation");
-                        }
-                        if (newExponent != 0) {
-                            base.put(measure, newExponent);
-                        } else {
-                            base.remove(measure);
-                        }
-                    });
-                }
-                return Optional.of(base);
-        }
-
-        throw new IllegalArgumentException("Unsupported operation");
     }
 
     private Optional<Map<MeasureId, Integer>> getDimensionOfDecimalArithmeticExpression(final DecimalArithmeticExpression decimalArithmeticExpression) {
@@ -569,4 +491,5 @@ public class MeasureAdapter<M, U> {
             return result;
         }
     }
+
 }

@@ -2,22 +2,22 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredDecimalBuilder;
-import hu.blackbelt.judo.meta.expression.constant.util.builder.MeasuredIntegerBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.DecimalLiteral;
 import hu.blackbelt.judo.meta.jql.jqldsl.IntegerLiteral;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.MeasuredLiteral;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredIntegerBuilder;
 
 public class JqlMeasuredLiteralTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -53,11 +53,11 @@ public class JqlMeasuredLiteralTransformer<NE, P extends NE, E extends P, C exte
         String unitName = getUnitName(measureIdentifier);
         MeasureName measureName = getMeasureName(measureIdentifier);
         JqlExpression jqlValue = measuredLiteral.getValue();
-        Expression result;
+        MeasuredDecimal result;
         if (jqlValue instanceof IntegerLiteral) {
             IntegerLiteral integerLiteral = (IntegerLiteral) jqlValue;
-            BigInteger integerValue = integerLiteral.getValue();
-            MeasuredIntegerBuilder builder = newMeasuredIntegerBuilder().withUnitName(unitName).withValue(integerValue);
+            BigDecimal decimalValue = new BigDecimal(integerLiteral.getValue());
+            MeasuredDecimalBuilder builder = newMeasuredDecimalBuilder().withUnitName(unitName).withValue(decimalValue);
             if (measureName != null) {
                 builder.withMeasure(measureName);
             }
@@ -72,6 +72,16 @@ public class JqlMeasuredLiteralTransformer<NE, P extends NE, E extends P, C exte
         } else {
             throw new IllegalStateException("Invalid type of JQL measured literal: " + measuredLiteral);
         }
+        U unit = getModelAdapter().getUnit(result).orElseThrow(() -> new IllegalArgumentException("No unit found in model: " + unitName));
+        M measure = getModelAdapter().getMeasure(result).orElseThrow(() -> new IllegalArgumentException("No measure found in model: " + unitName));
+        String resolvedUnitName =  getModelAdapter().getUnitName(unit);
+        MeasureName resolvedMeasureName = getModelAdapter().buildMeasureName(measure).orElseThrow(() -> new IllegalArgumentException("Measure name not found: " + unitName));
+        MeasureName measureNameInModel = jqlTransformers.getExpressionBuilder().getMeasureName(resolvedMeasureName.getNamespace(), resolvedMeasureName.getName());
+        result.setUnitName(resolvedUnitName);
+        result.setMeasure(measureNameInModel);
+        ModelAdapter.UnitFraction unitRates = getModelAdapter().getUnitRates(unit);
+        result.setRateDividend(unitRates.getDividend());
+        result.setRateDivisor(unitRates.getDivisor());
         return result;
     }
 

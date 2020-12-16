@@ -5,11 +5,8 @@ import hu.blackbelt.judo.meta.expression.NumericExpression;
 import hu.blackbelt.judo.meta.expression.ReferenceSelector;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +72,18 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     Optional<U> getUnitOfType(P primitiveType);
 
     String getUnitName(U unit);
+
+    UnitFraction getUnitRates(U unit);
+
+    /**
+     *  Find the correct ratio between the base unit of the given unit's measure and a duration type.
+     *  E.g. when the given unit is minute (ratio is 60/1 regarding to base unit), and targetType is SECOND, 1/1 will be returned.
+     *  When given unit is minute and targetType is DAY, 1/86400 will be returned.
+     * @param unit The duration unit for which we look for a ratio.
+     * @param targetType Must be either SECOND or DAY.
+     * @return The ratio between the <i>base unit</i> of the given unit's measure and the given target type.
+     */
+    UnitFraction getBaseDurationRatio(U unit, DurationType targetType);
 
     /**
      * Get reference of a given (object) type by name.
@@ -384,4 +393,48 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     
     TO getPrincipal(NE actorType);
 
+    enum DurationType {
+        NANOSECOND(1, 1_000_000_000, 1, 86_400_000_000_000L),
+        MICROSECOND(1, 1000_000, 1, 86_400_000_000L),
+        MILLISECOND(1, 1000, 1, 86_400_000),
+        SECOND(1, 1, 1, 86_400),
+        MINUTE(60, 1, 1, 1440),
+        HOUR(3600, 1, 1, 24),
+        DAY(86400, 1, 1, 1),
+        WEEK(604800, 1, 7, 1);
+
+        private final UnitFraction secondUnitFraction;
+        private final UnitFraction dayUnitFraction;
+
+        DurationType(long secondDividend, long secondDivisor, long dayDividend, long dayDivisor) {
+            secondUnitFraction = new UnitFraction(BigDecimal.valueOf(secondDividend), BigDecimal.valueOf(secondDivisor));
+            dayUnitFraction = new UnitFraction(BigDecimal.valueOf(dayDividend), BigDecimal.valueOf(dayDivisor));
+        }
+
+        public UnitFraction getSecondUnitFraction() {
+            return secondUnitFraction;
+        }
+
+        public UnitFraction getDayUnitFraction() {
+            return dayUnitFraction;
+        }
+    }
+
+    class UnitFraction {
+        private final BigDecimal dividend;
+        private final BigDecimal divisor;
+
+        public UnitFraction(BigDecimal unitDividend, BigDecimal unitDivisor) {
+            this.dividend = unitDividend;
+            this.divisor = unitDivisor;
+        }
+
+        public BigDecimal getDividend() {
+            return dividend;
+        }
+
+        public BigDecimal getDivisor() {
+            return divisor;
+        }
+    }
 }

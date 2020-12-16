@@ -1,10 +1,13 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.operation;
 
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.operator.*;
+import hu.blackbelt.judo.meta.expression.temporal.DateAdditionExpression;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampAdditionExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
 
 import java.util.Objects;
@@ -93,8 +96,14 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
             case "+": {
                 TimestampExpression timestamp = (TimestampExpression) (left instanceof TimestampExpression ? left : right);
                 NumericExpression duration = (NumericExpression) (left instanceof NumericExpression ? left : right);
-                return createMeasuredTemporalAddition(duration,
+                TimestampAdditionExpression additionExpression = createMeasuredTemporalAddition(duration,
                         () -> newTimestampAdditionExpressionBuilder().withTimestamp(timestamp).withDuration(duration).withOperator(TemporalOperator.ADD).build());
+                M measure = getModelAdapter().getMeasure(duration).get();
+                U unit = getModelAdapter().getUnits(measure).get(0);
+                ModelAdapter.UnitFraction durationRatio = getModelAdapter().getBaseDurationRatio(unit, ModelAdapter.DurationType.SECOND);
+                additionExpression.setSecondDividend(durationRatio.getDividend());
+                additionExpression.setSecondDivisor(durationRatio.getDivisor());
+                return additionExpression;
             }
             case "-": {
                 if (!(left instanceof TimestampExpression) || !(right instanceof NumericExpression)) {
@@ -102,8 +111,14 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
                 }
                 TimestampExpression date = (TimestampExpression) left;
                 NumericExpression duration = (NumericExpression) right;
-                return createMeasuredTemporalAddition(duration,
+                TimestampAdditionExpression additionExpression = createMeasuredTemporalAddition(duration,
                         () -> newTimestampAdditionExpressionBuilder().withTimestamp(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build());
+                M measure = getModelAdapter().getMeasure(duration).get();
+                U unit = getModelAdapter().getUnits(measure).get(0);
+                ModelAdapter.UnitFraction durationRatio = getModelAdapter().getBaseDurationRatio(unit, ModelAdapter.DurationType.SECOND);
+                additionExpression.setSecondDividend(durationRatio.getDividend());
+                additionExpression.setSecondDivisor(durationRatio.getDivisor());
+                return additionExpression;
             }
             default:
                 throw new UnsupportedOperationException("Unsupported timestamp operation: " + operator);
@@ -115,8 +130,14 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
             case "+": {
                 DateExpression date = (DateExpression) (left instanceof DateExpression ? left : right);
                 NumericExpression duration = (NumericExpression) (left instanceof NumericExpression ? left : right);
-                return createMeasuredTemporalAddition(duration,
+                DateAdditionExpression additionExpression = createMeasuredTemporalAddition(duration,
                         () -> newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.ADD).build());
+                M measure = getModelAdapter().getMeasure(duration).get();
+                U unit = getModelAdapter().getUnits(measure).get(0);
+                ModelAdapter.UnitFraction durationRatio = getModelAdapter().getBaseDurationRatio(unit, ModelAdapter.DurationType.DAY);
+                additionExpression.setDayDividend(durationRatio.getDividend());
+                additionExpression.setDayDivisor(durationRatio.getDivisor());
+                return additionExpression;
             }
             case "-": {
                 if (!(left instanceof DateExpression) || !(right instanceof NumericExpression)) {
@@ -124,15 +145,21 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
                 }
                 DateExpression date = (DateExpression) left;
                 NumericExpression duration = (NumericExpression) right;
-                return createMeasuredTemporalAddition(duration,
+                DateAdditionExpression additionExpression = createMeasuredTemporalAddition(duration,
                         () -> newDateAdditionExpressionBuilder().withExpression(date).withDuration(duration).withOperator(TemporalOperator.SUBSTRACT).build());
+                M measure = getModelAdapter().getMeasure(duration).get();
+                U unit = getModelAdapter().getUnits(measure).get(0);
+                ModelAdapter.UnitFraction durationRatio = getModelAdapter().getBaseDurationRatio(unit, ModelAdapter.DurationType.DAY);
+                additionExpression.setDayDividend(durationRatio.getDividend());
+                additionExpression.setDayDivisor(durationRatio.getDivisor());
+                return additionExpression;
             }
             default:
                 throw new UnsupportedOperationException("Unsupported date operation: " + operator);
         }
     }
 
-    private Expression createMeasuredTemporalAddition(NumericExpression duration, Supplier<Expression> supplier) {
+    private <T extends Expression> T createMeasuredTemporalAddition(NumericExpression duration, Supplier<T> supplier) {
         return getModelAdapter().getMeasure(duration).filter(m -> getModelAdapter().getUnits(m).stream().anyMatch(getModelAdapter()::isDurationSupportingAddition)).
                 map(unit -> supplier.get()).orElseThrow(() -> new UnsupportedOperationException("Operand is not a temporal duration"));
     }
