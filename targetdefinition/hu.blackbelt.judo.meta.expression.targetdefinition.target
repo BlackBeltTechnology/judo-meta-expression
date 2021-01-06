@@ -50,23 +50,23 @@
 		  <unit id="hu.blackbelt.epsilon.runtime.feature.feature.group" version="0.0.0"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20201216_154051_d30a51a_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20210106_210103_3295914_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.asm.feature.feature.group" version="0.0.0"/>
 	  </location>
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20210104_213337_9d26f65_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20210106_112650_d5868ac_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.esm.feature.feature.group" version="0.0.0"/>
 	  </location>	  
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20201216_090234_f397dbf_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20210106_170021_4b241a4_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.psm.feature.feature.group" version="0.0.0"/>
 	  </location>	  
 	  <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20201216_155219_7a2b6b6_develop"/>
+		  <repository location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20210106_210843_e60d2b6_develop"/>
 		  <unit id="hu.blackbelt.judo.meta.measure.feature.feature.group" version="0.0.0"/>
 	  </location>
       <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-          <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20201216_154341_846810d_develop"/>
+          <repository location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20210106_210111_cdaa3d5_develop"/>
           <unit id="hu.blackbelt.judo.meta.jql.feature.feature.group" version="0.0.0"/>
       </location>
   </locations>
