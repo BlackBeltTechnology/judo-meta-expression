@@ -202,6 +202,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         return relation.orElse(Optional.empty());
     }
 
+    @Override
+    public Optional<? extends ReferenceTypedElement> getTransferRelation(TransferObjectType transferObject, String relationName) {
+        return transferObject.getAllRelations().stream().filter(relation -> relation.getName().equals(relationName)).findAny();
+    }
+
     private EList<Generalization> getAllGeneralizations(hu.blackbelt.judo.meta.esm.structure.Class type) {
         EList<Generalization> generalizations = new UniqueEList<>();
         generalizations.addAll(type.getGeneralizations());
@@ -230,6 +235,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<? extends PrimitiveTypedElement> getTransferAttribute(TransferObjectType transferObject, String attributeName) {
+        return transferObject.getAllAttributes().stream().filter(f -> f.getName().equals(attributeName)).findAny();
+    }
+
+    @Override
     public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
         return Optional.ofNullable(attribute.getDataType());
     }
@@ -253,6 +263,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public hu.blackbelt.judo.meta.esm.structure.Class getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
+    }
+
+    @Override
+    public TransferObjectType getTransferRelationTarget(ReferenceTypedElement relation) {
+        return (TransferObjectType) relation.getTarget();
     }
 
     @Override

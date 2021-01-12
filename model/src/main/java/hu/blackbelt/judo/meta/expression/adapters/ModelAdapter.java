@@ -94,6 +94,8 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
      */
     Optional<? extends RTE> getReference(C clazz, String referenceName);
 
+    Optional<? extends TR> getTransferRelation(TO transferObject, String relationName);
+
     /**
      * Check multiplicity of a reference selector.
      *
@@ -118,6 +120,8 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
      */
     C getTarget(RTE reference);
 
+    TO getTransferRelationTarget(TR relation);
+
     /**
      * Get attribute of a given (object) type by name.
      *
@@ -126,6 +130,8 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
      * @return attribute
      */
     Optional<? extends PTE> getAttribute(C clazz, String attributeName);
+
+    Optional<? extends TA> getTransferAttribute(TO transferObject, String attributeName);
 
     /**
      * Get (primitive) type of an attribute.

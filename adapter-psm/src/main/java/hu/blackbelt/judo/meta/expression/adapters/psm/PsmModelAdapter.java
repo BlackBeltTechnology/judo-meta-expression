@@ -211,6 +211,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<? extends TransferAttribute> getTransferAttribute(TransferObjectType transferObject, String attributeName) {
+        return transferObject.getAttributes().stream().filter(transferAttribute -> transferAttribute.getName().equals(attributeName)).findAny();
+    }
+
+    @Override
     public Optional<? extends Primitive> getAttributeType(PrimitiveTypedElement attribute) {
         return Optional.ofNullable(attribute.getDataType());
     }
@@ -535,11 +540,11 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
         return null;
     }
 
-    public Optional<? extends TransferObjectRelation> getTransferRelation(TransferObjectType clazz,
-			String referenceName) {
+    public Optional<? extends TransferObjectRelation> getTransferRelation(TransferObjectType clazz, String referenceName) {
 		return clazz.getRelations().stream().filter(r -> r.getName().equalsIgnoreCase(referenceName)).findAny();
 	}
-	
+
+	@Override
 	public TransferObjectType getTransferRelationTarget(TransferObjectRelation relation) {
 		return relation.getTarget();
 	}

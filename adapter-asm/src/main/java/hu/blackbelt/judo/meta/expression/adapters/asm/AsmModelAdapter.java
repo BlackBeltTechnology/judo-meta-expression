@@ -207,6 +207,11 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public Optional<? extends EReference> getTransferRelation(EClass transferObject, String relationName) {
+		return transferObject.getEAllReferences().stream().filter(r -> Objects.equals(r.getName(), relationName)).findAny();
+	}
+
+	@Override
 	public boolean isCollection(final ReferenceSelector referenceSelector) {
 		return ((EReference) referenceSelector.getReference(this)).isMany();
 	}
@@ -222,8 +227,18 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public EClass getTransferRelationTarget(EReference relation) {
+		return relation.getEReferenceType();
+	}
+
+	@Override
 	public Optional<? extends EAttribute> getAttribute(final EClass clazz, final String attributeName) {
 		return clazz.getEAllAttributes().stream().filter(r -> Objects.equals(r.getName(), attributeName)).findAny();
+	}
+
+	@Override
+	public Optional<? extends EAttribute> getTransferAttribute(EClass transferObject, String attributeName) {
+		return transferObject.getEAllAttributes().stream().filter(r -> Objects.equals(r.getName(), attributeName)).findAny();
 	}
 
 	@Override
