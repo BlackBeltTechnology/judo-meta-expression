@@ -165,11 +165,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     private void addMeasures() {
         modelAdapter.getAllMeasures().forEach(measure -> {
             MeasureName measureName = modelAdapter.buildMeasureName(measure).get();
-            boolean alreadyAdded = all(expressionResource.getResourceSet(), MeasureName.class)
-                    .anyMatch(m -> Objects.equals(m.getName(), measureName.getName()) && Objects.equals(m.getNamespace(), measureName.getNamespace()));
+            String measureNameString = String.join(NAMESPACE_SEPARATOR, measureName.getNamespace(), measureName.getName());
+            boolean alreadyAdded = measureNames.containsKey(measureNameString);
             if (!alreadyAdded) {
                 expressionResource.getContents().add(measureName);
-                String measureNameString = String.join(NAMESPACE_SEPARATOR, measureName.getNamespace(), measureName.getName());
                 measureNames.put(measureNameString, measureName);
                 modelAdapter.getUnits(measure).stream().filter(modelAdapter::isDurationSupportingAddition).findAny().ifPresent(u -> durationMeasures.put(measureNameString, measureName));
             }
