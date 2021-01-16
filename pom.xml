@@ -56,7 +56,8 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
         <epsilon-runtime-version>1.2.5.20201120_160408_045ee84_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.2.5.20201120_160649_c9b3620_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-eclipse-version>1.2.5.20210115_043021_15e0c93_develop
+</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -103,19 +104,24 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.3</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20210106_170021_4b241a4_develop</judo-meta-psm-version>
+        <judo-meta-psm-version>1.1.0.20210115_054225_188af7f_develop
+</judo-meta-psm-version>
         <judo-meta-psm-import-range>[1.0,1.1)</judo-meta-psm-import-range>
 
-        <judo-meta-asm-version>1.1.0.20210108_170157_0102303_develop</judo-meta-asm-version>
+        <judo-meta-asm-version>1.1.0.20210116_014325_4162aa9_develop
+</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20210112_230450_a6d8a5c_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20210115_134149_5e2bc69_develop
+</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
-        <judo-meta-jql-version>1.0.1.20210106_210111_cdaa3d5_develop</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1.20210116_014330_f288316_develop
+</judo-meta-jql-version>
         <judo-meta-jql-import-range>[1.0,1.1)</judo-meta-jql-import-range>
 
-        <judo-meta-measure-version>1.0.0.20210106_210843_e60d2b6_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.0.20210116_015135_8845e8c_develop
+</judo-meta-measure-version>
         <judo-meta-measure-import-range>[1.0,1.1)</judo-meta-measure-import-range>
         <log4j.configuration>log4j.properties</log4j.configuration>
 
