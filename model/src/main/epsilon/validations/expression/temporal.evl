@@ -92,15 +92,15 @@ context EXPR!DateConstant {
 
 context EXPR!TimestampEnvironmentVariable {
     constraint Resolved {
-        check: true
-        message: "Unsupported expression: " + self
+        check: self.variableName.isDefined()
+        message: "Value of timestamp environment variable is not defined: " + self
     }
 }
 
 context EXPR!DateEnvironmentVariable {
     constraint Resolved {
-        check: true
-        message: "Unsupported expression: " + self
+        check: self.variableName.isDefined()
+        message: "Value of date environment variable is not defined: " + self
     }
 }
 
