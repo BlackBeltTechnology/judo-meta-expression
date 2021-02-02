@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.JqlFeatureTransformResult;
 import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
@@ -106,36 +107,45 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                     	JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, navigation);
                     	return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
                     });
-                    navigationBase = null;
-                    if (baseVariable instanceof ObjectVariable) {
-                        navigationBase = (C) ((ObjectVariable) baseVariable).getObjectType(getModelAdapter());
-                        baseExpression = newObjectVariableReferenceBuilder().withVariable((ObjectVariable) baseVariable).build();
-                    } else if (baseVariable instanceof CollectionVariable) {
-                        navigationBase = (C) ((CollectionVariable) baseVariable).getObjectType(getModelAdapter());
-                        baseExpression = newCollectionVariableReferenceBuilder().withVariable((CollectionVariable) baseVariable).build();
-                    } else if (baseVariable instanceof IntegerVariable) {
-                        baseExpression = newIntegerVariableReferenceBuilder().withVariable((IntegerVariable) baseVariable).build();
-                    } else if (baseVariable instanceof StringVariable) {
-                        baseExpression = newStringVariableReferenceBuilder().withVariable((StringVariable) baseVariable).build();
-                    } else if (baseVariable instanceof DecimalVariable) {
-                        baseExpression = newDecimalVariableReferenceBuilder().withVariable((DecimalVariable) baseVariable).build();
-                    } else if (baseVariable instanceof BooleanVariable) {
-                        baseExpression = newBooleanVariableReferenceBuilder().withVariable((BooleanVariable) baseVariable).build();
-                    } else if (baseVariable instanceof DateVariable) {
-                        baseExpression = newDateVariableReferenceBuilder().withVariable((DateVariable) baseVariable).build();
-                    } else if (baseVariable instanceof TimestampVariable) {
-                        baseExpression = newTimestampVariableReferenceBuilder().withVariable((TimestampVariable) baseVariable).build();
-                    } else if (baseVariable instanceof CustomVariable) {
-                        baseExpression = newCustomVariableReferenceBuilder().withVariable((CustomVariable) baseVariable).build();
-                    } else if (baseVariable instanceof EnumerationVariable) {
-                        baseExpression = newEnumerationVariableReferenceBuilder().withVariable((EnumerationVariable) baseVariable).build();
-                    }
+                    JqlFeatureTransformResult<C> createVariableReferenceResult = createVariableReference(baseVariable, baseExpression);
+                    baseExpression = createVariableReferenceResult.baseExpression;
+                    navigationBase = createVariableReferenceResult.navigationBase;
                 }
             }
         }
         return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
     }
 
+    protected JqlFeatureTransformResult<C> createVariableReference(Variable baseVariable, Expression defaultBaseExpression) {
+        C navigationBase = null;
+        Expression baseExpression = defaultBaseExpression;
+        if (baseVariable instanceof ObjectVariable) {
+            navigationBase = (C) ((ObjectVariable) baseVariable).getObjectType(getModelAdapter());
+            baseExpression = newObjectVariableReferenceBuilder().withVariable((ObjectVariable) baseVariable).build();
+        } else if (baseVariable instanceof CollectionVariable) {
+            navigationBase = (C) ((CollectionVariable) baseVariable).getObjectType(getModelAdapter());
+            baseExpression = newCollectionVariableReferenceBuilder().withVariable((CollectionVariable) baseVariable).build();
+        } else if (baseVariable instanceof IntegerVariable) {
+            baseExpression = newIntegerVariableReferenceBuilder().withVariable((IntegerVariable) baseVariable).build();
+        } else if (baseVariable instanceof StringVariable) {
+            baseExpression = newStringVariableReferenceBuilder().withVariable((StringVariable) baseVariable).build();
+        } else if (baseVariable instanceof DecimalVariable) {
+            baseExpression = newDecimalVariableReferenceBuilder().withVariable((DecimalVariable) baseVariable).build();
+        } else if (baseVariable instanceof BooleanVariable) {
+            baseExpression = newBooleanVariableReferenceBuilder().withVariable((BooleanVariable) baseVariable).build();
+        } else if (baseVariable instanceof DateVariable) {
+            baseExpression = newDateVariableReferenceBuilder().withVariable((DateVariable) baseVariable).build();
+        } else if (baseVariable instanceof TimestampVariable) {
+            baseExpression = newTimestampVariableReferenceBuilder().withVariable((TimestampVariable) baseVariable).build();
+        } else if (baseVariable instanceof CustomVariable) {
+            baseExpression = newCustomVariableReferenceBuilder().withVariable((CustomVariable) baseVariable).build();
+        } else if (baseVariable instanceof EnumerationVariable) {
+            baseExpression = newEnumerationVariableReferenceBuilder().withVariable((EnumerationVariable) baseVariable).build();
+        }
+        return new JqlFeatureTransformResult<C>(navigationBase, baseExpression);
+    }
+
+    
     public Expression doTransform(NavigationExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         NavigationExpression navigation = jqlExpression;
         LOG.debug("Transform navigation: {}", navigationString(navigation));
