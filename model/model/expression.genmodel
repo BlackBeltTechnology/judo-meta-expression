@@ -291,7 +291,7 @@
         <genOperations ecoreOperation="expression.ecore#//variable/LiteralEnvironmentVariable/toString"
             body="return java.util.Objects.toString(getEnumeration(), &quot;&quot;) + &quot;#&quot; + String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
         <genOperations ecoreOperation="expression.ecore#//variable/LiteralEnvironmentVariable/getEnumeration"
-            body="return basicGetEnumeration();">
+            body="return getTypeName();">
           <genParameters ecoreParameter="expression.ecore#//variable/LiteralEnvironmentVariable/getEnumeration/modelAdapter"/>
         </genOperations>
       </genClasses>
