@@ -590,6 +590,13 @@
         <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/toString"
             body="return &quot;(&quot; + getObjectNavigationExpression() + &quot; IS NULL)&quot;;"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//logical/UndefinedEnvironmentVariableComparison">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedEnvironmentVariableComparison/environmentVariable"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedEnvironmentVariableComparison/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getEnvironmentVariable());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedEnvironmentVariableComparison/toString"
+            body="return &quot;(&quot; + getEnvironmentVariable() + &quot; IS NULL)&quot;;"/>
+      </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/ContainsExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ContainsExpression/collectionExpression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ContainsExpression/objectExpression"/>
