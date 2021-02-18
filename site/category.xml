@@ -104,10 +104,10 @@
    <!--
    <repository-reference location="https://download.eclipse.org/epsilon/updates/1.5/" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.2.5.20210115_043021_15e0c93_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20210129_171507_d597724_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20210126_163622_69b92a0_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20210202_141718_062106f_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20210129_172521_435b80c_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20210129_171757_a2b08df_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20210218_023529_f0b8a43_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20210215_153448_1a36c3d_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20210211_165038_3bce12f_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20210218_024120_cd2aaf7_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20210218_023536_28d0e96_develop" enabled="true" />
    -->
 </site>
