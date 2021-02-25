@@ -109,7 +109,7 @@
         <judo-meta-asm-version>1.1.0.20210222_023933_c11700f_develop</judo-meta-asm-version>
         <judo-meta-asm-import-range>[1.0,1.1)</judo-meta-asm-import-range>
 
-        <judo-meta-esm-version>1.1.0.20210211_165038_3bce12f_develop</judo-meta-esm-version>
+        <judo-meta-esm-version>1.1.0.20210222_143031_8fbe169_develop</judo-meta-esm-version>
         <judo-meta-esm-import-range>[1.0,1.1)</judo-meta-esm-import-range>
 
         <judo-meta-jql-version>1.0.1.20210222_023942_9019c24_develop</judo-meta-jql-version>
