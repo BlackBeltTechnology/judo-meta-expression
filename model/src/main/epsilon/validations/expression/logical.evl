@@ -153,3 +153,16 @@ context EXPR!Empty {
         message: "Unsupported expression: " + self
     }
 }
+
+context EXPR!Matches {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+context EXPR!Like {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}

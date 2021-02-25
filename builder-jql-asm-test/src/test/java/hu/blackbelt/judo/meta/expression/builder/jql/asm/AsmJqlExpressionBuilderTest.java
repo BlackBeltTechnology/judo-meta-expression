@@ -572,6 +572,10 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // Matches
         createExpression(order, "self.shipper.companyName!matches('blackbelt\\\\.hu')");
+
+        // Like
+        createExpression(order, "self.shipper.companyName!like('%Kft')");
+        createExpression(order, "self.shipper.companyName!ilike('%kft')");
     }
 
     @Test

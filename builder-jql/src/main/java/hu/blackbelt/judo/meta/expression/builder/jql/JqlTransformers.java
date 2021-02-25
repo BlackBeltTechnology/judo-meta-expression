@@ -210,6 +210,12 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("matches",
                 new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Matches>(this, (argument,
                                                                                                             parameter) -> newMatchesBuilder().withExpression(argument).withPattern(parameter).build()));
+        functionTransformers.put("like",
+                new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Like>(this, (argument,
+                                                                                                            parameter) -> newLikeBuilder().withExpression(argument).withPattern(parameter).withCaseInsensitive(false).build()));
+        functionTransformers.put("ilike",
+                new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Like>(this, (argument,
+                                                                                                         parameter) -> newLikeBuilder().withExpression(argument).withPattern(parameter).withCaseInsensitive(true).build()));
     }
 
     private void sequenceFunctions() {

@@ -710,6 +710,14 @@
         <genOperations ecoreOperation="expression.ecore#//logical/BooleanVariableReference/getVariableName"
             body="return toString();"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//logical/Like">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/Like/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/Like/pattern"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/Like/caseInsensitive"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/Like/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/Like/toString" body="return &quot;LIKE(&quot; + getExpression() + &quot;, &quot; + getPattern() + &quot;)&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
