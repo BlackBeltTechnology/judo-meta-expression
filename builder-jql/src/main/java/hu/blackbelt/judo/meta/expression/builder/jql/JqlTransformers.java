@@ -57,6 +57,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         this.expressionBuilder = expressionBuilder;
         literals();
         operations();
+        primitiveFunctions();
         stringFunctions();
         numericFunctions();
         temporalFunctions();
@@ -173,6 +174,11 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     private void temporalFunctions() {
         functionTransformers.put("elapsedtimefrom", new JqlDifferenceFunctionTransformer(this, this));
+    }
+
+    private void primitiveFunctions() {
+        functionTransformers.put("asstring", (expression, functionCall, variables) -> newAsStringBuilder()
+                .withExpression((DataExpression) expression).build());
     }
 
     private void stringFunctions() {

@@ -283,6 +283,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("`2019-12-31` + 1[day]");
         createExpression("1[day] + `2019-12-31`");
         assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31`"));
+
+        assertThat(createExpression("`2019-12-31`!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test
@@ -303,6 +305,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+01:00` + 1"));
         assertThrows(UnsupportedOperationException.class, () -> createExpression("`2019-12-31T00:00:00.000+01:00` - 1"));
         assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31T00:00:00.000+01:00`"));
+
+        assertThat(createExpression("`2019-12-31T00:00:00.000+01:00`!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test
@@ -490,6 +494,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         createExpression("demo::types::Countries#AT == demo::types::Countries#RO");
 
+        assertThat(createExpression("demo::types::Countries#HU!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test
@@ -511,6 +516,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertFalse(modelAdapter.isMeasured((NumericExpression) notMeasuredDecimalRatio));
         Expression measuredDecimalRatio = createExpression("2.0[demo::measures::Velocity#m/s] / 1[s]");
         assertTrue(modelAdapter.isMeasured((NumericExpression) measuredDecimalRatio));
+
+        assertThat(createExpression("2[hour]!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test
@@ -519,6 +526,9 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertThat(roundedConstant, instanceOf(IntegerExpression.class));
         Expression roundedAttribute = createExpression("(demo::entities::Product!any().unitPrice)!round()");
         assertThat(roundedAttribute, instanceOf(IntegerExpression.class));
+
+        assertThat(createExpression("1.5!asString()"), instanceOf(StringExpression.class));
+        assertThat(createExpression("100!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test
@@ -576,6 +586,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         // Like
         createExpression(order, "self.shipper.companyName!like('%Kft')");
         createExpression(order, "self.shipper.companyName!ilike('%kft')");
+
+        assertThat(createExpression("true!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test

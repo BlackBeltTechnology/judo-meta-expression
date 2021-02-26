@@ -96,5 +96,12 @@ context EXPR!SwitchCase {
     }
 }
 
+context EXPR!AsString {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
 // TODO: ConcatenateCollection -> collection must be ordered
 // TODO: ConcatenateCollection -> fork is not allowed (by expression argument)

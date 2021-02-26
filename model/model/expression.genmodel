@@ -801,6 +801,15 @@
         <genOperations ecoreOperation="expression.ecore#//string/StringAggregatedExpression/toString"
             body="return String.format(&quot;%s!%s(%s | %s&quot;, getCollectionExpression(), getOperator(), getCollectionExpression().getIteratorVariableName(), getExpression());"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/AsString">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/AsString/expression"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//string/AsString/locale"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//string/AsString/pattern"/>
+        <genOperations ecoreOperation="expression.ecore#//string/AsString/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/AsString/toString"
+            body="return getExpression() +&quot;::STRING&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
