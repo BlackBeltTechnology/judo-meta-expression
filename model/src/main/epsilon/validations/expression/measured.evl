@@ -167,7 +167,7 @@ context EXPR!IntegerComparison {
     
     // dimensions of compared measured values must match
     constraint MeasuresAreMatching {
-        guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right)) and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
         
         check: modelAdapter.getDimension(self.left) == modelAdapter.getDimension(self.right)
         message: "Dimensions of comparison are not matching: " + self
@@ -190,7 +190,7 @@ context EXPR!DecimalComparison {
     
     // dimensions of compared measured values must match
     constraint MeasuresAreMatching {
-        guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
+        guard: self.satisfiesAll("Resolved", "ComparisonIsMeasured") and (modelAdapter.isMeasured(self.left) or modelAdapter.isMeasured(self.right)) and self.left.satisfiesAll("MeasureIsValid") and self.right.satisfiesAll("MeasureIsValid")
         
         check: modelAdapter.getDimension(self.left) == modelAdapter.getDimension(self.right)
         message: "Dimensions of comparison are not matching: " + self
