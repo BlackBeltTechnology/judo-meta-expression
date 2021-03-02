@@ -178,6 +178,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     private void primitiveFunctions() {
         functionTransformers.put("asstring", (expression, functionCall, variables) -> newAsStringBuilder()
+                .withEnumType(expression instanceof EnumerationExpression ? ((EnumerationExpression) expression).getEnumeration(getModelAdapter()) : null)
                 .withExpression((DataExpression) expression).build());
     }
 

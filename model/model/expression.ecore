@@ -1349,6 +1349,8 @@
           eType="#//DataExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="locale" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="enumType" eType="#//TypeName"
+          containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="enumeration" nsURI="http://blackbelt.hu/judo/meta/expression/enumeration"
