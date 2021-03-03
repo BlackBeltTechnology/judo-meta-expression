@@ -137,7 +137,10 @@ public class ExpressionEvaluator {
      * @return available variables
      */
     public Set<Variable> getVariablesOfScope(final Expression expression) {
-        if (!isLambdaFunction(expression)) {
+        if (expression instanceof AttributeSelector) {
+            final AttributeSelector attributeSelector = (AttributeSelector) expression;
+            return getVariablesOfScope(attributeSelector.getObjectExpression());
+        } else if (!isLambdaFunction(expression)) {
             final Set<Variable> variables = new HashSet<>();
 
             Expression expr = expression;
@@ -155,9 +158,6 @@ public class ExpressionEvaluator {
             }
 
             return variables;
-        } else if (expression instanceof AttributeSelector) {
-            final AttributeSelector attributeSelector = (AttributeSelector) expression;
-            return getVariablesOfScope(attributeSelector.getObjectExpression());
         } else {
             final Set<Variable> variables = new HashSet<>();
 
@@ -183,7 +183,7 @@ public class ExpressionEvaluator {
     public static Expression getBase(final Expression expression) {
         if ((expression instanceof Instance) || (expression instanceof ImmutableCollection)) {
             return expression;
-        } if (expression instanceof ReferenceExpression) {
+        } else if (expression instanceof ReferenceExpression) {
             final List<Expression> sources = expression.getOperands();
             if (sources.isEmpty()) {
                 return expression;
