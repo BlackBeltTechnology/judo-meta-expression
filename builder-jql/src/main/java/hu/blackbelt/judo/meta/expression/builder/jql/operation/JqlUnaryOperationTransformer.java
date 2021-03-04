@@ -34,7 +34,7 @@ public class JqlUnaryOperationTransformer<NE, P extends NE, E extends P, C exten
             }
             throw new UnsupportedOperationException("Invalid decimal unary operation: " + operator);
         } else if (operand instanceof LogicalExpression) {
-            if ("not".equals(operator)) {
+            if ("not".equalsIgnoreCase(operator)) {
                 return newNegationExpressionBuilder().withExpression((LogicalExpression) operand).build();
             }
             throw new UnsupportedOperationException("Invalid logical unary operation: " + operator);
