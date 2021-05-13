@@ -872,7 +872,7 @@
           <genParameters ecoreParameter="expression.ecore#//object/ObjectSelectorExpression/getObjectType/modelAdapter"/>
         </genOperations>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/toString"
-            body="return &quot;(&quot; + getOperator() + &quot; &quot; + getCollectionExpression() + &quot;)&quot;;"/>
+            body="return String.format(&quot;%s!%s()&quot;, getCollectionExpression(), getOperator());"/>
         <genOperations ecoreOperation="expression.ecore#//object/ObjectSelectorExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.unmodifiableEList(getOrderBy().stream().map(orderBy -> orderBy.getExpression()).collect(java.util.stream.Collectors.toList()));"/>
       </genClasses>
@@ -942,7 +942,7 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//collection/ImmutableCollection/elementName"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ImmutableCollection/toString"
-            body="return &quot;ALL{&quot; + String.valueOf(getElementName()) + &quot;}&quot;;"/>
+            body="return String.valueOf(getElementName());"/>
         <genOperations ecoreOperation="expression.ecore#//collection/ImmutableCollection/getObjectType"
             body="return getElementName().get(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//collection/ImmutableCollection/getObjectType/modelAdapter"/>
