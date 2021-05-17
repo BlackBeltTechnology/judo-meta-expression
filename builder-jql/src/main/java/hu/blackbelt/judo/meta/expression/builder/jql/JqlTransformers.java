@@ -19,21 +19,21 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlTernaryOperati
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlUnaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
-import hu.blackbelt.judo.meta.expression.object.*;
+import hu.blackbelt.judo.meta.expression.object.CastObject;
+import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
-import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
-import org.eclipse.emf.common.util.EList;
 
-import java.lang.Iterable;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
@@ -52,6 +52,9 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
     private boolean resolveDerived = true;
+    
+    private AtomicInteger atomicCounter = new AtomicInteger(1);
+    private static String generatedIteratorPrefix = "__iterator_";
 
     public JqlTransformers(JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
@@ -425,6 +428,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     public boolean isResolveDerived() {
         return resolveDerived;
+    }
+    
+    public String newGeneratedIteratorName() {
+        return generatedIteratorPrefix + atomicCounter.getAndIncrement();
     }
 
 }

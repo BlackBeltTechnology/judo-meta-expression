@@ -17,8 +17,8 @@ public class JqlReplaceFunctionTransformer extends AbstractJqlFunctionTransforme
 
     @Override
     public Expression apply(StringExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        StringExpression pattern = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
-        StringExpression replacement = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context);
+        StringExpression pattern = (StringExpression) expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context);
+        StringExpression replacement = (StringExpression) expressionTransformer.transform(functionCall.getParameters().get(1).getExpression(), context);
         return newReplaceBuilder().withExpression(argument).withPattern(pattern).withReplacement(replacement).build();
     }
 }

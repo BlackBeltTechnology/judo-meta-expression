@@ -2,6 +2,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -13,12 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.*;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Matcher;
@@ -28,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.AttributeSelector;
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.DecimalExpression;
@@ -66,6 +63,63 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
     private ExpressionModelResourceSupport expressionModelResourceSupport;
     
+    @Override
+    protected void populateAsmModel() {
+        super.populateAsmModel();
+        populateSchoolModel();
+    }
+
+    private void populateSchoolModel() {
+        EEnum genderEnum = newEEnumBuilder()
+                .withName("Gender").withELiterals(
+                        newEEnumLiteralBuilder().withLiteral("MALE").withName("MALE").withValue(0).build(),
+                        newEEnumLiteralBuilder().withLiteral("FEMALE").withName("FEMALE").withValue(1).build())
+                .build();
+
+        EAttribute height = newEAttributeBuilder().withName("height").withEType(doubleType).build();
+        EAttribute gender = newEAttributeBuilder().withName("gender").withEType(genderEnum).build();
+        EClass person = newEClassBuilder().withName("Person").withEStructuralFeatures(height, gender).build();
+        EReference parents = newEReferenceBuilder().withName("parents").withLowerBound(1).withUpperBound(-1).withEType(person).build();
+        EReference mother = newEReferenceBuilder().withName("mother").withDerived(true).withLowerBound(1).withUpperBound(1).withEType(person).build();
+        EClass student = newEClassBuilder().withName("Student")
+                .withESuperTypes(person)
+                .withEStructuralFeatures(parents, mother)
+                .build();
+        EClass parent = newEClassBuilder().withName("Parent").withESuperTypes(person).build();
+        EReference classStudents = newEReferenceBuilder().withName("students").withEType(student).withLowerBound(0).withUpperBound(-1).build();
+        EReference tallestStudent = newEReferenceBuilder().withName("tallestStudent").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
+        EReference tallestStudents = newEReferenceBuilder().withName("tallestStudents").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
+        EClass clazz= newEClassBuilder().withName("Class").withEStructuralFeatures(classStudents, tallestStudent, tallestStudents).build();
+        EReference schoolClasses = newEReferenceBuilder().withName("classes").withEType(clazz).withLowerBound(0).withUpperBound(-1).build();
+        EClass school = newEClassBuilder().withName("School").withEStructuralFeatures(schoolClasses).build();
+
+        EAnnotation getterAnnotationForMother = AsmUtils.getExtensionAnnotationByName(mother, "expression", true).get();
+        getterAnnotationForMother.getDetails().put("getter", "self.parents!filter(p | p.gender == schools::Gender#FEMALE)!any()");
+        getterAnnotationForMother.getDetails().put("getter.dialect", "JQL");
+        
+        EAnnotation getterAnnotationTallestStudent = AsmUtils.getExtensionAnnotationByName(tallestStudent, "expression", true).get();
+        getterAnnotationTallestStudent.getDetails().put("getter", "self.students!head(s | s.height DESC)");
+        getterAnnotationTallestStudent.getDetails().put("getter.dialect", "JQL");
+
+        EAnnotation getterAnnotationTallestStudents = AsmUtils.getExtensionAnnotationByName(tallestStudents, "expression", true).get();
+        getterAnnotationTallestStudents.getDetails().put("getter", "self.students!heads(s | s.height DESC)");
+        getterAnnotationTallestStudents.getDetails().put("getter.dialect", "JQL");
+
+        EPackage schools = newEPackageBuilder().withName("schools").withNsURI("http://blackbelt.hu/judo/expression/test/schools")
+                .withNsPrefix("expressionTestSchools").withEClassifiers(school, clazz, person, student, parent, genderEnum).build();
+
+        markAsEntity(school, clazz, person, student, parent);
+
+        asmModel.addContent(schools);
+    }
+
+    private void markAsEntity(EClass... eClasses) {
+        for (EClass eClass : eClasses) {
+            EAnnotation orderAnnotation = AsmUtils.getExtensionAnnotationByName(eClass, "entity", true).get();
+            orderAnnotation.getDetails().put("value", "true");
+        }
+    }
+    
     @BeforeEach
     void setUp() throws Exception {
     	super.setUp();
@@ -93,8 +147,9 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
-        final Expression expression = expressionBuilder.createExpression(clazz, jqlExpressionString);
+        Expression expression = expressionBuilder.createExpression(clazz, jqlExpressionString);
         assertThat(expression, notNullValue());
+        expressionBuilder.storeExpression(expression);
         return expression;
     }
 
@@ -434,6 +489,29 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         Expression tailsAscExpression = createExpression(category, "self=>products!tails(p | p.unitPrice)");
         assertThat(tailsAscExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!max(p | p.unitPrice)))"));        
     }
+    
+    @Test
+    void testDerivedHeadTail() {
+        EClass school = findBase("School");
+        Expression expression = createExpression(school, "self.classes.tallestStudent");        
+        Expression expression2 = createExpression(school, "self.classes.tallestStudents");
+        /*
+         * See JNG-1700 for details.
+         * The simple resolution for tallesStudent would be: 
+         * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
+         * But we need to first get all students of all classes:
+         * self.classes.students
+         * And choose those for which the following is true:
+         * there is a class in self.classes, where the student is the tallest, ie.:
+         * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
+         * self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == _c.students!max(s | s.height)))!any() == _s)) 
+         */
+        System.out.println(expression);
+        System.out.println(expression2);
+
+        Expression expression3 = createExpression(school, "self.classes.tallestStudent.mother!avg(m | m.height)");
+        System.out.println(expression3);
+    }
 
     @Test
     void testCustomAttributes() {
@@ -444,7 +522,6 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     void testParenNavigation() {
         EClass order = findBase("Order");
         Expression expression = createExpression(order, "(self.shipper).companyName");
-        System.out.println(expression);
     }
 
     @Test

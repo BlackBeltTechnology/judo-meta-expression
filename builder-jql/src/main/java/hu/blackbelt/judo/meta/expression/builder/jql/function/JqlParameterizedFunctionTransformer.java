@@ -31,7 +31,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
         if (parameterMapper != null) {
             parameter = parameterMapper.apply(jqlParameterExpression);
         } else {
-            parameter = jqlTransformers.transform(jqlParameterExpression, context);
+            parameter = expressionTransformer.transform(jqlParameterExpression, context);
         }
         try {
             PARAM castParam = (PARAM) parameter;

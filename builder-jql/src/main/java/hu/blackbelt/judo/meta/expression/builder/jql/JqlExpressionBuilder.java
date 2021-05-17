@@ -224,14 +224,17 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         if (instance != null) {
             context.popVariable();
         }
+
+        return expression;
+    }
+
+    public void storeExpression(Expression expression) {
         if (expression != null) {
             LOGGER.trace("Expression created: {}", expression);
             expressionResource.getContents().add(expression);
         } else {
             LOGGER.warn("No expression created");
         }
-
-        return expression;
     }
 
     /**

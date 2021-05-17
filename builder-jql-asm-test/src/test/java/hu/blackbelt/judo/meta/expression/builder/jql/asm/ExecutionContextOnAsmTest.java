@@ -59,6 +59,9 @@ public class ExecutionContextOnAsmTest {
     
     private static final Logger logger = LoggerFactory.getLogger(ExecutionContextOnAsmTest.class);
     
+    protected EDataType doubleType;
+    protected EDataType integerType;
+    
     void setUp() throws Exception {
         asmModel = buildAsmModel()
                 .uri(URI.createURI("urn:asm.judo-meta-asm"))
@@ -76,15 +79,15 @@ public class ExecutionContextOnAsmTest {
         
           log.info(asmModel.getDiagnosticsAsString());
           log.info(measureModel.getDiagnosticsAsString());
-        assertTrue(asmModel.isValid());
-        assertTrue(measureModel.isValid());
+        assertTrue(asmModel.isValid(), "ASM model is invalid");
+        assertTrue(measureModel.isValid(), "Measure model is invalid");
         runEpsilonOnMeasure();
         runEpsilonOnAsm();
         
         modelAdapter = new AsmModelAdapter(asmModel.getResourceSet(), measureModel.getResourceSet());
     }
     
-    private void populateAsmModel() {
+    protected void populateAsmModel() {
         //enum
         EEnum countriesEnum = newEEnumBuilder().withName("Countries").withELiterals(newEEnumLiteralBuilder().withLiteral("HU").withName("HU").withValue(0).build(),
                 newEEnumLiteralBuilder().withLiteral("AT").withName("AT").withValue(1).build(),
@@ -94,8 +97,8 @@ public class ExecutionContextOnAsmTest {
         //types
         EDataType timestamp = newEDataTypeBuilder().withName("Timestamp").withInstanceClassName("java.time.OffsetDateTime").build();
         EDataType stringType = newEDataTypeBuilder().withName("String").withInstanceClassName("java.lang.String").build();
-        EDataType doubleType = newEDataTypeBuilder().withName("Double").withInstanceClassName("java.lang.Double").build();
-        EDataType integerType = newEDataTypeBuilder().withName("Integer").withInstanceClassName("java.lang.Integer").build();
+        doubleType = newEDataTypeBuilder().withName("Double").withInstanceClassName("java.lang.Double").build();
+        integerType = newEDataTypeBuilder().withName("Integer").withInstanceClassName("java.lang.Integer").build();
         EDataType binary = newEDataTypeBuilder().withName("Binary").withInstanceClassName("java.lang.Object").build();
         EDataType timeStoredInMonths = newEDataTypeBuilder().withName("TimeStoredInMonths").withInstanceClassName("java.lang.Integer").build();
         EDataType timeStoredInSeconds = newEDataTypeBuilder().withName("TimeStoredInSeconds").withInstanceClassName("java.lang.Double").build();
@@ -133,9 +136,9 @@ public class ExecutionContextOnAsmTest {
         EAttribute shipperName = newEAttributeBuilder().withName("shipperName").withEType(stringType).withDerived(true).build();
         EAttribute shipperNameMapped = newEAttributeBuilder().withName("shipperName").withEType(stringType).build();
         EAttribute totalNumberOfOrders = newEAttributeBuilder().withName("totalNumberOfOrders").withEType(integerType).build();
-        
+
         EOperation getAllOrders = newEOperationBuilder().withName("getAllOrders").build();
-        
+
         //relations
         EReference orderDetails = newEReferenceBuilder().withName("orderDetails").withContainment(true).withLowerBound(0).withUpperBound(-1).build();
         EReference productRef = newEReferenceBuilder().withName("product").withLowerBound(1).withUpperBound(1).build();
@@ -158,13 +161,16 @@ public class ExecutionContextOnAsmTest {
         EReference items = newEReferenceBuilder().withName("items").build();
         EReference ordersAssignedToEmployee = newEReferenceBuilder().withName("ordersAssignedToEmployee").withDerived(true)
                 .withLowerBound(0).withUpperBound(-1).build();
+        EReference cheapestCategoryProductCategory = newEReferenceBuilder().withName("cheapestCategoryProductCategory")
+                .withDerived(true).withLowerBound(0).withUpperBound(1).build();
+
         
         //classes
         EClass order = newEClassBuilder().withName("Order")
-                .withEStructuralFeatures(orderDate,orderDetails,categories,employeeRef,shipperRef,customerOrder,shipAddress,freight,shipperName).build();
+                .withEStructuralFeatures(orderDate, orderDetails, categories, employeeRef, shipperRef, customerOrder, shipAddress, freight, shipperName).build();
         EClass orderDetail = newEClassBuilder().withName("OrderDetail").withEStructuralFeatures(productNameForOrderDetail,productRef,unitPriceOrderDetail,quantity,discount,price).build();
         EClass product = newEClassBuilder().withName("Product").withEStructuralFeatures(categoryRef,productName,unitPrice,quantityPerUnit,discounted,weight).build();
-        EClass category = newEClassBuilder().withName("Category").withEStructuralFeatures(productsRef,categoryName,picture,owner).build();
+        EClass category = newEClassBuilder().withName("Category").withEStructuralFeatures(productsRef, categoryName, picture, owner, cheapestCategoryProductCategory).build();
         EClass employee = newEClassBuilder().withName("Employee").withEStructuralFeatures(ordersRef,categoryEmployee,firstNameEmployee,lastNameEmployee).build();
         EClass internationalOrder = newEClassBuilder().withName("InternationalOrder").withEStructuralFeatures(exciseTax,customsDescription)
                 .withESuperTypes(order).build();
@@ -192,7 +198,7 @@ public class ExecutionContextOnAsmTest {
         EClass unboundServices = newEClassBuilder().withName("__UnboundServices").withEOperations(getAllOrders).build();
         EClass internalAP = newEClassBuilder().withName("InternalAP").withEStructuralFeatures(ordersAssignedToEmployee).build();
         
-        //relations again
+        //set types of relations
         useEReference(orderDetails).withEType(orderDetail).build();
         useEReference(productRef).withEType(product).build();
         useEReference(categoryRef).withEType(category).withEOpposite(productsRef).build();
@@ -212,6 +218,8 @@ public class ExecutionContextOnAsmTest {
         useEReference(shipAddress).withEType(address).build();
         useEReference(items).withEType(orderItem).build();
         useEReference(ordersAssignedToEmployee).withEType(order).build();
+        useEReference(cheapestCategoryProductCategory).withEType(category).build();
+
         
         //packages
         EPackage demo = newEPackageBuilder().withName("demo").withNsURI("http://blackbelt.hu/judo/northwind/northwind/demo")
@@ -315,9 +323,14 @@ public class ExecutionContextOnAsmTest {
         EAnnotation getterAnnotationForProductName = AsmUtils.getExtensionAnnotationByName(productNameForOrderDetail, "expression", true).get();
         getterAnnotationForProductName.getDetails().put("getter", "self.product.productName");
         getterAnnotationForProductName.getDetails().put("getter.dialect", "JQL");
+        
+        EAnnotation getterAnnotationForCheapestCategoryProduct = AsmUtils.getExtensionAnnotationByName(cheapestCategoryProductCategory, "expression", true).get();
+        getterAnnotationForCheapestCategoryProduct.getDetails().put("getter", "self.products!head(p | p.unitPrice).category");
+        getterAnnotationForCheapestCategoryProduct.getDetails().put("getter.dialect", "JQL");
+
     }
     
-    private void populateMeasureModel() {
+    protected void populateMeasureModel() {
         
         BaseMeasure time = newBaseMeasureBuilder().withName("Time").withNamespace("demo::measures").withUnits(
                 newDurationUnitBuilder().withName("nanosecond").withSymbol("ns").withRateDividend(new BigDecimal(1.0)).withRateDivisor(new BigDecimal(1.0E+9)).withType(DurationType.NANOSECOND).build(),

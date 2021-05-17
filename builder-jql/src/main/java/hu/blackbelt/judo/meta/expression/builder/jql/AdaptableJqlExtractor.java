@@ -108,6 +108,7 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
             if (!hasBinding(typeName, FilterBinding.class)) {
                 JqlExpressionBuilder.BindingContext filterBindingContext = new JqlExpressionBuilder.BindingContext(null, JqlExpressionBuilder.BindingType.FILTER, JqlExpressionBuilder.BindingRole.GETTER);
                 Expression expression = builder.createExpression(modelAdapter.getMappedEntityType(mappedTransferObjectType).get(), filterJql);
+                builder.storeExpression(expression);
                 builder.createBinding(filterBindingContext, null, mappedTransferObjectType, expression);
             } else {
                 log.debug("Filter expression already extracted for mapped transfer object type: {}", modelAdapter.getFqName(mappedTransferObjectType));
@@ -222,6 +223,7 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
 
     private void buildAndBind(C entityType, TO transferObjectType, JqlExpressionBuilder.BindingContext bindingContext, String jql) {
         Expression expression = builder.createExpression(entityType, jql);
+        builder.storeExpression(expression);
         builder.createBinding(bindingContext, entityType, transferObjectType, expression);
     }
 

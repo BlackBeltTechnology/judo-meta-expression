@@ -93,7 +93,7 @@ public class AsmJqlExtractorTest extends ExecutionContextOnAsmTest {
     	Optional<CollectionNavigationFromCollectionExpression> ordersAssignedToEmployeesGetter = expressionUtils.all()
     			.filter(e -> e instanceof CollectionNavigationFromCollectionExpression)
     			.map(e -> (CollectionNavigationFromCollectionExpression)e)
-    			.filter(e -> e.getCollectionExpression().toString().equals("ALL{demo::entities::Employee}"))
+    			.filter(e -> e.getCollectionExpression().toString().equals("demo::entities::Employee"))
     			.findAny();
     	
     	assertTrue(employee.isPresent());

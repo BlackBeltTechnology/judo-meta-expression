@@ -18,8 +18,8 @@ public class JqlJoinFunctionTransformer extends AbstractJqlFunctionTransformer<C
 
     @Override
     public Expression apply(CollectionExpression collection, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        StringExpression text = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
-        StringExpression separator = (StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context);
+        StringExpression text = (StringExpression) expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context);
+        StringExpression separator = (StringExpression) expressionTransformer.transform(functionCall.getParameters().get(1).getExpression(), context);
         return newConcatenateCollectionBuilder().withCollectionExpression(collection).withExpression(text).withSeparator(separator).build();
     }
 }

@@ -1656,7 +1656,7 @@
         eSuperTypes="#//CollectionExpression #//ReferenceSelector">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getCollectionExpression().toString() + &quot;=>&quot; + getReferenceName();"/>
+          <details key="body" value="return String.format(&quot;%s=>%s&quot;, getCollectionExpression(), getReferenceName());"/>
         </eAnnotations>
       </eOperations>
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">

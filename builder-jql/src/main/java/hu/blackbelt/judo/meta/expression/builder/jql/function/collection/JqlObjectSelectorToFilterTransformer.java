@@ -5,10 +5,18 @@ import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableR
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
-import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionVariableReference;
-import hu.blackbelt.judo.meta.expression.collection.SortExpression;
+import hu.blackbelt.judo.meta.expression.collection.*;
+import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
+import hu.blackbelt.judo.meta.expression.logical.ObjectComparison;
+import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
+import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
+import hu.blackbelt.judo.meta.expression.numeric.IntegerAggregatedExpression;
+import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
+import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSelectorExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectVariableReferenceBuilder;
+import hu.blackbelt.judo.meta.expression.operator.ObjectComparator;
+import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
@@ -17,8 +25,14 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.*;
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newExistsBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAggregatedExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAggregatedExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSelectorExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAggregatedExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAggregatedExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAggregatedExpressionBuilder;
 
 public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
@@ -27,9 +41,11 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
     }
 
     private final ObjectSelector selector;
+    private JqlTransformers jqlTransformers;
 
     public JqlObjectSelectorToFilterTransformer(JqlTransformers jqlTransformers, ObjectSelector selector) {
         super(jqlTransformers);
+        this.jqlTransformers = jqlTransformers;
         this.selector = selector;
     }
 
@@ -43,7 +59,7 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
                     .build();
         }
         FunctionParameter functionParameter = functionCall.getParameters().get(0);
-        DataExpression sortingExpression = (DataExpression) jqlTransformers.transform(functionParameter.getExpression(), context);
+        DataExpression sortingExpression = (DataExpression) expressionTransformer.transform(functionParameter.getExpression(), context);
         boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
         LogicalExpression condition;
         if (!(argument instanceof CollectionExpression)) {
@@ -59,13 +75,13 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
         copier.setUseOriginalReferences(false);
         DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
         copier.copyReferences();
-        Expression aggregationExpression;
-        JqlAggregatedExpressionTransformer aggregatedExpressionTransformer =
-                ((selector == HEAD || selector == HEADS) && descending || (selector == TAIL || selector == TAILS) && !descending) ?
-                        JqlAggregatedExpressionTransformer.createMaxInstance(jqlTransformers)
-                        : JqlAggregatedExpressionTransformer.createMinInstance(jqlTransformers);
+        AggregatedExpression aggregationExpression;
+        JqlAggregatedExpressionTransformer aggregatedExpressionTransformer = ((selector == HEAD || selector == HEADS) && descending
+                || (selector == TAIL || selector == TAILS) && !descending) ? JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer)
+                        : JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
         aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
-        condition = (LogicalExpression) new JqlBinaryOperationTransformer((JqlTransformers) jqlTransformers).createBinaryOperationExpression(sortingExpression, aggregationExpression, "==");
+        condition = (LogicalExpression) new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer).createBinaryOperationExpression(sortingExpression,
+                aggregationExpression, "==");
 
         CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
                 .withCollectionExpression(argument)
@@ -73,13 +89,115 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
                 .build();
         if (selector == HEADS || selector == TAILS) {
             result = collectionFilterExpression;
+            if (context.peekBaseExpression() instanceof CollectionExpression) {
+                result = retransformResult(collectionFilterExpression, aggregationExpression);
+            }
         } else {
-            result = new JqlAnyFunctionTransformer(jqlTransformers).apply(collectionFilterExpression, null, context);
+            result = new JqlAnyFunctionTransformer(expressionTransformer).apply(collectionFilterExpression, null, context);
+            if (context.peekBaseExpression() instanceof CollectionExpression) {
+                result = retransformResult(result, aggregationExpression);
+            }
         }
         return result;
     }
 
-    /* This class is used to refine copying logic. We can prepare some copies (containing references to original objects), but then make sure we use the existing copy if needed.
+    private Expression retransformResult(Expression exp, AggregatedExpression aggregationExpression) {
+        // If in a derived expression, we need to transform. See transformation rules in JNG-1700.
+        // The object selector expression will be used in an other filter
+        // self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any() =>
+        // self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any() == _s))
+        // in general
+        // from: SELECTOR.RELATION!FILTER!any() 
+        // to: SELECTOR.RELATION!filter(_s | SELECTOR!exists(_c | _c.RELATION!FILTER!any() == _s))
+        // This is supported only for cases there is a SELECTOR.RELATION structure. If not, then we keep it as is.
+        Expression resultBaseExpression = exp;
+        boolean single;
+        CollectionExpression filter;
+        if (resultBaseExpression instanceof ObjectSelectorExpression) {
+            single = true;
+            filter = ((ObjectSelectorExpression) resultBaseExpression).getCollectionExpression();
+        } else {
+            single = false;
+            filter = (CollectionExpression) exp;
+        }
+        // the filter should be a collection filter expression
+        if (filter instanceof CollectionFilterExpression) {
+            CollectionFilterExpression collectionFilterExpression = (CollectionFilterExpression) filter;
+            CollectionExpression filteredCollection = collectionFilterExpression.getCollectionExpression();
+            // the filtered collection should be in selector.relation structure, that is some kind of CollectionNavigation
+            CollectionExpression newNavigation = null;
+            CollectionExpression selector = null;
+            String relation = null;
+            if (filteredCollection instanceof CollectionNavigationFromCollectionExpression) {
+                selector = ((CollectionNavigationFromCollectionExpression) filteredCollection).getCollectionExpression();
+                relation = ((CollectionNavigationFromCollectionExpression) filteredCollection).getReferenceName();
+                newNavigation = newCollectionNavigationFromCollectionExpressionBuilder()
+                        .withCollectionExpression(EcoreUtil.copy(selector))
+                        .withReferenceName(relation)
+                        .build();
+                newNavigation.createIterator(jqlTransformers.newGeneratedIteratorName(), jqlTransformers.getExpressionBuilder().getModelAdapter(),
+                        jqlTransformers.getExpressionBuilder().getExpressionResource());
+            } else if (filteredCollection instanceof ObjectNavigationFromCollectionExpression) {
+                selector = ((ObjectNavigationFromCollectionExpression) filteredCollection).getCollectionExpression();
+                relation = ((ObjectNavigationFromCollectionExpression) filteredCollection).getReferenceName();
+                newNavigation = newCollectionNavigationFromCollectionExpressionBuilder()
+                        .withCollectionExpression(EcoreUtil.copy(selector))
+                        .withReferenceName(relation)
+                        .build();
+                newNavigation.createIterator(jqlTransformers.newGeneratedIteratorName(), jqlTransformers.getExpressionBuilder().getModelAdapter(),
+                        jqlTransformers.getExpressionBuilder().getExpressionResource());
+            }
+            if (newNavigation != null) {
+                ObjectVariable _s = newNavigation.getIteratorVariable();
+                CollectionExpression internalSelector = EcoreUtil.copy(selector);
+                ObjectVariable _c = internalSelector.createIterator(jqlTransformers.newGeneratedIteratorName(), jqlTransformers.getExpressionBuilder().getModelAdapter(),
+                        jqlTransformers.getExpressionBuilder().getExpressionResource());
+                CollectionNavigationFromObjectExpression internalFiltered = newCollectionNavigationFromObjectExpressionBuilder()
+                        .withObjectExpression(ObjectVariableReferenceBuilder.create().withVariable(_c).build())
+                        .withReferenceName(relation).build();
+                internalFiltered.setIteratorVariable(filteredCollection.getIteratorVariable());
+                aggregationExpression.setCollectionExpression(EcoreUtil.copy(internalFiltered));
+                resultBaseExpression = newCollectionFilterExpressionBuilder()
+                        .withCollectionExpression(newNavigation)
+                        .withCondition(
+                                newExistsBuilder()
+                                        .withCollectionExpression(internalSelector)
+                                        .withCondition(
+                                                single ? existsConditionSingle(collectionFilterExpression, internalFiltered, _s)
+                                                        : existsConditionMulti(collectionFilterExpression, internalFiltered, _s))
+                                        .build())
+                        .build();
+            }
+        }
+        return resultBaseExpression;
+    }
+
+    public ObjectComparison existsConditionSingle(CollectionFilterExpression collectionFilterExpression, CollectionNavigationFromObjectExpression internalFiltered, ObjectVariable newNavigationIterator) {
+        return LogicalBuilders.newObjectComparisonBuilder()
+                .withLeft(
+                        ObjectSelectorExpressionBuilder.create().withCollectionExpression(
+                                newCollectionFilterExpressionBuilder()
+                                        .withCollectionExpression(internalFiltered)
+                                        .withCondition(collectionFilterExpression.getCondition()).build())
+                                .withOperator(hu.blackbelt.judo.meta.expression.operator.ObjectSelector.ANY)
+                                .build())
+                .withRight(ObjectVariableReferenceBuilder.create().withVariable(newNavigationIterator).build())
+                .withOperator(ObjectComparator.EQUAL).build();
+    }
+    
+    public ContainsExpression existsConditionMulti(CollectionFilterExpression collectionFilterExpression, CollectionNavigationFromObjectExpression internalFiltered, ObjectVariable newNavigationIterator) {
+        return LogicalBuilders.newContainsExpressionBuilder()
+                .withCollectionExpression(newCollectionFilterExpressionBuilder()
+                        .withCollectionExpression(internalFiltered)
+                        .withCondition(collectionFilterExpression.getCondition()).build())
+                .withObjectExpression(ObjectVariableReferenceBuilder.create().withVariable(newNavigationIterator).build())
+                .build();
+    }
+
+
+    /*
+     * This class is used to refine copying logic. We can prepare some copies (containing references to original objects), but then make sure we use the
+     * existing copy if needed.
      */
     private static class AugmentedCopier extends EcoreUtil.Copier {
 

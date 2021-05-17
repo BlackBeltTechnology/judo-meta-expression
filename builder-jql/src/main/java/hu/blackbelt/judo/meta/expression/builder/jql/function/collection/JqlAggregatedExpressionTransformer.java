@@ -52,11 +52,11 @@ public class JqlAggregatedExpressionTransformer extends AbstractJqlFunctionTrans
 
     @Override
     public Expression apply(CollectionExpression collection, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        Expression parameter = jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
+        Expression parameter = expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context);
         return createAggregatedExpression(collection, parameter);
     }
 
-    public DataExpression createAggregatedExpression(CollectionExpression collection, Expression parameter) {
+    public AggregatedExpression createAggregatedExpression(CollectionExpression collection, Expression parameter) {
         if (parameter instanceof IntegerExpression && integerAggregator != null) {
             return newIntegerAggregatedExpressionBuilder().withCollectionExpression(collection).withExpression((IntegerExpression) parameter).withOperator(integerAggregator).build();
         } else if ((parameter instanceof DecimalExpression || parameter instanceof IntegerExpression) && decimalAggregator != null) {

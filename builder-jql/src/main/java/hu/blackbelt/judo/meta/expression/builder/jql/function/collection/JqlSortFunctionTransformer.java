@@ -28,7 +28,7 @@ public class JqlSortFunctionTransformer extends AbstractJqlFunctionTransformer<C
     public Expression apply(CollectionExpression collection, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         List<OrderByItem> orderByItems = new ArrayList<>();
         functionCall.getParameters().forEach((param) -> {
-                    DataExpression orderByItemExpression = (DataExpression) jqlTransformers.transform(param.getExpression(), context);
+                    DataExpression orderByItemExpression = (DataExpression) expressionTransformer.transform(param.getExpression(), context);
                     BooleanConstant orderByItemDesc = newBooleanConstantBuilder().withValue(isDescending(param.getParameterExtension())).build();
                     orderByItems.add(newOrderByItemBuilder().withExpression(orderByItemExpression).withDescending(orderByItemDesc.isValue()).build());
                 }
