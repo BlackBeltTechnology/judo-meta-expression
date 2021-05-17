@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.*;
+import hu.blackbelt.judo.meta.expression.constant.util.builder.BooleanConstantBuilder;
 import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
 import hu.blackbelt.judo.meta.expression.logical.ObjectComparison;
 import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
@@ -37,7 +38,7 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 
     public enum ObjectSelector {
-        HEAD, TAIL, HEADS, TAILS;
+        HEAD, TAIL, HEADS, TAILS, ANY;
     }
 
     private final ObjectSelector selector;
@@ -52,51 +53,53 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
     @Override
     public Expression apply(CollectionExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         Expression result;
-        if ((functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) && argument instanceof SortExpression) {
-            return newObjectSelectorExpressionBuilder()
-                    .withCollectionExpression(argument)
-                    .withOperator(hu.blackbelt.judo.meta.expression.operator.ObjectSelector.ANY)
-                    .build();
-        }
-        FunctionParameter functionParameter = functionCall.getParameters().get(0);
-        DataExpression sortingExpression = (DataExpression) expressionTransformer.transform(functionParameter.getExpression(), context);
-        boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
-        LogicalExpression condition;
         if (!(argument instanceof CollectionExpression)) {
             throw new IllegalArgumentException("Expected iterable collection");
         }
-        CollectionExpression filteringBase = EcoreUtil.copy(argument);
+        LogicalExpression condition;
         AugmentedCopier copier = new AugmentedCopier();
-        sortingExpression.eContents().stream().filter(e -> e instanceof VariableReference)
-                .forEach(variableReference -> {
-                    copier.copy(variableReference);
-                    copier.copyReferences();
-                });
-        copier.setUseOriginalReferences(false);
-        DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
-        copier.copyReferences();
-        AggregatedExpression aggregationExpression;
-        JqlAggregatedExpressionTransformer aggregatedExpressionTransformer = ((selector == HEAD || selector == HEADS) && descending
-                || (selector == TAIL || selector == TAILS) && !descending) ? JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer)
-                        : JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
-        aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
-        condition = (LogicalExpression) new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer).createBinaryOperationExpression(sortingExpression,
-                aggregationExpression, "==");
 
-        CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
-                .withCollectionExpression(argument)
-                .withCondition(condition)
-                .build();
-        if (selector == HEADS || selector == TAILS) {
-            result = collectionFilterExpression;
+        if (selector == ANY || (functionCall.getParameters() == null || functionCall.getParameters().isEmpty()) && argument instanceof SortExpression) {
+            result = new JqlAnyFunctionTransformer(expressionTransformer).apply(argument, null, context);
             if (context.peekBaseExpression() instanceof CollectionExpression) {
-                result = retransformResult(collectionFilterExpression, aggregationExpression);
+                result = retransformResult(result, null);
             }
         } else {
-            result = new JqlAnyFunctionTransformer(expressionTransformer).apply(collectionFilterExpression, null, context);
-            if (context.peekBaseExpression() instanceof CollectionExpression) {
-                result = retransformResult(result, aggregationExpression);
-            }
+            FunctionParameter functionParameter = functionCall.getParameters().get(0);
+            DataExpression sortingExpression = (DataExpression) expressionTransformer.transform(functionParameter.getExpression(), context);
+            boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
+            CollectionExpression filteringBase = EcoreUtil.copy(argument);
+            sortingExpression.eContents().stream().filter(e -> e instanceof VariableReference)
+                    .forEach(variableReference -> {
+                        copier.copy(variableReference);
+                        copier.copyReferences();
+                    });
+            copier.setUseOriginalReferences(false);
+            DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
+            copier.copyReferences();
+            AggregatedExpression aggregationExpression;
+            JqlAggregatedExpressionTransformer aggregatedExpressionTransformer = ((selector == HEAD || selector == HEADS) && descending
+                    || (selector == TAIL || selector == TAILS) && !descending) ? JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer)
+                            : JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
+            aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
+            condition = (LogicalExpression) new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer).createBinaryOperationExpression(sortingExpression,
+                    aggregationExpression, "==");
+            CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
+                    .withCollectionExpression(argument)
+                    .withCondition(condition)
+                    .build();            
+            if (selector == HEADS || selector == TAILS) {
+                result = collectionFilterExpression;
+                if (context.peekBaseExpression() instanceof CollectionExpression) {
+                    result = retransformResult(result, aggregationExpression);
+                }
+            } else {
+                result = new JqlAnyFunctionTransformer(expressionTransformer).apply(collectionFilterExpression, null, context);
+                if (context.peekBaseExpression() instanceof CollectionExpression) {
+                    result = retransformResult(result, aggregationExpression);
+                }
+            }            
+            
         }
         return result;
     }
@@ -156,7 +159,9 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
                         .withObjectExpression(ObjectVariableReferenceBuilder.create().withVariable(_c).build())
                         .withReferenceName(relation).build();
                 internalFiltered.setIteratorVariable(filteredCollection.getIteratorVariable());
-                aggregationExpression.setCollectionExpression(EcoreUtil.copy(internalFiltered));
+                if (aggregationExpression != null) {
+                    aggregationExpression.setCollectionExpression(EcoreUtil.copy(internalFiltered));
+                }
                 resultBaseExpression = newCollectionFilterExpressionBuilder()
                         .withCollectionExpression(newNavigation)
                         .withCondition(

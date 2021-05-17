@@ -117,7 +117,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 JqlObjectSelectorToFilterTransformer.ObjectSelector.TAIL));
         functionTransformers.put("tails", new JqlObjectSelectorToFilterTransformer(this,
                 JqlObjectSelectorToFilterTransformer.ObjectSelector.TAILS));
-        functionTransformers.put("any", new JqlAnyFunctionTransformer(this));
+        functionTransformers.put("any", new JqlObjectSelectorToFilterTransformer(this,
+                JqlObjectSelectorToFilterTransformer.ObjectSelector.ANY));
         functionTransformers.put("filter",
                 new JqlParameterizedFunctionTransformer<ReferenceExpression, LogicalExpression, FilteringExpression>(
                         this, (expression, parameter) -> {
