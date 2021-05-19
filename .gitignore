@@ -56,4 +56,5 @@ wercker.env
 /**/.wercker
 **/GSModel.log*
 .release
-
+build.log
+.vscode
