@@ -468,26 +468,26 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     void testObjectSelectorToFilterExpressions() {
         EClass category = findBase("Category");
         Expression headDescExpression = createExpression(category, "self=>products!head(p | p.unitPrice DESC).unitPrice");
-        assertThat(headDescExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!max(p | p.unitPrice)))!any().unitPrice"));        
+        assertThat(headDescExpression.toString(), is("self=>products!filter(_iterator_1 | (_iterator_1.unitPrice == self=>products!max(_iterator_1 | _iterator_1.unitPrice)))!any().unitPrice"));        
         Expression headAscExpression = createExpression(category, "self=>products!head(p | p.unitPrice).unitPrice");
-        assertThat(headAscExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!min(p | p.unitPrice)))!any().unitPrice"));        
+        assertThat(headAscExpression.toString(), is("self=>products!filter(_iterator_2 | (_iterator_2.unitPrice == self=>products!min(_iterator_2 | _iterator_2.unitPrice)))!any().unitPrice"));        
         Expression headImmutableSetExpression = createExpression(category, "demo::entities::Product!head(p | p.unitPrice).unitPrice");
-        assertThat(headImmutableSetExpression.toString(), is("demo::entities::Product!filter(p | (p.unitPrice == demo::entities::Product!min(p | p.unitPrice)))!any().unitPrice"));
+        assertThat(headImmutableSetExpression.toString(), is("demo::entities::Product!filter(_iterator_3 | (_iterator_3.unitPrice == demo::entities::Product!min(_iterator_3 | _iterator_3.unitPrice)))!any().unitPrice"));
 
         Expression tailDescExpression = createExpression(category, "self=>products!tail(p | p.unitPrice DESC).unitPrice");
-        assertThat(tailDescExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!min(p | p.unitPrice)))!any().unitPrice"));
+        assertThat(tailDescExpression.toString(), is("self=>products!filter(_iterator_4 | (_iterator_4.unitPrice == self=>products!min(_iterator_4 | _iterator_4.unitPrice)))!any().unitPrice"));
         Expression tailAscExpression = createExpression(category, "self=>products!tail(p | p.unitPrice).unitPrice");
-        assertThat(tailAscExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!max(p | p.unitPrice)))!any().unitPrice"));
+        assertThat(tailAscExpression.toString(), is("self=>products!filter(_iterator_5 | (_iterator_5.unitPrice == self=>products!max(_iterator_5 | _iterator_5.unitPrice)))!any().unitPrice"));
         
         Expression headsDescExpression = createExpression(category, "self=>products!heads(p | p.unitPrice DESC)");
-        assertThat(headsDescExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!max(p | p.unitPrice)))"));
+        assertThat(headsDescExpression.toString(), is("self=>products!filter(_iterator_6 | (_iterator_6.unitPrice == self=>products!max(_iterator_6 | _iterator_6.unitPrice)))"));
         Expression headsAscExpression = createExpression(category, "self=>products!heads(p | p.unitPrice)");
-        assertThat(headsAscExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!min(p | p.unitPrice)))"));
+        assertThat(headsAscExpression.toString(), is("self=>products!filter(_iterator_7 | (_iterator_7.unitPrice == self=>products!min(_iterator_7 | _iterator_7.unitPrice)))"));
 
         Expression tailsDescExpression = createExpression(category, "self=>products!tails(p | p.unitPrice DESC)");
-        assertThat(tailsDescExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!min(p | p.unitPrice)))"));
+        assertThat(tailsDescExpression.toString(), is("self=>products!filter(_iterator_8 | (_iterator_8.unitPrice == self=>products!min(_iterator_8 | _iterator_8.unitPrice)))"));
         Expression tailsAscExpression = createExpression(category, "self=>products!tails(p | p.unitPrice)");
-        assertThat(tailsAscExpression.toString(), is("self=>products!filter(p | (p.unitPrice == self=>products!max(p | p.unitPrice)))"));        
+        assertThat(tailsAscExpression.toString(), is("self=>products!filter(_iterator_9 | (_iterator_9.unitPrice == self=>products!max(_iterator_9 | _iterator_9.unitPrice)))"));        
     }
     
     @Test
@@ -572,7 +572,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EClass order = findBase("Order");
         createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName == 'joe')");
         ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')");
-        assertThat(objectFilter.getObjectExpression().getIteratorVariableName(), is("s"));
+        assertThat(objectFilter.getObjectExpression().getIteratorVariableName(), is("_iterator_2"));
 
     }
 

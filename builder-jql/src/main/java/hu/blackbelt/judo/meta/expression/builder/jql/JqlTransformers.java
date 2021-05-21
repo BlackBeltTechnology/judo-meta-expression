@@ -54,7 +54,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     private boolean resolveDerived = true;
     
     private AtomicInteger atomicCounter = new AtomicInteger(1);
-    private static String generatedIteratorPrefix = "__iterator_";
+    private static String generatedIteratorPrefix = "_iterator_";
 
     public JqlTransformers(JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
@@ -338,14 +338,17 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context,
                                    String lambdaArgument) {
+        String generatedName = newGeneratedIteratorName();
+        String humanName = lambdaArgument;
         if (subject instanceof IterableExpression) {
             IterableExpression iterableExpression = (IterableExpression) subject;
-            if (iterableExpression.getIteratorVariable() == null) {
-                ObjectVariable variable = iterableExpression.createIterator(lambdaArgument,
+            if (iterableExpression.getIteratorVariable() == null) {                
+                ObjectVariable variable = iterableExpression.createIterator(generatedName,
                         expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
+                variable.setHumanName(humanName);
                 context.pushVariable(variable);
             } else {
-                iterableExpression.getIteratorVariable().setName(lambdaArgument);
+                iterableExpression.getIteratorVariable().setName(generatedName);
                 context.pushVariable(iterableExpression.getIteratorVariable());
             }
         } else if (subject instanceof ObjectSelectorExpression) {

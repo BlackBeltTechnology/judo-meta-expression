@@ -224,6 +224,7 @@
         fileExtensions="judo-meta-expression-variable" ecorePackage="expression.ecore#//variable">
       <genClasses image="false" ecoreClass="expression.ecore#//variable/Variable">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/Variable/name"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/Variable/humanName"/>
         <genOperations ecoreOperation="expression.ecore#//variable/Variable/getVariableName"
             body="return getName();"/>
       </genClasses>

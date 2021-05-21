@@ -44,7 +44,7 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
     @Override
     public Optional<Variable> resolveVariable(String name) {
         return variables.stream()
-                .filter(v -> Objects.equals(v.getName(), name))
+                .filter(v -> Objects.equals(Optional.ofNullable(v.getHumanName()).orElse(v.getName()), name))
                 .findAny();
     }
 
