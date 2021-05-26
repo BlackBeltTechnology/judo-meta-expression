@@ -281,7 +281,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         if (jqlExpression instanceof FunctionedExpression) {
             FunctionedExpression functionedExpression = (FunctionedExpression) jqlExpression;
             FunctionCall functionCall = functionedExpression.getFunctionCall();
-            int i = 0;
+            int lambdaDepth = 0;
             try {
                 while (functionCall != null) {
                 	if (functionCall.getFunction().getName() == null) {
@@ -293,10 +293,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                     if (functionTransformer != null) {
                         try {
                             if (functionCall.getFunction().getLambdaArgument() != null) {
+                                context.pushVariableScope();                                
                                 addLambdaVariable(subject, context, functionCall.getFunction().getLambdaArgument());
-                                i++;
+                                lambdaDepth++;
                             }
                             subject = functionTransformer.apply(subject, functionCall.getFunction(), context);
+                            if (functionCall.getFunction().getLambdaArgument() != null) {
+                                context.popVariable();                                
+                                context.popVariableScope();
+                            }
                         } catch (Exception e) {
                             throw new JqlExpressionBuildException(baseExpression,
                                     Arrays.asList(new JqlExpressionBuildingError(e.getMessage(), functionCall)), e);
@@ -327,9 +332,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                     functionCall = (FunctionCall) functionCall.getCall();
                 }
             } finally {
-                while (i > 0) {
-                    context.popVariable();
-                    i--;
+                while (lambdaDepth > 0) {
+                    lambdaDepth--;
                 }
             }
         }

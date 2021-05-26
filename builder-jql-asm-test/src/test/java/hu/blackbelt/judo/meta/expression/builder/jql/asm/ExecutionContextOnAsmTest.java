@@ -57,8 +57,6 @@ public class ExecutionContextOnAsmTest {
     AsmModelAdapter modelAdapter;
     AsmUtils asmUtils;
     
-    private static final Logger logger = LoggerFactory.getLogger(ExecutionContextOnAsmTest.class);
-    
     protected EDataType doubleType;
     protected EDataType integerType;
     
@@ -77,10 +75,8 @@ public class ExecutionContextOnAsmTest {
         
         populateMeasureModel();
         
-          log.info(asmModel.getDiagnosticsAsString());
-          log.info(measureModel.getDiagnosticsAsString());
-        assertTrue(asmModel.isValid(), "ASM model is invalid");
-        assertTrue(measureModel.isValid(), "Measure model is invalid");
+        assertTrue(asmModel.isValid(), () -> { log.info(asmModel.getDiagnosticsAsString()); return "ASM model is invalid"; });
+        assertTrue(measureModel.isValid(), () -> { log.info(measureModel.getDiagnosticsAsString()); return "Measure model is invalid"; });
         runEpsilonOnMeasure();
         runEpsilonOnAsm();
         
@@ -412,9 +408,9 @@ public class ExecutionContextOnAsmTest {
                     Collections.emptyList(),
                     Collections.emptyList());
         } catch (EvlScriptExecutionException ex) {
-            logger.error("EVL failed", ex);
-            logger.error("\u001B[31m - unexpected errors: {}\u001B[0m", ex.getUnexpectedErrors());
-            logger.error("\u001B[33m - unexpected warnings: {}\u001B[0m", ex.getUnexpectedWarnings());
+            log.error("EVL failed", ex);
+            log.error("\u001B[31m - unexpected errors: {}\u001B[0m", ex.getUnexpectedErrors());
+            log.error("\u001B[33m - unexpected warnings: {}\u001B[0m", ex.getUnexpectedWarnings());
             throw ex;
         }
     }
@@ -427,9 +423,9 @@ public class ExecutionContextOnAsmTest {
                     Collections.emptyList(),
                     Collections.emptyList());
         } catch (EvlScriptExecutionException ex) {
-            logger.error("EVL failed", ex);
-            logger.error("\u001B[31m - unexpected errors: {}\u001B[0m", ex.getUnexpectedErrors());
-            logger.error("\u001B[33m - unexpected warnings: {}\u001B[0m", ex.getUnexpectedWarnings());
+            log.error("EVL failed", ex);
+            log.error("\u001B[31m - unexpected errors: {}\u001B[0m", ex.getUnexpectedErrors());
+            log.error("\u001B[33m - unexpected warnings: {}\u001B[0m", ex.getUnexpectedWarnings());
             throw ex;
         }
     }

@@ -52,11 +52,13 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
+    private JqlExpressionBuilderConfig config;
 
-    public JqlExpressionBuilder(final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, final Resource expressionResource) {
+    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
+        this.config = config;
 
         addMeasures();
         addEntityTypes();
@@ -67,8 +69,12 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         addPrimitiveTypes();
     }
     
+    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
+        this(modelAdapter, expressionResource, new JqlExpressionBuilderConfig());
+    }
+    
     @SuppressWarnings("unchecked")
-    private static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
+    private static <T> Stream<T> all(ResourceSet resourceSet, Class<T> clazz) {
         final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
         return StreamSupport.stream(resourceContents.spliterator(), true)
                 .filter(e -> clazz.isAssignableFrom(e.getClass())).map(e -> (T) e);
@@ -199,7 +205,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public Expression createExpression(C entityType, JqlExpression jqlExpression) {
-        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext());
+        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext(config));
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
@@ -464,6 +470,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     
     public enum MappedTransferObjectCompatibility {
     	NONE, KINDOF, SUPERTYPE
+    }
+
+    public void setBuilderConfig(JqlExpressionBuilderConfig builderConfig) {
+        this.config = builderConfig;
     }
     
 }

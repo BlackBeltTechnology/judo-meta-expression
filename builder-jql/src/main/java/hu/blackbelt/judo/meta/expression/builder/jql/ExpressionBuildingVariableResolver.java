@@ -34,4 +34,10 @@ public interface ExpressionBuildingVariableResolver {
 	Collection<Variable> getVariables();
 	
 	void removeVariable(Variable variable);
+	
+	boolean resolveOnlyCurrentLambdaScope();
+	
+	void pushVariableScope();
+
+    void popVariableScope();
 }

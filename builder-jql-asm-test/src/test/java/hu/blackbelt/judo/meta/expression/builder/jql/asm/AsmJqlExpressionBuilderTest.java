@@ -434,6 +434,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testCollectionOperations() {
         EClass category = findBase("Category");
+        createExpression(category, "self=>products!sort(p | p.unitPrice)!tail()!memberOf(self=>products)");
+
         Expression products = createExpression(category, "self.products");
         assertThat(products, collectionOf("Product"));
 
@@ -461,7 +463,6 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         Expression containsProduct = createExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())");
         assertThat(containsProduct, instanceOf(LogicalExpression.class));
-        createExpression(category, "self=>products!sort(p | p.unitPrice)!tail()!memberOf(self=>products)");
     }
     
     @Test
@@ -489,28 +490,27 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         Expression tailsAscExpression = createExpression(category, "self=>products!tails(p | p.unitPrice)");
         assertThat(tailsAscExpression.toString(), is("self=>products!filter(_iterator_9 | (_iterator_9.unitPrice == self=>products!max(_iterator_9 | _iterator_9.unitPrice)))"));        
     }
-    
+
+    /*
+     * See JNG-1700 for details.
+     * The simple resolution for tallesStudent would be: 
+     * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
+     * But we need to first get all students of all classes:
+     * self.classes.students
+     * And choose those for which the following is true:
+     * there is a class in self.classes, where the student is the tallest, ie.:
+     * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
+     * self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == _c.students!max(s | s.height)))!any() == _s)) 
+     */
     @Test
     void testDerivedHeadTail() {
         EClass school = findBase("School");
-        Expression expression = createExpression(school, "self.classes.tallestStudent");        
+        Expression expression = createExpression(school, "self.classes.tallestStudent");
+        assertThat(expression.toString(), is("self=>classes=>students!filter(_iterator_2 | self=>classes!exists(_iterator_3 | (_iterator_3=>students!filter(_iterator_1 | (_iterator_1.height == _iterator_3=>students!max(_iterator_1 | _iterator_1.height)))!any() equal _iterator_2)))"));
         Expression expression2 = createExpression(school, "self.classes.tallestStudents");
-        /*
-         * See JNG-1700 for details.
-         * The simple resolution for tallesStudent would be: 
-         * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
-         * But we need to first get all students of all classes:
-         * self.classes.students
-         * And choose those for which the following is true:
-         * there is a class in self.classes, where the student is the tallest, ie.:
-         * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
-         * self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == _c.students!max(s | s.height)))!any() == _s)) 
-         */
-        System.out.println(expression);
-        System.out.println(expression2);
-
+        assertThat(expression2.toString(), is("self=>classes=>students!filter(_iterator_5 | self=>classes!exists(_iterator_6 | (_iterator_6=>students!filter(_iterator_4 | (_iterator_4.height == _iterator_6=>students!max(_iterator_4 | _iterator_4.height))) contains _iterator_5)))"));
         Expression expression3 = createExpression(school, "self.classes.tallestStudent.mother!avg(m | m.height)");
-        System.out.println(expression3);
+        assertThat(expression3.toString(), is("self=>classes=>students!filter(_iterator_8 | self=>classes!exists(_iterator_9 | (_iterator_9=>students!filter(_iterator_7 | (_iterator_7.height == _iterator_9=>students!max(_iterator_7 | _iterator_7.height)))!any() equal _iterator_8)))=>parents!filter(_iterator_11 | self=>classes=>students!filter(_iterator_8 | self=>classes!exists(_iterator_9 | (_iterator_9=>students!filter(_iterator_7 | (_iterator_7.height == _iterator_9=>students!max(_iterator_7 | _iterator_7.height)))!any() equal _iterator_8)))!exists(_iterator_12 | (_iterator_12=>parents!filter(_iterator_10 | (_iterator_10.gender equal schools::Gender#FEMALE))!any() equal _iterator_11)))!avg(_iterator_13 | _iterator_13.height)"));
     }
 
     @Test
@@ -579,7 +579,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testChainedObjectFilter() {
         EClass order = findBase("Order");
-        ObjectFilterExpression chainedObjectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')!filter(c | c.phone!isDefined()).territory!filter(t | t.shipper.phone == c.phone)");
+        ObjectFilterExpression chainedObjectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')!filter(c | c.phone!isDefined()).territory!filter(t | t.shipper.phone == t.shipper.phone)");
     }
 
     @Test
@@ -718,6 +718,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     public void testEnvironmentVariables() {
         createExpression("demo::types::Timestamp!getVariable('SYSTEM', 'current_timestamp')");
     }
+    
+    @Test
+    public void testExternalVariablesAreNotAllowed() {
+        EClass order = findBase("Order");
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(order, "demo::entities::Order!filter(o | o == self)"));
+    }
 
     @Test
     public void test002() {
@@ -727,7 +733,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("-1.5!round() < 1.2 and demo::entities::Order!sort()!head()!kindOf(demo::entities::InternationalOrder)");
         createExpression("demo::entities::Product!filter(p | p.discounted)!count() > 10 ? 1.2 : 8.7");
         // select categories, where the category has more than 10 products
-        createExpression("demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category == c)!count() > 10)");
+        createExpression("demo::entities::Category!filter(c | demo::entities::Product!filter(p | p.category == p.category)!count() > 10)");
 
         createExpression("true ? 8[dkg]+12[g] : 2[g] + 4[g] + demo::entities::Product!sort()!head().weight");
 

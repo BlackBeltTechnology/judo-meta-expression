@@ -1,21 +1,30 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Objects;
-import java.util.Optional;
-
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 public class JqlExpressionBuildingContext implements ExpressionBuildingVariableResolver {
 
-    private final Deque<Variable> variables = new ArrayDeque<>();
+    private final Deque<Deque<Variable>> lambdaScopes = new ArrayDeque<>();
 	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
 
+    private final JqlExpressionBuilderConfig config;
+    
+    public JqlExpressionBuildingContext() {
+        this(new JqlExpressionBuilderConfig());
+    }
+    
+    public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config) {
+        this.config = config;
+        pushVariableScope();
+    }
+    
     @Override
     public void pushAccessor(Object accessor) {
         resolvedAccessors.push(accessor);
@@ -33,19 +42,29 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
 
     @Override
     public void pushVariable(Variable variable) {
-        variables.push(variable);
+        variableScope().push(variable);
     }
 
     @Override
     public Variable popVariable() {
-        return variables.pop();
+        return variableScope().pop();
+    }
+
+    private Deque<Variable> variableScope() {
+        return lambdaScopes.peek();
     }
 
     @Override
     public Optional<Variable> resolveVariable(String name) {
-        return variables.stream()
+        Stream<Variable> variablesInScope;
+        if (resolveOnlyCurrentLambdaScope()) {
+            variablesInScope = variableScope().stream();
+        } else {
+            variablesInScope = lambdaScopes.stream().flatMap(Deque::stream);
+        }
+        return variablesInScope
                 .filter(v -> Objects.equals(Optional.ofNullable(v.getHumanName()).orElse(v.getName()), name))
-                .findAny();
+                .findAny();    
     }
 
     @Override
@@ -79,16 +98,43 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
     public Expression peekBaseExpression() {
         return baseExpressions.peek();
     }
-    
+
+    /**
+     * Returns unmodifiable collection of variables.
+     */
     @Override
     public Collection<Variable> getVariables() {
-		return variables;
+        Collection<Variable> result = new ArrayList<>();
+        if (resolveOnlyCurrentLambdaScope()) {
+            result.addAll(variableScope());
+        } else {
+            lambdaScopes.forEach(scope -> result.addAll(scope));
+        }
+		return Collections.unmodifiableCollection(result);
 	}
 
 	@Override
 	public void removeVariable(Variable variable) {
-		variables.remove(variable);
+	    if (resolveOnlyCurrentLambdaScope()) {
+	        variableScope().remove(variable);
+	    } else {
+	        lambdaScopes.forEach(scope -> scope.remove(variable));
+	    }
 	}
 
+	@Override
+	public boolean resolveOnlyCurrentLambdaScope() {
+	    return config.isResolveOnlyCurrentLambdaScope();
+	}
+
+    @Override
+    public void pushVariableScope() {
+        lambdaScopes.push(new ArrayDeque<>());
+    }
+    
+    @Override
+    public void popVariableScope() {
+        lambdaScopes.pop();
+    }
 
 }

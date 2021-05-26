@@ -22,11 +22,16 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> builder;
 
-    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
+    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, JqlExpressionBuilderConfig builderConfig) {
         this.expressionResourceSet = expressionResourceSet;
         this.modelAdapter = modelAdapter; 
-        this.builder = new JqlExpressionBuilder(modelAdapter, expressionResourceSet.getResources().get(0));
+        this.builder = new JqlExpressionBuilder(modelAdapter, expressionResourceSet.getResources().get(0), builderConfig);
     }
+    
+    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
+        this(asmResourceSet, measureResourceSet, expressionResourceSet, modelAdapter, new JqlExpressionBuilderConfig());
+    }
+
 
     @Override
     public ResourceSet extractExpressions() {
@@ -227,6 +232,10 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
         builder.createBinding(bindingContext, entityType, transferObjectType, expression);
     }
 
+    public void setBuilderConfig(JqlExpressionBuilderConfig builderConfig) {
+        builder.setBuilderConfig(builderConfig);
+    }
+    
     static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
         final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
         return StreamSupport.stream(resourceContents.spliterator(), true)
