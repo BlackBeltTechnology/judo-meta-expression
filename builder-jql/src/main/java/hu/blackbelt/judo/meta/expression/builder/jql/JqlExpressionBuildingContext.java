@@ -21,7 +21,11 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
     }
     
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config) {
-        this.config = config;
+        if (config == null) {
+            this.config = new JqlExpressionBuilderConfig();
+        } else {
+            this.config = config;
+        }
         pushVariableScope();
     }
     
