@@ -91,7 +91,7 @@ context EXPR!CastCollection {
         message: "Type of cast collection expression is not defined: " + self
     }
     
-    constraint CastedTypeIsCompatible {
+    constraint CastTypeIsCompatible {
         guard: self.satisfiesAll("Resolved") and self.collectionExpression.satisfiesAll("Resolved")
         
         check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
