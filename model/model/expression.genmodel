@@ -48,8 +48,18 @@
       </genOperations>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//VariableReference"/>
-    <genClasses image="false" ecoreClass="expression.ecore#//IntegerExpression"/>
-    <genClasses image="false" ecoreClass="expression.ecore#//DecimalExpression"/>
+    <genClasses image="false" ecoreClass="expression.ecore#//IntegerExpression">
+      <genOperations ecoreOperation="expression.ecore#//IntegerExpression/isMeasured"
+          body="return modelAdapter.isMeasured(this);">
+        <genParameters ecoreParameter="expression.ecore#//IntegerExpression/isMeasured/modelAdapter"/>
+      </genOperations>
+    </genClasses>
+    <genClasses image="false" ecoreClass="expression.ecore#//DecimalExpression">
+      <genOperations ecoreOperation="expression.ecore#//DecimalExpression/isMeasured"
+          body="return modelAdapter.isMeasured(this);">
+        <genParameters ecoreParameter="expression.ecore#//DecimalExpression/isMeasured/modelAdapter"/>
+      </genOperations>
+    </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//OrderedCollectionExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//DataExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//SwitchExpression">
