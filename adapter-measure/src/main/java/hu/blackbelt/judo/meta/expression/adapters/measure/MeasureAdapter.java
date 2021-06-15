@@ -83,6 +83,9 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
         } else if (numericExpression instanceof DecimalArithmeticExpression) {
             final DecimalArithmeticExpression decimalArithmeticExpression = (DecimalArithmeticExpression) numericExpression;
             return getDimension(decimalArithmeticExpression).map(d -> !d.isEmpty()).orElse(false);
+        } else if (numericExpression instanceof DecimalVariableReference) {
+            final DecimalVariableReference decimalVariableReference = (DecimalVariableReference) numericExpression;
+            return getDimension(decimalVariableReference).map(d -> !d.isEmpty()).orElse(false);
         } else if (numericExpression instanceof IntegerOppositeExpression) {
             return isMeasured(((IntegerOppositeExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalOppositeExpression) {
