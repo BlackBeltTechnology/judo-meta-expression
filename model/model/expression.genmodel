@@ -22,7 +22,8 @@
       <genOperations ecoreOperation="expression.ecore#//ElementName/toString" body="return getNamespace() + &quot;::&quot; + getName();"/>
     </genClasses>
     <genClasses image="false" ecoreClass="expression.ecore#//NumericExpression">
-      <genOperations ecoreOperation="expression.ecore#//NumericExpression/isMeasured">
+      <genOperations ecoreOperation="expression.ecore#//NumericExpression/isMeasured"
+          body="return modelAdapter.isMeasured(this);">
         <genParameters ecoreParameter="expression.ecore#//NumericExpression/isMeasured/modelAdapter"/>
       </genOperations>
     </genClasses>
@@ -421,10 +422,6 @@
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/DecimalArithmeticExpression/operator"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalArithmeticExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalArithmeticExpression/isMeasured"
-            body="return modelAdapter.isMeasured(this);">
-          <genParameters ecoreParameter="expression.ecore#//numeric/DecimalArithmeticExpression/isMeasured/modelAdapter"/>
-        </genOperations>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalArithmeticExpression/toString"
             body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
@@ -439,10 +436,6 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalOppositeExpression/expression"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalOppositeExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalOppositeExpression/isMeasured"
-            body="return modelAdapter.isMeasured(this);">
-          <genParameters ecoreParameter="expression.ecore#//numeric/DecimalOppositeExpression/isMeasured/modelAdapter"/>
-        </genOperations>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalOppositeExpression/toString"
             body="return &quot;-&quot; + getExpression();"/>
       </genClasses>
@@ -464,10 +457,6 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalAggregatedExpression/expression"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/getLambdaFunctions"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/isMeasured"
-            body="return modelAdapter.isMeasured(this);">
-          <genParameters ecoreParameter="expression.ecore#//numeric/DecimalAggregatedExpression/isMeasured/modelAdapter"/>
-        </genOperations>
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/toString"
             body="return String.format(&quot;%s!%s(%s | %s)&quot;, getCollectionExpression(), getOperator(), getCollectionExpression().getIteratorVariableName(), getExpression());"/>
       </genClasses>
@@ -479,18 +468,8 @@
             body="return &quot;ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerSwitchExpression"/>
-      <genClasses ecoreClass="expression.ecore#//numeric/DecimalSwitchExpression">
-        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalSwitchExpression/isMeasured"
-            body="return modelAdapter.isMeasured(this);">
-          <genParameters ecoreParameter="expression.ecore#//numeric/DecimalSwitchExpression/isMeasured/modelAdapter"/>
-        </genOperations>
-      </genClasses>
-      <genClasses image="false" ecoreClass="expression.ecore#//numeric/NumericAttribute">
-        <genOperations ecoreOperation="expression.ecore#//numeric/NumericAttribute/isMeasured"
-            body="return modelAdapter.isMeasured(this);">
-          <genParameters ecoreParameter="expression.ecore#//numeric/NumericAttribute/isMeasured/modelAdapter"/>
-        </genOperations>
-      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/DecimalSwitchExpression"/>
+      <genClasses image="false" ecoreClass="expression.ecore#//numeric/NumericAttribute"/>
       <genClasses ecoreClass="expression.ecore#//numeric/Length">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/Length/expression"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/Length/getOperands"
