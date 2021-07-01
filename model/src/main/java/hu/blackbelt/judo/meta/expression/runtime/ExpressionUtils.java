@@ -1,4 +1,5 @@
 package hu.blackbelt.judo.meta.expression.runtime;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -32,6 +33,22 @@ public class ExpressionUtils {
 
     public void setFailOnError(final boolean failOnError) {
         this.failOnError = failOnError;
+    }
+    
+    public static String safeName(String str) {
+        if (Arrays.asList(
+                "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
+                "continue", "default", "do", "double", "else", "enum", "exports", "extends",
+                "final", "finally", "float", "for", "if", "implements", "import", "instanceof",
+                "long", "module", "native", "new", "package", "private", "protected",
+                "public", "requires", "return", "short", "static", "strictfp", "super",
+                "switch", "synchronized", "this", "throw", "throws", "transient", "try",
+                "void", "volatile", "while", "true", "null", "false", "var", "const", "goto",
+                "class", "Class", "int", "interface").contains(str)) {
+            return str + "_";
+        } else {
+            return str;
+        }
     }
 
     /**
