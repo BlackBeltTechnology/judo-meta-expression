@@ -34,7 +34,13 @@ public class ExpressionUtils {
     public void setFailOnError(final boolean failOnError) {
         this.failOnError = failOnError;
     }
-    
+
+    /**
+     * Returns a safe conversion of the parameter string
+     *
+     * @param str the string to be converted
+     * @return the converted string
+     */
     public static String safeName(String str) {
         if (Arrays.asList(
                 "abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
