@@ -37,13 +37,13 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
  * Expression builder from JQL.
  *
  */
-public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
+public class JqlExpressionBuilder<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> {
 
     public static final String SELF_NAME = "self";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
-    private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
+    private final ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
@@ -54,7 +54,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     private final JqlTransformers jqlTransformers;
     private JqlExpressionBuilderConfig config;
 
-    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config) {
+    public JqlExpressionBuilder(ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
@@ -69,7 +69,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         addPrimitiveTypes();
     }
     
-    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
+    public JqlExpressionBuilder(ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
         this(modelAdapter, expressionResource, new JqlExpressionBuilderConfig());
     }
     
@@ -159,12 +159,12 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         });
     }
 
-    private void storeTypeName(NE namespaceElement, TypeName typeName) {
+    private void storeTypeName(ME modelElement, TypeName typeName) {
         if (all(expressionResource.getResourceSet(), TypeName.class)
                 .noneMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
             expressionResource.getContents().add(typeName);
         } else {
-            LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
+            LOGGER.trace("  - type name is already added to resource set: {}", modelElement);
         }
     }
 
@@ -327,7 +327,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return jqlTransformers.transform(jqlExpression, context);
     }
 
-    public ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
+    public ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
         return modelAdapter;
     }
 
@@ -416,7 +416,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         }
     }
 
-    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA,TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
+    public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<ME, NE, P, E, C, PTE, RTE, TO, TA,TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
     

@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
  * @param <M> measure type (in metamodel)
  * @param <U> unit type (in metamodel)
  */
-public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
+public class MeasureAdapter<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapter.class);
     /**
      * Measure adapter that is used to resolve (object) types of numeric expressions.
      */
-    private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
+    private final ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
 
     /**
      * Measure provider.
@@ -40,7 +40,7 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
      */
     final Map<Map<MeasureId, Integer>, MeasureId> dimensions = new ConcurrentHashMap<>();
 
-    public MeasureAdapter(final MeasureProvider<M, U> measureProvider, final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
+    public MeasureAdapter(final MeasureProvider<M, U> measureProvider, final ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
         this.measureProvider = measureProvider;
         this.modelAdapter = modelAdapter;
 

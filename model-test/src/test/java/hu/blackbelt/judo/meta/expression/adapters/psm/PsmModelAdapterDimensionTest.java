@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.psm.data.Sequence;
 import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.psm.measure.Measure;
 import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
@@ -43,7 +44,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 public class PsmModelAdapterDimensionTest {
 
-    private MeasureAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, Measure, Unit> measureAdapter;
+    private MeasureAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, Measure, Unit> measureAdapter;
     private MeasureProvider<Measure, Unit> measureProvider;
     private Resource resource;
 
@@ -54,7 +55,7 @@ public class PsmModelAdapterDimensionTest {
         resource = resourceSet.createResource(URI.createURI("urn:psm.judo-meta-psm"));
         measureProvider = new PsmMeasureProvider(resourceSet);
 
-        final ModelAdapter<NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
+        final ModelAdapter<NamedElement, NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> modelAdapter = Mockito.mock(ModelAdapter.class);
 
         Mockito.doAnswer(invocationOnMock -> {
             final Object[] args = invocationOnMock.getArguments();

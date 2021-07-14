@@ -46,7 +46,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for ESM models.
  */
-public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> {
+public class EsmModelAdapter implements ModelAdapter<NamedElement, NamespaceElement, Primitive, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(EsmModelAdapter.class);
@@ -55,7 +55,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     private final ResourceSet esmResourceSet;
     private final MeasureProvider<Measure,Unit> measureProvider;
-    private final MeasureAdapter<NamespaceElement, Primitive, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> measureAdapter;
+    private final MeasureAdapter<NamedElement, NamespaceElement, Primitive, EnumerationType, hu.blackbelt.judo.meta.esm.structure.Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> measureAdapter;
 
     public EsmModelAdapter(final ResourceSet esmResourceSet, final ResourceSet measureResourceSet) {
         this.esmResourceSet = esmResourceSet;
@@ -64,10 +64,10 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<TypeName> buildTypeName(final NamespaceElement namespaceElement) {
+    public Optional<TypeName> buildTypeName(final NamedElement namedElement) {
         return getEsmElement(Namespace.class)
-                .filter(ns -> ns.getElements().contains(namespaceElement))
-                .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namespaceElement.getName()).build())
+                .filter(ns -> ns.getElements().contains(namedElement))
+                .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namedElement.getName()).build())
                 .findAny();
     }
 
@@ -404,7 +404,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<NamespaceElement> getAllStaticSequences() {
+    public EList<Sequence> getAllStaticSequences() {
         return ECollections.asEList(getEsmElement(NamespaceSequence.class).collect(toList()));
     }
 
@@ -418,7 +418,7 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isSequence(NamespaceElement namespaceElement) {
+    public boolean isSequence(NamedElement namespaceElement) {
         return namespaceElement instanceof Sequence;
     }
 

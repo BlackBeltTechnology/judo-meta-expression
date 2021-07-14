@@ -45,10 +45,10 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.*;
 import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 
-public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U>
+public class JqlTransformers<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U>
         implements ExpressionTransformer, ExpressionMeasureProvider {
 
-    private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder;
+    private final JqlExpressionBuilder<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
     private boolean resolveDerived = true;
@@ -56,7 +56,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     private AtomicInteger atomicCounter = new AtomicInteger(1);
     private static String generatedIteratorPrefix = "_iterator_";
 
-    public JqlTransformers(JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder) {
+    public JqlTransformers(JqlExpressionBuilder<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder) {
         this.expressionBuilder = expressionBuilder;
         literals();
         operations();
@@ -319,7 +319,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                         // might be overridden via overrideTransformer, so we need to ask for it
                         JqlNavigationTransformer jqlNavigationTransformer = (JqlNavigationTransformer) findTransformer(
                                 NavigationExpression.class).get();
-                        JqlNavigationFeatureTransformer<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlNavigationFeatureTransformer = jqlNavigationTransformer
+                        JqlNavigationFeatureTransformer<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlNavigationFeatureTransformer = jqlNavigationTransformer
                                 .getFeatureTransformer();
                         JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> transformResult = jqlNavigationFeatureTransformer
                                 .transform(functionCall.getFeatures(), subject, objectType, context);
@@ -370,7 +370,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         }
     }
 
-    public ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
+    public ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getModelAdapter() {
         return expressionBuilder.getModelAdapter();
     }
 
@@ -416,12 +416,12 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         }
     }
 
-    public JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getExpressionBuilder() {
+    public JqlExpressionBuilder<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> getExpressionBuilder() {
         return expressionBuilder;
     }
 
     public void overrideTransformer(Class<? extends JqlExpression> jqlType,
-                                    Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
+                                    Function<JqlTransformers<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         transformers.put(jqlType, transformer.apply(this));
     }
 

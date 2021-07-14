@@ -14,21 +14,21 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> implements JqlExtractor {
+public class AdaptableJqlExtractor<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> implements JqlExtractor {
 
     private static final Logger log = LoggerFactory.getLogger(AdaptableJqlExtractor.class.getName());
     
     private final ResourceSet expressionResourceSet;
-    private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
-    private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> builder;
+    private final ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
+    private final JqlExpressionBuilder<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> builder;
 
-    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, JqlExpressionBuilderConfig builderConfig) {
+    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, JqlExpressionBuilderConfig builderConfig) {
         this.expressionResourceSet = expressionResourceSet;
         this.modelAdapter = modelAdapter; 
         this.builder = new JqlExpressionBuilder(modelAdapter, expressionResourceSet.getResources().get(0), builderConfig);
     }
     
-    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
+    public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
         this(asmResourceSet, measureResourceSet, expressionResourceSet, modelAdapter, new JqlExpressionBuilderConfig());
     }
 

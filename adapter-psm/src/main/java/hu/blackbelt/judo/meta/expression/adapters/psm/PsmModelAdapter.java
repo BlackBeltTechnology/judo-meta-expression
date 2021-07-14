@@ -49,13 +49,13 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for PSM models.
  */
-public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> {
+public class PsmModelAdapter implements ModelAdapter<NamedElement, NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter<NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> measureAdapter;
+    private final MeasureAdapter<NamedElement, NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> measureAdapter;
 
     /**
      * Create PSM model adapter for expressions.
@@ -70,10 +70,10 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public Optional<TypeName> buildTypeName(final NamespaceElement namespaceElement) {
+    public Optional<TypeName> buildTypeName(final NamedElement namedElement) {
         return getPsmElement(Namespace.class)
-                .filter(ns -> ns.getElements().contains(namespaceElement))
-                .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namespaceElement.getName()).build())
+                .filter(ns -> ns.getElements().contains(namedElement))
+                .map(ns -> newTypeNameBuilder().withNamespace(getNamespaceFQName(ns)).withName(namedElement.getName()).build())
                 .findAny();
     }
 
@@ -380,8 +380,8 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public EList<NamespaceElement> getAllStaticSequences() {
-        return ECollections.asEList(getPsmElement(NamespaceSequence.class).map(ns -> (NamespaceElement)ns).collect(toList()));
+    public EList<Sequence> getAllStaticSequences() {
+        return ECollections.asEList(getPsmElement(NamespaceSequence.class).collect(toList()));
     }
 
     @Override
@@ -390,7 +390,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-    public boolean isSequence(NamespaceElement namespaceElement) {
+    public boolean isSequence(NamedElement namespaceElement) {
         return namespaceElement instanceof Sequence;
     }
 

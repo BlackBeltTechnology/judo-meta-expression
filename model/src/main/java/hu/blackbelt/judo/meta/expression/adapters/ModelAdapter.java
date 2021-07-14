@@ -15,6 +15,7 @@ import java.util.Optional;
 /**
  * Expression model adapter. This interface is used to evaluate expressions on specific metamodels.
  *
+ * @param <ME>  model element
  * @param <NE>  namespace element
  * @param <P>   primitive
  * @param <E>   enumeration
@@ -28,16 +29,16 @@ import java.util.Optional;
  * @param <M>   measure
  * @param <U>   unit
  */
-public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
+public interface ModelAdapter<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> {
 
     /**
      * Get type name (defined by expression metamodel) of a given namespace element (in underlying data model). Type name
      * won't be added to any resource.
      *
-     * @param namespaceElement namespace element
+     * @param modelElement namespace element
      * @return type name
      */
-    Optional<TypeName> buildTypeName(NE namespaceElement);
+    Optional<TypeName> buildTypeName(ME modelElement);
 
     /**
      * Get a namespace element by element name.
@@ -312,7 +313,7 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
 
     EList<P> getAllPrimitiveTypes();
 
-    EList<NE> getAllStaticSequences();
+    EList<S> getAllStaticSequences();
 
     EList<TO> getAllTransferObjectTypes();
 
@@ -329,7 +330,7 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
      */
     Optional<? extends S> getSequence(C clazz, String sequenceName);
 
-    boolean isSequence(NE namespaceElement);
+    boolean isSequence(ME namespaceElement);
 
     boolean isDerivedAttribute(PTE attribute);
 

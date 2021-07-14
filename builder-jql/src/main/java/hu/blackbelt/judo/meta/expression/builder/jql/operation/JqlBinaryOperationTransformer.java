@@ -20,7 +20,7 @@ import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAdditionExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAdditionExpressionBuilder;
 
-public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<BinaryOperation, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
+public class JqlBinaryOperationTransformer<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> extends AbstractJqlExpressionTransformer<BinaryOperation, ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
     public JqlBinaryOperationTransformer(JqlTransformers jqlTransformers) {
         super(jqlTransformers);

@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import hu.blackbelt.judo.meta.psm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.psm.service.TransferAttribute;
 import hu.blackbelt.judo.meta.psm.service.TransferObjectRelation;
 import org.eclipse.emf.common.notify.Notifier;
@@ -58,7 +59,7 @@ public class PsmModelAdapterTest extends ExecutionContextOnPsmTest{
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapterTest.class);
 
-    private ModelAdapter<NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> modelAdapter;
+    private ModelAdapter<NamedElement, NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> modelAdapter;
 
     private static final Logger logger = LoggerFactory.getLogger(PsmModelAdapterTest.class);
     

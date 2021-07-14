@@ -13,11 +13,11 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
 
-public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlFunctionTransformer<TypeNameExpression> {
+public class GetVariableFunctionTransformer<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> extends AbstractJqlFunctionTransformer<TypeNameExpression> {
 
-    private JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
+    private JqlTransformers<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
 
-    public GetVariableFunctionTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
+    public GetVariableFunctionTransformer(JqlTransformers<ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
         super(jqlTransformers);
         this.jqlTransformers = jqlTransformers;
     }

@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AsmModelAdapterTest extends ExecutionContextOnAsmTest {
 
-    private ModelAdapter<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> modelAdapter;
+    private ModelAdapter<EModelElement, EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EAnnotation, Measure, Unit> modelAdapter;
 
     @BeforeEach
     public void setUp() throws Exception {

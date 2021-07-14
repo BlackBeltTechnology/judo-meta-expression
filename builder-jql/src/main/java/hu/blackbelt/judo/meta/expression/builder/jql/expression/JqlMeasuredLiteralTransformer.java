@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newMeasuredDecimalBuilder;
 
-public class JqlMeasuredLiteralTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
+public class JqlMeasuredLiteralTransformer<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> extends AbstractJqlExpressionTransformer<MeasuredLiteral, ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
     private static final String MEASURE_NAME_REGEX = "((.*)#)?(.*)";
 

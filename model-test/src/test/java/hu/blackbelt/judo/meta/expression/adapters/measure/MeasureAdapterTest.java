@@ -43,7 +43,7 @@ public class MeasureAdapterTest {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(MeasureAdapterTest.class);
     private DummyMeasureProvider measureProvider = new DummyMeasureProvider();
     private ModelAdapter modelAdapter;
-    private MeasureAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, Measure, Unit> measureAdapter;
+    private MeasureAdapter<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, Measure, Unit> measureAdapter;
 
     private final Map<String, Unit> attributeUnits = new TreeMap<>();
 

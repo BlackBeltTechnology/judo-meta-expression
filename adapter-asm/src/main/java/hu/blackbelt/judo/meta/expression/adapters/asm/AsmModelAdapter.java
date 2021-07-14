@@ -13,7 +13,6 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
-import hu.blackbelt.judo.meta.measure.DurationType;
 import hu.blackbelt.judo.meta.measure.DurationUnit;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
@@ -25,7 +24,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +37,7 @@ import static java.util.stream.Collectors.toList;
  * Model adapter for ASM models.
  */
 public class AsmModelAdapter implements
-		ModelAdapter<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> {
+		ModelAdapter<EModelElement, EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EAnnotation, Measure, Unit> {
 
 	protected static final String NAMESPACE_SEPARATOR = "::";
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(AsmModelAdapter.class);
@@ -47,7 +45,7 @@ public class AsmModelAdapter implements
 	private static Pattern MEASURE_NAME_PATTERN = Pattern.compile("^(.*)\\.([^\\.]+)$");
 
 	private final MeasureProvider<Measure, Unit> measureProvider;
-	private final MeasureAdapter<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> measureAdapter;
+	private final MeasureAdapter<EModelElement, EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EAnnotation, Measure, Unit> measureAdapter;
 
 	private final AsmUtils asmUtils;
 
@@ -71,11 +69,20 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
-	public Optional<TypeName> buildTypeName(final EClassifier namespaceElement) {
-		return getAsmElement(EPackage.class).filter(ns -> ns.getEClassifiers().contains(namespaceElement))
+	public Optional<TypeName> buildTypeName(final EModelElement modelElement) {
+		final String name;
+		if (modelElement instanceof ENamedElement) {
+			name = ((ENamedElement)modelElement).getName();
+		} else if (modelElement instanceof EAnnotation) {
+			name = ((EAnnotation) modelElement).getDetails().get("name");
+		} else {
+			name = null;
+		}
+
+		return getAsmElement(EPackage.class).filter(ns -> ns.getEClassifiers().contains(modelElement))
 				.map(ns -> newTypeNameBuilder()
 						.withNamespace(AsmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR))
-						.withName(namespaceElement.getName()).build())
+						.withName(name).build())
 				.findAny();
 	}
 
@@ -395,21 +402,23 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
-	public EList<EClassifier> getAllStaticSequences() {
-		// TODO
-		return ECollections.emptyEList();
+	public EList<EAnnotation> getAllStaticSequences() {
+		return ECollections.asEList(getAsmElement(EAnnotation.class)
+				.filter(a -> a.eContainer() instanceof EPackage)
+				.filter(a -> Objects.equals(a.getSource(), AsmUtils.getAnnotationUri("sequence")))
+				.collect(toList()));
 	}
 
 	@Override
-	public Optional<? extends EClassifier> getSequence(EClass clazz, String sequenceName) {
-		// TODO
-		return Optional.empty();
+	public Optional<? extends EAnnotation> getSequence(EClass clazz, String sequenceName) {
+		return AsmUtils.getExtensionAnnotationListByName(clazz, "sequence").stream()
+				.filter(a -> Objects.equals(a.getDetails().get("name"), sequenceName))
+				.findFirst();
 	}
 
 	@Override
-	public boolean isSequence(EClassifier namespaceElement) {
-		// TODO
-		return false;
+	public boolean isSequence(EModelElement modelElement) {
+		return modelElement instanceof EAnnotation && Objects.equals(((EAnnotation) modelElement).getSource(), AsmUtils.getAnnotationUri("sequence"));
 	}
 
 	@Override

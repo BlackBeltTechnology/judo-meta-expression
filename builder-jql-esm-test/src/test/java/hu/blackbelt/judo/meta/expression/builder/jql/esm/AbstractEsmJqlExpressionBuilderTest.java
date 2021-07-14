@@ -10,6 +10,7 @@ import hu.blackbelt.judo.meta.esm.measure.DurationType;
 import hu.blackbelt.judo.meta.esm.measure.Measure;
 import hu.blackbelt.judo.meta.esm.measure.Unit;
 import hu.blackbelt.judo.meta.esm.namespace.Model;
+import hu.blackbelt.judo.meta.esm.namespace.NamedElement;
 import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.structure.Class;
@@ -62,7 +63,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
     private static final String ESM_RESOURCE_URI = "urn:esm.judo-meta-esm";
     private static final String EXPRESSION_RESOURCE_URI = "urn:test.judo-meta-expression";
     private static final Log log = new Slf4jLog();
-    private JqlExpressionBuilder<NamespaceElement, Primitive, EnumerationType, Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
+    private JqlExpressionBuilder<NamedElement, NamespaceElement, Primitive, EnumerationType, Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
     private Resource measureResource;
     protected EsmModelAdapter modelAdapter;
     private ExpressionModelResourceSupport expressionModelResourceSupport;

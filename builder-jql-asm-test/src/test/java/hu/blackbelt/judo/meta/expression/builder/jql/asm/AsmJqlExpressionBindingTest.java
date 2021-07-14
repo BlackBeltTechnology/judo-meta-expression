@@ -9,12 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Collections;
 
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
 
-    private JqlExpressionBuilder<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> expressionBuilder;
+    private JqlExpressionBuilder<EModelElement, EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EAnnotation, Measure, Unit> expressionBuilder;
 
     private ExpressionModelResourceSupport expressionModelResourceSupport;
 
