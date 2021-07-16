@@ -73,7 +73,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EReference tallestStudent = newEReferenceBuilder().withName("tallestStudent").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
         EReference tallestStudents = newEReferenceBuilder().withName("tallestStudents").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
         EClass clazz= newEClassBuilder().withName("Class").withEStructuralFeatures(classStudents, tallestStudent, tallestStudents).build();
-        EReference schoolClasses = newEReferenceBuilder().withName("classes").withEType(clazz).withLowerBound(0).withUpperBound(-1).build();
+        EReference schoolClasses = newEReferenceBuilder().withName("classes").withEType(clazz).withContainment(true).withLowerBound(0).withUpperBound(-1).build();
         EClass school = newEClassBuilder().withName("School").withEStructuralFeatures(schoolClasses).build();
 
         EAnnotation getterAnnotationForMother = AsmUtils.getExtensionAnnotationByName(mother, "expression", true).get();
@@ -839,6 +839,30 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #4 valid
         assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!asType(schools::Student)"));
+    }
+
+    @Test
+    public void testContainerValidation() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!container(schools::Class)"));
+        String message = exception.getOriginalThrowable()
+                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
+                .getMessage();
+        assertEquals("Class type is not a container of School", message);
+
+        // #2 invalid - same
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Class"), "self!container(schools::Class)"));
+        message = exception2.getOriginalThrowable()
+                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
+                .getMessage();
+        assertEquals("Class type is not a container of Class", message);
+
+        // #3 valid
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "self!container(schools::School)"));
     }
 
 }
