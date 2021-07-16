@@ -1,42 +1,8 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.expression.AttributeSelector;
-import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.DecimalExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.IntegerExpression;
-import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ObjectExpression;
-import hu.blackbelt.judo.meta.expression.ReferenceExpression;
-import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.TimestampExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
@@ -44,6 +10,7 @@ import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObje
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
@@ -55,6 +22,22 @@ import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.*;
+import org.hamcrest.Description;
+import org.hamcrest.DiagnosingMatcher;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
@@ -770,4 +753,32 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture!isDefined())");
         createExpression("demo::entities::Order!any()=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
     }
+
+    @Test
+    public void testKindOf() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!kindOf(schools::Student)"));
+
+        String message = exception.getOriginalThrowable()
+                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
+                .getMessage();
+        assertEquals("Element type Student is not compatible with School", message);
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 = assertThrows(JqlExpressionBuildException.class, () ->
+                createExpression(findBase("Student"), "self!kindOf(schools::Person)"));
+        message = exception2.getOriginalThrowable()
+                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
+                .getMessage();
+        assertEquals("Element type Person is not compatible with Student", message);
+
+        // #3 valid - different
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!kindOf(schools::Student)"));
+
+        // #4 valid - same
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!kindOf(schools::Student)"));
+    }
+
 }

@@ -7,7 +7,10 @@ import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLitera
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlAggregatedExpressionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlJoinFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSortFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
@@ -74,36 +77,50 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("isundefined", new JqlIsDefinedFunctionTransformer(this, false));
         functionTransformers.put("isdefined", new JqlIsDefinedFunctionTransformer(this, true));
 
-        functionTransformers.put("kindof",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
-                        (expression, parameter) -> {
-                            TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
-                            if (typeNameFromResource == null) {
-                                throw new IllegalArgumentException("Type not found: " + parameter);
-                            }
-                            return newInstanceOfExpressionBuilder().withObjectExpression(expression)
-                                    .withElementName(typeNameFromResource).build();
-                        }, (jqlExpression) -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put("typeof",
+        functionTransformers.put(
+                "kindof",
+                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(
+                        this,
+                        (expression, parameter) -> newInstanceOfExpressionBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(getParameterTypeName(expression, parameter))
+                                .build(),
+                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+        functionTransformers.put("typeof", // TODO: validate
                 new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
                         (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression)
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter)).build(),
-                        (jqlExpression -> ((NavigationExpression) jqlExpression).getQName())));
-
-        functionTransformers.put("astype",
+                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+        functionTransformers.put("astype", // TODO: validate
                 new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
                         (expression, parameter) -> newCastObjectBuilder()
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
                                 .withObjectExpression(expression).build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
 
-        functionTransformers.put("container",
+        functionTransformers.put("container", // TODO: validate
                 new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
                         (expression, parameter) -> newContainerExpressionBuilder()
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
                                 .withObjectExpression(expression).build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
 
+    }
+
+    private TypeName getParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
+        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
+        if (typeNameFromResource == null) {
+            throw new IllegalArgumentException("Type not found: " + parameter);
+        }
+
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
+        if (!(getModelAdapter().getSuperTypes(parameterType).contains(objectType) || objectType.equals(parameterType))) {
+            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
+            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
+            throw new IllegalArgumentException("Element type " + parameterName + " is not compatible with " + objectName);
+        }
+        return typeNameFromResource;
     }
 
     private void collectionFunctions() {
@@ -148,16 +165,16 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("max", JqlAggregatedExpressionTransformer.createMaxInstance(this));
         functionTransformers.put("sum", JqlAggregatedExpressionTransformer.createSumInstance(this));
         functionTransformers.put("avg", JqlAggregatedExpressionTransformer.createAvgInstance(this));
-        functionTransformers.put("contains",
+        functionTransformers.put("contains", // TODO: validate
                 new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(
                         this, (expression, parameter) -> newContainsExpressionBuilder()
                         .withCollectionExpression(expression).withObjectExpression(parameter).build()));
-        functionTransformers.put("memberof",
+        functionTransformers.put("memberof", // TODO: validate
                 new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(
                         this, (expression, parameter) -> newMemberOfExpressionBuilder()
                         .withCollectionExpression(parameter).withObjectExpression(expression).build()));
 
-        functionTransformers.put("ascollection",
+        functionTransformers.put("ascollection", // TODO: validate
                 new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
                         (expression, parameter) -> newCastCollectionBuilder()
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
