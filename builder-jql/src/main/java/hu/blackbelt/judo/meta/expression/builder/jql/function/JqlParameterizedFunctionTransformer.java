@@ -3,9 +3,11 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
+import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -26,8 +28,13 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
 
     @Override
     public RESULT apply(BASE argument, JqlFunction function, ExpressionBuildingVariableResolver context) {
+        List<FunctionParameter> parameters = function.getParameters();
+        if (parameters.size() != 1) {
+            throw new IllegalArgumentException("Function " + function.getName() + " must have exactly one parameter");
+        }
+        JqlExpression jqlParameterExpression = parameters.get(0).getExpression();
+
         Object parameter;
-        JqlExpression jqlParameterExpression = function.getParameters().get(0).getExpression();
         if (parameterMapper != null) {
             parameter = parameterMapper.apply(jqlParameterExpression);
         } else {
@@ -39,6 +46,6 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
         } catch (ClassCastException e) {
             throw new IllegalArgumentException(String.format("Error in expression %s!%s, illegal argument type: %s (%s)", argument, function.getName(), argument.getClass(), e.getMessage()));
         }
-
     }
+
 }
