@@ -767,8 +767,9 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertEquals("Element type Student is not compatible with School", message);
 
         // #2 invalid - reverse
-        JqlExpressionBuildException exception2 = assertThrows(JqlExpressionBuildException.class, () ->
-                createExpression(findBase("Student"), "self!kindOf(schools::Person)"));
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!kindOf(schools::Person)"));
         message = exception2.getOriginalThrowable()
                 .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
                 .getMessage();
@@ -779,6 +780,34 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #4 valid - same
         assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!kindOf(schools::Student)"));
+    }
+
+    @Test
+    public void testTypeOf() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!typeOf(schools::Student)"));
+
+        String message = exception.getOriginalThrowable()
+                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
+                .getMessage();
+        assertEquals("Element type Student is not School", message);
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!typeOf(schools::Person)"));
+        message = exception2.getOriginalThrowable()
+                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
+                .getMessage();
+        assertEquals("Element type Person is not Student", message);
+
+        // #3 valid - different
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!typeOf(schools::Student)"));
+
+        // #4 valid - same
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!typeOf(schools::Student)"));
     }
 
 }

@@ -83,22 +83,26 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                         this,
                         (expression, parameter) -> newInstanceOfExpressionBuilder()
                                 .withObjectExpression(expression)
-                                .withElementName(getParameterTypeName(expression, parameter))
+                                .withElementName(getKindOfParameterTypeName(expression, parameter))
                                 .build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put("typeof", // TODO: validate
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
-                        (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression)
-                                .withElementName(expressionBuilder.getTypeNameFromResource(parameter)).build(),
+        functionTransformers.put(
+                "typeof",
+                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(
+                        this,
+                        (expression, parameter) -> newTypeOfExpressionBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(getTypeOfParameterTypeName(expression, parameter))
+                                .build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put("astype", // TODO: validate
+        functionTransformers.put("astype", // TODO: validate + test
                 new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
                         (expression, parameter) -> newCastObjectBuilder()
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
                                 .withObjectExpression(expression).build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
 
-        functionTransformers.put("container", // TODO: validate
+        functionTransformers.put("container", // TODO: validate + test
                 new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
                         (expression, parameter) -> newContainerExpressionBuilder()
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
@@ -107,7 +111,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     }
 
-    private TypeName getParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
+    private TypeName getKindOfParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
+        return getParameterTypeName(expression, parameter, true);
+    }
+
+    private TypeName getTypeOfParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
+        return getParameterTypeName(expression, parameter, false);
+    }
+
+    private TypeName getParameterTypeName(ObjectExpression expression, QualifiedName parameter, boolean kindOf) {
         TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
         if (typeNameFromResource == null) {
             throw new IllegalArgumentException("Type not found: " + parameter);
@@ -118,8 +130,9 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         if (!(getModelAdapter().getSuperTypes(parameterType).contains(objectType) || objectType.equals(parameterType))) {
             String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
             String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
-            throw new IllegalArgumentException("Element type " + parameterName + " is not compatible with " + objectName);
+            throw new IllegalArgumentException("Element type " + parameterName + " is not " + (kindOf ? "compatible with " : "") + objectName);
         }
+
         return typeNameFromResource;
     }
 
@@ -165,16 +178,16 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("max", JqlAggregatedExpressionTransformer.createMaxInstance(this));
         functionTransformers.put("sum", JqlAggregatedExpressionTransformer.createSumInstance(this));
         functionTransformers.put("avg", JqlAggregatedExpressionTransformer.createAvgInstance(this));
-        functionTransformers.put("contains", // TODO: validate
+        functionTransformers.put("contains", // TODO: validate + test
                 new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(
                         this, (expression, parameter) -> newContainsExpressionBuilder()
                         .withCollectionExpression(expression).withObjectExpression(parameter).build()));
-        functionTransformers.put("memberof", // TODO: validate
+        functionTransformers.put("memberof", // TODO: validate + test
                 new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(
                         this, (expression, parameter) -> newMemberOfExpressionBuilder()
                         .withCollectionExpression(parameter).withObjectExpression(expression).build()));
 
-        functionTransformers.put("ascollection", // TODO: validate
+        functionTransformers.put("ascollection", // TODO: validate + test
                 new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
                         (expression, parameter) -> newCastCollectionBuilder()
                                 .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
