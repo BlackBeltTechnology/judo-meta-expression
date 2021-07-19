@@ -856,4 +856,22 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertDoesNotThrow(() -> createExpression(findBase("Class"), "self.students!contains(schools::Person!any())"));
     }
 
+    @Test
+    public void testAsCollection() {
+        // #1 invalid - incompatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!asCollection(schools::Student)"));
+        assertTrue(exception.getMessage().contains("Invalid casting: Class as Student. Class is not supertype of Student"));
+
+        // #2 invalid - same type
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!asCollection(schools::Class)"));
+        assertTrue(exception2.getMessage().contains("Invalid casting: Class as Class. Class is not supertype of Class"));
+
+        // #3 valid
+        assertDoesNotThrow(() -> findBase("Student"), "self.parents!asCollection(schools::Student)");
+    }
+
 }
