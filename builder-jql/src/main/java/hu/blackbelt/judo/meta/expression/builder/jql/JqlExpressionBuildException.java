@@ -14,7 +14,6 @@ public class JqlExpressionBuildException extends RuntimeException {
 	private final EObject jclObject;
 	private final List<JqlExpressionBuildingError> errors = new ArrayList<>();
 	private final Expression partialExpression;
-	private final Throwable originalThrowable;
 
 	public Expression getPartialExpression() {
 		return partialExpression;
@@ -24,16 +23,11 @@ public class JqlExpressionBuildException extends RuntimeException {
 		return jclObject;
 	}
 
-	public Optional<Throwable> getOriginalThrowable() {
-		return Optional.ofNullable(originalThrowable);
-	}
-	
 	public JqlExpressionBuildException(Expression partialExpression, List<JqlExpressionBuildingError> errors) {
 		super("Errors during building expression: " + errorDescriptions(errors));
 		this.jclObject = null;
 		this.partialExpression = partialExpression;
 		this.errors.addAll(errors);
-		this.originalThrowable = null;
 	}
 
 	private static String errorDescriptions(List<JqlExpressionBuildingError> errors) {
@@ -45,7 +39,6 @@ public class JqlExpressionBuildException extends RuntimeException {
 		this.jclObject = null;
 		this.partialExpression = partialExpression;
 		this.errors.addAll(errors);
-		this.originalThrowable = throwable;
 	}
 	
 	public List<JqlExpressionBuildingError> getErrors() {
