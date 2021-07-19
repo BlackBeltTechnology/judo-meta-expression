@@ -2,7 +2,6 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EObject;
@@ -22,7 +21,7 @@ public class JqlExpressionBuildException extends RuntimeException {
 	public EObject getJclObject() {
 		return jclObject;
 	}
-
+    
 	public JqlExpressionBuildException(Expression partialExpression, List<JqlExpressionBuildingError> errors) {
 		super("Errors during building expression: " + errorDescriptions(errors));
 		this.jclObject = null;
