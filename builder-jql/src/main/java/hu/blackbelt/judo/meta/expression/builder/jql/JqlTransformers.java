@@ -216,11 +216,28 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("max", JqlAggregatedExpressionTransformer.createMaxInstance(this));
         functionTransformers.put("sum", JqlAggregatedExpressionTransformer.createSumInstance(this));
         functionTransformers.put("avg", JqlAggregatedExpressionTransformer.createAvgInstance(this));
-        functionTransformers.put("contains", new JqlParameterizedFunctionTransformer<>(this, this::getContainsExpression));
-        functionTransformers.put("memberof", // TODO: validate + test
+        functionTransformers.put(
+                "contains",
+                new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(
+                        this,
+                        (expression, parameter) -> {
+                            checkContainsOrMemberOfTypeName(expression, parameter);
+                            return newContainsExpressionBuilder()
+                                    .withCollectionExpression(expression)
+                                    .withObjectExpression(parameter)
+                                    .build();
+                        }));
+        functionTransformers.put(
+                "memberof",
                 new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(
-                        this, (expression, parameter) -> newMemberOfExpressionBuilder()
-                        .withCollectionExpression(parameter).withObjectExpression(expression).build()));
+                        this,
+                        (expression, parameter) -> {
+                            checkContainsOrMemberOfTypeName(expression, parameter);
+                            return newMemberOfExpressionBuilder()
+                                    .withCollectionExpression(parameter)
+                                    .withObjectExpression(expression)
+                                    .build();
+                        }));
         functionTransformers.put(
                 "ascollection",
                 new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(
@@ -232,7 +249,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
     }
 
-    private ContainsExpression getContainsExpression(CollectionExpression expression, ObjectExpression parameter) {
+    private void checkContainsOrMemberOfTypeName(IterableExpression expression, IterableExpression parameter) {
         C objectType = (C) expression.getObjectType(getModelAdapter());
         C parameterType = (C) parameter.getObjectType(getModelAdapter());
         if (!(objectType.equals(parameterType) ||
@@ -242,11 +259,6 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
             String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
             throw new IllegalArgumentException("Types of collection (" + objectName + ") and object (" + parameterName + ") are not compatible");
         }
-
-        return newContainsExpressionBuilder()
-                .withCollectionExpression(expression)
-                .withObjectExpression(parameter)
-                .build();
     }
 
     private TypeName getAsCollectionTypeName(CollectionExpression expression, QualifiedName parameter) {

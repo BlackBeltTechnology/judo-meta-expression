@@ -857,6 +857,24 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    public void testMemberOf() {
+        // #1 invalid - object's- and parameter's type are not compatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "schools::Person!any()!memberOf(self.classes)"));
+        assertTrue(exception.getMessage().contains("Types of collection (Person) and object (Class) are not compatible"));
+
+        // #2 valid - object's- and parameter's type are the same
+        assertDoesNotThrow(() -> createExpression(findBase("School"), "schools::Class!any()!memberOf(self.classes)"));
+
+        // #3 valid - object's type is supertype of parameter's type
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "schools::Student!any()!memberOf(self.parents)"));
+
+        // #4 valid - parameter's type is supertype of object's type
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "schools::Person!any()!memberOf(self.students)"));
+    }
+
+    @Test
     public void testAsCollection() {
         // #1 invalid - incompatible
         JqlExpressionBuildException exception =
