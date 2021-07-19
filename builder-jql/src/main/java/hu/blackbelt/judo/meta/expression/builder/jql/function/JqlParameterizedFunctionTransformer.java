@@ -30,7 +30,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
     public RESULT apply(BASE argument, JqlFunction function, ExpressionBuildingVariableResolver context) {
         List<FunctionParameter> parameters = function.getParameters();
         if (parameters.size() != 1) {
-            throw new IllegalArgumentException("Function " + function.getName() + " must have exactly one parameter");
+            throw new IllegalArgumentException("Function (" + function.getName() + ") must have exactly one parameter");
         }
         JqlExpression jqlParameterExpression = parameters.get(0).getExpression();
 

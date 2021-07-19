@@ -760,19 +760,13 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("School"), "self!kindOf(schools::Student)"));
-        String message = exception.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
-                .getMessage();
-        assertEquals("Element type Student is not compatible with School", message);
+        assertTrue(exception.getMessage().contains("Element type Student is not compatible with School"));
 
         // #2 invalid - reverse
         JqlExpressionBuildException exception2 =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("Student"), "self!kindOf(schools::Person)"));
-        message = exception2.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
-                .getMessage();
-        assertEquals("Element type Person is not compatible with Student", message);
+        assertTrue(exception2.getMessage().contains("Element type Person is not compatible with Student"));
 
         // #3 valid - different
         assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!kindOf(schools::Student)"));
@@ -787,19 +781,13 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("School"), "self!typeOf(schools::Student)"));
-        String message = exception.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
-                .getMessage();
-        assertEquals("Element type Student is not School", message);
+        assertTrue(exception.getMessage().contains("Element type Student is not School"));
 
         // #2 invalid - reverse
         JqlExpressionBuildException exception2 =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("Student"), "self!typeOf(schools::Person)"));
-        message = exception2.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
-                .getMessage();
-        assertEquals("Element type Person is not Student", message);
+        assertTrue(exception2.getMessage().contains("Element type Person is not Student"));
 
         // #3 valid - different
         assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!typeOf(schools::Student)"));
@@ -814,28 +802,19 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("School"), "self!asType(schools::Student)"));
-        String message = exception.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
-                .getMessage();
-        assertEquals("Invalid casting type: School is not supertype of Student", message);
+        assertTrue(exception.getMessage().contains("Invalid casting type: School is not supertype of Student"));
 
         // #2 invalid - reverse
         JqlExpressionBuildException exception2 =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("Student"), "self!asType(schools::Person)"));
-        message = exception2.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
-                .getMessage();
-        assertEquals("Invalid casting type: Student is not supertype of Person", message);
+        assertTrue(exception2.getMessage().contains("Invalid casting type: Student is not supertype of Person"));
 
         // #3 invalid - same
         JqlExpressionBuildException exception3 =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("Student"), "self!asType(schools::Student)"));
-        message = exception3.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception3))
-                .getMessage();
-        assertEquals("Invalid casting type: Student is not supertype of Student", message);
+        assertTrue(exception3.getMessage().contains("Invalid casting type: Student is not supertype of Student"));
 
         // #4 valid
         assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!asType(schools::Student)"));
@@ -847,22 +826,34 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("School"), "self!container(schools::Class)"));
-        String message = exception.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception))
-                .getMessage();
-        assertEquals("Class type is not a container of School", message);
+        assertTrue(exception.getMessage().contains("Class type is not a container of School"));
 
         // #2 invalid - same
         JqlExpressionBuildException exception2 =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("Class"), "self!container(schools::Class)"));
-        message = exception2.getOriginalThrowable()
-                .orElseThrow(() -> new RuntimeException("Original throwable is missing: " + exception2))
-                .getMessage();
-        assertEquals("Class type is not a container of Class", message);
+        assertTrue(exception2.getMessage().contains("Class type is not a container of Class"));
 
         // #3 valid
         assertDoesNotThrow(() -> createExpression(findBase("Class"), "self!container(schools::School)"));
+    }
+
+    @Test
+    public void testContains() {
+        // #1 invalid - collection's- and parameter's type are not compatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!contains(schools::Person!any())"));
+        assertTrue(exception.getMessage().contains("Types of collection (Class) and object (Person) are not compatible"));
+
+        // #2 valid - collection's- and parameter's type are the same
+        assertDoesNotThrow(() -> createExpression(findBase("School"), "self.classes!contains(schools::Class!any())"));
+
+        // #3 valid - collection's type is supertype of parameter's type
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self.parents!contains(schools::Student!any())"));
+
+        // #4 valid - parameter's type is supertype of collection's type
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "self.students!contains(schools::Person!any())"));
     }
 
 }
