@@ -35,7 +35,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
     public RESULT apply(BASE argument, JqlFunction function, ExpressionBuildingVariableResolver context) {
         List<FunctionParameter> parameters = function.getParameters();
         if (parameters.size() != 1) {
-            log.error("Function '" + function.getName() + "' must have exactly one parameter");
+            log.debug("Function '" + function.getName() + "' must have exactly one parameter");
             throw new IllegalArgumentException("Function '" + function.getName() + getStringOf(parameters) + "' of argument '" + argument + "' cannot be resolved");
         }
         JqlExpression jqlParameterExpression = parameters.get(0).getExpression();
@@ -50,7 +50,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
             PARAM castParam = (PARAM) parameter;
             return builder.apply(argument, castParam);
         } catch (ClassCastException e) {
-            log.error(String.format("Error in expression %s!%s, illegal argument type: %s", argument, function.getName(), argument.getClass()), e);
+            log.debug(String.format("Error in expression %s!%s, illegal argument type: %s", argument, function.getName(), argument.getClass()), e);
             throw new IllegalArgumentException("Function '" + function.getName() + getStringOf(parameters) + "' of argument '" + argument + "' cannot be resolved");
         }
     }
