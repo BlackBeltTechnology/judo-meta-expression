@@ -257,7 +257,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 getModelAdapter().getSuperTypes(parameterType).contains(objectType))) {
             String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
             String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
-            throw new IllegalArgumentException("Types of collection (" + objectName + ") and object (" + parameterName + ") are not compatible");
+            throw new IllegalArgumentException("Types of collection '" + objectName + "' and object '" + parameterName + "' are not compatible");
         }
     }
 

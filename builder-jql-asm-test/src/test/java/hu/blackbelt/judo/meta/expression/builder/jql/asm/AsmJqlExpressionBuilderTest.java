@@ -844,7 +844,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("School"), "self.classes!contains(schools::Person!any())"));
-        assertTrue(exception.getMessage().contains("Types of collection (Class) and object (Person) are not compatible"));
+        assertTrue(exception.getMessage().contains("Types of collection 'Class' and object 'Person' are not compatible"));
 
         // #2 valid - collection's- and parameter's type are the same
         assertDoesNotThrow(() -> createExpression(findBase("School"), "self.classes!contains(schools::Class!any())"));
@@ -862,7 +862,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () ->
                         createExpression(findBase("School"), "schools::Person!any()!memberOf(self.classes)"));
-        assertTrue(exception.getMessage().contains("Types of collection (Person) and object (Class) are not compatible"));
+        assertTrue(exception.getMessage().contains("Types of collection 'Person' and object 'Class' are not compatible"));
 
         // #2 valid - object's- and parameter's type are the same
         assertDoesNotThrow(() -> createExpression(findBase("School"), "schools::Class!any()!memberOf(self.classes)"));
