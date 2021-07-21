@@ -1,42 +1,8 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.expression.AttributeSelector;
-import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.DecimalExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.IntegerExpression;
-import hu.blackbelt.judo.meta.expression.LogicalExpression;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ObjectExpression;
-import hu.blackbelt.judo.meta.expression.ReferenceExpression;
-import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.TimestampExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
@@ -44,6 +10,7 @@ import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObje
 import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
 import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
+import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
@@ -55,6 +22,22 @@ import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.*;
+import org.hamcrest.Description;
+import org.hamcrest.DiagnosingMatcher;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
@@ -90,7 +73,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EReference tallestStudent = newEReferenceBuilder().withName("tallestStudent").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
         EReference tallestStudents = newEReferenceBuilder().withName("tallestStudents").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
         EClass clazz= newEClassBuilder().withName("Class").withEStructuralFeatures(classStudents, tallestStudent, tallestStudents).build();
-        EReference schoolClasses = newEReferenceBuilder().withName("classes").withEType(clazz).withLowerBound(0).withUpperBound(-1).build();
+        EReference schoolClasses = newEReferenceBuilder().withName("classes").withEType(clazz).withContainment(true).withLowerBound(0).withUpperBound(-1).build();
         EClass school = newEClassBuilder().withName("School").withEStructuralFeatures(schoolClasses).build();
 
         EAnnotation getterAnnotationForMother = AsmUtils.getExtensionAnnotationByName(mother, "expression", true).get();
@@ -770,4 +753,143 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("demo::entities::Order=>orderDetails!filter(od | od.product.category.picture!isDefined())");
         createExpression("demo::entities::Order!any()=>orderDetails!sum(od | od.quantity * od.unitPrice * (1 - od.discount))");
     }
+
+    @Test
+    public void testKindOf() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!kindOf(schools::Student)"));
+        assertTrue(exception.getMessage().contains("Element type Student is not compatible with School"));
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!kindOf(schools::Person)"));
+        assertTrue(exception2.getMessage().contains("Element type Person is not compatible with Student"));
+
+        // #3 valid - different
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!kindOf(schools::Student)"));
+
+        // #4 valid - same
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!kindOf(schools::Student)"));
+    }
+
+    @Test
+    public void testTypeOf() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!typeOf(schools::Student)"));
+        assertTrue(exception.getMessage().contains("Element type Student is not School"));
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!typeOf(schools::Person)"));
+        assertTrue(exception2.getMessage().contains("Element type Person is not Student"));
+
+        // #3 valid - different
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!typeOf(schools::Student)"));
+
+        // #4 valid - same
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!typeOf(schools::Student)"));
+    }
+
+    @Test
+    public void testAsType() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!asType(schools::Student)"));
+        assertTrue(exception.getMessage().contains("Invalid casting type: School is not supertype of Student"));
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!asType(schools::Person)"));
+        assertTrue(exception2.getMessage().contains("Invalid casting type: Student is not supertype of Person"));
+
+        // #3 invalid - same
+        JqlExpressionBuildException exception3 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!asType(schools::Student)"));
+        assertTrue(exception3.getMessage().contains("Invalid casting type: Student is not supertype of Student"));
+
+        // #4 valid
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!asType(schools::Student)"));
+    }
+
+    @Test
+    public void testContainerValidation() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!container(schools::Class)"));
+        assertTrue(exception.getMessage().contains("Class type is not a container of School"));
+
+        // #2 invalid - same
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Class"), "self!container(schools::Class)"));
+        assertTrue(exception2.getMessage().contains("Class type is not a container of Class"));
+
+        // #3 valid
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "self!container(schools::School)"));
+    }
+
+    @Test
+    public void testContains() {
+        // #1 invalid - collection's- and parameter's type are not compatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!contains(schools::Person!any())"));
+        assertTrue(exception.getMessage().contains("Types of collection 'Class' and object 'Person' are not compatible"));
+
+        // #2 valid - collection's- and parameter's type are the same
+        assertDoesNotThrow(() -> createExpression(findBase("School"), "self.classes!contains(schools::Class!any())"));
+
+        // #3 valid - collection's type is supertype of parameter's type
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self.parents!contains(schools::Student!any())"));
+
+        // #4 valid - parameter's type is supertype of collection's type
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "self.students!contains(schools::Person!any())"));
+    }
+
+    @Test
+    public void testMemberOf() {
+        // #1 invalid - object's- and parameter's type are not compatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "schools::Person!any()!memberOf(self.classes)"));
+        assertTrue(exception.getMessage().contains("Types of collection 'Person' and object 'Class' are not compatible"));
+
+        // #2 valid - object's- and parameter's type are the same
+        assertDoesNotThrow(() -> createExpression(findBase("School"), "schools::Class!any()!memberOf(self.classes)"));
+
+        // #3 valid - object's type is supertype of parameter's type
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "schools::Student!any()!memberOf(self.parents)"));
+
+        // #4 valid - parameter's type is supertype of object's type
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "schools::Person!any()!memberOf(self.students)"));
+    }
+
+    @Test
+    public void testAsCollection() {
+        // #1 invalid - incompatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!asCollection(schools::Student)"));
+        assertTrue(exception.getMessage().contains("Invalid casting: Class as Student. Class is not supertype of Student"));
+
+        // #2 invalid - same type
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!asCollection(schools::Class)"));
+        assertTrue(exception2.getMessage().contains("Invalid casting: Class as Class. Class is not supertype of Class"));
+
+        // #3 valid
+        assertDoesNotThrow(() -> findBase("Student"), "self.parents!asCollection(schools::Student)");
+    }
+
 }

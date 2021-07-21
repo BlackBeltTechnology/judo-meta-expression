@@ -21,7 +21,7 @@ public class JqlExpressionBuildException extends RuntimeException {
 	public EObject getJclObject() {
 		return jclObject;
 	}
-	
+    
 	public JqlExpressionBuildException(Expression partialExpression, List<JqlExpressionBuildingError> errors) {
 		super("Errors during building expression: " + errorDescriptions(errors));
 		this.jclObject = null;

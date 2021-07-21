@@ -105,6 +105,22 @@ context EXPR!ContainsExpression {
     }
 }
 
+context EXPR!MemberOfExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+
+    constraint TypesAreCompatible {
+        guard: self.satisfiesAll("Resolved")
+
+        check: self.collectionExpression.getObjectType(modelAdapter) == self.objectExpression.getObjectType(modelAdapter)
+            or modelAdapter.getSuperTypes(self.collectionExpression.getObjectType(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
+            or modelAdapter.getSuperTypes(self.objectExpression.getObjectType(modelAdapter)).contains(self.collectionExpression.getObjectType(modelAdapter))
+        message: "Types of collection and object are not compatible"
+    }
+}
+
 context EXPR!IntegerComparison {
     constraint Resolved {
         check: true

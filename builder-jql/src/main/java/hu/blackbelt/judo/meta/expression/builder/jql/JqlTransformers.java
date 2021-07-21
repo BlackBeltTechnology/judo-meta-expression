@@ -7,7 +7,10 @@ import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLitera
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlAggregatedExpressionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlJoinFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSortFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
@@ -74,36 +77,101 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("isundefined", new JqlIsDefinedFunctionTransformer(this, false));
         functionTransformers.put("isdefined", new JqlIsDefinedFunctionTransformer(this, true));
 
-        functionTransformers.put("kindof",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(this,
-                        (expression, parameter) -> {
-                            TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
-                            if (typeNameFromResource == null) {
-                                throw new IllegalArgumentException("Type not found: " + parameter);
-                            }
-                            return newInstanceOfExpressionBuilder().withObjectExpression(expression)
-                                    .withElementName(typeNameFromResource).build();
-                        }, (jqlExpression) -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put("typeof",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(this,
-                        (expression, parameter) -> newTypeOfExpressionBuilder().withObjectExpression(expression)
-                                .withElementName(expressionBuilder.getTypeNameFromResource(parameter)).build(),
-                        (jqlExpression -> ((NavigationExpression) jqlExpression).getQName())));
-
-        functionTransformers.put("astype",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(this,
+        functionTransformers.put(
+                "kindof",
+                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(
+                        this,
+                        (expression, parameter) -> newInstanceOfExpressionBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(getKindOfParameterTypeName(expression, parameter))
+                                .build(),
+                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+        functionTransformers.put(
+                "typeof",
+                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(
+                        this,
+                        (expression, parameter) -> newTypeOfExpressionBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(getTypeOfParameterTypeName(expression, parameter))
+                                .build(),
+                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+        functionTransformers.put(
+                "astype",
+                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(
+                        this,
                         (expression, parameter) -> newCastObjectBuilder()
-                                .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
-                                .withObjectExpression(expression).build(),
+                                .withObjectExpression(expression)
+                                .withElementName(getAsTypeTypeName(expression, parameter))
+                                .build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
-
-        functionTransformers.put("container",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(this,
+        functionTransformers.put(
+                "container",
+                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(
+                        this,
                         (expression, parameter) -> newContainerExpressionBuilder()
-                                .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
-                                .withObjectExpression(expression).build(),
+                                .withObjectExpression(expression)
+                                .withElementName(getContainerTypeName(expression, parameter))
+                                .build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+    }
 
+    private TypeName getKindOfParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
+        return getParameterTypeName(expression, parameter, true);
+    }
+
+    private TypeName getTypeOfParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
+        return getParameterTypeName(expression, parameter, false);
+    }
+
+    private TypeName getParameterTypeName(ObjectExpression expression, QualifiedName parameter, boolean kindOf) {
+        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
+        if (typeNameFromResource == null) {
+            throw new IllegalArgumentException("Type not found: " + parameter.getName());
+        }
+
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
+        if (!(getModelAdapter().getSuperTypes(parameterType).contains(objectType) || objectType.equals(parameterType))) {
+            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
+            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
+            throw new IllegalArgumentException("Element type " + parameterName + " is not " + (kindOf ? "compatible with " : "") + objectName);
+        }
+
+        return typeNameFromResource;
+    }
+
+    private TypeName getAsTypeTypeName(ObjectExpression expression, QualifiedName parameter) {
+        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
+        if (typeNameFromResource == null) {
+            throw new IllegalArgumentException("Type not found: " + parameter.getName());
+        }
+
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
+        if (!getModelAdapter().getSuperTypes(parameterType).contains(objectType)) {
+            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
+            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
+            throw new IllegalArgumentException("Invalid casting type: " + objectName + " is not supertype of " + parameterName);
+        }
+
+        return typeNameFromResource;
+    }
+
+    private TypeName getContainerTypeName(ObjectExpression expression, QualifiedName parameter) {
+        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
+        if (typeNameFromResource == null) {
+            throw new IllegalArgumentException("Type not found: " + parameter.getName());
+        }
+
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
+        if (!getModelAdapter().getContainerTypesOf(objectType).contains(parameterType)) {
+            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
+            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
+            throw new IllegalArgumentException(parameterName + " type is not a container of " + objectName);
+        }
+
+        return typeNameFromResource;
     }
 
     private void collectionFunctions() {
@@ -148,22 +216,66 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("max", JqlAggregatedExpressionTransformer.createMaxInstance(this));
         functionTransformers.put("sum", JqlAggregatedExpressionTransformer.createSumInstance(this));
         functionTransformers.put("avg", JqlAggregatedExpressionTransformer.createAvgInstance(this));
-        functionTransformers.put("contains",
+        functionTransformers.put(
+                "contains",
                 new JqlParameterizedFunctionTransformer<CollectionExpression, ObjectExpression, ContainsExpression>(
-                        this, (expression, parameter) -> newContainsExpressionBuilder()
-                        .withCollectionExpression(expression).withObjectExpression(parameter).build()));
-        functionTransformers.put("memberof",
+                        this,
+                        (expression, parameter) -> {
+                            checkContainsOrMemberOfTypeName(expression, parameter);
+                            return newContainsExpressionBuilder()
+                                    .withCollectionExpression(expression)
+                                    .withObjectExpression(parameter)
+                                    .build();
+                        }));
+        functionTransformers.put(
+                "memberof",
                 new JqlParameterizedFunctionTransformer<ObjectExpression, CollectionExpression, MemberOfExpression>(
-                        this, (expression, parameter) -> newMemberOfExpressionBuilder()
-                        .withCollectionExpression(parameter).withObjectExpression(expression).build()));
-
-        functionTransformers.put("ascollection",
-                new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(this,
+                        this,
+                        (expression, parameter) -> {
+                            checkContainsOrMemberOfTypeName(expression, parameter);
+                            return newMemberOfExpressionBuilder()
+                                    .withCollectionExpression(parameter)
+                                    .withObjectExpression(expression)
+                                    .build();
+                        }));
+        functionTransformers.put(
+                "ascollection",
+                new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(
+                        this,
                         (expression, parameter) -> newCastCollectionBuilder()
-                                .withElementName(expressionBuilder.getTypeNameFromResource(parameter))
-                                .withCollectionExpression(expression).build(),
+                                .withElementName(getAsCollectionTypeName(expression, parameter))
+                                .withCollectionExpression(expression)
+                                .build(),
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+    }
 
+    private void checkContainsOrMemberOfTypeName(IterableExpression expression, IterableExpression parameter) {
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) parameter.getObjectType(getModelAdapter());
+        if (!(objectType.equals(parameterType) ||
+                getModelAdapter().getSuperTypes(objectType).contains(parameterType) ||
+                getModelAdapter().getSuperTypes(parameterType).contains(objectType))) {
+            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
+            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
+            throw new IllegalArgumentException("Types of collection '" + objectName + "' and object '" + parameterName + "' are not compatible");
+        }
+    }
+
+    private TypeName getAsCollectionTypeName(CollectionExpression expression, QualifiedName parameter) {
+        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
+        if (typeNameFromResource == null) {
+            throw new IllegalArgumentException("Type not found: " + parameter.getName());
+        }
+
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
+        if (!getModelAdapter().getSuperTypes(parameterType).contains(objectType)) {
+            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
+            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
+            throw new IllegalArgumentException("Invalid casting: " + objectName + " as " + parameterName + ". " + objectName + " is not supertype of " + parameterName);
+        }
+
+        return typeNameFromResource;
     }
 
     private void numericFunctions() {
