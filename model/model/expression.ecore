@@ -159,7 +159,9 @@
       interface="true" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="ModelAdapter" instanceClassName="hu.blackbelt.judo.meta.expression.adapters.ModelAdapter"
       abstract="true" interface="true"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Sequence" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Sequence" eSuperTypes="#//Expression">
+    <eOperations name="getOperands" upperBound="-1" eType="#//Expression"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="StaticSequence" eSuperTypes="#//Sequence">
     <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -738,10 +740,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="containment" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="SequenceExpression" eSuperTypes="#//Expression">
+    <eClassifiers xsi:type="ecore:EClass" name="SequenceExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getSequence());"/>
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getSequence().getOperands());"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" eType="#//operator/SequenceOperator"/>

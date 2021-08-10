@@ -49,6 +49,14 @@ public interface ModelAdapter<ME, NE extends ME, P extends NE, E extends P, C ex
     Optional<? extends NE> get(TypeName elementName);
 
     /**
+     * Get a sequence by name.
+     *
+     * @param typeName name
+     * @return sequence
+     */
+    Optional<? extends S> getSequence(TypeName typeName);
+
+    /**
      * Get measure by name as defined in expression metamodel.
      *
      * @param measureName measure name

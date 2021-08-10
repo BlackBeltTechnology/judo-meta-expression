@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSelectorExpre
 import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectVariableReferenceBuilder;
 import hu.blackbelt.judo.meta.expression.operator.ObjectComparator;
 import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
+import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.util.builder.TypedObjectVariableBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
@@ -30,8 +31,7 @@ import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilde
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newExistsBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newLogicalAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAttributeBuilder;

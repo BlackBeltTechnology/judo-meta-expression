@@ -99,6 +99,13 @@ public class EsmModelAdapter implements ModelAdapter<NamedElement, NamespaceElem
     }
 
     @Override
+    public Optional<? extends Sequence> getSequence(final TypeName typeName) {
+        return getEsmElement(Sequence.class)
+                .filter(s -> Objects.equals(s.getName(), typeName.getName()) && Objects.equals(EsmUtils.getNamespaceElementFQName((NamespaceElement) s.eContainer()), typeName.getNamespace()))
+                .findAny();
+    }
+
+    @Override
     public Optional<? extends Measure> get(MeasureName measureName) {
         return measureProvider.getMeasure(measureName.getNamespace().replace(".", NAMESPACE_SEPARATOR), measureName.getName());
     }

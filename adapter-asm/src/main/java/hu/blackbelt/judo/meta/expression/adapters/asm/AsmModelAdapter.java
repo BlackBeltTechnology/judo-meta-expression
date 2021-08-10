@@ -70,20 +70,29 @@ public class AsmModelAdapter implements
 
 	@Override
 	public Optional<TypeName> buildTypeName(final EModelElement modelElement) {
-		final String name;
-		if (modelElement instanceof ENamedElement) {
-			name = ((ENamedElement)modelElement).getName();
+		if (modelElement instanceof EClassifier) {
+			return Optional.of(newTypeNameBuilder()
+					.withNamespace(AsmUtils.getPackageFQName(((EClassifier) modelElement).getEPackage()).replace(".", NAMESPACE_SEPARATOR))
+					.withName(((ENamedElement) modelElement).getName())
+					.build());
 		} else if (modelElement instanceof EAnnotation) {
-			name = ((EAnnotation) modelElement).getDetails().get("name");
-		} else {
-			name = null;
-		}
+			final EObject container = modelElement.eContainer();
+			final String containerFqName;
+			if (container instanceof EClassifier) {
+				containerFqName = AsmUtils.getClassifierFQName((EClassifier) container);
+			} else if (container instanceof EPackage) {
+				containerFqName = AsmUtils.getPackageFQName((EPackage) container);
+			} else {
+				return Optional.empty();
+			}
 
-		return getAsmElement(EPackage.class).filter(ns -> ns.getEClassifiers().contains(modelElement))
-				.map(ns -> newTypeNameBuilder()
-						.withNamespace(AsmUtils.getPackageFQName(ns).replace(".", NAMESPACE_SEPARATOR))
-						.withName(name).build())
-				.findAny();
+			return Optional.of(newTypeNameBuilder()
+					.withNamespace(containerFqName.replace(".", NAMESPACE_SEPARATOR))
+					.withName(((EAnnotation) modelElement).getDetails().get("name"))
+					.build());
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	@Override
@@ -107,6 +116,26 @@ public class AsmModelAdapter implements
 		} else {
 			log.warn("Namespace not found: {}", elementName.getNamespace());
 			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<? extends EAnnotation> getSequence(final TypeName typeName) {
+		final String containerName = typeName.getNamespace();
+		final String sequenceName = typeName.getName();
+
+		final Optional<EAnnotation> s = getAsmUtils().all(EPackage.class)
+				.filter(p -> Objects.equals(containerName, AsmUtils.getPackageFQName(p)))
+				.flatMap(p -> AsmUtils.getExtensionAnnotationListByName(p, "sequence").stream()
+						.filter(a -> Objects.equals(a.getDetails().get("name"), sequenceName)))
+				.findFirst();
+		if (s.isPresent()) {
+			return s;
+		} else {
+			return getAsmUtils().getClassByFQName(containerName)
+					.flatMap(c -> AsmUtils.getExtensionAnnotationListByName(c, "sequence").stream()
+							.filter(a -> Objects.equals(a.getDetails().get("name"), sequenceName))
+							.findFirst());
 		}
 	}
 

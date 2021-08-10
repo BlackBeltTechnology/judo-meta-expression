@@ -33,6 +33,7 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class JqlNavigationTransformer<ME, NE extends ME, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S extends ME, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, ME, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -85,7 +86,8 @@ public class JqlNavigationTransformer<ME, NE extends ME, P extends NE, E extends
         } else {
             TypeName typeName = jqlTransformers.getTypeNameFromResource(navigation.getQName());
             if (typeName != null) {
-                if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
+                Optional<? extends S> sequence = getModelAdapter().getSequence(typeName);
+                if (sequence.isPresent()) {
                     baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
                     navigationBase = null;
                 } else if (getModelAdapter().isPrimitiveType(getModelAdapter().get(typeName).get())) {

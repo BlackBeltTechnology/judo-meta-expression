@@ -93,6 +93,13 @@ public class PsmModelAdapter implements ModelAdapter<NamedElement, NamespaceElem
     }
 
     @Override
+    public Optional<? extends Sequence> getSequence(final TypeName typeName) {
+        return getPsmElement(Sequence.class)
+                .filter(s -> Objects.equals(s.getName(), typeName.getName()) && Objects.equals(PsmUtils.namespaceElementToString((NamespaceElement) s.eContainer()), typeName.getNamespace()))
+                .findAny();
+    }
+
+    @Override
     public Optional<? extends Measure> get(final MeasureName measureName) {
         return measureProvider.getMeasure(measureName.getNamespace().replace(".", NAMESPACE_SEPARATOR), measureName.getName());
     }

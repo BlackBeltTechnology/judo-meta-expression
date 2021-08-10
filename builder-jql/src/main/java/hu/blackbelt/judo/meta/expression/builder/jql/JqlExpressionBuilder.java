@@ -378,8 +378,14 @@ public class JqlExpressionBuilder<ME, NE extends ME, P extends NE, E extends P, 
 
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + String.valueOf(typeName)));
-        TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
+        Optional<? extends NE> ne = modelAdapter.get(typeName);
+        TypeName resolvedTypeName;
+        if (ne.isPresent()) {
+            resolvedTypeName = modelAdapter.buildTypeName(ne.get()).get();
+        } else {
+            S s = modelAdapter.getSequence(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + String.valueOf(typeName)));
+            resolvedTypeName = modelAdapter.buildTypeName(s).get();
+        }
         return resolvedTypeName;
     }
 

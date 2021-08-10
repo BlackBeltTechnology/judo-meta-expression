@@ -104,7 +104,9 @@
     <genClasses image="false" ecoreClass="expression.ecore#//WindowingExpression"/>
     <genClasses image="false" ecoreClass="expression.ecore#//FilteringExpression"/>
     <genClasses ecoreClass="expression.ecore#//ModelAdapter"/>
-    <genClasses ecoreClass="expression.ecore#//Sequence"/>
+    <genClasses ecoreClass="expression.ecore#//Sequence">
+      <genOperations ecoreOperation="expression.ecore#//Sequence/getOperands"/>
+    </genClasses>
     <genClasses ecoreClass="expression.ecore#//StaticSequence">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference expression.ecore#//StaticSequence/typeName"/>
       <genOperations ecoreOperation="expression.ecore#//StaticSequence/getOperands"
@@ -490,7 +492,7 @@
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//numeric/SequenceExpression/sequence"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/SequenceExpression/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getSequence());"/>
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getSequence().getOperands());"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerVariableReference">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
