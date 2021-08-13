@@ -1,9 +1,6 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.variable;
 
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.TypeNameExpression;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
@@ -29,7 +26,7 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
             throw new IllegalArgumentException("Function requires 2 arguments");
         }
         String category = ((StringConstant) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context)).getValue();
-        String variableName = ((StringConstant) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context)).getValue();
+        StringExpression variableName = ((StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context));
         TypeName typeName = jqlTransformers.buildTypeName(argument.getNamespace(), argument.getName());
         EnvironmentVariable result;
         if (jqlTransformers.getModelAdapter().isPrimitiveType(ne)) {
