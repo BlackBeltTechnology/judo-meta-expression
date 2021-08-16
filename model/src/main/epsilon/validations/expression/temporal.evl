@@ -130,3 +130,39 @@ context EXPR!TimestampAggregatedExpression {
         message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
     }
 }
+
+context EXPR!ExtractDateExpression {
+    constraint Resolved {
+        guard: self.date.satisfiesAll("Resolved")
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!ExtractTimestampExpression {
+    constraint Resolved {
+        guard: self.date.satisfiesAll("Resolved")
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!DateConstructionExpression {
+    constraint Resolved {
+        guard: self.getOperands().forAll(o -> o.satisfiesAll("Resolved"))
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!TimestampConstructionExpression {
+    constraint Resolved {
+        guard: self.getOperands().forAll(o -> o.satisfiesAll("Resolved"))
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}

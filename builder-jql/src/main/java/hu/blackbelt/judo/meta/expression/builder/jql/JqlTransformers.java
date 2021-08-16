@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSort
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.ExtractTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.NowFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.variable.GetVariableFunctionTransformer;
@@ -31,10 +32,12 @@ import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
+import hu.blackbelt.judo.meta.expression.temporal.DatePart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
 import java.math.BigInteger;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -290,6 +293,13 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
 
     private void temporalFunctions() {
         functionTransformers.put("elapsedtimefrom", new JqlDifferenceFunctionTransformer(this, this));
+        functionTransformers.put("year", new ExtractTransformer(this, ChronoUnit.YEARS));
+        functionTransformers.put("month", new ExtractTransformer(this, ChronoUnit.MONTHS));
+        functionTransformers.put("day", new ExtractTransformer(this, ChronoUnit.DAYS));
+        functionTransformers.put("hour", new ExtractTransformer(this, ChronoUnit.HOURS));
+        functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
+        functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
+        functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
     }
 
     private void primitiveFunctions() {
