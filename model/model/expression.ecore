@@ -2014,10 +2014,11 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="year" lowerBound="1"
-          eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="month" lowerBound="1"
-          eType="#//IntegerExpression"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="day" lowerBound="1" eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="day" lowerBound="1" eType="#//IntegerExpression"
+          containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimestampConstructionExpression" eSuperTypes="#//TimestampExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -2031,16 +2032,17 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="year" lowerBound="1"
-          eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="month" lowerBound="1"
-          eType="#//IntegerExpression"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="day" lowerBound="1" eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="day" lowerBound="1" eType="#//IntegerExpression"
+          containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="hour" lowerBound="1"
-          eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="minute" lowerBound="1"
-          eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="second" lowerBound="1"
-          eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"

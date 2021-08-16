@@ -14,6 +14,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlSort
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.ConstructorTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.ExtractTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.JqlDifferenceFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.NowFunctionTransformer;
@@ -300,6 +301,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
+        functionTransformers.put("of", new ConstructorTransformer(this));
     }
 
     private void primitiveFunctions() {

@@ -1102,6 +1102,7 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/HOUR"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/MINUTE"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/SECOND"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/MILLISECOND"/>
       </genEnums>
       <genClasses ecoreClass="expression.ecore#//temporal/DateAttribute"/>
       <genClasses ecoreClass="expression.ecore#//temporal/TimestampAttribute"/>
