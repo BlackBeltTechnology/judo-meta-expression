@@ -54,10 +54,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     private final JqlTransformers jqlTransformers;
     private JqlExpressionBuilderConfig config;
 
-    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config, boolean jqlContext) {
+    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
-        this.jqlTransformers = new JqlTransformers<>(this, jqlContext);
+        this.jqlTransformers = new JqlTransformers<>(this);
         this.config = config;
 
         addMeasures();
@@ -69,8 +69,8 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         addPrimitiveTypes();
     }
     
-    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, boolean jqlContext) {
-        this(modelAdapter, expressionResource, new JqlExpressionBuilderConfig(), jqlContext);
+    public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
+        this(modelAdapter, expressionResource, new JqlExpressionBuilderConfig());
     }
     
     @SuppressWarnings("unchecked")

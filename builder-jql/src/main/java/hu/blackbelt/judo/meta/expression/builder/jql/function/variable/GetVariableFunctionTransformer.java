@@ -13,12 +13,12 @@ import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBu
 public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlFunctionTransformer<TypeNameExpression> {
 
     private final JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
-    private final boolean jqlContext;
+    private final boolean forceConstantVariable;
 
-    public GetVariableFunctionTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers, boolean jqlContext) {
+    public GetVariableFunctionTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers, boolean forceConstantVariable) {
         super(jqlTransformers);
         this.jqlTransformers = jqlTransformers;
-        this.jqlContext = jqlContext;
+        this.forceConstantVariable = forceConstantVariable;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
         }
         String category = ((StringConstant) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context)).getValue();
         StringExpression variableName = ((StringExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context));
-        if (jqlContext && !(variableName instanceof StringConstant)) {
+        if (forceConstantVariable && !(variableName instanceof StringConstant)) {
             throw new IllegalArgumentException("Variable name must be constant");
         }
         TypeName typeName = jqlTransformers.buildTypeName(argument.getNamespace(), argument.getName());
