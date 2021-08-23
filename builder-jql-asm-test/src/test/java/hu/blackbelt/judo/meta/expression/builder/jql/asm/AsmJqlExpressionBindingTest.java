@@ -51,7 +51,7 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
                 .name(asmModel.getName())
                 .build();
 
-        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource(), true);
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {

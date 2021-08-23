@@ -52,6 +52,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         implements ExpressionTransformer, ExpressionMeasureProvider {
 
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder;
+    private final boolean jqlContext;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
     private boolean resolveDerived = true;
@@ -59,8 +60,9 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     private AtomicInteger atomicCounter = new AtomicInteger(1);
     private static String generatedIteratorPrefix = "_iterator_";
 
-    public JqlTransformers(JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder) {
+    public JqlTransformers(JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder, boolean jqlContext) {
         this.expressionBuilder = expressionBuilder;
+        this.jqlContext = jqlContext;
         literals();
         operations();
         primitiveFunctions();
@@ -284,7 +286,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void environmentVariableFunctions() {
-        functionTransformers.put("getvariable", new GetVariableFunctionTransformer(this));
+        functionTransformers.put("getvariable", new GetVariableFunctionTransformer(this, jqlContext));
         functionTransformers.put("now", new NowFunctionTransformer(this));
     }
 

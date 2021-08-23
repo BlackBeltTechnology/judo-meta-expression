@@ -109,7 +109,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     	expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("urn:test.judo-meta-expression"))
                 .build();
-        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+        expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource(), true);
     }
     
     @AfterEach

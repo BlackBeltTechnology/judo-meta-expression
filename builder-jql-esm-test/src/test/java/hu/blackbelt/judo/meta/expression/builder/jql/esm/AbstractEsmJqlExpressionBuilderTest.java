@@ -95,7 +95,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
             esmModelResourceSupport.addContent(model);
         }
         modelAdapter = new EsmModelAdapter(esmModelResourceSupport.getResourceSet(), measureModelResourceSupport.getResourceSet());
-        esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
+        esmJqlExpressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource(), true);
     }
 
     protected Model createMeasureModel() {
