@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newStringConstantBuilder;
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newDateEnvironmentVariableBuilder;
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newTimestampEnvironmentVariableBuilder;
 
@@ -36,13 +37,13 @@ public class NowFunctionTransformer<NE, P extends NE, E extends P, C extends NE,
             if (jqlTransformers.getModelAdapter().isDate(primitiveType)) {
                 return newDateEnvironmentVariableBuilder()
                         .withCategory(SYSTEM_CATEGORY)
-                        .withVariableName(CURRENT_DATE_VARIABLE_NAME)
+                        .withVariableName(newStringConstantBuilder().withValue(CURRENT_DATE_VARIABLE_NAME).build())
                         .withTypeName(typeName)
                         .build();
             } else if (jqlTransformers.getModelAdapter().isTimestamp(primitiveType)) {
                 return newTimestampEnvironmentVariableBuilder()
                         .withCategory(SYSTEM_CATEGORY)
-                        .withVariableName(CURRENT_TIMESTAMP_VARIABLE_NAME)
+                        .withVariableName(newStringConstantBuilder().withValue(CURRENT_TIMESTAMP_VARIABLE_NAME).build())
                         .withTypeName(typeName)
                         .build();
             } else {

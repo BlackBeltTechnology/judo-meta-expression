@@ -49,6 +49,7 @@ Export-Package: hu.blackbelt.judo.meta.expression.builder.jql,
  hu.blackbelt.judo.meta.expression.builder.jql.expression,
  hu.blackbelt.judo.meta.expression.builder.jql.function,
  hu.blackbelt.judo.meta.expression.builder.jql.function.collection,
+ hu.blackbelt.judo.meta.expression.builder.jql.function.variable,
  hu.blackbelt.judo.meta.expression.builder.jql.operation
 Require-Bundle: org.eclipse.emf.ecore,
  org.eclipse.emf.common

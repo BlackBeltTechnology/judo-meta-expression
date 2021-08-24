@@ -417,7 +417,8 @@
           eType="#//TypeName" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="category" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="variableName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="variableName" lowerBound="1"
+          eType="#//StringExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//IntegerExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">

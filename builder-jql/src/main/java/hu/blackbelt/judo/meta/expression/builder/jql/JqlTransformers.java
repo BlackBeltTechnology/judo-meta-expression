@@ -288,7 +288,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void environmentVariableFunctions() {
-        functionTransformers.put("getvariable", new GetVariableFunctionTransformer(this));
+        functionTransformers.put("getvariable", new GetVariableFunctionTransformer(this, true));
         functionTransformers.put("now", new NowFunctionTransformer(this));
     }
 
