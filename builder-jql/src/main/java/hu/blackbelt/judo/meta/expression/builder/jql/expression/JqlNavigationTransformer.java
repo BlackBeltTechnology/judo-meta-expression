@@ -167,6 +167,9 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
         if (enumTypeName == null) {
             throw new IllegalArgumentException("Unknown enum: " + enumName);
         }
+        if (!getModelAdapter().contains((E) enumTypeName.get(getModelAdapter()), enumValue)) {
+            throw new IllegalArgumentException("Unknown literal: " + enumValue);
+        }
         return newLiteralBuilder().withEnumeration(enumTypeName).withValue(enumValue).build();
     }
 

@@ -83,7 +83,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         EnumerationType titleEnum = createEnum("Titles", "MR", "MS");
         Package enumPackage = createPackage("enums", countryEnum, titleEnum);
         initResources(createTestModel(enumPackage));
-        Expression expression = createExpression("1 < 2 ? demo::enums::Countries#AT : demo::enums::Countries#RO");
+        Expression expression = createExpression("1 < 2 ? demo::enums::Countries#AT : demo::enums::Countries#HU");
         assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::enums::Countries#AT : demo::enums::Titles#MR"));
     }
 

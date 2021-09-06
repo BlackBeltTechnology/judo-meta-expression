@@ -577,10 +577,13 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EClass order = findBase("Order");
         assertThrows(JqlExpressionBuildException.class, () -> createExpression(order, "self.shipAddress.country == Countries#AT"));
 
-        Expression expression = createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
+        createExpression("1 < 2 ? demo::types::Countries#AT : demo::types::Countries#RO");
         createExpression("demo::types::Countries#AT == demo::types::Countries#RO");
 
         assertThat(createExpression("demo::types::Countries#HU!asString()"), instanceOf(StringExpression.class));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> createExpression("demo::types::Countries#UK"));
+        assertTrue(exception.getMessage().contains("Unknown literal: UK"));
     }
 
     @Test
