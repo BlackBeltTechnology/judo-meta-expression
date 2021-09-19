@@ -55,8 +55,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.3.0.20210326_233439_3136444_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.3.0.20210429_222930_d4f7ca2_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.4.0.20210919_103207_8f2ef01_develop</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.4.0.20210919_133947_3330a32_develop</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -92,21 +92,21 @@
         <osgi-utils-version>1.0.11</osgi-utils-version>
         <bouncycastle-karaf-features-version>1.61.2</bouncycastle-karaf-features-version>
         <tinybundles-karaf-features-version>1.0.0</tinybundles-karaf-features-version>
-        <google-karaf-features-version>1.0.6</google-karaf-features-version>
+        <google-karaf-features-version>1.0.7</google-karaf-features-version>
         <eclipse-emf-karaf-features-version>1.0.1</eclipse-emf-karaf-features-version>
-        <eclipse-epsilon-karaf-features-version>1.0.5</eclipse-epsilon-karaf-features-version>
+        <eclipse-epsilon-karaf-features-version>1.0.6</eclipse-epsilon-karaf-features-version>
         <eclipse-xtext-karaf-features-version>1.0.2</eclipse-xtext-karaf-features-version>
         <antlr-karaf-features-version>1.0.1</antlr-karaf-features-version>
-        <apache-commons-karaf-features-version>1.0.5</apache-commons-karaf-features-version>
-        <apache-poi-karaf-features-version>1.0.2</apache-poi-karaf-features-version>
+        <apache-commons-karaf-features-version>1.0.6</apache-commons-karaf-features-version>
+        <apache-poi-karaf-features-version>1.0.4</apache-poi-karaf-features-version>
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.3</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20210623_143822_f95c072_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20210706_151230_5fff5f3_develop</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20210623_162057_67f22ca_develop</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1.20210326_233439_06f29d5_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.0.20210518_100915_a009a81_develop</judo-meta-measure-version>
+        <judo-meta-psm-version>1.1.0.20210919_142420_e8d023c_develop</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20210919_143957_ca82d65_develop</judo-meta-asm-version>
+        <judo-meta-esm-version>1.1.0.20210919_140542_7d7b9da_develop</judo-meta-esm-version>
+        <judo-meta-jql-version>1.0.1.20210919_133205_0520f4d_develop</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.0.20210919_141554_2ebeb8e_develop</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
