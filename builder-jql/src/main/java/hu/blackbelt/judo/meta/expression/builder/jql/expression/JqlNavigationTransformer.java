@@ -103,7 +103,12 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                     navigationBase = (C) context.peekBase();
                 } else {
                     Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> {
-                    	String errorMessage = "Base variable " + name + " not found";
+                        String errorMessage = "Base variable '" + name;
+                        if (JqlExpressionBuilder.SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()) {
+                            errorMessage += "' cannot be used in lambda expression";
+                        } else {
+                            errorMessage += "' not found";
+                        }
                     	JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, navigation);
                     	return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
                     });
