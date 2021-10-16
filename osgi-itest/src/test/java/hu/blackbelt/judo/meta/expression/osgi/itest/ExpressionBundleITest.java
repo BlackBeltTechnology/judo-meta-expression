@@ -32,6 +32,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.LoggerFactory;
 
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
@@ -59,8 +60,9 @@ public class ExpressionBundleITest {
 
     private static final String DEMO_PSM = "northwind-psm";
     private static final String DEMO_EXPRESSION = "t002";
+
     @Inject
-    LogService log;
+    LoggerFactory log;
 
     @Inject
     protected BundleTrackerManager bundleTrackerManager;
