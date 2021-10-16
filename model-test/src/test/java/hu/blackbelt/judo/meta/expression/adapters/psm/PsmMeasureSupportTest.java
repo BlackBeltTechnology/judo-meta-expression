@@ -5,8 +5,12 @@ import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttri
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.eclipse.emf.common.notify.Notifier;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,13 +43,13 @@ public class PsmMeasureSupportTest extends ExecutionContextOnPsmTest {
 
     @Test
     public void testGetUnitOfNonMeasuredAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "discount").isPresent());
+        assertFalse(modelAdapter.getUnit(product, "discount").isPresent());
     }
 
     @Test
     public void testGetUnitOfMeasuredAttribute() {
-        Assert.assertTrue(modelAdapter.getUnit(product, "weight").isPresent());
-        Assert.assertTrue(modelAdapter.getUnit(product, "height").isPresent());
+        assertTrue(modelAdapter.getUnit(product, "weight").isPresent());
+        assertTrue(modelAdapter.getUnit(product, "height").isPresent());
     }
 
     @Test
@@ -59,21 +63,21 @@ public class PsmMeasureSupportTest extends ExecutionContextOnPsmTest {
 
         //TODO
 
-        Assert.assertFalse(modelAdapter.getUnit(product, "vat").isPresent());           // EUR not defined as unit
-        Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());     // unit belongs to another measure
-        Assert.assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());   // measure name not matching expected pattern
-        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());         // measure name invalid
+        assertFalse(modelAdapter.getUnit(product, "vat").isPresent());           // EUR not defined as unit
+        assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());     // unit belongs to another measure
+        assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());   // measure name not matching expected pattern
+        assertFalse(modelAdapter.getUnit(product, "width").isPresent());         // measure name invalid
     }
 
     @Test
     public void testGetUnitOfNonNumericAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "url").isPresent());           //NOT NUMERIC >:[
+        assertFalse(modelAdapter.getUnit(product, "url").isPresent());           //NOT NUMERIC >:[
     }
 
     @Test
     public void testGetUnitOfNonExistingAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());         // attribute is not defined
-        Assert.assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());     // annotation is added without 'unit' key
+        assertFalse(modelAdapter.getUnit(product, "width").isPresent());         // attribute is not defined
+        assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());     // annotation is added without 'unit' key
     }
 
     <T> Stream<T> getMeasureElement(final Class<T> clazz) {

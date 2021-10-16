@@ -6,13 +6,12 @@
 	<parent>
 		<groupId>hu.blackbelt.judo.meta</groupId>
 		<artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
-		<relativePath>../</relativePath>
+		<version>${revision}</version>
 	</parent>
 	<artifactId>hu.blackbelt.judo.meta.expression.model.test</artifactId>
 
-	<name>Judo :: Expression :: Model :: Test</name>
-	<description>Judo Expression Test</description>
+	<name>JUDO :: Expression :: Model :: Test</name>
+	<description>JUDO Expression Test</description>
 
 	<dependencies>
         <dependency>

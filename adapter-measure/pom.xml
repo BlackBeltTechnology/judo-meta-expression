@@ -7,15 +7,14 @@
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>${revision}</version>
     </parent>
     
     <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
     <packaging>eclipse-plugin</packaging>
     
-    <name>Judo :: Expression :: Model :: Measure Model adapter</name>
-    <description>Judo Expression Measure Model adapter</description>
+    <name>JUDO :: Expression :: Model :: Measure Model adapter</name>
+    <description>JUDO Expression Measure Model adapter</description>
 
     <dependencies>
         <dependency>

@@ -7,14 +7,13 @@
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm.test</artifactId>
 
-    <name>Judo :: Expression :: Model :: JQL builder :: ASM :: Test</name>
-    <description>Judo Expression ASM Model builder based on JQL and ASM Test</description>
+    <name>JUDO :: Expression :: Model :: JQL builder :: ASM :: Test</name>
+    <description>JUDO Expression ASM Model builder based on JQL and ASM Test</description>
 
     <dependencies>
         <dependency>

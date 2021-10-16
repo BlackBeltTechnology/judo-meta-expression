@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="hu.blackbelt.judo.meta.expression.adapter.psm.feature"
-      label="Judo Expression Model PSM Adapter Feature"
+      label="JUDO Expression Model PSM Adapter Feature"
       version="1.0.1.qualifier"
       provider-name="BlackBelt Technology">
 
    <description url="http://www.blackbelt.hu">
-      This feature is the Judo Expression PSM Model adapter.
+      This feature is the JUDO Expression PSM Model adapter.
    </description>
 
    <copyright>

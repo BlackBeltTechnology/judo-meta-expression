@@ -1,6 +1,6 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
-import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.getRuntimeFeaturesForMetamodel;
+import static hu.blackbelt.judo.meta.expression.osgi.itest.KarafFeatureProvider.karafConfig;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static org.junit.Assert.assertEquals;
@@ -77,7 +77,7 @@ public class ExpressionBundleITest {
     @Configuration
     public Option[] config() throws IOException, PsmValidationException, ExpressionValidationException {
 
-        return combine(getRuntimeFeaturesForMetamodel(this.getClass()),
+        return combine(karafConfig(this.getClass()),
                 mavenBundle(maven()
                         .groupId(HU_BLACKBELT_JUDO_META)
                         .artifactId(HU_BLACKBELT_JUDO_META_EXPRESSION_OSGI)

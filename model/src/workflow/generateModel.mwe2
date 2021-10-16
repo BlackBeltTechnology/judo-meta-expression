@@ -40,7 +40,7 @@ Workflow {
 		javaGenPath = "${rootPath}/${javaGenPath}"
 	}	
 
-	// Judo RuntimeModel for model
+	// JUDO RuntimeModel for model
 	component = hu.blackbelt.judo.eclipse.emf.genmodel.generator.runtimemodel.RuntimeModelGeneratorWorkflow {
 		modelDir = "${rootPath}/${modelDir}"
 		javaGenPath = "${rootPath}/${javaGenPath}"

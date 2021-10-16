@@ -1,5 +1,6 @@
 package hu.blackbelt.judo.meta.expression.adapters.measure;
 
+
 import hu.blackbelt.judo.meta.expression.CollectionExpression;
 import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.NumericExpression;
@@ -12,7 +13,6 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.operator.DecimalOperator;
 import hu.blackbelt.judo.meta.expression.operator.NumericComparator;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,11 +32,15 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MeasureAdapterTest {
 
@@ -91,7 +95,7 @@ public class MeasureAdapterTest {
         assertTrue(mass.isPresent());
 
         final Optional<Measure> electricCurrent = measureAdapter.get(newMeasureNameBuilder().withNamespace("base").withName("ElectricCurrent").build());
-        Assert.assertFalse(electricCurrent.isPresent());
+        assertFalse(electricCurrent.isPresent());
 
         final Optional<Measure> velocity = measureAdapter.get(newMeasureNameBuilder().withNamespace("derived").withName("Velocity").build());
         assertTrue(velocity.isPresent());
@@ -173,7 +177,7 @@ public class MeasureAdapterTest {
 
         assertTrue(measureAdapter.isMeasured(weight));
         assertTrue(measureAdapter.isMeasured(daysLeftToShip));
-        Assert.assertFalse(measureAdapter.isMeasured(quantity));
+        assertFalse(measureAdapter.isMeasured(quantity));
     }
 
     @Test
@@ -346,7 +350,7 @@ public class MeasureAdapterTest {
                         .build())
                 .build();
 
-        Assert.assertFalse(measureAdapter.isMeasured(division2));
+        assertFalse(measureAdapter.isMeasured(division2));
         assertThat(measureAdapter.getDimension(division2).get(), is(Collections.emptyMap()));
     }
 
@@ -364,7 +368,7 @@ public class MeasureAdapterTest {
                         .build())
                 .build();
 
-        Assert.assertFalse(measureAdapter.isMeasured(scalarOpposite));
+        assertFalse(measureAdapter.isMeasured(scalarOpposite));
         assertThat(measureAdapter.getDimension(scalarOpposite).get(), is(Collections.emptyMap()));
 
         assertTrue(measureAdapter.isMeasured(measuredOpposite));
@@ -492,11 +496,11 @@ public class MeasureAdapterTest {
     @Test
     public void testIsMeasuredNonMeasuredConstant() {
         final NumericExpression integerExpression = newIntegerConstantBuilder().withValue(BigInteger.ONE).build();
-        Assert.assertFalse(measureAdapter.isMeasured(integerExpression));
+        assertFalse(measureAdapter.isMeasured(integerExpression));
         assertThat(measureAdapter.getDimension(integerExpression), is(Optional.of(Collections.emptyMap())));
 
         final NumericExpression decimalExpression = newDecimalConstantBuilder().withValue(BigDecimal.ONE).build();
-        Assert.assertFalse(measureAdapter.isMeasured(decimalExpression));
+        assertFalse(measureAdapter.isMeasured(decimalExpression));
         assertThat(measureAdapter.getDimension(decimalExpression), is(Optional.of(Collections.emptyMap())));
     }
 
@@ -506,8 +510,8 @@ public class MeasureAdapterTest {
         //Assert.assertThat(measureAdapter.getUnit());
         assertThat(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "kg"), is(measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
         assertThat(measureAdapter.getUnit(Optional.of("base"), Optional.of("Mass"), "kg"), is(measureProvider.getMass().getUnits().stream().filter(u -> Objects.equals(u.getSymbol(), "kg")).findAny()));
-        Assert.assertFalse(measureAdapter.getUnit(Optional.of("custom"), Optional.of("Mass"), "kg").isPresent());
-        Assert.assertFalse(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "μg").isPresent());
+        assertFalse(measureAdapter.getUnit(Optional.of("custom"), Optional.of("Mass"), "kg").isPresent());
+        assertFalse(measureAdapter.getUnit(Optional.empty(), Optional.empty(), "μg").isPresent());
     }
 
     private MeasureAdapter.MeasureId measureIdFrom(final Measure measure) {

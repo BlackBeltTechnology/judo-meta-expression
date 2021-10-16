@@ -7,15 +7,14 @@
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>${revision}</version>
     </parent>
     
     <artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
     <packaging>eclipse-plugin</packaging>
     
-    <name>Judo :: Expression :: Model :: JQL builder</name>
-    <description>Judo Expression ASM Model builder based on JQL</description>
+    <name>JUDO :: Expression :: Model :: JQL builder</name>
+    <description>JUDO Expression ASM Model builder based on JQL</description>
 
     <dependencies>
         <dependency>
