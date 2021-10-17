@@ -20,13 +20,11 @@
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
-            <version>${judo-meta-jql-version}</version>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

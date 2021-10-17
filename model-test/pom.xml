@@ -13,58 +13,63 @@
 	<name>JUDO :: Expression :: Model :: Test</name>
 	<description>JUDO Expression Test</description>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>xtext-dev-bom</artifactId>
+				<version>${xtext-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-            <version>${judo-meta-esm-version}</version>
         </dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-			<version>${judo-meta-asm-version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-			<version>${judo-meta-psm-version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-			<version>${judo-meta-measure-version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
