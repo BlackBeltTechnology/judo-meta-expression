@@ -2,8 +2,11 @@ package hu.blackbelt.judo.meta.expression.adapters.measure;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.ECollections;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,7 +67,7 @@ public class MeasureChangeAdapterTest {
 
     @Test
     public void testLogger() {
-        Assert.assertEquals(0, measureAdapter.dimensions.size());
+        assertEquals(0, measureAdapter.dimensions.size());
 
         final Map<Map<MeasureAdapter.MeasureId, Integer>, MeasureAdapter.MeasureId> expected = new HashMap<>();
 
@@ -82,8 +84,8 @@ public class MeasureChangeAdapterTest {
         measureChangedHandler.measureAdded(length);
 
         expected.put(Collections.singletonMap(measureIdFrom(length), 1), measureIdFrom(length));
-        Assert.assertEquals(1, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions, is(expected));
+        assertEquals(1, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions, is(expected));
 
         final Measure area = Measure.builder().namespace("derived").name("Area").units(Arrays.asList(
                 Unit.builder().name("square millimetre").symbol("mm²").build(),
@@ -97,14 +99,14 @@ public class MeasureChangeAdapterTest {
         measureChangedHandler.measureAdded(area);
 
         expected.put(Collections.singletonMap(measureIdFrom(length), 2), measureIdFrom(area));
-        Assert.assertEquals(2, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions, is(expected));
+        assertEquals(2, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions, is(expected));
 
     }
 
     @Test
     public void testBaseMeasureAddedChangedAndRemoved() {
-        Assert.assertEquals(0, measureAdapter.dimensions.size());
+        assertEquals(0, measureAdapter.dimensions.size());
 
         final Map<Map<MeasureAdapter.MeasureId, Integer>, MeasureAdapter.MeasureId> expected = new HashMap<>();
 
@@ -120,23 +122,23 @@ public class MeasureChangeAdapterTest {
         measureChangedHandler.measureAdded(length);
 
         expected.put(Collections.singletonMap(measureIdFrom(length), 1), measureIdFrom(length));
-        Assert.assertEquals(1, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions, is(expected));
+        assertEquals(1, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions, is(expected));
 
         measureChangedHandler.measureChanged(length);
 
-        Assert.assertEquals(1, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions, is(expected));
+        assertEquals(1, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions, is(expected));
 
         measureChangedHandler.measureRemoved(length);
 
-        Assert.assertEquals(0, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions, is(Collections.emptyMap()));
+        assertEquals(0, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions, is(Collections.emptyMap()));
     }
 
     @Test
     public void testDerivedMeasureAddedChangedAndRemoved() {
-        Assert.assertEquals(0, measureAdapter.dimensions.size());
+        assertEquals(0, measureAdapter.dimensions.size());
 
         final Map<Map<MeasureAdapter.MeasureId, Integer>, MeasureAdapter.MeasureId> expected = new HashMap<>();
 
@@ -159,7 +161,7 @@ public class MeasureChangeAdapterTest {
         measureChangedHandler.measureAdded(length);
         measureChangedHandler.measureAdded(time);
 
-        Assert.assertEquals(2, measureAdapter.dimensions.size());
+        assertEquals(2, measureAdapter.dimensions.size());
 
         final Measure velocity = Measure.builder().namespace("derived").name("Velocity").units(Arrays.asList(
                 Unit.builder().name("metre per second").symbol("m/s").build()
@@ -169,11 +171,11 @@ public class MeasureChangeAdapterTest {
 
         measureChangedHandler.measureAdded(velocity);
 
-        Assert.assertEquals(3, measureAdapter.dimensions.size());
+        assertEquals(3, measureAdapter.dimensions.size());
         expected.put(Collections.singletonMap(measureIdFrom(length), 1), measureIdFrom(length));
         expected.put(Collections.singletonMap(measureIdFrom(time), 1), measureIdFrom(time));
         expected.put(ImmutableMap.of(measureIdFrom(length), 1, measureIdFrom(time), -1), measureIdFrom(velocity));
-        Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
+        assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
 
         final Measure acceleration = Measure.builder().namespace("derived").name("Acceleration").units(Arrays.asList(
                 Unit.builder().name("metre per second square").symbol("m/s²").build()
@@ -193,15 +195,15 @@ public class MeasureChangeAdapterTest {
         expectedAccelerationDimension.put(measureIdFrom(length), 1);
         expectedAccelerationDimension.put(measureIdFrom(time), -3);
         expected.put(expectedAccelerationDimension, measureIdFrom(acceleration));
-        Assert.assertEquals(4, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
+        assertEquals(4, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions.entrySet(), is(expected.entrySet()));
 
         accelerationDimension.put(time, -1);
         expectedAccelerationDimension.put(measureIdFrom(time), -2);
         measureChangedHandler.measureChanged(acceleration);
 
-        Assert.assertEquals(4, measureAdapter.dimensions.size());
-        Assert.assertThat(expected, equalTo(measureAdapter.dimensions));
+        assertEquals(4, measureAdapter.dimensions.size());
+        assertThat(expected, equalTo(measureAdapter.dimensions));
 
         expected.clear();
 
@@ -210,8 +212,8 @@ public class MeasureChangeAdapterTest {
         measureChangedHandler.measureRemoved(length);
         measureChangedHandler.measureRemoved(time);
 
-        Assert.assertEquals(0, measureAdapter.dimensions.size());
-        Assert.assertThat(measureAdapter.dimensions, is(Collections.emptyMap()));
+        assertEquals(0, measureAdapter.dimensions.size());
+        assertThat(measureAdapter.dimensions, is(Collections.emptyMap()));
     }
 
     private MeasureAdapter.MeasureId measureIdFrom(final Measure measure) {

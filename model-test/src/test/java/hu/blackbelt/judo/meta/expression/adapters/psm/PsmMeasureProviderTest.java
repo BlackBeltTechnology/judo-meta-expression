@@ -1,6 +1,9 @@
 package hu.blackbelt.judo.meta.expression.adapters.psm;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,7 +11,6 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 import org.eclipse.emf.common.notify.Notifier;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,9 +51,9 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
         final Optional<Measure> mass = getMeasureByName("Mass");
         final Measure negtestMeasure = MeasureBuilders.newMeasureBuilder().withName("NegtestMeasure").build();
 
-        Assert.assertTrue(mass.isPresent());
-        Assert.assertThat(measureProvider.getMeasureNamespace(mass.get()), is("demo::measures"));
-        Assert.assertTrue(measureProvider.getMeasureNamespace(negtestMeasure) == null);
+        assertTrue(mass.isPresent());
+        assertThat(measureProvider.getMeasureNamespace(mass.get()), is("demo::measures"));
+        assertTrue(measureProvider.getMeasureNamespace(negtestMeasure) == null);
     }
 
     @Test
@@ -61,8 +63,8 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
                 .filter(m -> m.getUnits().stream().anyMatch(u -> "kilogram".equals(u.getName())))
                 .findAny();
 
-        Assert.assertTrue(mass.isPresent());
-        Assert.assertThat(measureProvider.getMeasureName(mass.get()), is("Mass"));
+        assertTrue(mass.isPresent());
+        assertThat(measureProvider.getMeasureName(mass.get()), is("Mass"));
 
     }
 
@@ -77,18 +79,18 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
 
         final Optional<Measure> expectedLength = getMeasureByName("Length");
 
-        Assert.assertTrue(length.isPresent());
-        Assert.assertThat(length, is(expectedLength));
-        Assert.assertFalse(invalidName.isPresent());
-        Assert.assertFalse(invalidNamespace.isPresent());
-        Assert.assertFalse(invalidNameAndNamespace.isPresent());
+        assertTrue(length.isPresent());
+        assertThat(length, is(expectedLength));
+        assertFalse(invalidName.isPresent());
+        assertFalse(invalidNamespace.isPresent());
+        assertFalse(invalidNameAndNamespace.isPresent());
     }
 
     @Test
     public void testBaseMeasuresOfBaseMeasure() {
         final Measure length = getMeasureByName("Length").get();
 
-        Assert.assertThat(measureProvider.getBaseMeasures(length).map(), is(Collections.singletonMap(length, 1)));
+        assertThat(measureProvider.getBaseMeasures(length).map(), is(Collections.singletonMap(length, 1)));
     }
 
     @Test
@@ -99,8 +101,8 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
         final Measure time = getMeasureByName("Time").get();
         final Measure force = getMeasureByName("Force").get();
 
-        Assert.assertThat(measureProvider.getBaseMeasures(area).map(), is(Collections.singletonMap(length, 2)));
-        Assert.assertThat(measureProvider.getBaseMeasures(force).map(), is(ImmutableMap.of(
+        assertThat(measureProvider.getBaseMeasures(area).map(), is(Collections.singletonMap(length, 2)));
+        assertThat(measureProvider.getBaseMeasures(force).map(), is(ImmutableMap.of(
                 mass, 1,
                 length, 1,
                 time, -2
@@ -112,7 +114,7 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
         log.info("Testing: getUnits...");
         final Measure length = getMeasureByName("Length").get();
 
-        Assert.assertThat(new HashSet<>(measureProvider.getUnits(length)), is(new HashSet<>(length.getUnits())));
+        assertThat(new HashSet<>(measureProvider.getUnits(length)), is(new HashSet<>(length.getUnits())));
     }
 
     @Test
@@ -123,10 +125,10 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
         final Unit microsecond = getUnitByName("microsecond").get();
         final Unit month = getUnitByName("month").get();
 
-        Assert.assertTrue(measureProvider.isDurationSupportingAddition(second));
-        Assert.assertFalse(measureProvider.isDurationSupportingAddition(metre));
-        Assert.assertFalse(measureProvider.isDurationSupportingAddition(microsecond));
-        Assert.assertFalse(measureProvider.isDurationSupportingAddition(month));
+        assertTrue(measureProvider.isDurationSupportingAddition(second));
+        assertFalse(measureProvider.isDurationSupportingAddition(metre));
+        assertFalse(measureProvider.isDurationSupportingAddition(microsecond));
+        assertFalse(measureProvider.isDurationSupportingAddition(month));
     }
 
     @Test
@@ -137,20 +139,20 @@ public class PsmMeasureProviderTest extends ExecutionContextOnPsmTest {
         final Optional<Measure> time = getMeasureByName("Time");
         final Optional<Unit> halfDay = getUnitByName("halfDay");
 
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(length, "metre"), is(metre));
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "metre"), is(metre));
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(length, "m"), is(metre));
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "m"), is(metre));
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(time, "halfDay"), is(halfDay));
-        Assert.assertFalse(measureProvider.getUnitByNameOrSymbol(time, null).isPresent()); // units are not compared by symbol if is it not defined
-        Assert.assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "halfDay"), is(halfDay));
-        Assert.assertFalse(measureProvider.getUnitByNameOrSymbol(Optional.empty(), null).isPresent()); // nothing is defined
+        assertThat(measureProvider.getUnitByNameOrSymbol(length, "metre"), is(metre));
+        assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "metre"), is(metre));
+        assertThat(measureProvider.getUnitByNameOrSymbol(length, "m"), is(metre));
+        assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "m"), is(metre));
+        assertThat(measureProvider.getUnitByNameOrSymbol(time, "halfDay"), is(halfDay));
+        assertFalse(measureProvider.getUnitByNameOrSymbol(time, null).isPresent()); // units are not compared by symbol if is it not defined
+        assertThat(measureProvider.getUnitByNameOrSymbol(Optional.empty(), "halfDay"), is(halfDay));
+        assertFalse(measureProvider.getUnitByNameOrSymbol(Optional.empty(), null).isPresent()); // nothing is defined
     }
 
     @Test
     public void testGetMeasures() {
         log.info("Testing: getMeasures...");
-        Assert.assertThat(measureProvider.getMeasures().count(), is(7L));
+        assertThat(measureProvider.getMeasures().count(), is(7L));
 
     }
 

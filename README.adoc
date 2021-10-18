@@ -62,7 +62,7 @@ It acts as an eclipse plugin with features and sites, can be used standalone and
 == Modules:
 
 - targetdefinition - Eclipse target definition defines the P2 repsoitories for all of required MANFIEST feature.
-The Judo update sites based on versions, so all versions have own update site. That causes that versions are coded in the URL.
+The JUDO update sites based on versions, so all versions have own update site. That causes that versions are coded in the URL.
 The target definition in tycho loaded as extension, which cause there is no way to replace versions before tycho is activated.
 For that reason a profile is created which can replace the versions with the dependency versions defined in parent.
 To run version update run
@@ -78,7 +78,7 @@ in other platforms.
 
 - site - Eclipse Update Site - all built version compiled as an update site.
 The site definitions contains the required referenced repositoies which contains required plugins.
-The Judo update sites based on versions, so all versions have own update site. That causes that versions are coded in the URL.
+The JUDO update sites based on versions, so all versions have own update site. That causes that versions are coded in the URL.
 The category definition in tycho loaded as extension, which cause there is no way to replace versions before tycho is activated.
 For that reason a profile is created which can replace the versions with the dependency versions defined in parent.
 To run version update run
@@ -131,7 +131,7 @@ The following plugins have to be installed to work:
 - epsilon
 - modeling tools
 
-Or you can use prebuilt Judo eclipse.
+Or you can use prebuilt JUDO eclipse.
 
 === Compilation in maven
 

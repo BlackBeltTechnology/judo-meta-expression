@@ -1,12 +1,15 @@
 package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEAttributeBuilder;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,13 +43,13 @@ public class AsmMeasureSupportTest extends ExecutionContextOnAsmTest {
 
     @Test
     public void testGetUnitOfNonMeasuredAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "discount").isPresent());
+        assertFalse(modelAdapter.getUnit(product, "discount").isPresent());
     }
 
     @Test
     public void testGetUnitOfMeasuredAttribute() {
-        Assert.assertTrue(modelAdapter.getUnit(product, "weight").isPresent());
-        Assert.assertTrue(modelAdapter.getUnit(product, "height").isPresent());
+        assertTrue(modelAdapter.getUnit(product, "weight").isPresent());
+        assertTrue(modelAdapter.getUnit(product, "height").isPresent());
     }
 
     @Test
@@ -63,20 +66,20 @@ public class AsmMeasureSupportTest extends ExecutionContextOnAsmTest {
         asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("grossWeight"), "constraints", ImmutableMap.of("unit", "kg", "measure", "Length"));
         asmUtils.addExtensionAnnotationDetails(product.getEStructuralFeature("width"), "constraints", ImmutableMap.of("unit", "m", "measure", "measures::Length"));
 
-        Assert.assertFalse(modelAdapter.getUnit(product, "vat").isPresent());          // EUR is not defined as unit
-        Assert.assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());    // unit belongs to another measure
-        Assert.assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());  // measure name is not matching expected pattern
-        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // measure name is invalid
+        assertFalse(modelAdapter.getUnit(product, "vat").isPresent());          // EUR is not defined as unit
+        assertFalse(modelAdapter.getUnit(product, "netWeight").isPresent());    // unit belongs to another measure
+        assertFalse(modelAdapter.getUnit(product, "grossWeight").isPresent());  // measure name is not matching expected pattern
+        assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // measure name is invalid
     }
 
     @Test
     public void testGetUnitOfNonNumericAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "url").isPresent());          // attribute is not numeric
+        assertFalse(modelAdapter.getUnit(product, "url").isPresent());          // attribute is not numeric
     }
 
     @Test
     public void getGetUnitOfNonExistingAttribute() {
-        Assert.assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // attribute is not defined
-        Assert.assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());    // annotation is added without 'unit' key
+        assertFalse(modelAdapter.getUnit(product, "width").isPresent());        // attribute is not defined
+        assertFalse(modelAdapter.getUnit(product, "unitPrice").isPresent());    // annotation is added without 'unit' key
     }
 }

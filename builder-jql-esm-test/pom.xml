@@ -7,73 +7,69 @@
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.esm.test</artifactId>
 
-    <name>Judo :: Expression :: Model :: JQL builder :: ESM :: Test</name>
-    <description>Judo Expression Model builder based on JQL and ESM Test</description>
+    <name>JUDO :: Expression :: Model :: JQL builder :: ESM :: Test</name>
+    <description>JUDO Expression Model builder based on JQL and ESM Test</description>
 
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
-            <version>${judo-meta-jql-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-            <version>${judo-meta-esm-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
-            <version>${project.version}</version>
         </dependency>
         
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.eclipse.platform</groupId>
-            <artifactId>org.eclipse.equinox.common</artifactId>
-            <version>3.10.0</version>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.test</artifactId>
-            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
             <scope>test</scope>
         </dependency>
 

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="hu.blackbelt.judo.meta.expression.builder.jql.feature"
-      label="Judo Expression Model Feature"
+      label="JUDO Expression Model Feature"
       version="1.0.1.qualifier"
       provider-name="BlackBelt Technology">
 
    <description url="http://www.blackbelt.hu">
-      This feature is the Judo Expression model.
+      This feature is the JUDO Expression model.
    </description>
 
    <copyright>
-      Copyright (c) 2019. BlackBelt Technology.\n\
+      Copyright (c) 2019-2021 BlackBelt Technology.\n\
       All rights reserved.
    </copyright>
 
    <license url="http://www.opensource.org/licenses/eclipse-1.0.txt">
-      Copyright (c) 2019. BlackBelt Technology.
+      Copyright (c) 2019-2021 BlackBelt Technology.
       All rights reserved.
 
       Eclipse Public License - v 1.0

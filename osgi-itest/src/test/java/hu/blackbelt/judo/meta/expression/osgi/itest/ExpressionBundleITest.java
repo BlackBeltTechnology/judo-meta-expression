@@ -1,6 +1,6 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
-import static hu.blackbelt.judo.meta.expression.osgi.itest.ExpressionKarafFeatureProvider.getRuntimeFeaturesForMetamodel;
+import static hu.blackbelt.judo.meta.expression.osgi.itest.KarafFeatureProvider.karafConfig;
 import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
 import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
 import static org.junit.Assert.assertEquals;
@@ -32,6 +32,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.service.log.LogService;
+import org.osgi.service.log.LoggerFactory;
 
 import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
 import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
@@ -59,8 +60,9 @@ public class ExpressionBundleITest {
 
     private static final String DEMO_PSM = "northwind-psm";
     private static final String DEMO_EXPRESSION = "t002";
+
     @Inject
-    LogService log;
+    LoggerFactory log;
 
     @Inject
     protected BundleTrackerManager bundleTrackerManager;
@@ -77,7 +79,7 @@ public class ExpressionBundleITest {
     @Configuration
     public Option[] config() throws IOException, PsmValidationException, ExpressionValidationException {
 
-        return combine(getRuntimeFeaturesForMetamodel(this.getClass()),
+        return combine(karafConfig(this.getClass()),
                 mavenBundle(maven()
                         .groupId(HU_BLACKBELT_JUDO_META)
                         .artifactId(HU_BLACKBELT_JUDO_META_EXPRESSION_OSGI)

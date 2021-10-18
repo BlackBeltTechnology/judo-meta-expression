@@ -58,3 +58,4 @@ wercker.env
 .release
 build.log
 .vscode
+**/.flattened-pom.xml
