@@ -7,6 +7,7 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.*;
+import hu.blackbelt.judo.meta.expression.temporal.DateDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
 import org.slf4j.Logger;
@@ -203,7 +204,7 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             return getDimension(((DecimalAggregatedExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalSwitchExpression) {
             return getDimensionOfSwitchExpression((DecimalSwitchExpression) numericExpression);
-        } else if (numericExpression instanceof TimestampDifferenceExpression) {
+        } else if (numericExpression instanceof TimestampDifferenceExpression || numericExpression instanceof DateDifferenceExpression) {
             final Optional<M> durationMeasure = getDurationMeasure();
             if (durationMeasure.isPresent()) {
                 return Optional.of(Collections.singletonMap(MeasureId.fromMeasure(measureProvider, durationMeasure.get()), 1));
