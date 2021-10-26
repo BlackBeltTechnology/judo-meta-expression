@@ -25,5 +25,10 @@
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
         </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.judo.meta</groupId>
+            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
