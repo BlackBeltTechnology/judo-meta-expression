@@ -58,8 +58,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.4.0.20210919_103207_8f2ef01_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.4.0.20210919_133947_3330a32_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.4.0.20211025_234532_02f4b628_develop</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.4.0.20211025_235843_5805ea16_develop</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -67,9 +67,9 @@
         <maven.compiler.target>11</maven.compiler.target>
         <tycho-version>2.5.0</tycho-version>
 
-        <emf-genmodel-generator-version>1.0.1</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.0</judo-genmodel-generator-version>
-        <judo-epp-common-version>4.19.0.20210706_170220_0c21c18_develop</judo-epp-common-version>
+        <emf-genmodel-generator-version>1.0.2.20211021_110357_261394e2_develop</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.1.20211024_233306_21dd275f_develop</judo-genmodel-generator-version>
+        <judo-epp-common-version>4.19.0.20211022_122608_10e6ef76_develop</judo-epp-common-version>
 
         <xtext-version>2.25.0</xtext-version>
         <emf-mwe2-launch-version>2.12.1</emf-mwe2-launch-version>
@@ -92,11 +92,11 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20210919_142420_e8d023c_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20210919_143957_ca82d65_develop</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20210919_140542_7d7b9da_develop</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1.20210919_133205_0520f4d_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.0.20210919_141554_2ebeb8e_develop</judo-meta-measure-version>
+        <judo-meta-psm-version>1.1.0.20211026_001309_6f1e47ce_develop</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20211026_000708_14cfe898_develop</judo-meta-asm-version>
+        <judo-meta-esm-version>1.1.0.20211026_000714_0d3dbdac_develop</judo-meta-esm-version>
+        <judo-meta-jql-version>1.0.1.20211024_234218_7f33c901_develop</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.0.20211026_000729_5c8e5103_develop</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
@@ -236,7 +236,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -255,7 +255,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -274,7 +274,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -293,7 +293,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore></ignore>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
