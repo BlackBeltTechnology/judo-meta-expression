@@ -15,6 +15,18 @@
     <name>JUDO :: Expression :: Model :: JQL builder :: ASM :: Test</name>
     <description>JUDO Expression ASM Model builder based on JQL and ASM Test</description>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.xtext</groupId>
+                <artifactId>xtext-dev-bom</artifactId>
+                <version>${xtext-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
@@ -84,5 +96,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.xtext</groupId>
+            <artifactId>org.eclipse.xtext</artifactId>
+            <version>${xtext-version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
