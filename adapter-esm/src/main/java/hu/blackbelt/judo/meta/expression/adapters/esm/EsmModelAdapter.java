@@ -264,6 +264,42 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<TransferObjectType> getAttributeParameterType(PrimitiveTypedElement attribute) {
+        if (attribute.isIsQuery()) {
+            return Optional.ofNullable(attribute.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getReferenceParameterType(ReferenceTypedElement reference) {
+        if (reference.isIsQuery()) {
+            return Optional.ofNullable(reference.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferAttributeParameterType(PrimitiveTypedElement attribute) {
+        if (attribute.isIsQuery()) {
+            return Optional.ofNullable(attribute.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferRelationParameterType(ReferenceTypedElement reference) {
+        if (reference.isIsQuery()) {
+            return Optional.ofNullable(reference.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public hu.blackbelt.judo.meta.esm.structure.Class getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
     }

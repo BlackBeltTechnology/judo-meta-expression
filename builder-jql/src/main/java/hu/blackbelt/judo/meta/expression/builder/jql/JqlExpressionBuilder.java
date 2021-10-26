@@ -200,12 +200,20 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return createExpression(clazz, parseJqlString(jqlExpressionString));
     }
 
+    public Expression createExpressionWithInput(C clazz, String jqlExpressionString, TO inputParameterType) {
+        return createExpression(clazz, parseJqlString(jqlExpressionString), inputParameterType);
+    }
+
     public Expression createExpression(String jqlString, ExpressionBuildingVariableResolver context) {
         return createExpression(parseJqlString(jqlString), context);
     }
 
     public Expression createExpression(C entityType, JqlExpression jqlExpression) {
         return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext(config));
+    }
+
+    public Expression createExpression(C entityType, JqlExpression jqlExpression, TO inputParameterType) {
+        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext(config, inputParameterType));
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {

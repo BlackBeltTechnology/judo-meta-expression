@@ -25,6 +25,8 @@ public interface ExpressionBuildingVariableResolver {
 
     Object peekBase();
 
+    Object getInputParameterType();
+
     void pushBaseExpression(Expression baseExpression);
 
     Expression popBaseExpression();
