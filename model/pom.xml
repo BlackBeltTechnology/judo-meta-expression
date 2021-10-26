@@ -170,6 +170,7 @@
         <dependency>
             <groupId>hu.blackbelt.epsilon</groupId>
             <artifactId>epsilon-runtime-execution</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
