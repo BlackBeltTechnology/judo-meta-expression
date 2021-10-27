@@ -1,6 +1,7 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
 import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.MeasureName;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
@@ -8,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.JqlFeatureTransformResult;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
 import hu.blackbelt.judo.meta.expression.variable.*;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newStringConstantBuilder;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newBooleanVariableReferenceBuilder;
@@ -31,12 +34,16 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
+
+    public static final String PARAMETER_CATEGORY = "PARAMETER";
 
     private final JqlNavigationFeatureTransformer<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> featureTransformer;
 
@@ -102,14 +109,96 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
-                    Variable baseVariable = context.resolveVariable(name).orElseThrow(() -> {
-                    	String errorMessage = "Base variable " + name + " not found";
-                    	JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, navigation);
-                    	return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(error));
-                    });
-                    JqlFeatureTransformResult<C> createVariableReferenceResult = createVariableReference(baseVariable, baseExpression);
-                    baseExpression = createVariableReferenceResult.baseExpression;
-                    navigationBase = createVariableReferenceResult.navigationBase;
+                    Optional<Variable> baseVariable = context.resolveVariable(name);
+                    if (!baseVariable.isPresent()) {
+                        TA parameterAttribute = Optional.ofNullable(navigation.getFeatures().size() == 1 ? (TO) context.getInputParameterType() : null)
+                                .map(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()).orElse(null))
+                                .orElseThrow(() -> new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(new JqlExpressionBuildingError("Base variable " + name + " not found", navigation))));
+                        Expression getVariableExpression = null;
+                        StringConstant variableName = newStringConstantBuilder().withValue(navigation.getFeatures().get(0).getName()).build();
+                        P parameterAttributeType = getModelAdapter().getTransferAttributeType(parameterAttribute);
+                        TypeName parameterAttributeTypeName = getModelAdapter().buildTypeName(parameterAttributeType).get();
+                        if (getModelAdapter().isInteger(parameterAttributeType)) {
+                            if (getModelAdapter().isMeasuredType(parameterAttributeType)) {
+                                M measure = jqlTransformers.getModelAdapter().getMeasureOfType(parameterAttributeType).get();
+                                U unit = jqlTransformers.getModelAdapter().getUnitOfType(parameterAttributeType).get();
+                                MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();
+                                getVariableExpression = newMeasuredDecimalEnvironmentVariableBuilder()
+                                        .withCategory(PARAMETER_CATEGORY)
+                                        .withVariableName(variableName)
+                                        .withTypeName(parameterAttributeTypeName)
+                                        .withMeasure(measureName)
+                                        .withUnitName(jqlTransformers.getModelAdapter().getUnitName(unit))
+                                        .build();
+                            } else {
+                                getVariableExpression = newIntegerEnvironmentVariableBuilder()
+                                        .withCategory(PARAMETER_CATEGORY)
+                                        .withVariableName(variableName)
+                                        .withTypeName(parameterAttributeTypeName)
+                                        .build();
+                            }
+                        } else if (getModelAdapter().isDecimal(parameterAttributeType)) {
+                            if (getModelAdapter().isMeasuredType(parameterAttributeType)) {
+                                M measure = jqlTransformers.getModelAdapter().getMeasureOfType(parameterAttributeType).get();
+                                U unit = jqlTransformers.getModelAdapter().getUnitOfType(parameterAttributeType).get();
+                                MeasureName measureName = jqlTransformers.getModelAdapter().buildMeasureName(measure).get();
+                                getVariableExpression = newMeasuredDecimalEnvironmentVariableBuilder()
+                                        .withCategory(PARAMETER_CATEGORY)
+                                        .withVariableName(variableName)
+                                        .withTypeName(parameterAttributeTypeName)
+                                        .withMeasure(measureName)
+                                        .withUnitName(jqlTransformers.getModelAdapter().getUnitName(unit))
+                                        .build();
+                            } else {
+                                getVariableExpression = newDecimalEnvironmentVariableBuilder()
+                                        .withCategory(PARAMETER_CATEGORY)
+                                        .withVariableName(variableName)
+                                        .withTypeName(parameterAttributeTypeName)
+                                        .build();
+                            }
+                        } else if (getModelAdapter().isBoolean(parameterAttributeType)) {
+                            getVariableExpression = newBooleanEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
+                        } else if (getModelAdapter().isString(parameterAttributeType)) {
+                            getVariableExpression = newStringEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
+                        } else if (getModelAdapter().isEnumeration(parameterAttributeType)) {
+                            getVariableExpression = newLiteralEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
+                        } else if (getModelAdapter().isCustom(parameterAttributeType)) {
+                            getVariableExpression = newCustomEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
+                        } else if (getModelAdapter().isDate(parameterAttributeType)) {
+                            getVariableExpression = newDateEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
+                        } else if (getModelAdapter().isTimestamp(parameterAttributeType)) {
+                            getVariableExpression = newTimestampEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
+                        }
+                        return new JqlFeatureTransformResult<>(null, getVariableExpression);
+                    } else {
+                        JqlFeatureTransformResult<C> createVariableReferenceResult = createVariableReference(baseVariable.get(), baseExpression);
+                        baseExpression = createVariableReferenceResult.baseExpression;
+                        navigationBase = createVariableReferenceResult.navigationBase;
+                    }
                 }
             }
         }

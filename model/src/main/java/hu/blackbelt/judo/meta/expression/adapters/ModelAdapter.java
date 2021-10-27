@@ -113,6 +113,38 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     boolean isCollectionReference(RTE reference);
 
     /**
+     * Get parameter of primitive typed element.
+     *
+     * @param attribute primitive typed element
+     * @return parameter type
+     */
+    Optional<TO> getAttributeParameterType(PTE attribute);
+
+    /**
+     * Get parameter of reference typed element.
+     *
+     * @param reference reference
+     * @return parameter type
+     */
+    Optional<TO> getReferenceParameterType(RTE reference);
+
+    /**
+     * Get parameter of transfer attribute.
+     *
+     * @param attribute transfer attribute
+     * @return parameter type
+     */
+    Optional<TO> getTransferAttributeParameterType(TA attribute);
+
+    /**
+     * Get parameter of transfer relation typed element.
+     *
+     * @param reference transfer relation
+     * @return parameter type
+     */
+    Optional<TO> getTransferRelationParameterType(TR reference);
+
+    /**
      * Get target (object) type of a reference.
      *
      * @param reference reference

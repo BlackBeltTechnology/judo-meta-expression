@@ -201,6 +201,42 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<TransferObjectType> getAttributeParameterType(PrimitiveTypedElement attribute) {
+        if (attribute instanceof PrimitiveAccessor) {
+            return Optional.ofNullable(((PrimitiveAccessor) attribute).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getReferenceParameterType(ReferenceTypedElement reference) {
+        if (reference instanceof ReferenceAccessor) {
+            return Optional.ofNullable(((ReferenceAccessor) reference).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferAttributeParameterType(TransferAttribute attribute) {
+        if (attribute.getBinding() instanceof PrimitiveAccessor) {
+            return Optional.ofNullable(((PrimitiveAccessor) attribute.getBinding()).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferRelationParameterType(TransferObjectRelation reference) {
+        if (reference.getBinding() instanceof ReferenceAccessor) {
+            return Optional.ofNullable(((ReferenceAccessor) reference.getBinding()).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public EntityType getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
     }
