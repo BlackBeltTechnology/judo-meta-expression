@@ -243,32 +243,14 @@ public class AsmModelAdapter implements
 
 	@Override
 	public Optional<EClass> getTransferAttributeParameterType(EAttribute attribute) {
-		if (attribute.isDerived()) {
-			return asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.parameter", false)
-					.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
-		} else {
-			return Optional.empty();
-		}
-//		return asmUtils.getMappedAttribute(attribute)
-//				.filter(a -> a.isDerived())
-//				.map(a -> asmUtils.getExtensionAnnotationCustomValue(a, "expression", "getter.parameter", false)
-//						.map(t -> (EClass) asmUtils.resolve(t).orElse(null))
-//						.orElse(null));
+		return asmUtils.getExtensionAnnotationCustomValue(attribute, "parameterized", "type", false)
+				.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
 	}
 
 	@Override
 	public Optional<EClass> getTransferRelationParameterType(EReference reference) {
-		if (reference.isDerived()) {
-			return asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.parameter", false)
-					.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
-		} else {
-			return Optional.empty();
-		}
-//		return asmUtils.getMappedReference(reference)
-//				.filter(r -> r.isDerived())
-//				.map(r -> asmUtils.getExtensionAnnotationCustomValue(r, "expression", "getter.parameter", false)
-//						.map(t -> (EClass) asmUtils.resolve(t).orElse(null))
-//						.orElse(null));
+		return asmUtils.getExtensionAnnotationCustomValue(reference, "parameterized", "type", false)
+				.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
 	}
 
 	@Override
