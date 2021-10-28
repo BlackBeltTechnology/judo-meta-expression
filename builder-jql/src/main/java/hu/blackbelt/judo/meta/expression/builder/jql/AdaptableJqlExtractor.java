@@ -56,7 +56,7 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
 
                     if (!hasAttributeBinding(typeName, modelAdapter.getName(attribute).get(), AttributeBindingRole.GETTER)) {
                         JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(modelAdapter.getName(attribute).get(), JqlExpressionBuilder.BindingType.ATTRIBUTE, JqlExpressionBuilder.BindingRole.GETTER);
-                        modelAdapter.getTransferAttributeGetter(attribute).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, getterBindingContext, jql));
+                        modelAdapter.getTransferAttributeGetter(attribute).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, modelAdapter.getTransferAttributeParameterType(attribute).orElse(null), getterBindingContext, jql));
                     } else {
                         log.debug("Getter expression already extracted for data property: {}", modelAdapter.getFqName(attribute));
                     }
@@ -71,14 +71,14 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
 
                     if (!hasReferenceBinding(typeName, modelAdapter.getName(reference).get(), ReferenceBindingRole.GETTER)) {
                         JqlExpressionBuilder.BindingContext getterBindingContext = new JqlExpressionBuilder.BindingContext(modelAdapter.getName(reference).get(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.GETTER);
-                        modelAdapter.getTransferRelationGetter(reference).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, getterBindingContext, jql));
+                        modelAdapter.getTransferRelationGetter(reference).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, modelAdapter.getTransferRelationParameterType(reference).orElse(null), getterBindingContext, jql));
                     } else {
                         log.debug("Getter expression already extracted for navigation property: {}", modelAdapter.getFqName(reference));
                     }
 
                     if (!hasReferenceBinding(typeName, modelAdapter.getName(reference).get(), ReferenceBindingRole.SETTER)) {
                         JqlExpressionBuilder.BindingContext setterBindingContext = new JqlExpressionBuilder.BindingContext(modelAdapter.getName(reference).get(), JqlExpressionBuilder.BindingType.RELATION, JqlExpressionBuilder.BindingRole.SETTER);
-                        modelAdapter.getTransferRelationSetter(reference).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, setterBindingContext, jql));
+                        modelAdapter.getTransferRelationSetter(reference).ifPresent(jql -> buildAndBind(null, unmappedTransferObjectType, null, setterBindingContext, jql));
                     } else {
                         log.debug("Setter expression already extracted for navigation property: {}", modelAdapter.getFqName(reference));
                     }
@@ -147,12 +147,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                         }
 
                         if (!hasGetterBinding) {
-                            buildAndBind(entityType, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(attribute).get());
+                            buildAndBind(entityType, null, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(attribute).get());
                         } else {
                             log.debug("Getter expression already extracted for attribute: {}", attribute);
                         }
                         if (!hasSetterBinding) {
-                            buildAndBind(entityType, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(attribute).get());
+                            buildAndBind(entityType, null, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(attribute).get());
                         } else {
                             log.debug("Setter expression already extracted for attribute: {}", attribute);
                         }
@@ -165,14 +165,14 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
 
                         if (!hasGetterBinding) {
                             getterJql.ifPresent(jql -> {
-                                buildAndBind(entityType, null, getterBindingContext, jql);
+                                buildAndBind(entityType, null, modelAdapter.getAttributeParameterType(attribute).orElse(null), getterBindingContext, jql);
                             });
                         } else {
                             log.debug("Getter expression already extracted for data property: {}", attribute);
                         }
                         if (!hasSetterBinding) {
                             setterJql.ifPresent(jql -> {
-                                buildAndBind(entityType, null, setterBindingContext, jql);
+                                buildAndBind(entityType, null, null, setterBindingContext, jql);
                             });
                         } else {
                             log.debug("Setter expression already extracted for data property: {}", attribute);
@@ -193,12 +193,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                             log.trace("  - extracting JQL expressions of relation: {}", modelAdapter.getFqName(reference));
                         }
                         if (!hasGetterBinding) {
-                            buildAndBind(entityType, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(reference).get());
+                            buildAndBind(entityType, null, null, getterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(reference).get());
                         } else {
                             log.debug("Getter expression already extracted for relation: {}", reference);
                         }
                         if (!hasSetterBinding) {
-                            buildAndBind(entityType, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(reference).get());
+                            buildAndBind(entityType, null, null, setterBindingContext, JqlExpressionBuilder.SELF_NAME + ".\\" + modelAdapter.getName(reference).get());
                         } else {
                             log.debug("Setter expression already extracted for relation: {}", reference);
                         }
@@ -211,13 +211,13 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                         Optional<String> setterJql = modelAdapter.getReferenceSetter(reference);
 
                         if (!hasGetterBinding) {
-                            getterJql.ifPresent(jql -> buildAndBind(entityType, null, getterBindingContext, jql));
+                            getterJql.ifPresent(jql -> buildAndBind(entityType, null, modelAdapter.getReferenceParameterType(reference).orElse(null), getterBindingContext, jql));
                         } else {
                             log.debug("Getter expression already extracted for navigation property: {}", reference);
                         }
 
                         if (!hasSetterBinding) {
-                            setterJql.ifPresent(jql -> buildAndBind(entityType, null, setterBindingContext, jql));
+                            setterJql.ifPresent(jql -> buildAndBind(entityType, null, null, setterBindingContext, jql));
                         } else {
                             log.debug("Setter expression already extracted for navigation property: {}", reference);
                         }
@@ -226,8 +226,8 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                 });
     }
 
-    private void buildAndBind(C entityType, TO transferObjectType, JqlExpressionBuilder.BindingContext bindingContext, String jql) {
-        Expression expression = builder.createExpression(entityType, jql);
+    private void buildAndBind(C entityType, TO transferObjectType, TO inputParameterType, JqlExpressionBuilder.BindingContext bindingContext, String jql) {
+        Expression expression = builder.createExpressionWithInput(entityType, jql, inputParameterType);
         builder.storeExpression(expression);
         builder.createBinding(bindingContext, entityType, transferObjectType, expression);
     }

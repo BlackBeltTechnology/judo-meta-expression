@@ -222,6 +222,38 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public Optional<EClass> getAttributeParameterType(EAttribute attribute) {
+		if (attribute.isDerived()) {
+			return asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.parameter", false)
+					.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<EClass> getReferenceParameterType(EReference reference) {
+		if (reference.isDerived()) {
+			return asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.parameter", false)
+					.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<EClass> getTransferAttributeParameterType(EAttribute attribute) {
+		return asmUtils.getExtensionAnnotationCustomValue(attribute, "parameterized", "type", false)
+				.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+	}
+
+	@Override
+	public Optional<EClass> getTransferRelationParameterType(EReference reference) {
+		return asmUtils.getExtensionAnnotationCustomValue(reference, "parameterized", "type", false)
+				.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+	}
+
+	@Override
 	public EClass getTarget(final EReference reference) {
 		return reference.getEReferenceType();
 	}

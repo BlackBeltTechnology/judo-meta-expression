@@ -13,14 +13,20 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
 	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
+    private final Object inputParameterType;
 
     private final JqlExpressionBuilderConfig config;
     
     public JqlExpressionBuildingContext() {
         this(new JqlExpressionBuilderConfig());
     }
-    
+
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config) {
+        this(config, null);
+    }
+    
+    public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, Object inputParameterType) {
+        this.inputParameterType = inputParameterType;
         if (config == null) {
             this.config = new JqlExpressionBuilderConfig();
         } else {
@@ -86,6 +92,10 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
     @Override
     public Object peekBase() {
         return resolvedBases.peek();
+    }
+
+    public Object getInputParameterType() {
+        return inputParameterType;
     }
 
     @Override
