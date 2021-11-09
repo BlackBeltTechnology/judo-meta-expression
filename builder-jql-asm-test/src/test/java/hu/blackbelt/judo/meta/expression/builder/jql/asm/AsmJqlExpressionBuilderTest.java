@@ -222,6 +222,11 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    void testNonConstantEnvironmentVariable() {
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression("demo::types::String!getVariable('ENVIRONMENT', demo::types::String!getVariable('ENVIRONMENT', 's'))"), "Variable name must be constant");
+    }
+
+    @Test
     void testStaticExpressions() {
         Expression allProducts = createExpression("demo::entities::Product");
         assertThat(allProducts, instanceOf(CollectionExpression.class));
