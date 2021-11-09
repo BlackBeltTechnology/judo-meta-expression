@@ -17,6 +17,7 @@ import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.util.builder.TypedObjectVariableBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedReference(accessor) && getterExpression.isPresent()) {
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(accessor.toString());
+            } else if (context.getInputParameterType() != null && getModelAdapter().getReferenceParameterType(accessor).isPresent() && !EcoreUtil.equals((EObject) context.getInputParameterType(), (EObject) getModelAdapter().getReferenceParameterType(accessor).get())) {
+                throw new IncompatibleInputParameterException(accessor.toString());
             } else {
                 context.pushAccessor(accessor);
             }
@@ -135,6 +138,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedAttribute(accessor) && getterExpression.isPresent()) {
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(accessor.toString());
+            } else if (context.getInputParameterType() != null && getModelAdapter().getAttributeParameterType(accessor).isPresent() && !EcoreUtil.equals((EObject) context.getInputParameterType(), (EObject) getModelAdapter().getAttributeParameterType(accessor).get())) {
+                throw new IncompatibleInputParameterException(accessor.toString());
             } else {
                 context.pushAccessor(accessor);
             }
