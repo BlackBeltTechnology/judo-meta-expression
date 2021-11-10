@@ -316,7 +316,18 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public boolean isMixin(TransferObjectType included, TransferObjectType mixin) {
-        return included != null && mixin != null && EcoreUtil.equals(included, mixin) || EsmUtils.getAllSuperTypes(mixin).contains(included);
+        if (included == null || mixin == null) {
+            return false;
+        } else if (EcoreUtil.equals(included, mixin)) {
+            return true;
+        }
+        return included.getAllAttributes().stream().allMatch(ia -> mixin.getAllAttributes().stream().anyMatch(ma -> Objects.equals(ma.getName(), ia.getName())
+                && Objects.equals(ma.getDataType(), ia.getDataType())
+                && (!(ma instanceof DataMember) || !(ia instanceof DataMember) || ((DataMember) ma).getBinding() == null && ((DataMember) ia).getBinding() == null || EcoreUtil.equals(((DataMember) ma).getBinding(), ((DataMember) ia).getBinding()))))
+                && included.getAllRelations().stream().allMatch(ir -> mixin.getAllRelations().stream().anyMatch(mr -> Objects.equals(mr.getName(), ir.getName())
+                && mr.getTarget() != null && ir.getTarget() != null && EcoreUtil.equals(mr.getTarget(), ir.getTarget())
+                && mr.getLower() == ir.getLower() && mr.getUpper() == ir.getUpper()
+                && (mr.getBinding() == null && mr.getBinding() == null || EcoreUtil.equals(mr.getBinding(), ir.getBinding()))));
     }
 
     @Override
