@@ -7,13 +7,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public class JqlExpressionBuildingContext implements ExpressionBuildingVariableResolver {
+public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVariableResolver {
 
     private final Deque<Deque<Variable>> lambdaScopes = new ArrayDeque<>();
 	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
-    private final Object inputParameterType;
+    private final TO inputParameterType;
 
     private final JqlExpressionBuilderConfig config;
     
@@ -25,7 +25,7 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
         this(config, null);
     }
     
-    public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, Object inputParameterType) {
+    public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, TO inputParameterType) {
         this.inputParameterType = inputParameterType;
         if (config == null) {
             this.config = new JqlExpressionBuilderConfig();
@@ -94,7 +94,7 @@ public class JqlExpressionBuildingContext implements ExpressionBuildingVariableR
         return resolvedBases.peek();
     }
 
-    public Object getInputParameterType() {
+    public TO getInputParameterType() {
         return inputParameterType;
     }
 

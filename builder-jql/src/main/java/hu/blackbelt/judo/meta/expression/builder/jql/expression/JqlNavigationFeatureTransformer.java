@@ -17,6 +17,7 @@ import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.expression.variable.util.builder.TypedObjectVariableBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,13 +105,19 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         return jqlTransformers.getModelAdapter();
     }
 
+    private boolean isCompatibleParameter(TO inputParameterType, TO derivedFeatureParameterType) {
+        return inputParameterType != null && derivedFeatureParameterType != null && getModelAdapter().isMixin(derivedFeatureParameterType, inputParameterType);
+    }
+
     private JqlFeatureTransformResult<C> transformReference(RTE accessor, ExpressionBuildingVariableResolver context, Expression baseExpression, C navigationBase, Feature jqlFeature) {
         C resultNavigationBase = navigationBase;
         Expression resultBaseExpression = baseExpression;
         Optional<String> getterExpression = getModelAdapter().getReferenceGetter(accessor);
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedReference(accessor) && getterExpression.isPresent()) {
             if (context.containsAccessor(accessor)) {
-                throw new CircularReferenceException(accessor.toString());
+                throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
+            } else if (context.getInputParameterType() != null && getModelAdapter().getReferenceParameterType(accessor).isPresent() && !isCompatibleParameter((TO) context.getInputParameterType(), getModelAdapter().getReferenceParameterType(accessor).orElse(null))) {
+                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(context.getInputParameterType()));
             } else {
                 context.pushAccessor(accessor);
             }
@@ -134,7 +141,9 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         Optional<String> getterExpression = getModelAdapter().getAttributeGetter(accessor);
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedAttribute(accessor) && getterExpression.isPresent()) {
             if (context.containsAccessor(accessor)) {
-                throw new CircularReferenceException(accessor.toString());
+                throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
+            } else if (context.getInputParameterType() != null && getModelAdapter().getAttributeParameterType(accessor).isPresent() && !isCompatibleParameter((TO) context.getInputParameterType(), getModelAdapter().getAttributeParameterType(accessor).orElse(null))) {
+                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(context.getInputParameterType()));
             } else {
                 context.pushAccessor(accessor);
             }

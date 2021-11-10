@@ -9,6 +9,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.DateDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
+import hu.blackbelt.judo.meta.expression.variable.EnvironmentVariable;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
 import org.slf4j.Logger;
 
@@ -117,9 +118,12 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             } else {
                 return false;
             }
-        } else if (numericExpression instanceof TimestampDifferenceExpression) {
-            // timestamp difference expression is measured (duration)
+        } else if (numericExpression instanceof TimestampDifferenceExpression || numericExpression instanceof DateDifferenceExpression) {
+            // timestamp and date difference expression is measured (duration)
             return true;
+        } else if (numericExpression instanceof EnvironmentVariable) {
+            final NE type = modelAdapter.get(((EnvironmentVariable) numericExpression).getTypeName()).orElse(null);
+            return modelAdapter.getMeasureOfType((P) type).isPresent();
         } else {
             // numeric type that not supports measures by architecture
             return false;
@@ -219,6 +223,9 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
                     .filter(d -> d.isPresent()).map(d -> d.get());
         } else if (numericExpression instanceof Constant) {
             return Optional.of(Collections.emptyMap());
+        } else if (numericExpression instanceof EnvironmentVariable) {
+            final NE type = modelAdapter.get(((EnvironmentVariable) numericExpression).getTypeName()).orElse(null);
+            return modelAdapter.getMeasureOfType((P) type).map(m -> getDimensionOfMeasure(m).orElse(null));
         } else {
             return Optional.empty();
         }
