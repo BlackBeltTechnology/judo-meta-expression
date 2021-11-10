@@ -315,6 +315,11 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isMixin(TransferObjectType included, TransferObjectType mixin) {
+        return included != null && mixin != null && EcoreUtil.equals(included, mixin) || EsmUtils.getAllSuperTypes(mixin).contains(included);
+    }
+
+    @Override
     public boolean isNumeric(Primitive primitive) {
         return primitive instanceof NumericType;
     }

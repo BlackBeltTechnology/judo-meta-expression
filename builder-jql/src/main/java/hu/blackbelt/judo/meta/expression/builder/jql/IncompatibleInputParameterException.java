@@ -4,8 +4,8 @@ public class IncompatibleInputParameterException extends RuntimeException {
 
     private final String accessorName;
 
-    public IncompatibleInputParameterException(String accessorName) {
-        super("Incompatible input parameter: " + accessorName);
+    public IncompatibleInputParameterException(String accessorName, String inputParameterName) {
+        super("Parameter of derived feature " + accessorName + " is incompatible with input parameter " + inputParameterName);
         this.accessorName = accessorName;
     }
 
