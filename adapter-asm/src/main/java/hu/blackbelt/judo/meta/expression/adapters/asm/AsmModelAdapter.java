@@ -289,6 +289,20 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public boolean isMixin(EClass included, EClass mixin) {
+		if (included == null || mixin == null) {
+			return false;
+		} else if (AsmUtils.equals(included, mixin)) {
+			return true;
+		}
+		return included.getEAllAttributes().stream().allMatch(ia -> mixin.getEAllAttributes().stream().anyMatch(ma -> Objects.equals(ma.getName(), ia.getName())
+				&& AsmUtils.equals(ma.getEAttributeType(), ia.getEAttributeType())))
+				&& included.getEAllReferences().stream().allMatch(ir -> mixin.getEAllReferences().stream().anyMatch(mr -> Objects.equals(mr.getName(), ir.getName())
+                && mr.getLowerBound() == ir.getLowerBound() && mr.getUpperBound() == ir.getUpperBound()
+                && AsmUtils.equals(mr.getEReferenceType(), ir.getEReferenceType())));
+	}
+
+	@Override
 	public boolean isNumeric(final EDataType primitive) {
 		return AsmUtils.isNumeric(primitive);
 	}

@@ -209,11 +209,11 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public Expression createExpression(C entityType, JqlExpression jqlExpression) {
-        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext(config));
+        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext<TO>(config));
     }
 
     public Expression createExpression(C entityType, JqlExpression jqlExpression, TO inputParameterType) {
-        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext(config, inputParameterType));
+        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext<TO>(config, inputParameterType));
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
