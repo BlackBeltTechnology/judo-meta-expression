@@ -191,6 +191,15 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     Collection<? extends C> getSuperTypes(C clazz);
 
     /**
+     * Check if a given mixin transfer object type includes another transfer object type.
+     *
+     * @param included included transfer object type
+     * @param mixin    mixin transfer object type
+     * @return <code>true</code> if mixin is valid, <code>false</code> otherwise
+     */
+    boolean isMixin(TO included, TO mixin);
+
+    /**
      * Check if a primitive type is numeric.
      *
      * @param primitive primitive type
