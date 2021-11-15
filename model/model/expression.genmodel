@@ -11,6 +11,7 @@
       childCreationExtenders="true" fileExtensions="expression" ecorePackage="expression.ecore#/">
     <genDataTypes ecoreDataType="expression.ecore#//LocalDate"/>
     <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime"/>
+    <genDataTypes ecoreDataType="expression.ecore#//LocalTime"/>
     <genClasses image="false" ecoreClass="expression.ecore#//Expression">
       <genOperations ecoreOperation="expression.ecore#//Expression/getOperands"/>
       <genOperations ecoreOperation="expression.ecore#//Expression/getLambdaFunctions"
@@ -128,6 +129,7 @@
           body="return getIteratorVariable() == null ? null : getIteratorVariable().getName();"/>
     </genClasses>
     <genClasses ecoreClass="expression.ecore#//TypeNameExpression"/>
+    <genClasses image="false" ecoreClass="expression.ecore#//TimeExpression"/>
     <nestedGenPackages prefix="Constant" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-constant" ecorePackage="expression.ecore#//constant">
@@ -219,6 +221,11 @@
       <genClasses image="false" ecoreClass="expression.ecore#//constant/DataConstant">
         <genOperations ecoreOperation="expression.ecore#//constant/DataConstant/getValue"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//constant/TimeConstant">
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/TimeConstant/value"/>
+        <genOperations ecoreOperation="expression.ecore#//constant/TimeConstant/toString"
+            body="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Variable" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
@@ -261,7 +268,7 @@
       <genClasses image="false" ecoreClass="expression.ecore#//variable/EnvironmentVariable">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//variable/EnvironmentVariable/typeName"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/EnvironmentVariable/category"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//variable/EnvironmentVariable/variableName"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EReference expression.ecore#//variable/EnvironmentVariable/variableName"/>
         <genOperations ecoreOperation="expression.ecore#//variable/EnvironmentVariable/getObjectType"
             body="return getTypeName().get(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//variable/EnvironmentVariable/getObjectType/modelAdapter"/>
@@ -318,6 +325,11 @@
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//variable/TimestampEnvironmentVariable">
         <genOperations ecoreOperation="expression.ecore#//variable/TimestampEnvironmentVariable/toString"
+            body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//variable/TimeVariable"/>
+      <genClasses ecoreClass="expression.ecore#//variable/TimeEnvironmentVariable">
+        <genOperations ecoreOperation="expression.ecore#//variable/TimeEnvironmentVariable/toString"
             body="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
       </genClasses>
     </nestedGenPackages>
@@ -1232,6 +1244,8 @@
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampConstructionExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond());"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimeAttribute"/>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimeSwitchExpression"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

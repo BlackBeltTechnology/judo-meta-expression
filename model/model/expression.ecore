@@ -199,6 +199,9 @@
   <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
   <eClassifiers xsi:type="ecore:EDataType" name="OffsetDateTime" instanceClassName="java.time.OffsetDateTime"/>
   <eClassifiers xsi:type="ecore:EClass" name="TypeNameExpression" eSuperTypes="#//TypeName #//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeExpression" abstract="true" interface="true"
+      eSuperTypes="#//DataExpression"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalTime" instanceClassName="java.time.LocalTime"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true" eSuperTypes="#//Expression">
@@ -346,6 +349,15 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DataConstant" abstract="true" eSuperTypes="#//constant/Constant #//DataExpression">
       <eOperations name="getValue" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeConstant" eSuperTypes="#//constant/DataConstant #//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="#//LocalTime"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/expression/variable"
@@ -495,6 +507,14 @@
       </eOperations>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimestampEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//TimestampExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//TimeExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
@@ -2045,6 +2065,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="second" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeAttribute" eSuperTypes="#//AttributeSelector #//TimeExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeSwitchExpression" eSuperTypes="#//SwitchExpression #//TimeExpression"/>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
       nsPrefix="b">
