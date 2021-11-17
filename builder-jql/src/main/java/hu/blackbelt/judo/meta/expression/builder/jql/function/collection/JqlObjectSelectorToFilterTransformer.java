@@ -6,19 +6,13 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
 import hu.blackbelt.judo.meta.expression.collection.*;
-import hu.blackbelt.judo.meta.expression.constant.util.builder.BooleanConstantBuilder;
 import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
 import hu.blackbelt.judo.meta.expression.logical.ObjectComparison;
 import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
-import hu.blackbelt.judo.meta.expression.numeric.DecimalAggregatedExpression;
-import hu.blackbelt.judo.meta.expression.numeric.IntegerAggregatedExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectVariableReference;
 import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSelectorExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectVariableReferenceBuilder;
 import hu.blackbelt.judo.meta.expression.operator.ObjectComparator;
-import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
-import hu.blackbelt.judo.meta.expression.variable.CollectionVariable;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
@@ -28,12 +22,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.*;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newExistsBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAggregatedExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAggregatedExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSelectorExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAggregatedExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAggregatedExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAggregatedExpressionBuilder;
 
 public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
 

@@ -92,6 +92,7 @@ public class ExecutionContextOnAsmTest {
         
         //types
         EDataType timestamp = newEDataTypeBuilder().withName("Timestamp").withInstanceClassName("java.time.OffsetDateTime").build();
+        EDataType time = newEDataTypeBuilder().withName("Time").withInstanceClassName("java.time.LocalTime").build();
         EDataType stringType = newEDataTypeBuilder().withName("String").withInstanceClassName("java.lang.String").build();
         doubleType = newEDataTypeBuilder().withName("Double").withInstanceClassName("java.lang.Double").build();
         integerType = newEDataTypeBuilder().withName("Integer").withInstanceClassName("java.lang.Integer").build();
@@ -105,6 +106,8 @@ public class ExecutionContextOnAsmTest {
         
         //attributes
         EAttribute orderDate = newEAttributeBuilder().withName("orderDate").withEType(timestamp).build();
+        EAttribute deliveryFrom = newEAttributeBuilder().withName("deliveryFrom").withEType(time).build();
+        EAttribute deliveryTo = newEAttributeBuilder().withName("deliveryTo").withEType(time).build();
         EAttribute orderDateAnnotated = newEAttributeBuilder().withName("orderDate").withEType(timestamp).build();
         EAttribute companyName = newEAttributeBuilder().withName("companyName").withEType(stringType).build();
         EAttribute exciseTax = newEAttributeBuilder().withName("exciseTax").withEType(doubleType).build();
@@ -163,7 +166,7 @@ public class ExecutionContextOnAsmTest {
         
         //classes
         EClass order = newEClassBuilder().withName("Order")
-                .withEStructuralFeatures(orderDate, orderDetails, categories, employeeRef, shipperRef, customerOrder, shipAddress, freight, shipperName).build();
+                .withEStructuralFeatures(orderDate, deliveryFrom, deliveryTo, orderDetails, categories, employeeRef, shipperRef, customerOrder, shipAddress, freight, shipperName).build();
         EClass orderDetail = newEClassBuilder().withName("OrderDetail").withEStructuralFeatures(productNameForOrderDetail,productRef,unitPriceOrderDetail,quantity,discount,price).build();
         EClass product = newEClassBuilder().withName("Product").withEStructuralFeatures(categoryRef,productName,unitPrice,quantityPerUnit,discounted,weight).build();
         EClass category = newEClassBuilder().withName("Category").withEStructuralFeatures(productsRef, categoryName, picture, owner, cheapestCategoryProductCategory).build();
@@ -230,7 +233,7 @@ public class ExecutionContextOnAsmTest {
                 .withNsURI("http://blackbelt.hu/judo/northwind/northwind/entities")
                 .withNsPrefix("runtimenorthwindNorthwindEntities").build();
         EPackage types = newEPackageBuilder().withName("types")
-                .withEClassifiers(timestamp,stringType,doubleType,integerType,binary,dateType,countriesEnum,phoneType,booleanType)
+                .withEClassifiers(timestamp,time,stringType,doubleType,integerType,binary,dateType,countriesEnum,phoneType,booleanType)
                 .withNsURI("http://blackbelt.hu/judo/northwind/northwind/types")
                 .withNsPrefix("runtimenorthwindNorthwindTypes").build();
         EPackage measured = newEPackageBuilder().withName("measured").withEClassifiers(timeStoredInMonths,timeStoredInSeconds,massStoredInKilograms)

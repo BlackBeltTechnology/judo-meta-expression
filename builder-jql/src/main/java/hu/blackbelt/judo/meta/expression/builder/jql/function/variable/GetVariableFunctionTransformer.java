@@ -110,6 +110,12 @@ public class GetVariableFunctionTransformer<NE, P extends NE, E extends P, C ext
                         .withVariableName(variableName)
                         .withTypeName(typeName)
                         .build();
+            } else if (jqlTransformers.getModelAdapter().isTime(primitiveType)) {
+                result = newTimeEnvironmentVariableBuilder()
+                        .withCategory(category)
+                        .withVariableName(variableName)
+                        .withTypeName(typeName)
+                        .build();
             }
             else {
                 throw new IllegalArgumentException("Unknown type for environment variable");

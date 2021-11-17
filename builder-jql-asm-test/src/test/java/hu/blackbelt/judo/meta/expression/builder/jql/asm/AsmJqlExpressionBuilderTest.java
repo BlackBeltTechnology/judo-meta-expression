@@ -18,6 +18,7 @@ import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
+import hu.blackbelt.judo.meta.expression.temporal.TimeDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
@@ -350,6 +351,27 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertThrows(IllegalArgumentException.class, () -> createExpression("1[day] - `2019-12-31T00:00:00.000+01:00`"));
 
         assertThat(createExpression("`2019-12-31T00:00:00.000+01:00`!asString()"), instanceOf(StringExpression.class));
+    }
+
+    @Test
+    void testTimeOperations() {
+        EClass orderType = asmUtils.getClassByFQName("demo.entities.Order").get();
+        Expression expression = createExpression(orderType, "self.deliveryFrom + 10.5[hour]");
+        assertThat(expression, instanceOf(TimeExpression.class));
+        TimeDifferenceExpression elapsedTimeFrom = (TimeDifferenceExpression) createExpression("`10:00:00.000`!elapsedTimeFrom(`09:00:00.000`)");
+        assertThat(elapsedTimeFrom.getMeasure(), notNullValue());
+        createExpression("`00:00:00.000` > `10:00:00.000`");
+        createExpression("`00:00:00.000` < `10:00:00.000`");
+        createExpression("`00:00:00.000` == `10:00:00.000`");
+        createExpression("`00:00:00.000` != `10:00:00.000`");
+        createExpression("`00:00:00.000` <= `10:00:00.000`");
+        createExpression("`00:00:00.000` >= `10:00:00.000`");
+        createExpression("`00:00:00.000` + 1[second]");
+        createExpression("`00:00:00.000` - 1[demo::measures::Time#second]");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`00:00:00.000` + 1"));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression("`00:00:00.000` - 1"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression("1[second] - `00:00:00.000`"));
+        assertThat(createExpression("`00:00:00.000`!asString()"), instanceOf(StringExpression.class));
     }
 
     @Test
@@ -708,6 +730,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     public void testEnvironmentVariables() {
         createExpression("demo::types::Timestamp!getVariable('SYSTEM', 'current_timestamp')");
+        createExpression("demo::types::Time!getVariable('SYSTEM', 'current_time')");
     }
     
     @Test
