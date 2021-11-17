@@ -371,13 +371,19 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isTime(Primitive primitive) {
+        return primitive instanceof TimeType;
+    }
+
+    @Override
     public boolean isCustom(Primitive primitive) {
         return !isBoolean(primitive)
                 && !isNumeric(primitive)
                 && !isString(primitive)
                 && !isEnumeration(primitive)
                 && !isDate(primitive)
-                && !isTimestamp(primitive);
+                && !isTimestamp(primitive)
+                && !isTime(primitive);
     }
 
     @Override

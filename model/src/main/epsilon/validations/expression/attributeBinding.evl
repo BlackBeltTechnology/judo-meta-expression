@@ -41,6 +41,12 @@ context EXPR!AttributeBinding {
 		check: modelAdapter.isTimestamp(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
 		message: "Attribute named " + self.attributeName + " must be timestamp type, because the assigned expression evaluates to a timestamp."
 	}
+
+	constraint TimeExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!TimeExpression)
+		check: modelAdapter.isTime(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
+		message: "Attribute named " + self.attributeName + " must be time type, because the assigned expression evaluates to a time."
+	}
 	
 	constraint CustomExpressionMatchesBinding {
 		guard: self.expression.isKindOf(EXPR!CustomExpression)

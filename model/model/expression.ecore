@@ -199,6 +199,9 @@
   <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
   <eClassifiers xsi:type="ecore:EDataType" name="OffsetDateTime" instanceClassName="java.time.OffsetDateTime"/>
   <eClassifiers xsi:type="ecore:EClass" name="TypeNameExpression" eSuperTypes="#//TypeName #//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TimeExpression" abstract="true" interface="true"
+      eSuperTypes="#//DataExpression"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalTime" instanceClassName="java.time.LocalTime"/>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true" eSuperTypes="#//Expression">
@@ -346,6 +349,15 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DataConstant" abstract="true" eSuperTypes="#//constant/Constant #//DataExpression">
       <eOperations name="getValue" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeConstant" eSuperTypes="#//constant/DataConstant #//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
+          eType="#//LocalTime"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="variable" nsURI="http://blackbelt.hu/judo/meta/expression/variable"
@@ -501,6 +513,14 @@
         </eAnnotations>
       </eOperations>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeVariable" eSuperTypes="#//variable/TypedVariable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeEnvironmentVariable" eSuperTypes="#//variable/EnvironmentVariable #//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;##%s:%s&quot;, getCategory(), getVariableName());"/>
+        </eAnnotations>
+      </eOperations>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="operator" nsURI="http://blackbelt.hu/judo/meta/expression/operator"
       nsPrefix="op">
@@ -575,6 +595,11 @@
       <eLiterals name="avg" value="3"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="TimestampAggregator">
+      <eLiterals name="min" value="1"/>
+      <eLiterals name="max" value="2"/>
+      <eLiterals name="avg" value="3"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="TimeAggregator">
       <eLiterals name="min" value="1"/>
       <eLiterals name="max" value="2"/>
       <eLiterals name="avg" value="3"/>
@@ -806,6 +831,22 @@
           eType="#//temporal/TimestampPart"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtractTimeExpression" eSuperTypes="#//IntegerExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;EXTRACT(&quot; + getPart() + &quot; FROM &quot; + getTime() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="part" lowerBound="1"
+          eType="#//temporal/TimePart"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="time" lowerBound="1"
+          eType="#//TimeExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical"
@@ -1180,6 +1221,24 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="caseInsensitive" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeComparison" eSuperTypes="#//LogicalExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getLeft(), getRight());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
+          eType="#//TimeExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
+          eType="#//TimeExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/NumericComparator"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string"
@@ -2044,6 +2103,103 @@
           eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="second" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeAttribute" eSuperTypes="#//AttributeSelector #//TimeExpression"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeSwitchExpression" eSuperTypes="#//SwitchExpression #//TimeExpression"/>
+    <eClassifiers xsi:type="ecore:EEnum" name="TimePart">
+      <eLiterals name="HOUR" value="3"/>
+      <eLiterals name="MINUTE" value="4"/>
+      <eLiterals name="SECOND" value="5"/>
+      <eLiterals name="MILLISECOND" value="6"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeConstructionExpression" eSuperTypes="#//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;TIME(%s, %s, %s)&quot;, getHour(), getMinute(), getSecond());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getHour(), getMinute(), getSecond());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hour" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="minute" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="second" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeAdditionExpression" eSuperTypes="#//TimeExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTime(), getDuration());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;(&quot; + getTime() + &quot; &quot; + getOperator() + &quot; &quot; + getDuration() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="time" lowerBound="1"
+          eType="#//TimeExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="duration" lowerBound="1"
+          eType="#//NumericExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/TemporalOperator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeDifferenceExpression" eSuperTypes="#//DecimalExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getStartTime(), getEndTime());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return true;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;%s!elapsedTimeFrom(%s, %s)&quot;, getEndTime(), getStartTime(), getMeasure());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="startTime" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="endTime" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="measure" eType="#//MeasureName"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDivisor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondDividend" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBigDecimal"
+          derived="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeAggregatedExpression" eSuperTypes="#//AggregatedExpression #//TimeExpression">
+      <eOperations name="getLambdaFunctions" lowerBound="1" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="isMeasured" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return false;"/>
+        </eAnnotations>
+        <eParameters name="modelAdapter" lowerBound="1" eType="#//ModelAdapter"/>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return String.format(&quot;%s!%s(%s | %s&quot;, getCollectionExpression(), getOperator(), getCollectionExpression().getIteratorVariableName(), getExpression());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
+          eType="#//operator/TimeAggregator"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//TimeExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
