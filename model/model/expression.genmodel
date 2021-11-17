@@ -1322,6 +1322,14 @@
         <genOperations ecoreOperation="expression.ecore#//temporal/TimeAggregatedExpression/toString"
             body="return String.format(&quot;%s!%s(%s | %s&quot;, getCollectionExpression(), getOperator(), getCollectionExpression().getIteratorVariableName(), getExpression());"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimeVariableReference">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeVariableReference/variable"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimeVariableReference/toString"
+            body="return getVariable() != null ? (getVariable().getName() != null ? getVariable().getName() : getVariable().toString()) : &quot;&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimeVariableReference/getVariableName"
+            body="return toString();"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

@@ -16,7 +16,7 @@ context EXPR!TimestampAdditionExpression {
 
 context EXPR!TimeAdditionExpression {
     constraint Resolved {
-        guard: self.timestamp.satisfiesAll("Resolved") and self.duration.satisfiesAll("Resolved")
+        guard: self.time.satisfiesAll("Resolved") and self.duration.satisfiesAll("Resolved")
     
         check: self.duration.isMeasured(modelAdapter)
         message: "Duration is not measured: " + self.duration

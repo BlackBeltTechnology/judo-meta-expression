@@ -3,6 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlDateLiteralTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimeLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.constant.JqlTimestampLiteralTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
@@ -33,7 +34,6 @@ import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
 import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
-import hu.blackbelt.judo.meta.expression.temporal.DatePart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
@@ -380,6 +380,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
         transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
+        transformers.put(TimeLiteral.class, new JqlTimeLiteralTransformer());
     }
 
     @Override

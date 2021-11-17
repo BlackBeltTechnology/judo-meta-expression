@@ -8,6 +8,7 @@ import hu.blackbelt.judo.meta.expression.constant.Constant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.*;
 import hu.blackbelt.judo.meta.expression.temporal.DateDifferenceExpression;
+import hu.blackbelt.judo.meta.expression.temporal.TimeDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.variable.EnvironmentVariable;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
@@ -118,8 +119,8 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             } else {
                 return false;
             }
-        } else if (numericExpression instanceof TimestampDifferenceExpression || numericExpression instanceof DateDifferenceExpression) {
-            // timestamp and date difference expression is measured (duration)
+        } else if (numericExpression instanceof TimestampDifferenceExpression || numericExpression instanceof DateDifferenceExpression || numericExpression instanceof TimeDifferenceExpression) {
+            // timestamp, time  and date difference expression is measured (duration)
             return true;
         } else if (numericExpression instanceof EnvironmentVariable) {
             final NE type = modelAdapter.get(((EnvironmentVariable) numericExpression).getTypeName()).orElse(null);
@@ -208,7 +209,7 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             return getDimension(((DecimalAggregatedExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalSwitchExpression) {
             return getDimensionOfSwitchExpression((DecimalSwitchExpression) numericExpression);
-        } else if (numericExpression instanceof TimestampDifferenceExpression || numericExpression instanceof DateDifferenceExpression) {
+        } else if (numericExpression instanceof TimestampDifferenceExpression || numericExpression instanceof DateDifferenceExpression || numericExpression instanceof TimeDifferenceExpression) {
             final Optional<M> durationMeasure = getDurationMeasure();
             if (durationMeasure.isPresent()) {
                 return Optional.of(Collections.singletonMap(MeasureId.fromMeasure(measureProvider, durationMeasure.get()), 1));

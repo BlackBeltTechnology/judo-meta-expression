@@ -32,6 +32,7 @@ import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilde
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
@@ -226,6 +227,8 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
             baseExpression = newDateVariableReferenceBuilder().withVariable((DateVariable) baseVariable).build();
         } else if (baseVariable instanceof TimestampVariable) {
             baseExpression = newTimestampVariableReferenceBuilder().withVariable((TimestampVariable) baseVariable).build();
+        } else if (baseVariable instanceof TimeVariable) {
+            baseExpression = newTimeVariableReferenceBuilder().withVariable((TimeVariable) baseVariable).build();
         } else if (baseVariable instanceof CustomVariable) {
             baseExpression = newCustomVariableReferenceBuilder().withVariable((CustomVariable) baseVariable).build();
         } else if (baseVariable instanceof EnumerationVariable) {
