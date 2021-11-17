@@ -323,13 +323,20 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public boolean isTime(Primitive primitive) {
+        return primitive.isTime();
+    }
+
+    @Override
     public boolean isCustom(Primitive primitive) {
         return !primitive.isBoolean()
                 && !primitive.isNumeric()
                 && !primitive.isString()
                 && !primitive.isEnumeration()
                 && !primitive.isDate()
-                && !primitive.isTimestamp();
+                && !primitive.isTimestamp()
+                && !primitive.isTime();
+
     }
 
     @Override
