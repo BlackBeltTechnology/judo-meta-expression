@@ -264,6 +264,42 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<TransferObjectType> getAttributeParameterType(PrimitiveTypedElement attribute) {
+        if (attribute.isIsQuery()) {
+            return Optional.ofNullable(attribute.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getReferenceParameterType(ReferenceTypedElement reference) {
+        if (reference.isIsQuery()) {
+            return Optional.ofNullable(reference.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferAttributeParameterType(PrimitiveTypedElement attribute) {
+        if (attribute.isIsQuery()) {
+            return Optional.ofNullable(attribute.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferRelationParameterType(ReferenceTypedElement reference) {
+        if (reference.isIsQuery()) {
+            return Optional.ofNullable(reference.getInput());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public hu.blackbelt.judo.meta.esm.structure.Class getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
     }
@@ -276,6 +312,22 @@ public class EsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Collection<? extends hu.blackbelt.judo.meta.esm.structure.Class> getSuperTypes(hu.blackbelt.judo.meta.esm.structure.Class clazz) {
         return getAllGeneralizations(clazz).stream().map(Generalization::getTarget).collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean isMixin(TransferObjectType included, TransferObjectType mixin) {
+        if (included == null || mixin == null) {
+            return false;
+        } else if (EcoreUtil.equals(included, mixin)) {
+            return true;
+        }
+        return included.getAllAttributes().stream().allMatch(ia -> mixin.getAllAttributes().stream().anyMatch(ma -> Objects.equals(ma.getName(), ia.getName())
+                && Objects.equals(ma.getDataType(), ia.getDataType())
+                && (!(ma instanceof DataMember) || !(ia instanceof DataMember) || ((DataMember) ma).getBinding() == null && ((DataMember) ia).getBinding() == null || EcoreUtil.equals(((DataMember) ma).getBinding(), ((DataMember) ia).getBinding()))))
+                && included.getAllRelations().stream().allMatch(ir -> mixin.getAllRelations().stream().anyMatch(mr -> Objects.equals(mr.getName(), ir.getName())
+                && mr.getTarget() != null && ir.getTarget() != null && EcoreUtil.equals(mr.getTarget(), ir.getTarget())
+                && mr.getLower() == ir.getLower() && mr.getUpper() == ir.getUpper()
+                && (mr.getBinding() == null && mr.getBinding() == null || EcoreUtil.equals(mr.getBinding(), ir.getBinding()))));
     }
 
     @Override

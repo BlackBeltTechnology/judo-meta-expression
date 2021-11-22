@@ -222,6 +222,38 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public Optional<EClass> getAttributeParameterType(EAttribute attribute) {
+		if (attribute.isDerived()) {
+			return asmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.parameter", false)
+					.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<EClass> getReferenceParameterType(EReference reference) {
+		if (reference.isDerived()) {
+			return asmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.parameter", false)
+					.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+		} else {
+			return Optional.empty();
+		}
+	}
+
+	@Override
+	public Optional<EClass> getTransferAttributeParameterType(EAttribute attribute) {
+		return asmUtils.getExtensionAnnotationCustomValue(attribute, "parameterized", "type", false)
+				.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+	}
+
+	@Override
+	public Optional<EClass> getTransferRelationParameterType(EReference reference) {
+		return asmUtils.getExtensionAnnotationCustomValue(reference, "parameterized", "type", false)
+				.map(t -> (EClass) asmUtils.resolve(t).orElse(null));
+	}
+
+	@Override
 	public EClass getTarget(final EReference reference) {
 		return reference.getEReferenceType();
 	}
@@ -254,6 +286,20 @@ public class AsmModelAdapter implements
 	@Override
 	public Collection<? extends EClass> getSuperTypes(final EClass clazz) {
 		return clazz.getEAllSuperTypes();
+	}
+
+	@Override
+	public boolean isMixin(EClass included, EClass mixin) {
+		if (included == null || mixin == null) {
+			return false;
+		} else if (AsmUtils.equals(included, mixin)) {
+			return true;
+		}
+		return included.getEAllAttributes().stream().allMatch(ia -> mixin.getEAllAttributes().stream().anyMatch(ma -> Objects.equals(ma.getName(), ia.getName())
+				&& AsmUtils.equals(ma.getEAttributeType(), ia.getEAttributeType())))
+				&& included.getEAllReferences().stream().allMatch(ir -> mixin.getEAllReferences().stream().anyMatch(mr -> Objects.equals(mr.getName(), ir.getName())
+                && mr.getLowerBound() == ir.getLowerBound() && mr.getUpperBound() == ir.getUpperBound()
+                && AsmUtils.equals(mr.getEReferenceType(), ir.getEReferenceType())));
 	}
 
 	@Override

@@ -7,14 +7,13 @@
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>${revision}</version>
     </parent>
     
     <artifactId>hu.blackbelt.judo.meta.expression.adapter.psm.feature</artifactId>
     <packaging>eclipse-feature</packaging>
 
-    <name>Judo :: Expression :: Adapter :: PSM :: Eclipse feature</name>
-    <description>Judo Expression PSM adapter feature</description>
+    <name>JUDO :: Expression :: Adapter :: PSM :: Eclipse feature</name>
+    <description>JUDO Expression PSM adapter feature</description>
     
 </project>

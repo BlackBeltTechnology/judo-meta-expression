@@ -5,12 +5,12 @@ import hu.blackbelt.judo.meta.expression.Expression;
 /**
  * Represents an expression that might not be fully built due to parsing errors.
  */
-public class PartialExpression {
+public class PartialExpression<TO> {
 
 	private final Expression expression;
-	private final JqlExpressionBuildingContext context;
+	private final JqlExpressionBuildingContext<TO> context;
 	
-	public PartialExpression(Expression expression, JqlExpressionBuildingContext context) {
+	public PartialExpression(Expression expression, JqlExpressionBuildingContext<TO> context) {
 		this.expression = expression;
 		this.context = context;
 	}
@@ -19,7 +19,7 @@ public class PartialExpression {
 		return expression;
 	}
 
-	public JqlExpressionBuildingContext getContext() {
+	public JqlExpressionBuildingContext<TO> getContext() {
 		return context;
 	}
 

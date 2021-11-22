@@ -49,13 +49,13 @@ import static java.util.stream.Collectors.toList;
 /**
  * Model adapter for PSM models.
  */
-public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> {
+public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> {
 
     private static final String NAMESPACE_SEPARATOR = "::";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(PsmModelAdapter.class);
     private final ResourceSet psmResourceSet;
     private final MeasureProvider<Measure, Unit> measureProvider;
-    private final MeasureAdapter<NamespaceElement, Primitive, EnumerationType, EntityType,  PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> measureAdapter;
+    private final MeasureAdapter<NamespaceElement, Primitive, EnumerationType, EntityType, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, TransferAttribute, TransferObjectRelation, Sequence, Measure, Unit> measureAdapter;
 
     /**
      * Create PSM model adapter for expressions.
@@ -140,7 +140,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public UnitFraction getBaseDurationRatio(Unit unit, DurationType targetType) {
         if (!(unit instanceof DurationUnit)) {
             throw new IllegalArgumentException("Unit must be duration");
-        };
+        }
         DurationUnit durationUnit = (DurationUnit) unit;
         // examples in comments when unit is day, the base unit is minute
         // example2 unit is millisecond, the base unit is minute
@@ -201,6 +201,42 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
+    public Optional<TransferObjectType> getAttributeParameterType(PrimitiveTypedElement attribute) {
+        if (attribute instanceof PrimitiveAccessor) {
+            return Optional.ofNullable(((PrimitiveAccessor) attribute).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getReferenceParameterType(ReferenceTypedElement reference) {
+        if (reference instanceof ReferenceAccessor) {
+            return Optional.ofNullable(((ReferenceAccessor) reference).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferAttributeParameterType(TransferAttribute attribute) {
+        if (attribute.getBinding() instanceof PrimitiveAccessor) {
+            return Optional.ofNullable(((PrimitiveAccessor) attribute.getBinding()).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<TransferObjectType> getTransferRelationParameterType(TransferObjectRelation reference) {
+        if (reference.getBinding() instanceof ReferenceAccessor) {
+            return Optional.ofNullable(((ReferenceAccessor) reference.getBinding()).getGetterExpression().getParameterType());
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public EntityType getTarget(ReferenceTypedElement reference) {
         return reference.getTarget();
     }
@@ -228,6 +264,22 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Collection<? extends EntityType> getSuperTypes(EntityType clazz) {
         return PsmUtils.getAllSuperEntityTypes(clazz);
+    }
+
+    @Override
+    public boolean isMixin(TransferObjectType included, TransferObjectType mixin) {
+        if (included == null || mixin == null) {
+            return false;
+        } else if (EcoreUtil.equals(included, mixin)) {
+            return true;
+        }
+        return included.getAttributes().stream().allMatch(ia -> mixin.getAttributes().stream().anyMatch(ma -> Objects.equals(ma.getName(), ia.getName())
+                && Objects.equals(ma.getDataType(), ia.getDataType())
+                && (ma.getBinding() == null && ia.getBinding() == null || EcoreUtil.equals(ma.getBinding(), ia.getBinding()))))
+                && included.getRelations().stream().allMatch(ir -> mixin.getRelations().stream().anyMatch(mr -> Objects.equals(mr.getName(), ir.getName())
+                && mr.getTarget() != null && ir.getTarget() != null && EcoreUtil.equals(mr.getTarget(), ir.getTarget())
+                && mr.getCardinality() != null && ir.getCardinality() != null && mr.getCardinality().getLower() == ir.getCardinality().getLower() && mr.getCardinality().getUpper() == ir.getCardinality().getUpper()
+                && (mr.getBinding() == null && mr.getBinding() == null || EcoreUtil.equals(mr.getBinding(), ir.getBinding()))));
     }
 
     @Override
@@ -353,7 +405,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public Optional<Map<Measure, Integer>> getDimension(NumericExpression numericExpression) {
-        return measureAdapter.getDimension(numericExpression).map( dimensions -> {
+        return measureAdapter.getDimension(numericExpression).map(dimensions -> {
             Map<Measure, Integer> measureMap = new HashMap<>();
             dimensions.entrySet().stream().forEach(entry -> {
                 MeasureAdapter.MeasureId measureId = entry.getKey();
@@ -381,7 +433,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
 
     @Override
     public EList<NamespaceElement> getAllStaticSequences() {
-        return ECollections.asEList(getPsmElement(NamespaceSequence.class).map(ns -> (NamespaceElement)ns).collect(toList()));
+        return ECollections.asEList(getPsmElement(NamespaceSequence.class).map(ns -> (NamespaceElement) ns).collect(toList()));
     }
 
     @Override
@@ -407,7 +459,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     @Override
     public Optional<String> getAttributeGetter(PrimitiveTypedElement attribute) {
         if (attribute instanceof PrimitiveAccessor) {
-            return Optional.of(((PrimitiveAccessor)attribute).getGetterExpression().getExpression());
+            return Optional.of(((PrimitiveAccessor) attribute).getGetterExpression().getExpression());
         } else {
             return Optional.empty();
         }
@@ -442,7 +494,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Optional<String> getReferenceGetter(ReferenceTypedElement reference) {
         return Optional.ofNullable(reference)
                 .filter(ref -> ref instanceof ReferenceAccessor)
-                .map(ref -> ((ReferenceAccessor)ref).getGetterExpression().getExpression());
+                .map(ref -> ((ReferenceAccessor) ref).getGetterExpression().getExpression());
     }
 
     @Override
@@ -466,7 +518,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Optional<String> getReferenceSetter(ReferenceTypedElement reference) {
         return Optional.ofNullable(reference)
                 .filter(ref -> ref instanceof ReferenceAccessor)
-                .map(ref -> ((ReferenceAccessor)ref).getSetterExpression().getExpression());
+                .map(ref -> ((ReferenceAccessor) ref).getSetterExpression().getExpression());
     }
 
     @Override
@@ -478,7 +530,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Optional<String> getFilter(TransferObjectType transferObjectType) {
         return Optional.of(transferObjectType)
                 .filter(to -> to instanceof MappedTransferObjectType)
-                .map(to -> ((MappedTransferObjectType)to).getFilter().getExpression());
+                .map(to -> ((MappedTransferObjectType) to).getFilter().getExpression());
     }
 
     @Override
@@ -541,76 +593,76 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     public Optional<? extends TransferObjectRelation> getTransferRelation(TransferObjectType clazz, String referenceName) {
-		return clazz.getRelations().stream().filter(r -> r.getName().equalsIgnoreCase(referenceName)).findAny();
-	}
+        return clazz.getRelations().stream().filter(r -> r.getName().equalsIgnoreCase(referenceName)).findAny();
+    }
 
-	@Override
-	public TransferObjectType getTransferRelationTarget(TransferObjectRelation relation) {
-		return relation.getTarget();
-	}
-	
-	public boolean isCollectionTransferRelation(TransferObjectRelation relation) {
-		return relation.isCollection();
-	}
-    
-	@Override
-	public Optional<EntityType> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName, String transferObjectRelationName) {
-		Optional<? extends NamespaceElement> transferObjectType = get(transferObjectTypeName);
-		if (!transferObjectType.isPresent()) {
-			return Optional.empty();
-		} else if (transferObjectType.get() instanceof EntityType) {
-			Optional<? extends ReferenceTypedElement> relation = getReference((EntityType)transferObjectType.get(), transferObjectRelationName);
-			if(relation.isPresent()) {
-				return Optional.of(getTarget(relation.get()));
-			} else {
-				 return Optional.empty();
-			}
-		} else if (transferObjectType.get() instanceof TransferObjectType) {
-			Optional<? extends TransferObjectRelation> transferObjectRelation = getTransferRelation((TransferObjectType)transferObjectType.get(), transferObjectRelationName);
-			if (transferObjectRelation.isPresent()) {
-				TransferObjectType transferObjectRelationTarget = getTransferRelationTarget(transferObjectRelation.get());
-				if (transferObjectRelationTarget instanceof MappedTransferObjectType) {
-					return Optional.of((((MappedTransferObjectType)transferObjectRelationTarget).getEntityType()));
-				} else {
-					return Optional.empty();
-				}
-			} else {
-				return Optional.empty();
-			}
-		} else {
-			return Optional.empty();
-		}
-	}
+    @Override
+    public TransferObjectType getTransferRelationTarget(TransferObjectRelation relation) {
+        return relation.getTarget();
+    }
 
-	@Override
-	public boolean isCollectionReference(TypeName elementName, String referenceName) {
-		Optional<? extends NamespaceElement> element = this.get(elementName);
-		if (!element.isPresent()) {
-			return false;
-		} else if (element.get() instanceof EntityType) {
-			Optional<? extends ReferenceTypedElement> relation = getReference((EntityType)element.get(), referenceName);
-			if (relation.isPresent()) {
-				return isCollectionReference(relation.get());
-			} else {
-				return false;
-			}
-		} else if (element.get() instanceof TransferObjectType) {
-			Optional<? extends TransferObjectRelation> transferObjectRelation = getTransferRelation((TransferObjectType)element.get(), referenceName);
-			if (transferObjectRelation.isPresent()) {
-				return isCollectionTransferRelation(transferObjectRelation.get());
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-	}
+    public boolean isCollectionTransferRelation(TransferObjectRelation relation) {
+        return relation.isCollection();
+    }
+
+    @Override
+    public Optional<EntityType> getEntityTypeOfTransferObjectRelationTarget(TypeName transferObjectTypeName, String transferObjectRelationName) {
+        Optional<? extends NamespaceElement> transferObjectType = get(transferObjectTypeName);
+        if (!transferObjectType.isPresent()) {
+            return Optional.empty();
+        } else if (transferObjectType.get() instanceof EntityType) {
+            Optional<? extends ReferenceTypedElement> relation = getReference((EntityType) transferObjectType.get(), transferObjectRelationName);
+            if (relation.isPresent()) {
+                return Optional.of(getTarget(relation.get()));
+            } else {
+                return Optional.empty();
+            }
+        } else if (transferObjectType.get() instanceof TransferObjectType) {
+            Optional<? extends TransferObjectRelation> transferObjectRelation = getTransferRelation((TransferObjectType) transferObjectType.get(), transferObjectRelationName);
+            if (transferObjectRelation.isPresent()) {
+                TransferObjectType transferObjectRelationTarget = getTransferRelationTarget(transferObjectRelation.get());
+                if (transferObjectRelationTarget instanceof MappedTransferObjectType) {
+                    return Optional.of((((MappedTransferObjectType) transferObjectRelationTarget).getEntityType()));
+                } else {
+                    return Optional.empty();
+                }
+            } else {
+                return Optional.empty();
+            }
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public boolean isCollectionReference(TypeName elementName, String referenceName) {
+        Optional<? extends NamespaceElement> element = this.get(elementName);
+        if (!element.isPresent()) {
+            return false;
+        } else if (element.get() instanceof EntityType) {
+            Optional<? extends ReferenceTypedElement> relation = getReference((EntityType) element.get(), referenceName);
+            if (relation.isPresent()) {
+                return isCollectionReference(relation.get());
+            } else {
+                return false;
+            }
+        } else if (element.get() instanceof TransferObjectType) {
+            Optional<? extends TransferObjectRelation> transferObjectRelation = getTransferRelation((TransferObjectType) element.get(), referenceName);
+            if (transferObjectRelation.isPresent()) {
+                return isCollectionTransferRelation(transferObjectRelation.get());
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 
     @Override
     public Optional<EntityType> getMappedEntityType(TransferObjectType mappedTransferObjectType) {
         return Optional.of(mappedTransferObjectType)
                 .filter(to -> to instanceof MappedTransferObjectType)
-                .map(to -> ((MappedTransferObjectType)to).getEntityType());
+                .map(to -> ((MappedTransferObjectType) to).getEntityType());
     }
 
     @Override
@@ -632,7 +684,7 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     public Optional<String> getName(Object object) {
         return Optional.of(object)
                 .filter(o -> o instanceof NamedElement)
-                .map(o -> ((NamedElement)o).getName());
+                .map(o -> ((NamedElement) o).getName());
     }
 
     @Override
@@ -661,17 +713,17 @@ public class PsmModelAdapter implements ModelAdapter<NamespaceElement, Primitive
     }
 
     @Override
-	public List<NamespaceElement> getAllActorTypes() {
-		return new ArrayList<NamespaceElement>(getPsmElement(AbstractActorType.class).collect(Collectors.toList()));
-	}
+    public List<NamespaceElement> getAllActorTypes() {
+        return new ArrayList<NamespaceElement>(getPsmElement(AbstractActorType.class).collect(Collectors.toList()));
+    }
 
-	@Override
-	public TransferObjectType getPrincipal(NamespaceElement actorType) {
-		if (actorType instanceof AbstractActorType) {
-			return ((AbstractActorType)actorType).getTransferObjectType();
-		} else {
-			throw new IllegalArgumentException(String.format("Not an actor type: %s", actorType));
-		}
-	}
+    @Override
+    public TransferObjectType getPrincipal(NamespaceElement actorType) {
+        if (actorType instanceof AbstractActorType) {
+            return ((AbstractActorType) actorType).getTransferObjectType();
+        } else {
+            throw new IllegalArgumentException(String.format("Not an actor type: %s", actorType));
+        }
+    }
 
 }

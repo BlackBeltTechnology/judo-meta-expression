@@ -4,31 +4,31 @@
       To install these features, point Eclipse at this site.
    </description>
 
-   <category-def name="expression" label="Judo Expression Model">
+   <category-def name="expression" label="JUDO Expression Model">
       <description>
-         Judo Expression Model
+         JUDO Expression Model
       </description>
    </category-def>
 
-   <category-def name="adapters" label="Judo Expression Adapters">
+   <category-def name="adapters" label="JUDO Expression Adapters">
       <description>
-         Judo Expression Model adapters for other metamodels
+         JUDO Expression Model adapters for other metamodels
       </description>
    </category-def>
 
-   <category-def name="builders" label="Judo Expression Builders">
+   <category-def name="builders" label="JUDO Expression Builders">
       <description>
-         Judo Expression builders uses other metamodels
+         JUDO Expression builders uses other metamodels
       </description>
    </category-def>
 
-   <category-def name="expression_source" label="Judo Expression Model Source">
+   <category-def name="expression_source" label="JUDO Expression Model Source">
       <description>
-         Judo Expression Model source
+         JUDO Expression Model source
       </description>
    </category-def>
 
-   <category-def name="adapters_source" label="Judo Expression Adapters Source">
+   <category-def name="adapters_source" label="JUDO Expression Adapters Source">
       <description>
          Judo Expression Model adapters for other metamodels source
       </description>
@@ -99,15 +99,12 @@
       <category name="adapters_source"/>
    </feature>
 
-   <!-- This is currently ignored by Tycho, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708 -->
-   <!-- The tycho plugin 1.5.0 will fix it -->
-   <!--
-   <repository-reference location="https://download.eclipse.org/epsilon/updates/1.5/" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20210919_133947_3330a32_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20210919_143957_ca82d65_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20210919_142420_e8d023c_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20210919_140542_7d7b9da_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20210919_141554_2ebeb8e_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20210919_133205_0520f4d_develop" enabled="true" />
-   -->
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.19.0.20211022_122608_10e6ef76_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20211025_235843_5805ea16_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20211026_000708_14cfe898_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20211026_001309_6f1e47ce_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20211026_000714_0d3dbdac_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20211026_000729_5c8e5103_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20211024_234218_7f33c901_develop" enabled="true" />
+
 </site>

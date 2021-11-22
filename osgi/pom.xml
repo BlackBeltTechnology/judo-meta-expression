@@ -6,21 +6,20 @@
 	<parent>
 		<groupId>hu.blackbelt.judo.meta</groupId>
 		<artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-		<version>1.0.1-SNAPSHOT</version>
-		<relativePath>../</relativePath>
+		<version>${revision}</version>
 	</parent>
 	<artifactId>hu.blackbelt.judo.meta.expression.osgi</artifactId>
 	<packaging>bundle</packaging>
 
-	<name>Judo :: Expression :: Model :: OSGi</name>
-	<description>Judo Expression Model OSGI Runtime</description>
+	<name>JUDO :: Expression :: Model :: OSGi</name>
+	<description>JUDO Expression Model OSGI Runtime</description>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>3.3.0</version>
+				<version>5.1.2</version>
 				<extensions>true</extensions>
 				<configuration>
 					<obrRepository>NONE</obrRepository>
@@ -39,6 +38,12 @@
         </plugins>
 	</build>
     <dependencies>
+		<dependency>
+			<groupId>hu.blackbelt.osgi.utils</groupId>
+			<artifactId>osgi-api</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
@@ -47,14 +52,12 @@
 		<dependency>
 			<groupId>hu.blackbelt.epsilon</groupId>
 			<artifactId>epsilon-runtime-osgi</artifactId>
-			<version>${epsilon-runtime-version}</version>
 			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>hu.blackbelt.epsilon</groupId>
 			<artifactId>epsilon-runtime-execution</artifactId>
-			<version>${epsilon-runtime-version}</version>
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>

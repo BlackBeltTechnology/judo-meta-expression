@@ -7,65 +7,99 @@
     <parent>
         <groupId>hu.blackbelt.judo.meta</groupId>
         <artifactId>hu.blackbelt.judo.meta.expression</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
-        <relativePath>../</relativePath>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm.test</artifactId>
 
-    <name>Judo :: Expression :: Model :: JQL builder :: ASM :: Test</name>
-    <description>Judo Expression ASM Model builder based on JQL and ASM Test</description>
+    <name>JUDO :: Expression :: Model :: JQL builder :: ASM :: Test</name>
+    <description>JUDO Expression ASM Model builder based on JQL and ASM Test</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.eclipse.xtext</groupId>
+                <artifactId>xtext-dev-bom</artifactId>
+                <version>${xtext-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
-            <version>${judo-meta-jql-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-            <version>${judo-meta-asm-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-            <version>${judo-meta-measure-version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>hu.blackbelt.epsilon</groupId>
+            <artifactId>epsilon-runtime-execution</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.xtext</groupId>
+            <artifactId>org.eclipse.xtext</artifactId>
+            <version>${xtext-version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
