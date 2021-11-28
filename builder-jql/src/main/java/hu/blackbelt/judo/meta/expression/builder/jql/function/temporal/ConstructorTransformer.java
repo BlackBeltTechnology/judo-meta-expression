@@ -8,8 +8,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateConstructionExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampConstructionExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 
 public class ConstructorTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlFunctionTransformer<TypeNameExpression> {
 
@@ -45,6 +44,15 @@ public class ConstructorTransformer<NE, P extends NE, E extends P, C extends NE,
                         .withHour((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(3).getExpression(), context))
                         .withMinute((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(4).getExpression(), context))
                         .withSecond((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(5).getExpression(), context))
+                        .build();
+            } else if (jqlTransformers.getModelAdapter().isTime(primitiveType)) {
+                if (functionCall.getParameters().size() != 3) {
+                    throw new IllegalArgumentException("3 parameters expected");
+                }
+                return newTimeConstructionExpressionBuilder()
+                        .withHour((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context))
+                        .withMinute((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context))
+                        .withSecond((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(2).getExpression(), context))
                         .build();
             } else {
                 throw new IllegalArgumentException("Function is not valid for given type");

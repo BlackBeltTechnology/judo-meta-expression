@@ -1,20 +1,17 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.function.temporal;
 
-import hu.blackbelt.judo.meta.expression.DataExpression;
-import hu.blackbelt.judo.meta.expression.DateExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.TimestampExpression;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.temporal.DatePart;
+import hu.blackbelt.judo.meta.expression.temporal.TimePart;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampPart;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import java.time.temporal.ChronoUnit;
 
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newExtractDateExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newExtractTimestampExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 
 public class ExtractTransformer extends AbstractJqlFunctionTransformer<DataExpression> {
 
@@ -36,6 +33,11 @@ public class ExtractTransformer extends AbstractJqlFunctionTransformer<DataExpre
             return newExtractTimestampExpressionBuilder()
                     .withTimestamp((TimestampExpression) argument)
                     .withPart(getTimestampPart())
+                    .build();
+        } else if (argument instanceof TimeExpression) {
+            return newExtractTimeExpressionBuilder()
+                    .withTime((TimeExpression) argument)
+                    .withPart(getTimePart())
                     .build();
         } else {
             throw new IllegalArgumentException("Unsupported argument type: " + argument);
@@ -72,5 +74,19 @@ public class ExtractTransformer extends AbstractJqlFunctionTransformer<DataExpre
                 return TimestampPart.MILLISECOND;
         }
         throw new IllegalArgumentException("Unsupported timestamp part: " + chronoUnit);
+    }
+
+    private TimePart getTimePart() {
+        switch (chronoUnit) {
+            case HOURS:
+                return TimePart.HOUR;
+            case MINUTES:
+                return TimePart.MINUTE;
+            case SECONDS:
+                return TimePart.SECOND;
+            case MILLIS:
+                return TimePart.MILLISECOND;
+        }
+        throw new IllegalArgumentException("Unsupported time part: " + chronoUnit);
     }
 }

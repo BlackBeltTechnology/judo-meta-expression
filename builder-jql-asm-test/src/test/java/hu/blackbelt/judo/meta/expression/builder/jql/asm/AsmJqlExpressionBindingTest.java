@@ -77,6 +77,7 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
 
         createGetterExpression(order, "self.shipper.companyName", "orderDate", ATTRIBUTE); //string expr to time stamp
         createGetterExpression(order, "self.orderDate", "freight", ATTRIBUTE); //time stamp expr to string 
+        createGetterExpression(order, "demo::types::Time!now()", "shipperName", ATTRIBUTE); //time stamp expr to string
 
         EClass internationalOrder = findBase("InternationalOrder");
         createGetterExpression(internationalOrder, "self.exciseTax", "customsDescription", ATTRIBUTE); // decimal expr to string
@@ -97,6 +98,7 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
                 ImmutableList.of(
                         "StringExpressionMatchesBinding|Attribute named orderDate must be string type, because the assigned expression evaluates to a string.",
                         "TimestampExpressionMatchesBinding|Attribute named freight must be timestamp type, because the assigned expression evaluates to a timestamp.",
+                        "TimeExpressionMatchesBinding|Attribute named shipperName must be time type, because the assigned expression evaluates to a time.",
                         "DecimalExpressionMatchesBinding|Attribute named customsDescription must be decimal type, because the assigned expression evaluates to a decimal.",
                         "DateExpressionMatchesBinding|Attribute named productName must be date type, because the assigned expression evaluates to a date.",
                         "EnumerationExpressionMatchesBinding|Attribute named unitPrice must be enumeration type, because the assigned expression evaluates to an enumeration.",

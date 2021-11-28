@@ -20,8 +20,7 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringSwitchExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateSwitchExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 
 public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<TernaryOperation, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -55,6 +54,8 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
             });
             put(StringExpression.class, (thenCase, elseExpression) -> newStringSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(TimestampExpression.class, (thenCase, elseExpression) -> newTimestampSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+            put(TimeExpression.class, (thenCase, elseExpression) -> newTimeSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
+
         }
     };
 

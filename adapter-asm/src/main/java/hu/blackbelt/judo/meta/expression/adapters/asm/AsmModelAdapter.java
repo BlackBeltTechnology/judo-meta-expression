@@ -343,10 +343,15 @@ public class AsmModelAdapter implements
 	}
 
 	@Override
+	public boolean isTime(EDataType primitive) {
+		return AsmUtils.isTime(primitive);
+	}
+
+	@Override
 	public boolean isCustom(EDataType primitive) {
 		return !AsmUtils.isBoolean(primitive) && !AsmUtils.isNumeric(primitive) && !AsmUtils.isString(primitive)
 				&& !AsmUtils.isEnumeration(primitive) && !AsmUtils.isDate(primitive)
-				&& !AsmUtils.isTimestamp(primitive);
+				&& !AsmUtils.isTimestamp(primitive)	&& !AsmUtils.isTime(primitive);
 	}
 
 	@Override

@@ -25,6 +25,15 @@ context EXPR!TimestampDifferenceExpression {
     }
 }
 
+context EXPR!TimeDifferenceExpression {
+    constraint MeasureIsValid {
+        guard: self.satisfiesAll("Resolved")
+
+        check: true
+        message: "Measure of expression is invalid: " + self
+    }
+}
+
 context EXPR!MeasuredDecimalEnvironmentVariable {
     constraint MeasureIsValid {
         guard: self.satisfiesAll("Resolved")
