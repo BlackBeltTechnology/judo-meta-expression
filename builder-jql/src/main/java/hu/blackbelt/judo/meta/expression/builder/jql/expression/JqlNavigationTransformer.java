@@ -114,7 +114,15 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                     if (!baseVariable.isPresent()) {
                         TA parameterAttribute = Optional.ofNullable(navigation.getFeatures().size() == 1 ? (TO) context.getInputParameterType() : null)
                                 .map(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()).orElse(null))
-                                .orElseThrow(() -> new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(new JqlExpressionBuildingError("Base variable " + name + " not found", navigation))));
+                                .orElseThrow(() -> {
+                                    String errorMessage = "Base variable '" + name;
+                                    if (JqlExpressionBuilder.SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()) {
+                                        errorMessage += "' cannot be used in lambda expression";
+                                    } else {
+                                        errorMessage += "' not found";
+                                    }
+                                    return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(new JqlExpressionBuildingError(errorMessage, navigation)));
+                                });
                         Expression getVariableExpression = null;
                         StringConstant variableName = newStringConstantBuilder().withValue(navigation.getFeatures().get(0).getName()).build();
                         P parameterAttributeType = getModelAdapter().getTransferAttributeType(parameterAttribute);
