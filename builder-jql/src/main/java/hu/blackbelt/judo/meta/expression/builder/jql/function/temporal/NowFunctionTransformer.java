@@ -9,14 +9,15 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctio
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newStringConstantBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newDateEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newTimestampEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
 
 public class NowFunctionTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlFunctionTransformer<TypeNameExpression> {
 
     public static final String SYSTEM_CATEGORY = "SYSTEM";
     public static final String CURRENT_DATE_VARIABLE_NAME = "current_date";
     public static final String CURRENT_TIMESTAMP_VARIABLE_NAME = "current_timestamp";
+    public static final String CURRENT_TIME_VARIABLE_NAME = "current_time";
+
     private JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
 
     public NowFunctionTransformer(JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers) {
@@ -44,6 +45,12 @@ public class NowFunctionTransformer<NE, P extends NE, E extends P, C extends NE,
                 return newTimestampEnvironmentVariableBuilder()
                         .withCategory(SYSTEM_CATEGORY)
                         .withVariableName(newStringConstantBuilder().withValue(CURRENT_TIMESTAMP_VARIABLE_NAME).build())
+                        .withTypeName(typeName)
+                        .build();
+            } else if (jqlTransformers.getModelAdapter().isTime(primitiveType)) {
+                return newTimeEnvironmentVariableBuilder()
+                        .withCategory(SYSTEM_CATEGORY)
+                        .withVariableName(newStringConstantBuilder().withValue(CURRENT_TIME_VARIABLE_NAME).build())
                         .withTypeName(typeName)
                         .build();
             } else {

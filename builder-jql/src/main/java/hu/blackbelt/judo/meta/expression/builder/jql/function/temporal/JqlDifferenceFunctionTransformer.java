@@ -4,17 +4,18 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionMeasureProvider;
-import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.temporal.DateDifferenceExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampDifferenceExpression;
+import hu.blackbelt.judo.meta.expression.temporal.TimeDifferenceExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
 import java.util.Optional;
 
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateDifferenceExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampDifferenceExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeDifferenceExpressionBuilder;
 
 public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransformer<DataExpression> {
 
@@ -50,6 +51,18 @@ public class JqlDifferenceFunctionTransformer extends AbstractJqlFunctionTransfo
             TimestampDifferenceExpression differenceExpression = newTimestampDifferenceExpressionBuilder()
                     .withStartTimestamp(startTimestamp)
                     .withEndTimestamp(endTimestamp)
+                    .withMeasure(measureName)
+                    .build();
+            ModelAdapter.UnitFraction durationRatio = jqlTransformers.getModelAdapter().getBaseDurationRatio(unit, ModelAdapter.DurationType.SECOND);
+            differenceExpression.setSecondDividend(durationRatio.getDividend());
+            differenceExpression.setSecondDivisor(durationRatio.getDivisor());
+            return differenceExpression;
+        } else if (argument instanceof TimeExpression) {
+            TimeExpression startTime = (TimeExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context);
+            TimeExpression endTime = (TimeExpression) argument;
+            TimeDifferenceExpression differenceExpression = newTimeDifferenceExpressionBuilder()
+                    .withStartTime(startTime)
+                    .withEndTime(endTime)
                     .withMeasure(measureName)
                     .build();
             ModelAdapter.UnitFraction durationRatio = jqlTransformers.getModelAdapter().getBaseDurationRatio(unit, ModelAdapter.DurationType.SECOND);

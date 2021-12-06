@@ -264,6 +264,14 @@ public interface ModelAdapter<NE, P extends NE, E extends P, C extends NE, PTE, 
     boolean isTimestamp(P primitive);
 
     /**
+     * Check if a primitive type is time.
+     *
+     * @param primitive primitive type
+     * @return <code>true</code> if type is time, <code>false</code> otherwise
+     */
+    boolean isTime(P primitive);
+
+    /**
      * Check if a primitive type is custom (has no build-in support by expressions).
      *
      * @param primitive primitive

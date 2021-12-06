@@ -3,22 +3,8 @@ package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.*;
-import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
-import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAttribute;
-import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
-import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSelectorExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectVariableReferenceBuilder;
-import hu.blackbelt.judo.meta.expression.operator.ObjectComparator;
-import hu.blackbelt.judo.meta.expression.operator.ObjectSelector;
-import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
-import hu.blackbelt.judo.meta.expression.variable.util.builder.TypedObjectVariableBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,14 +15,12 @@ import java.util.Optional;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newExistsBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newLogicalAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAttributeBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAttributeBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newObjectSequenceBuilder;
 
 public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
@@ -210,6 +194,9 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                         .withObjectExpression(objectExpression).build();
             } else if (getModelAdapter().isTimestamp(attributeType.get())) {
                 return newTimestampAttributeBuilder().withAttributeName(attributeName)
+                        .withObjectExpression(objectExpression).build();
+            } else if (getModelAdapter().isTime(attributeType.get())) {
+                return newTimeAttributeBuilder().withAttributeName(attributeName)
                         .withObjectExpression(objectExpression).build();
             } else {
                 return newCustomAttributeBuilder().withAttributeName(attributeName)
