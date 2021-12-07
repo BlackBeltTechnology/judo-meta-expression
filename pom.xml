@@ -92,11 +92,11 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20211117_095903_de8ed915_feature_JNG_1374_AddTimeDataType</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20211117_100507_15fdc961_feature_JNG_1374_AddTimeDataType</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20211128_154742_b4af5c51_feature_JNG_1374_AddTimeDatatype</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1.20211128_155904_409c0dab_feature_JNG_1374_AddTimeType</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.0.20211026_000729_5c8e5103_develop</judo-meta-measure-version>
+        <judo-meta-psm-version>1.1.0.20211206_195744_69bd0709_develop</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20211206_195445_d0c1debd_develop</judo-meta-asm-version>
+        <judo-meta-esm-version>1.1.0.20211206_195025_44749029_develop</judo-meta-esm-version>
+        <judo-meta-jql-version>1.0.1.20211206_195827_8fd4a654_develop</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.0.20211026_224159_45ec6190_develop</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
