@@ -19,6 +19,11 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Optional;
+
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.QUERY_INPUT_NAME;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.SELF_NAME;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
@@ -31,14 +36,19 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
-
-import java.util.Arrays;
-import java.util.Optional;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newBooleanEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newCustomEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newDateEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newDecimalEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newIntegerEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newLiteralEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newMeasuredDecimalEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newStringEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newTimestampEnvironmentVariableBuilder;
 
 public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -106,25 +116,37 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
             } else {
                 Expression contextBaseExpression = context.peekBaseExpression();
                 String name = navigation.getQName().getName();
-                if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
+                if (SELF_NAME.equals(name) && contextBaseExpression != null) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
                     Optional<Variable> baseVariable = context.resolveVariable(name);
-                    if (!baseVariable.isPresent()) {
-                        TA parameterAttribute = Optional.ofNullable(navigation.getFeatures().size() == 1 ? (TO) context.getInputParameterType() : null)
-                                .map(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()).orElse(null))
-                                .orElseThrow(() -> {
-                                    String errorMessage = "Base variable '" + name;
-                                    if (JqlExpressionBuilder.SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()) {
-                                        errorMessage += "' cannot be used in lambda expression";
-                                    } else {
-                                        errorMessage += "' not found";
-                                    }
-                                    return new JqlExpressionBuildException(contextBaseExpression, Arrays.asList(new JqlExpressionBuildingError(errorMessage, navigation)));
-                                });
+                    if (baseVariable.isEmpty()) {
+                        TO inputParameterType = (TO) context.getInputParameterType();
+
+                        if (inputParameterType == null || !QUERY_INPUT_NAME.equals(name)) {
+                            String errorMessage = SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()
+                                                  ? SELF_NAME + " cannot be used in lambda"
+                                                  : "Base variable '" + name + "' cannot be found";
+                            throw new JqlExpressionBuildException(
+                                    contextBaseExpression, List.of(new JqlExpressionBuildingError(errorMessage, navigation)));
+                        }
+
+                        if (navigation.getFeatures().size() != 1) {
+                            throw new JqlExpressionBuildException(
+                                    contextBaseExpression,
+                                    List.of(new JqlExpressionBuildingError("Navigation from input to feature expected", navigation)));
+                        }
+
+                        String featureName = navigation.getFeatures().get(0).getName();
+                        TA parameterAttribute = getModelAdapter()
+                                .getTransferAttribute(inputParameterType, featureName)
+                                .orElseThrow(() -> new JqlExpressionBuildException(
+                                        contextBaseExpression,
+                                        List.of(new JqlExpressionBuildingError("Transfer attribute '" + featureName + "' cannot be found", navigation))));
+
                         Expression getVariableExpression = null;
-                        StringConstant variableName = newStringConstantBuilder().withValue(navigation.getFeatures().get(0).getName()).build();
+                        StringConstant variableName = newStringConstantBuilder().withValue(featureName).build();
                         P parameterAttributeType = getModelAdapter().getTransferAttributeType(parameterAttribute);
                         TypeName parameterAttributeTypeName = getModelAdapter().buildTypeName(parameterAttributeType).get();
                         if (getModelAdapter().isInteger(parameterAttributeType)) {
