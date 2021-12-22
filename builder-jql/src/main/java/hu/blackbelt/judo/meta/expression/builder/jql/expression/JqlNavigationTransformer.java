@@ -116,7 +116,9 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
             } else {
                 Expression contextBaseExpression = context.peekBaseExpression();
                 String name = navigation.getQName().getName();
-                if (SELF_NAME.equals(name) && contextBaseExpression != null) {
+
+                if ((SELF_NAME.equals(name) && contextBaseExpression != null) ||
+                    (QUERY_INPUT_NAME.equals(name) && navigation.getFeatures().size() != 1)) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
@@ -132,18 +134,18 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                                     contextBaseExpression, List.of(new JqlExpressionBuildingError(errorMessage, navigation)));
                         }
 
-                        if (navigation.getFeatures().size() != 1) {
-                            throw new JqlExpressionBuildException(
-                                    contextBaseExpression,
-                                    List.of(new JqlExpressionBuildingError("Navigation from input to feature expected", navigation)));
-                        }
-
                         String featureName = navigation.getFeatures().get(0).getName();
                         TA parameterAttribute = getModelAdapter()
                                 .getTransferAttribute(inputParameterType, featureName)
-                                .orElseThrow(() -> new JqlExpressionBuildException(
-                                        contextBaseExpression,
-                                        List.of(new JqlExpressionBuildingError("Transfer attribute '" + featureName + "' cannot be found", navigation))));
+                                .orElseThrow(() -> {
+                                    String fqName = getModelAdapter().getFqName(inputParameterType);
+                                    return new JqlExpressionBuildException(
+                                            contextBaseExpression,
+                                            List.of(new JqlExpressionBuildingError(
+                                                    String.format("Transfer attribute %s of %s not found",
+                                                                  featureName, fqName != null ? fqName : QUERY_INPUT_NAME),
+                                                    navigation)));
+                                });
 
                         Expression getVariableExpression = null;
                         StringConstant variableName = newStringConstantBuilder().withValue(featureName).build();
