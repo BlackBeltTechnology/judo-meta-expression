@@ -379,16 +379,13 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName buildTypeName(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return buildTypeName(namespace, name);
+        return buildTypeName(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + String.valueOf(typeName)));
-        TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
-        return resolvedTypeName;
+        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + typeName));
+        return modelAdapter.buildTypeName(ne).get();
     }
 
     public enum BindingRole {
