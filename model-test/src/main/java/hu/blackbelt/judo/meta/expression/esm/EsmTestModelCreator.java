@@ -9,14 +9,8 @@ import hu.blackbelt.judo.meta.esm.namespace.Model;
 import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.namespace.util.builder.PackageBuilder;
+import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.DataFeature;
-import hu.blackbelt.judo.meta.esm.structure.MemberType;
-import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
-import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.Generalization;
-import hu.blackbelt.judo.meta.esm.structure.RelationFeature;
-import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.DataMemberBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.EntityTypeBuilder;
 import hu.blackbelt.judo.meta.esm.structure.util.builder.OneWayRelationMemberBuilder;
@@ -85,6 +79,26 @@ public class EsmTestModelCreator {
 
         public EntityCreator(String name) {
             this.name = name;
+        }
+
+        public EntityCreator withPrimitiveQuery(String name, String getterExpression, Primitive dataType) {
+            attributes.add(createQuery(name, null, getterExpression, dataType));
+            return this;
+        }
+
+        public EntityCreator withPrimitiveQuery(String name, EntityType input, String getterExpression, Primitive dataType) {
+            attributes.add(createQuery(name, input, getterExpression, dataType));
+            return this;
+        }
+
+        public EntityCreator withComplexQuery(String name, String getterExpression, EntityType dataType) {
+            relations.add(createQuery(name, getterExpression, null, dataType));
+            return this;
+        }
+
+        public EntityCreator withComplexQuery(String name, EntityType input, String getterExpression, EntityType dataType) {
+            relations.add(createQuery(name, getterExpression, input, dataType));
+            return this;
         }
 
         public EntityCreator withAttribute(String name, Primitive datatype) {
@@ -186,6 +200,30 @@ public class EsmTestModelCreator {
         builder.withGetterExpression(getterExpression);
         builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? MemberType.DERIVED : MemberType.STORED);
         return builder.build();
+    }
+
+    public static DataFeature createQuery(String name, TransferObjectType input, String getterExpression, Primitive dataType) {
+        return newDataMemberBuilder()
+                .withName(name)
+                .withInput(input)
+                .withIsQuery(true)
+                .withDataType(dataType)
+                .withMemberType(MemberType.STORED) // TODO: is it? can it be mapped?
+                .withGetterExpression(getterExpression)
+                .build();
+    }
+
+    public static RelationFeature createQuery(String name, String getterExpression, TransferObjectType input, TransferObjectType datatype) {
+        return newOneWayRelationMemberBuilder()
+                .withName(name)
+                .withInput(input)
+                .withIsQuery(true)
+                .withTarget(datatype)
+                .withLower(0).withUpper(-1)
+                .withMemberType(MemberType.STORED)
+                .withGetterExpression(getterExpression)
+                .withRelationKind(RelationKind.ASSOCIATION) // TODO: check if it's aggregation or not
+                .build();
     }
 
     public static EnumerationType createEnum(String name, String... members) {
