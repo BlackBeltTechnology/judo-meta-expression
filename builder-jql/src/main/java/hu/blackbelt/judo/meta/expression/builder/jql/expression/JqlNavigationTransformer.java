@@ -118,7 +118,7 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                 String name = navigation.getQName().getName();
 
                 if ((SELF_NAME.equals(name) && contextBaseExpression != null) ||
-                    (QUERY_INPUT_NAME.equals(name) && navigation.getFeatures().size() != 1)) {
+                    (QUERY_INPUT_NAME.equals(name) && navigation.getFeatures().isEmpty())) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
