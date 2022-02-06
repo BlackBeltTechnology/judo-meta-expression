@@ -65,11 +65,11 @@
 
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <tycho-version>2.5.0</tycho-version>
+        <tycho-version>2.6.0</tycho-version>
 
-        <emf-genmodel-generator-version>1.0.2.20211021_110357_261394e2_develop</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.1.20211024_233306_21dd275f_develop</judo-genmodel-generator-version>
-        <judo-epp-common-version>4.19.0.20211022_122608_10e6ef76_develop</judo-epp-common-version>
+        <emf-genmodel-generator-version>1.0.2.20220206_143501_85483b33_feature_JNG_3516_UpdateEclipse</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.1.20220206_145011_74bc3442_feature_JNG_3516_UpdateEclipse</judo-genmodel-generator-version>
+        <judo-epp-common-version>4.22.0.20220204_230123_41dcda45_feature_JNG_3516_UpdateEclipse</judo-epp-common-version>
 
         <xtext-version>2.22.0</xtext-version>
         <emf-mwe2-launch-version>2.12.1</emf-mwe2-launch-version>
@@ -92,11 +92,11 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20211206_195744_69bd0709_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20211206_195445_d0c1debd_develop</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20220125_092550_53412789_develop</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1.20211206_195827_8fd4a654_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.0.20211026_224159_45ec6190_develop</judo-meta-measure-version>
+        <judo-meta-psm-version>1.1.0.20220206_223623_fdb50cba_feature_JNG_3516_UpdateEclipse</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20220206_225221_ce6e9ce9_feature_JNG_3516_UpdateEclipse</judo-meta-asm-version>
+        <judo-meta-esm-version>1.1.0.20220206_213617_a9cab066_feature_JNG_3516_UpdateEclipse</judo-meta-esm-version>
+        <judo-meta-jql-version>1.0.1.20220206_214900_787b2fdb_feature_JNG_3516_UpdateEclipse</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.0.20220206_224524_91085024_feature_JNG_3516_UpdateEclipse</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
@@ -196,6 +196,51 @@
                         <source>11</source>
                         <target>11</target>
                     </configuration>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.1.0</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.eclipse.xtend</groupId>
+                    <artifactId>xtend-maven-plugin</artifactId>
+                    <version>${xtext-version}</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>xtend-install-debug-info</goal>
+                                <goal>testCompile</goal>
+                                <goal>xtend-test-install-debug-info</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <outputDirectory>${basedir}/xtend-gen</outputDirectory>
+                        <testOutputDirectory>${basedir}/xtend-gen</testOutputDirectory>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>org.eclipse.jdt.core</artifactId>
+                            <version>3.28.0</version>
+                        </dependency>
+
+                        <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>org.eclipse.jdt.compiler.apt</artifactId>
+                            <version>1.3.1200</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.eclipse.jdt</groupId>
+                            <artifactId>org.eclipse.jdt.compiler.tool</artifactId>
+                            <version>1.2.1100</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
 
                 <plugin>
