@@ -40,6 +40,7 @@ import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.
 public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
 
     public static final String SELF_NAME = "self";
+    public static final String QUERY_INPUT_NAME = "input";
     private static final Logger LOGGER = LoggerFactory.getLogger(JqlExpressionBuilder.class.getName());
     public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
