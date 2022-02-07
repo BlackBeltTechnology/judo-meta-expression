@@ -11,6 +11,7 @@ import hu.blackbelt.judo.meta.expression.temporal.DateAdditionExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimeAdditionExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAdditionExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -292,8 +293,8 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
     private KleeneExpression newKleeneEqualsExpression(LogicalExpression left, LogicalExpression right) {
         return newKleeneExpressionBuilder()
                 .withLeft(newKleeneExpressionBuilder()
-                                  .withLeft(left)
-                                  .withRight(right)
+                                  .withLeft(EcoreUtil.copy(left))
+                                  .withRight(EcoreUtil.copy(right))
                                   .withOperator(AND)
                                   .build()) // left and right
                 .withRight(newNegationExpressionBuilder()
