@@ -8,8 +8,10 @@ import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
+import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import org.junit.jupiter.api.Disabled;
@@ -19,14 +21,17 @@ import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.ne
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -166,79 +171,45 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
     }
 
     @Test
-    @Disabled("TODO: implement test")
-    public void testPrimitiveQueryWithoutInput() {
-        /* TODO: test scenarios (expression)
-            self                      -> invalid
-            input                     -> invalid
-            self.attribute            -> valid if type is correct
-            input.attribute           -> invalid
-            self.relation             -> invalid
-            input.relation            -> invalid
-            self.relation.attribute   -> valid if type and cardinality are correct
-            input.relation.attribute  -> invalid
-            self.operation            -> invalid
-            input.operation           -> invalid
-            self.operation.attribute  -> valid if type and cardinality are correct
-            input.operation.attribute -> invalid
-         */
-    }
-
-    @Test
-    @Disabled("TODO: implement test")
     public void testPrimitiveQueryWithInput() {
-        /* TODO: test scenarios (expression)
-            self                      -> invalid
-            input                     -> invalid
-            self.attribute            -> valid if type is correct
-            input.attribute           -> valid if type is correct
-            self.relation             -> invalid
-            input.relation            -> invalid
-            self.relation.attribute   -> valid if type and cardinality are correct
-            input.relation.attribute  -> valid if type and cardinality are correct
-            self.operation            -> invalid
-            input.operation           -> invalid
-            self.operation.attribute  -> valid if type and cardinality are correct
-            input.operation.attribute -> valid if type and cardinality are correct
-         */
+        NumericType integer = newNumericTypeBuilder().withName("integer").withScale(0).withPrecision(7).build();
+        EntityType qInputTarget = new EntityCreator("qInputTarget").create();
+        EntityType qInput = new EntityCreator("QInput")
+                .withAttribute("attr", integer)
+                .withObjectRelation("relation", qInputTarget)
+                .create();
+        EntityType tester = new EntityCreator("Tester").create();
+        initResources(createTestModel(createPackage("p", integer, qInputTarget, qInput, tester)));
+
+        Expression e = assertDoesNotThrow(() -> createExpression(tester, "input.attr", qInput));
+        assertThat(e, instanceOf(IntegerExpression.class));
+
+        Exception exception = assertThrows(JqlExpressionBuildException.class,
+                                           () -> createExpression(tester, "input.relation.attr", qInput));
+        assertThat(exception.getMessage(),
+                   equalTo("Errors during building expression: Transfer attribute relation of demo::p::QInput not found"));
     }
 
     @Test
-    @Disabled("TODO: implement test")
-    public void testComplexQueryWithoutInput() {
-        /* TODO: test scenarios (expression)
-            self                      -> invalid
-            input                     -> invalid
-            self.attribute            -> invalid
-            input.attribute           -> invalid
-            self.relation             -> valid if type and cardinality are correct
-            input.relation            -> invalid
-            self.relation.attribute   -> invalid
-            input.relation.attribute  -> invalid
-            self.operation            -> valid if type and cardinality are correct
-            input.operation           -> invalid
-            self.operation.attribute  -> invalid
-            input.operation.attribute -> invalid
-         */
-    }
-
-    @Test
-    @Disabled("TODO: implement test")
     public void testComplexQueryWithInput() {
-        /* TODO: test scenarios (expression)
-            self                      -> invalid
-            input                     -> invalid
-            self.attribute            -> invalid
-            input.attribute           -> invalid
-            self.relation             -> valid if type and cardinality are correct
-            input.relation            -> valid if type and cardinality are correct
-            self.relation.attribute   -> invalid
-            input.relation.attribute  -> invalid
-            self.operation            -> valid if type and cardinality are correct
-            input.operation           -> valid if type and cardinality are correct
-            self.operation.attribute  -> invalid
-            input.operation.attribute -> invalid
-         */
+        NumericType integer = newNumericTypeBuilder().withName("integer").withScale(0).withPrecision(7).build();
+        EntityType qInputTarget = new EntityCreator("qInputTarget").create();
+        EntityType qInput = new EntityCreator("QInput")
+                .withAttribute("attr", integer)
+                .withCollectionRelation("relation", qInputTarget)
+                .create();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", integer)
+                .create();
+        initResources(createTestModel(createPackage("p", integer, qInputTarget, qInput, tester)));
+
+        Expression e = assertDoesNotThrow(() -> createExpression(tester, "demo::p::Tester!filter(t | t.attr == input.attr)", qInput));
+        assertThat(e, instanceOf(CollectionExpression.class));
+
+        Exception exception = assertThrows(JqlExpressionBuildException.class,
+                                           () -> createExpression(tester, "input.relation", qInput));
+        assertThat(exception.getMessage(),
+                   equalTo("Errors during building expression: Transfer attribute relation of demo::p::QInput not found"));
     }
 
 }

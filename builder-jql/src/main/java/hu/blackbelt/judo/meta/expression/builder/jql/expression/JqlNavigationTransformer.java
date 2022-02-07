@@ -40,15 +40,7 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newBooleanEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newCustomEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newDateEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newDecimalEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newIntegerEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newLiteralEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newMeasuredDecimalEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newStringEnvironmentVariableBuilder;
-import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.newTimestampEnvironmentVariableBuilder;
+import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
 
 public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -137,15 +129,13 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                         String featureName = navigation.getFeatures().get(0).getName();
                         TA parameterAttribute = getModelAdapter()
                                 .getTransferAttribute(inputParameterType, featureName)
-                                .orElseThrow(() -> {
-                                    String fqName = getModelAdapter().getFqName(inputParameterType);
-                                    return new JqlExpressionBuildException(
-                                            contextBaseExpression,
-                                            List.of(new JqlExpressionBuildingError(
-                                                    String.format("Transfer attribute %s of %s not found",
-                                                                  featureName, fqName != null ? fqName : QUERY_INPUT_NAME),
-                                                    navigation)));
-                                });
+                                .orElseThrow(() -> new JqlExpressionBuildException(
+                                        contextBaseExpression,
+                                        List.of(new JqlExpressionBuildingError(
+                                                String.format("Transfer attribute %s of %s not found",
+                                                              featureName, getModelAdapter().getFqName(inputParameterType)),
+                                                navigation)))
+                                );
 
                         Expression getVariableExpression = null;
                         StringConstant variableName = newStringConstantBuilder().withValue(featureName).build();
