@@ -220,7 +220,7 @@ public class EsmTestModelCreator {
                 .withIsQuery(true)
                 .withTarget(datatype)
                 .withLower(0).withUpper(-1)
-                .withMemberType(MemberType.STORED)
+                .withMemberType(MemberType.DERIVED)
                 .withGetterExpression(getterExpression)
                 .withRelationKind(RelationKind.ASSOCIATION)
                 .build();
