@@ -199,7 +199,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
         return expression;
     }
 
-    protected Expression createExpression(Class clazz, final String jqlExpressionString, TransferObjectType inputParameterType) {
+    protected Expression createExpression(Class clazz, TransferObjectType inputParameterType, final String jqlExpressionString) {
         final Expression expression = esmJqlExpressionBuilder.createExpressionWithInput(clazz, jqlExpressionString, inputParameterType);
         assertThat(expression, notNullValue());
         return expression;

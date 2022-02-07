@@ -14,7 +14,6 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
@@ -171,45 +170,39 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
     }
 
     @Test
-    public void testPrimitiveQueryWithInput() {
+    public void testParameterizedQuery() {
         NumericType integer = newNumericTypeBuilder().withName("integer").withScale(0).withPrecision(7).build();
-        EntityType qInputTarget = new EntityCreator("qInputTarget").create();
-        EntityType qInput = new EntityCreator("QInput")
-                .withAttribute("attr", integer)
-                .withObjectRelation("relation", qInputTarget)
-                .create();
-        EntityType tester = new EntityCreator("Tester").create();
-        initResources(createTestModel(createPackage("p", integer, qInputTarget, qInput, tester)));
-
-        Expression e = assertDoesNotThrow(() -> createExpression(tester, "input.attr", qInput));
-        assertThat(e, instanceOf(IntegerExpression.class));
-
-        Exception exception = assertThrows(JqlExpressionBuildException.class,
-                                           () -> createExpression(tester, "input.relation.attr", qInput));
-        assertThat(exception.getMessage(),
-                   equalTo("Errors during building expression: Transfer attribute relation of demo::p::QInput not found"));
-    }
-
-    @Test
-    public void testComplexQueryWithInput() {
-        NumericType integer = newNumericTypeBuilder().withName("integer").withScale(0).withPrecision(7).build();
-        EntityType qInputTarget = new EntityCreator("qInputTarget").create();
-        EntityType qInput = new EntityCreator("QInput")
-                .withAttribute("attr", integer)
-                .withCollectionRelation("relation", qInputTarget)
+        EntityType queryInputRelationTarget = new EntityCreator("queryInputRelationTarget").create();
+        EntityType queryInput = new EntityCreator("QueryInput")
+                .withAttribute("attribute", integer)
+                .withObjectRelation("objectRelation", queryInputRelationTarget)
+                .withCollectionRelation("collectionRelation", queryInputRelationTarget)
                 .create();
         EntityType tester = new EntityCreator("Tester")
-                .withAttribute("attr", integer)
+                .withAttribute("attribute", integer)
                 .create();
-        initResources(createTestModel(createPackage("p", integer, qInputTarget, qInput, tester)));
+        initResources(createTestModel(createPackage("p", integer, queryInputRelationTarget, queryInput, tester)));
 
-        Expression e = assertDoesNotThrow(() -> createExpression(tester, "demo::p::Tester!filter(t | t.attr == input.attr)", qInput));
-        assertThat(e, instanceOf(CollectionExpression.class));
+        // primitive query with input
+        Expression expression = assertDoesNotThrow(() -> createExpression(tester, queryInput, "input.attribute"));
+        assertThat(expression, instanceOf(IntegerExpression.class));
 
+        // complex query with input
+        Expression expression1 = assertDoesNotThrow(() -> createExpression(tester, queryInput, "demo::p::Tester!filter(t | t.attribute == input.attribute)"));
+        assertThat(expression1, instanceOf(CollectionExpression.class));
+        assertThat(expression1, collectionOf("Tester"));
+
+        // primitive query without input
         Exception exception = assertThrows(JqlExpressionBuildException.class,
-                                           () -> createExpression(tester, "input.relation", qInput));
+                                           () -> createExpression(tester, queryInput, "input.objectRelation.attribute"));
         assertThat(exception.getMessage(),
-                   equalTo("Errors during building expression: Transfer attribute relation of demo::p::QInput not found"));
+                   equalTo("Errors during building expression: Transfer attribute objectRelation of demo::p::QueryInput not found"));
+
+        // complex query without input
+        Exception exception1 = assertThrows(JqlExpressionBuildException.class,
+                                           () -> createExpression(tester, queryInput, "input.collectionRelation"));
+        assertThat(exception1.getMessage(),
+                   equalTo("Errors during building expression: Transfer attribute collectionRelation of demo::p::QueryInput not found"));
     }
 
 }
