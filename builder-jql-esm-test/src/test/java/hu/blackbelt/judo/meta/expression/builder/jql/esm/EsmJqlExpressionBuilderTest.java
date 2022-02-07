@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
+import hu.blackbelt.judo.meta.esm.type.BooleanType;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.NumericType;
@@ -16,9 +17,12 @@ import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
@@ -200,9 +204,33 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
 
         // complex query without input
         Exception exception1 = assertThrows(JqlExpressionBuildException.class,
-                                           () -> createExpression(tester, queryInput, "input.collectionRelation"));
+                                            () -> createExpression(tester, queryInput, "input.collectionRelation"));
         assertThat(exception1.getMessage(),
                    equalTo("Errors during building expression: Transfer attribute collectionRelation of demo::p::QueryInput not found"));
+    }
+
+    @Test
+    public void testEqualsWithBooleanExpressions() {
+        BooleanType bool = newBooleanTypeBuilder().withName("boolean").build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("b", bool)
+                .withAttribute("b1", bool)
+                .create();
+        initResources(createTestModel(bool, tester));
+
+        createExpression(tester, "self.b == self.b1");
+        createExpression(tester, "self.b != self.b1");
+
+        List<String> booleanExpressions = List.of("true", "false", "self.b");
+        List<String> operators = List.of("==", "!=");
+
+        for (String left : booleanExpressions) {
+            for (String right : booleanExpressions) {
+                for (String operator : operators) {
+                    createExpression(tester, left + operator + right);
+                }
+            }
+        }
     }
 
 }
