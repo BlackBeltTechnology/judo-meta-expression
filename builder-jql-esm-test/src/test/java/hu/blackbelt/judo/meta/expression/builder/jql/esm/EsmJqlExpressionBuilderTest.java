@@ -8,14 +8,10 @@ import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
+import hu.blackbelt.judo.meta.esm.type.NumericType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
-import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.IntegerExpression;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ObjectSequence;
-import hu.blackbelt.judo.meta.expression.StaticSequence;
-import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import org.junit.jupiter.api.Test;
@@ -24,11 +20,17 @@ import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.ne
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -165,6 +167,42 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertThat(objectSequenceExpression, instanceOf(SequenceExpression.class));
         assertThat(((SequenceExpression) objectSequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
         assertThat(((SequenceExpression) objectSequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
+    }
+
+    @Test
+    public void testParameterizedQuery() {
+        NumericType integer = newNumericTypeBuilder().withName("integer").withScale(0).withPrecision(7).build();
+        EntityType queryInputRelationTarget = new EntityCreator("queryInputRelationTarget").create();
+        EntityType queryInput = new EntityCreator("QueryInput")
+                .withAttribute("attribute", integer)
+                .withObjectRelation("objectRelation", queryInputRelationTarget)
+                .withCollectionRelation("collectionRelation", queryInputRelationTarget)
+                .create();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attribute", integer)
+                .create();
+        initResources(createTestModel(createPackage("p", integer, queryInputRelationTarget, queryInput, tester)));
+
+        // primitive query with input
+        Expression expression = assertDoesNotThrow(() -> createExpression(tester, queryInput, "input.attribute"));
+        assertThat(expression, instanceOf(IntegerExpression.class));
+
+        // complex query with input
+        Expression expression1 = assertDoesNotThrow(() -> createExpression(tester, queryInput, "demo::p::Tester!filter(t | t.attribute == input.attribute)"));
+        assertThat(expression1, instanceOf(CollectionExpression.class));
+        assertThat(expression1, collectionOf("Tester"));
+
+        // primitive query without input
+        Exception exception = assertThrows(JqlExpressionBuildException.class,
+                                           () -> createExpression(tester, queryInput, "input.objectRelation.attribute"));
+        assertThat(exception.getMessage(),
+                   equalTo("Errors during building expression: Transfer attribute objectRelation of demo::p::QueryInput not found"));
+
+        // complex query without input
+        Exception exception1 = assertThrows(JqlExpressionBuildException.class,
+                                           () -> createExpression(tester, queryInput, "input.collectionRelation"));
+        assertThat(exception1.getMessage(),
+                   equalTo("Errors during building expression: Transfer attribute collectionRelation of demo::p::QueryInput not found"));
     }
 
 }
