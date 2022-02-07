@@ -92,12 +92,12 @@ public class EsmTestModelCreator {
         }
 
         public EntityCreator withComplexQuery(String name, String getterExpression, EntityType dataType) {
-            relations.add(createQuery(name, getterExpression, null, dataType));
+            relations.add(createQuery(name, null, getterExpression, dataType));
             return this;
         }
 
         public EntityCreator withComplexQuery(String name, EntityType input, String getterExpression, EntityType dataType) {
-            relations.add(createQuery(name, getterExpression, input, dataType));
+            relations.add(createQuery(name, input, getterExpression, dataType));
             return this;
         }
 
@@ -213,7 +213,7 @@ public class EsmTestModelCreator {
                 .build();
     }
 
-    public static RelationFeature createQuery(String name, String getterExpression, TransferObjectType input, TransferObjectType datatype) {
+    public static RelationFeature createQuery(String name, TransferObjectType input, String getterExpression, TransferObjectType datatype) {
         return newOneWayRelationMemberBuilder()
                 .withName(name)
                 .withInput(input)
