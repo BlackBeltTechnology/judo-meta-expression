@@ -208,7 +208,7 @@ public class EsmTestModelCreator {
                 .withInput(input)
                 .withIsQuery(true)
                 .withDataType(dataType)
-                .withMemberType(MemberType.STORED) // TODO: is it? can it be mapped?
+                .withMemberType(MemberType.DERIVED)
                 .withGetterExpression(getterExpression)
                 .build();
     }
@@ -222,7 +222,7 @@ public class EsmTestModelCreator {
                 .withLower(0).withUpper(-1)
                 .withMemberType(MemberType.STORED)
                 .withGetterExpression(getterExpression)
-                .withRelationKind(RelationKind.ASSOCIATION) // TODO: check if it's aggregation or not
+                .withRelationKind(RelationKind.ASSOCIATION)
                 .build();
     }
 
