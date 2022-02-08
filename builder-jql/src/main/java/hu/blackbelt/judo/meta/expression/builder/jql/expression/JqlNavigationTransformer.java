@@ -109,8 +109,7 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                 Expression contextBaseExpression = context.peekBaseExpression();
                 String name = navigation.getQName().getName();
 
-                if ((SELF_NAME.equals(name) && contextBaseExpression != null) ||
-                    (QUERY_INPUT_NAME.equals(name) && navigation.getFeatures().isEmpty())) {
+                if (SELF_NAME.equals(name) && contextBaseExpression != null) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
@@ -120,13 +119,19 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
 
                         if (inputParameterType == null || !QUERY_INPUT_NAME.equals(name)) {
                             String errorMessage = SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()
-                                                  ? SELF_NAME + " cannot be used in lambda"
-                                                  : "Base variable '" + name + "' cannot be found";
-                            throw new JqlExpressionBuildException(
-                                    contextBaseExpression, List.of(new JqlExpressionBuildingError(errorMessage, navigation)));
+                                    ? SELF_NAME + " cannot be used in lambda"
+                                    : "Base variable '" + name + "' cannot be found";
+                            throw new JqlExpressionBuildException(contextBaseExpression,
+                                                                  List.of(new JqlExpressionBuildingError(errorMessage, navigation)));
                         }
 
-                        String featureName = navigation.getFeatures().get(0).getName();
+                        List<Feature> navigationFeatures = navigation.getFeatures();
+                        if (navigationFeatures.isEmpty()) {
+                            throw new JqlExpressionBuildException(contextBaseExpression,
+                                                                  List.of(new JqlExpressionBuildingError("Navigation from input expected", navigation)));
+                        }
+
+                        String featureName = navigationFeatures.get(0).getName();
                         TA parameterAttribute = getModelAdapter()
                                 .getTransferAttribute(inputParameterType, featureName)
                                 .orElseThrow(() -> new JqlExpressionBuildException(
