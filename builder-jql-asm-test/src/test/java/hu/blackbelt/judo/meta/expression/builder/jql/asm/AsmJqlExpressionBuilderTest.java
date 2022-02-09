@@ -33,12 +33,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
+import java.util.List;
+
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
@@ -921,6 +929,37 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #3 valid
         assertDoesNotThrow(() -> findBase("Student"), "self.parents!asCollection(schools::Student)");
+    }
+
+    @Test
+    public void testEqualsWithBooleanExpressions() {
+        EClass school = findBase("School");
+        assertThat(school, notNullValue());
+
+        List<String> booleanExpressions = List.of("true", "false", "(1 == 1)", "self!isDefined()");
+        List<String> operators = List.of("==", "!=");
+
+        for (String left : booleanExpressions) {
+            for (String right : booleanExpressions) {
+                for (String operator : operators) {
+                    String testExpression = String.format("%s %s %s", left, operator, right);
+                    log.debug("Testing valid expression: {}", testExpression);
+                    assertDoesNotThrow(() -> createExpression(school, testExpression));
+                }
+            }
+        }
+
+        for (String expression : List.of("1", "'apple'", "schools::Student!count()")) {
+            for (String operator : operators) {
+                String testExpression = String.format("true %s %s", operator, expression);
+                log.debug("Testing invalid expression: {}", testExpression);
+                assertThrows(UnsupportedOperationException.class, () -> createExpression(school, testExpression));
+
+                String testExpressionReversed = String.format("%s %s true", expression, operator);
+                log.debug("Testing invalid expression: {}", testExpressionReversed);
+                assertThrows(UnsupportedOperationException.class, () -> createExpression(school, testExpressionReversed));
+            }
+        }
     }
 
 }
