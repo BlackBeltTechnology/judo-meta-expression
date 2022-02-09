@@ -177,7 +177,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         EntityType tester = new EntityCreator("Tester")
                 .withAttribute("b", bool)
                 .create();
-        initResources(createTestModel(bool, tester));
+        initResources(createTestModel(createPackage("entities", bool, tester)));
 
         List<String> booleanExpressions = List.of("true", "false", "self.b", "(1 == 1)", "self!isDefined()");
         List<String> operators = List.of("==", "!=");
@@ -187,7 +187,8 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 for (String operator : operators) {
                     String testExpression = String.format("%s %s %s", left, operator, right);
                     log.debug("Testing valid expression: {}", testExpression);
-                    assertDoesNotThrow(() -> createExpression(tester, testExpression));
+                    Expression expression = assertDoesNotThrow(() -> createExpression(tester, testExpression));
+                    assertThat(expression, instanceOf(LogicalExpression.class));
                 }
             }
         }
@@ -196,11 +197,11 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
             for (String operator : operators) {
                 String testExpression = String.format("true %s %s", operator, expression);
                 log.debug("Testing invalid expression: {}", testExpression);
-                assertThrows(UnsupportedOperationException.class, () -> createExpression(tester, testExpression));
+                assertThrows(UnsupportedOperationException.class, () -> createExpression(testExpression));
 
                 String testExpressionReversed = String.format("%s %s true", expression, operator);
                 log.debug("Testing invalid expression: {}", testExpressionReversed);
-                assertThrows(UnsupportedOperationException.class, () -> createExpression(tester, testExpressionReversed));
+                assertThrows(UnsupportedOperationException.class, () -> createExpression(testExpressionReversed));
             }
         }
     }

@@ -28,6 +28,7 @@ import org.eclipse.emf.ecore.*;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -944,7 +945,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
                 for (String operator : operators) {
                     String testExpression = String.format("%s %s %s", left, operator, right);
                     log.debug("Testing valid expression: {}", testExpression);
-                    assertDoesNotThrow(() -> createExpression(school, testExpression));
+                    Expression expression = assertDoesNotThrow(() -> createExpression(school, testExpression));
+                    assertThat(expression, Matchers.instanceOf(LogicalExpression.class));
                 }
             }
         }
@@ -953,11 +955,11 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
             for (String operator : operators) {
                 String testExpression = String.format("true %s %s", operator, expression);
                 log.debug("Testing invalid expression: {}", testExpression);
-                assertThrows(UnsupportedOperationException.class, () -> createExpression(school, testExpression));
+                assertThrows(UnsupportedOperationException.class, () -> createExpression(testExpression));
 
                 String testExpressionReversed = String.format("%s %s true", expression, operator);
                 log.debug("Testing invalid expression: {}", testExpressionReversed);
-                assertThrows(UnsupportedOperationException.class, () -> createExpression(school, testExpressionReversed));
+                assertThrows(UnsupportedOperationException.class, () -> createExpression(testExpressionReversed));
             }
         }
     }
