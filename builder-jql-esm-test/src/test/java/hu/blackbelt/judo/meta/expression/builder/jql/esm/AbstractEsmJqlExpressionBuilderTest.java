@@ -44,11 +44,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
 import static hu.blackbelt.epsilon.runtime.execution.contexts.EvlExecutionContext.evlExecutionContextBuilder;
@@ -193,14 +189,8 @@ public class AbstractEsmJqlExpressionBuilderTest {
         return createExpression(null, jqlExpressionAsString);
     }
 
-    protected Expression createExpression(Class clazz, final String jqlExpressionString) {
+    protected Expression createExpression(hu.blackbelt.judo.meta.esm.structure.Class clazz, final String jqlExpressionString) {
         final Expression expression = esmJqlExpressionBuilder.createExpression(clazz, jqlExpressionString);
-        assertThat(expression, notNullValue());
-        return expression;
-    }
-
-    protected Expression createExpression(Class clazz, TransferObjectType inputParameterType, final String jqlExpressionString) {
-        final Expression expression = esmJqlExpressionBuilder.createExpressionWithInput(clazz, jqlExpressionString, inputParameterType);
         assertThat(expression, notNullValue());
         return expression;
     }
