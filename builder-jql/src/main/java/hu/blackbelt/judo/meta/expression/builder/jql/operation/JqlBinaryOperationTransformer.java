@@ -5,11 +5,13 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
+import hu.blackbelt.judo.meta.expression.logical.KleeneExpression;
 import hu.blackbelt.judo.meta.expression.operator.*;
 import hu.blackbelt.judo.meta.expression.temporal.DateAdditionExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimeAdditionExpression;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampAdditionExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.BinaryOperation;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -17,8 +19,14 @@ import java.util.function.Supplier;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalArithmeticExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerArithmeticExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.operator.LogicalOperator.AND;
+import static hu.blackbelt.judo.meta.expression.operator.LogicalOperator.IMPLIES;
+import static hu.blackbelt.judo.meta.expression.operator.LogicalOperator.OR;
+import static hu.blackbelt.judo.meta.expression.operator.LogicalOperator.XOR;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newConcatenateBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateAdditionExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeAdditionExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampAdditionExpressionBuilder;
 
 public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<BinaryOperation, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -265,17 +273,39 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
 
     private Expression createLogicalOperation(LogicalExpression left, LogicalExpression right, String operator) {
         switch (operator) {
+            case "==": // (left and right) or not (left or right)
+                return newKleeneEqualsExpression(left, right);
+            case "!=": // not ((left and right) or not (left or right))
+                return newNegationExpressionBuilder().withExpression(newKleeneEqualsExpression(left, right)).build();
             case "and":
-                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.AND).build();
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(AND).build();
             case "or":
-                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.OR).build();
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(OR).build();
             case "xor":
-                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.XOR).build();
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(XOR).build();
             case "implies":
-                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(LogicalOperator.IMPLIES).build();
+                return newKleeneExpressionBuilder().withLeft(left).withRight(right).withOperator(IMPLIES).build();
             default:
                 throw new UnsupportedOperationException("Invalid logical operation: " + operator);
         }
+    }
+
+    private KleeneExpression newKleeneEqualsExpression(LogicalExpression left, LogicalExpression right) {
+        return newKleeneExpressionBuilder()
+                .withLeft(newKleeneExpressionBuilder()
+                                  .withLeft(EcoreUtil.copy(left))
+                                  .withRight(EcoreUtil.copy(right))
+                                  .withOperator(AND)
+                                  .build()) // left and right
+                .withRight(newNegationExpressionBuilder()
+                                   .withExpression(newKleeneExpressionBuilder()
+                                                           .withLeft(left)
+                                                           .withRight(right)
+                                                           .withOperator(OR)
+                                                           .build()) // left or right
+                                   .build()) // not (left or right)
+                .withOperator(OR)
+                .build(); // (left and right) or not (left or right)
     }
 
     private Expression createStringOperation(StringExpression left, StringExpression right, String operator) {

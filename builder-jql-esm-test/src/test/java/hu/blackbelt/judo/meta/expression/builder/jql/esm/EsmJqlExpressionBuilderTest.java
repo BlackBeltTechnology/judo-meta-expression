@@ -6,32 +6,40 @@ import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.EntityType;
 import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
 import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
+import hu.blackbelt.judo.meta.esm.type.BooleanType;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
-import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.IntegerExpression;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ObjectSequence;
-import hu.blackbelt.judo.meta.expression.StaticSequence;
-import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilderTest {
 
     @Test
@@ -165,6 +173,51 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertThat(objectSequenceExpression, instanceOf(SequenceExpression.class));
         assertThat(((SequenceExpression) objectSequenceExpression).getSequence(), instanceOf(ObjectSequence.class));
         assertThat(((SequenceExpression) objectSequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
+    }
+
+    private static Stream<String> testValidEqualsWithBooleanExpressionsSource() {
+        List<String> booleanExpressions = List.of("true", "(1 == 1)", "self!isDefined()");
+        List<String> operators = List.of("==", "!=");
+        List<String> expressions = new ArrayList<>();
+        for (String left : booleanExpressions) {
+            for (String right : booleanExpressions) {
+                for (String operator : operators) {
+                    expressions.add(String.format("%s %s %s", left, operator, right));
+                }
+            }
+        }
+        return expressions.stream();
+    }
+
+    @ParameterizedTest
+    @MethodSource("testValidEqualsWithBooleanExpressionsSource")
+    public void testValidEqualsWithBooleanExpressions(String expression) {
+        BooleanType bool = newBooleanTypeBuilder().withName("boolean").build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("b", bool)
+                .create();
+        initResources(createTestModel(createPackage("entities", bool, tester)));
+        assertDoesNotThrow(() -> createExpression(tester, expression));
+    }
+
+    private static Stream<String> testInvalidEqualsWithBooleanExpressionsSource() {
+        List<String> operators = List.of("==", "!=");
+        List<String> expressions = new ArrayList<>();
+        for (String expression : List.of("1", "'apple'", "demo::entities::Tester!count()")) {
+            for (String operator : operators) {
+                expressions.add(String.format("true %s %s", operator, expression));
+                expressions.add(String.format("%s %s true", expression, operator));
+            }
+        }
+        return expressions.stream();
+    }
+
+    @ParameterizedTest
+    @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
+    public void testInvalidEqualsWithBooleanExpressions(String expression) {
+        EntityType tester = new EntityCreator("Tester").create();
+        initResources(createTestModel(createPackage("entities", tester)));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
     }
 
 }
