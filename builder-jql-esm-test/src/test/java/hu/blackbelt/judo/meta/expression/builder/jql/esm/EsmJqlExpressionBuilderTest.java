@@ -15,8 +15,12 @@ import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
@@ -171,39 +175,49 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertThat(((SequenceExpression) objectSequenceExpression).getOperator(), is(SequenceOperator.CURRENT));
     }
 
-    @Test
-    public void testEqualsWithBooleanExpressions() {
+    private static Stream<String> testValidEqualsWithBooleanExpressionsSource() {
+        List<String> booleanExpressions = List.of("true", "(1 == 1)", "self!isDefined()");
+        List<String> operators = List.of("==", "!=");
+        List<String> expressions = new ArrayList<>();
+        for (String left : booleanExpressions) {
+            for (String right : booleanExpressions) {
+                for (String operator : operators) {
+                    expressions.add(String.format("%s %s %s", left, operator, right));
+                }
+            }
+        }
+        return expressions.stream();
+    }
+
+    @ParameterizedTest
+    @MethodSource("testValidEqualsWithBooleanExpressionsSource")
+    public void testValidEqualsWithBooleanExpressions(String expression) {
         BooleanType bool = newBooleanTypeBuilder().withName("boolean").build();
         EntityType tester = new EntityCreator("Tester")
                 .withAttribute("b", bool)
                 .create();
         initResources(createTestModel(createPackage("entities", bool, tester)));
+        assertDoesNotThrow(() -> createExpression(tester, expression));
+    }
 
-        List<String> booleanExpressions = List.of("true", "false", "self.b", "(1 == 1)", "self!isDefined()");
+    private static Stream<String> testInvalidEqualsWithBooleanExpressionsSource() {
         List<String> operators = List.of("==", "!=");
-
-        for (String left : booleanExpressions) {
-            for (String right : booleanExpressions) {
-                for (String operator : operators) {
-                    String testExpression = String.format("%s %s %s", left, operator, right);
-                    log.debug("Testing valid expression: {}", testExpression);
-                    Expression expression = assertDoesNotThrow(() -> createExpression(tester, testExpression));
-                    assertThat(expression, instanceOf(LogicalExpression.class));
-                }
-            }
-        }
-
+        List<String> expressions = new ArrayList<>();
         for (String expression : List.of("1", "'apple'", "demo::entities::Tester!count()")) {
             for (String operator : operators) {
-                String testExpression = String.format("true %s %s", operator, expression);
-                log.debug("Testing invalid expression: {}", testExpression);
-                assertThrows(UnsupportedOperationException.class, () -> createExpression(testExpression));
-
-                String testExpressionReversed = String.format("%s %s true", expression, operator);
-                log.debug("Testing invalid expression: {}", testExpressionReversed);
-                assertThrows(UnsupportedOperationException.class, () -> createExpression(testExpressionReversed));
+                expressions.add(String.format("true %s %s", operator, expression));
+                expressions.add(String.format("%s %s true", expression, operator));
             }
         }
+        return expressions.stream();
+    }
+
+    @ParameterizedTest
+    @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
+    public void testInvalidEqualsWithBooleanExpressions(String expression) {
+        EntityType tester = new EntityCreator("Tester").create();
+        initResources(createTestModel(createPackage("entities", tester)));
+        assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
     }
 
 }
