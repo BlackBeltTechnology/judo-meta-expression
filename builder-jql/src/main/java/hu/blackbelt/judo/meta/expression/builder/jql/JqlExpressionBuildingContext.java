@@ -4,7 +4,6 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVariableResolver {
@@ -14,6 +13,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
     private final TO inputParameterType;
+    private String contextNamespace;
 
     private final JqlExpressionBuilderConfig config;
     
@@ -96,6 +96,16 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
 
     public TO getInputParameterType() {
         return inputParameterType;
+    }
+
+    @Override
+    public Optional<String> getContextNamespace() {
+        return Optional.ofNullable(contextNamespace);
+    }
+
+    @Override
+    public void setContextNamespace(String contextNamespace) {
+        this.contextNamespace = contextNamespace;
     }
 
     @Override
