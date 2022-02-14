@@ -46,6 +46,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -973,6 +974,38 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
     public void testInvalidEqualsWithBooleanExpressions(String expression) {
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
+    }
+
+    @Test
+    public void testUsingNonFQNames() {
+        EClass person = findBase("Person");
+        assertThat(person, notNullValue());
+        assertDoesNotThrow(() -> createExpression(person, "schools::Person"));
+        assertDoesNotThrow(() -> createExpression(person, "Person"));
+        assertDoesNotThrow(() -> createExpression(person, "schools::Person!any()"));
+        assertDoesNotThrow(() -> createExpression(person, "Person!any()"));
+        assertDoesNotThrow(() -> createExpression(person, "schools::Person!filter(e | schools::Person!any().height == e.height)"));
+        assertDoesNotThrow(() -> createExpression(person, "Person!filter(e | Person!any().height == e.height)"));
+
+        JqlExpressionBuildException exception = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(person, "person"));
+        assertThat(exception.getMessage(), endsWith("Unknown symbol: person"));
+
+        JqlExpressionBuildException exception1 = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(person, "person!any()"));
+        assertThat(exception1.getMessage(), endsWith("Unknown symbol: person"));
+
+        JqlExpressionBuildException exception2 = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(person, "Person!filter(e | person!any().height == e.height)"));
+        assertThat(exception2.getMessage(), endsWith("Unknown symbol: person"));
+
+        JqlExpressionBuildException exception3 = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(person, "Person!filter(e | schools::person!any().height == e.height)"));
+        assertThat(exception3.getMessage(), endsWith("No such element: schools::person"));
     }
 
 }
