@@ -217,6 +217,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+        if (context.getContextNamespace().isEmpty()) {
+            getModelAdapter().buildTypeName(clazz)
+                    .ifPresent(typeName -> context.setContextNamespace(typeName.getNamespace()));
+        }
         context.pushBase(clazz);
         return createExpression(jqlExpression, context);
     }

@@ -507,6 +507,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return expressionBuilder.getTypeNameFromResource(qualifiedName);
     }
 
+    public TypeName getTypeNameFromResource(String namespace, String name) {
+        return expressionBuilder.getTypeNameFromResource(namespace, name);
+    }
+
     public TypeName buildTypeName(String namespace, String name) {
         return expressionBuilder.buildTypeName(namespace, name);
     }

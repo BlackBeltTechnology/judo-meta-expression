@@ -19,6 +19,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
@@ -31,14 +34,11 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -91,19 +91,7 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
             baseExpression = base.baseExpression;
             navigationBase = base.navigationBase;
         } else {
-            TypeName typeName = jqlTransformers.getTypeNameFromResource(navigation.getQName());
-            if (typeName != null) {
-                if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
-                    baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
-                    navigationBase = null;
-                } else if (getModelAdapter().isPrimitiveType(getModelAdapter().get(typeName).get())) {
-                    baseExpression = newTypeNameExpressionBuilder().withName(typeName.getName()).withNamespace(typeName.getNamespace()).build();
-                    navigationBase = null;
-                } else {
-                    baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();
-                    navigationBase = (C) getModelAdapter().get(typeName).get();
-                }
-            } else {
+            try {
                 Expression contextBaseExpression = context.peekBaseExpression();
                 String name = navigation.getQName().getName();
                 if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
@@ -209,6 +197,29 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                         navigationBase = createVariableReferenceResult.navigationBase;
                     }
                 }
+                return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
+            } catch (Exception ignored) { }
+
+            TypeName typeName;
+            if (navigation.getQName().getNamespaceElements().isEmpty() && context.getContextNamespace().isPresent()) {
+                try {
+                    typeName = jqlTransformers.getTypeNameFromResource(context.getContextNamespace().get(), navigation.getQName().getName());
+                } catch (Exception e) {
+                    throw new JqlExpressionBuildException(baseExpression, Arrays.asList(new JqlExpressionBuildingError("Unknown symbol: " + navigation.getQName().getName(), navigation)));
+                }
+            } else {
+                typeName = jqlTransformers.getTypeNameFromResource(navigation.getQName());
+            }
+
+            if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
+                baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
+                navigationBase = null;
+            } else if (getModelAdapter().isPrimitiveType(getModelAdapter().get(typeName).get())) {
+                baseExpression = newTypeNameExpressionBuilder().withName(typeName.getName()).withNamespace(typeName.getNamespace()).build();
+                navigationBase = null;
+            } else {
+                baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();
+                navigationBase = (C) getModelAdapter().get(typeName).get();
             }
         }
         return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
