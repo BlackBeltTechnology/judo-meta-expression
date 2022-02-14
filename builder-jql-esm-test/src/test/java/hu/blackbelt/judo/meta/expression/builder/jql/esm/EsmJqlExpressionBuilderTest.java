@@ -10,7 +10,9 @@ import hu.blackbelt.judo.meta.esm.type.BooleanType;
 import hu.blackbelt.judo.meta.esm.type.DateType;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.esm.type.TimestampType;
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +30,13 @@ import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilder
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -218,6 +222,47 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         EntityType tester = new EntityCreator("Tester").create();
         initResources(createTestModel(createPackage("entities", tester)));
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
+    }
+
+    @Test
+    public void testUsingNonFQNames() {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", string)
+                .create();
+        initResources(createTestModel(createPackage("entities", tester, string, timestamp)));
+
+        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Timestamp!now()"));
+        assertDoesNotThrow(() -> createExpression(tester, "Timestamp!now()"));
+        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::String!getVariable('SYSTEM', 'variable')"));
+        assertDoesNotThrow(() -> createExpression(tester, "String!getVariable('SYSTEM', 'variable')"));
+        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Tester"));
+        assertDoesNotThrow(() -> createExpression(tester, "Tester"));
+        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Tester!any()"));
+        assertDoesNotThrow(() -> createExpression(tester, "Tester!any()"));
+        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Tester!filter(e | demo::entities::Tester!any().attr == e.attr)"));
+        assertDoesNotThrow(() -> createExpression(tester, "Tester!filter(e | Tester!any().attr == e.attr)"));
+
+        JqlExpressionBuildException exception = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(tester, "tester"));
+        assertThat(exception.getMessage(), endsWith("Unknown symbol: tester"));
+
+        JqlExpressionBuildException exception1 = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(tester, "tester!any()"));
+        assertThat(exception1.getMessage(), endsWith("Unknown symbol: tester"));
+
+        JqlExpressionBuildException exception2 = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(tester, "Tester!filter(e | tester!any().attr == e.attr)"));
+        assertThat(exception2.getMessage(), endsWith("Unknown symbol: tester"));
+
+        JqlExpressionBuildException exception3 = assertThrows(
+                JqlExpressionBuildException.class,
+                () -> createExpression(tester, "Tester!filter(e | demo::entities::tester!any().attr == e.attr)"));
+        assertThat(exception3.getMessage(), endsWith("No such element: demo::entities::tester"));
     }
 
 }
