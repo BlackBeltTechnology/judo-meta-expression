@@ -22,6 +22,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
@@ -195,7 +197,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
 
     @ParameterizedTest
     @MethodSource("testValidEqualsWithBooleanExpressionsSource")
-    public void testValidEqualsWithBooleanExpressions(String expression) {
+    public void testValidEqualsWithBooleanExpressions(final String expression) {
         BooleanType bool = newBooleanTypeBuilder().withName("boolean").build();
         EntityType tester = new EntityCreator("Tester")
                 .withAttribute("b", bool)
@@ -218,14 +220,26 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
 
     @ParameterizedTest
     @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
-    public void testInvalidEqualsWithBooleanExpressions(String expression) {
+    public void testInvalidEqualsWithBooleanExpressions(final String expression) {
         EntityType tester = new EntityCreator("Tester").create();
         initResources(createTestModel(createPackage("entities", tester)));
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
     }
 
-    @Test
-    public void testUsingNonFQNames() {
+    private static Stream<String> testUsingNonFQNamesSource() {
+        return Stream.of(
+                "Tester",
+                "Tester!any()",
+                "Timestamp!now()",
+                "String!getVariable('SYSTEM', 'variable')",
+                "Tester!filter(e | Tester!any().attr == e.attr)",
+                "Tester!filter(Tester | Tester!any().attr == Tester.attr)"
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testUsingNonFQNamesSource")
+    public void testUsingNonFQNames(final String script) {
         StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
         TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
         EntityType tester = new EntityCreator("Tester")
@@ -233,36 +247,31 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 .create();
         initResources(createTestModel(createPackage("entities", tester, string, timestamp)));
 
-        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Timestamp!now()"));
-        assertDoesNotThrow(() -> createExpression(tester, "Timestamp!now()"));
-        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::String!getVariable('SYSTEM', 'variable')"));
-        assertDoesNotThrow(() -> createExpression(tester, "String!getVariable('SYSTEM', 'variable')"));
-        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Tester"));
-        assertDoesNotThrow(() -> createExpression(tester, "Tester"));
-        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Tester!any()"));
-        assertDoesNotThrow(() -> createExpression(tester, "Tester!any()"));
-        assertDoesNotThrow(() -> createExpression(tester, "demo::entities::Tester!filter(e | demo::entities::Tester!any().attr == e.attr)"));
-        assertDoesNotThrow(() -> createExpression(tester, "Tester!filter(e | Tester!any().attr == e.attr)"));
+        assertDoesNotThrow(() -> createExpression(tester, script));
+    }
+
+    private static Stream<Entry<String, String>> testInvalidUsingNonFQNamesSource() {
+        return Stream.of(
+                Map.entry("tester", "Unknown symbol: tester"),
+                Map.entry("tester!any()", "Unknown symbol: tester"),
+                Map.entry("Tester!filter(e | tester!any().attr == e.attr)", "Unknown symbol: tester"),
+                Map.entry("Tester!filter(e | demo::entities::tester!any().attr == e.attr)", "No such element: demo::entities::tester")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testInvalidUsingNonFQNamesSource")
+    public void testInvalidUsingNonFQNames(final Entry<String, String> scriptEntry) {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", string)
+                .create();
+        initResources(createTestModel(createPackage("entities", tester, string, timestamp)));
 
         JqlExpressionBuildException exception = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(tester, "tester"));
-        assertThat(exception.getMessage(), endsWith("Unknown symbol: tester"));
-
-        JqlExpressionBuildException exception1 = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(tester, "tester!any()"));
-        assertThat(exception1.getMessage(), endsWith("Unknown symbol: tester"));
-
-        JqlExpressionBuildException exception2 = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(tester, "Tester!filter(e | tester!any().attr == e.attr)"));
-        assertThat(exception2.getMessage(), endsWith("Unknown symbol: tester"));
-
-        JqlExpressionBuildException exception3 = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(tester, "Tester!filter(e | demo::entities::tester!any().attr == e.attr)"));
-        assertThat(exception3.getMessage(), endsWith("No such element: demo::entities::tester"));
+                JqlExpressionBuildException.class, () -> createExpression(tester, scriptEntry.getKey()));
+        assertThat(exception.getMessage(), endsWith(scriptEntry.getValue()));
     }
 
 }

@@ -37,6 +37,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
@@ -959,10 +961,9 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     private static Stream<String> testInvalidEqualsWithBooleanExpressionsSource() {
-        List<String> operators = List.of("==", "!=");
         List<String> expressions = new ArrayList<>();
         for (String expression : List.of("1", "'apple'", "schools::Student!count()")) {
-            for (String operator : operators) {
+            for (String operator : List.of("==", "!=")) {
                 expressions.add(String.format("true %s %s", operator, expression));
                 expressions.add(String.format("%s %s true", expression, operator));
             }
@@ -976,36 +977,42 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
     }
 
-    @Test
-    public void testUsingNonFQNames() {
+    private static Stream<String> testUsingNonFQNamesSource() {
+        return Stream.of(
+                "Person",
+                "Person!any()",
+                "Person!filter(e | Person!any().height == e.height)",
+                "Person!filter(Person | Person!any().height == Person.height)"
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testUsingNonFQNamesSource")
+    public void testUsingNonFQNames(final String script) {
         EClass person = findBase("Person");
         assertThat(person, notNullValue());
-        assertDoesNotThrow(() -> createExpression(person, "schools::Person"));
-        assertDoesNotThrow(() -> createExpression(person, "Person"));
-        assertDoesNotThrow(() -> createExpression(person, "schools::Person!any()"));
-        assertDoesNotThrow(() -> createExpression(person, "Person!any()"));
-        assertDoesNotThrow(() -> createExpression(person, "schools::Person!filter(e | schools::Person!any().height == e.height)"));
-        assertDoesNotThrow(() -> createExpression(person, "Person!filter(e | Person!any().height == e.height)"));
+
+        assertDoesNotThrow(() -> createExpression(person, script));
+    }
+
+    private static Stream<Entry<String, String>> testInvalidUsingNonFQNamesSource() {
+        return Stream.of(
+                Map.entry("person", "Unknown symbol: person"),
+                Map.entry("person!any()", "Unknown symbol: person"),
+                Map.entry("Person!filter(e | person!any().height == e.height)", "Unknown symbol: person"),
+                Map.entry("Person!filter(e | schools::person!any().height == e.height)", "No such element: schools::person")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testInvalidUsingNonFQNamesSource")
+    public void testInvalidUsingNonFQNames(final Entry<String, String> scriptEntry) {
+        EClass person = findBase("Person");
+        assertThat(person, notNullValue());
 
         JqlExpressionBuildException exception = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(person, "person"));
-        assertThat(exception.getMessage(), endsWith("Unknown symbol: person"));
-
-        JqlExpressionBuildException exception1 = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(person, "person!any()"));
-        assertThat(exception1.getMessage(), endsWith("Unknown symbol: person"));
-
-        JqlExpressionBuildException exception2 = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(person, "Person!filter(e | person!any().height == e.height)"));
-        assertThat(exception2.getMessage(), endsWith("Unknown symbol: person"));
-
-        JqlExpressionBuildException exception3 = assertThrows(
-                JqlExpressionBuildException.class,
-                () -> createExpression(person, "Person!filter(e | schools::person!any().height == e.height)"));
-        assertThat(exception3.getMessage(), endsWith("No such element: schools::person"));
+                JqlExpressionBuildException.class, () -> createExpression(person, scriptEntry.getKey()));
+        assertThat(exception.getMessage(), endsWith(scriptEntry.getValue()));
     }
 
 }
