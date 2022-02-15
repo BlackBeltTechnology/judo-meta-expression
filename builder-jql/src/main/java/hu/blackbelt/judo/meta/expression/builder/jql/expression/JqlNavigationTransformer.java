@@ -93,15 +93,23 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
         } else {
             try {
                 Expression contextBaseExpression = context.peekBaseExpression();
-                String name = navigation.getQName().getName();
+                QualifiedName qName = navigation.getQName();
+                if (!qName.getNamespaceElements().isEmpty()) {
+                    Optional<? extends NE> optNe = getModelAdapter().get(jqlTransformers.getTypeNameFromResource(qName));
+                    String name = optNe.isPresent()
+                            ? getModelAdapter().getFqName(optNe.get())
+                            : qName.getName();
+                    throw new IllegalArgumentException(name + " is a type");
+                }
+                String name = qName.getName();
                 if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
                     Optional<Variable> baseVariable = context.resolveVariable(name);
-                    if (!baseVariable.isPresent()) {
+                    if (baseVariable.isEmpty()) {
                         TA parameterAttribute = Optional.ofNullable(navigation.getFeatures().size() == 1 ? (TO) context.getInputParameterType() : null)
-                                .map(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()).orElse(null))
+                                .flatMap(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()))
                                 .orElseThrow(() -> {
                                     String errorMessage = "Base variable '" + name;
                                     if (JqlExpressionBuilder.SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()) {

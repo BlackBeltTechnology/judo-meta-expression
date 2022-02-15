@@ -982,7 +982,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
                 "Person",
                 "Person!any()",
                 "Person!filter(e | Person!any().height == e.height)",
-                "Person!filter(Person | Person!any().height == Person.height)"
+                "Person!filter(Person | northwind::services::Person!any().height == Person.height)"
         );
     }
 

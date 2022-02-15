@@ -233,7 +233,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 "Timestamp!now()",
                 "String!getVariable('SYSTEM', 'variable')",
                 "Tester!filter(e | Tester!any().attr == e.attr)",
-                "Tester!filter(Tester | Tester!any().attr == Tester.attr)"
+                "Tester!filter(Tester | demo::entities::Tester!any().attr == Tester.attr)"
         );
     }
 
