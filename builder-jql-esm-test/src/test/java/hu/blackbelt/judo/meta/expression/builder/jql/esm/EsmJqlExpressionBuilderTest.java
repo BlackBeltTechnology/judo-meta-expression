@@ -38,6 +38,7 @@ import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEn
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -272,6 +273,31 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         JqlExpressionBuildException exception = assertThrows(
                 JqlExpressionBuildException.class, () -> createExpression(tester, scriptEntry.getKey()));
         assertThat(exception.getMessage(), endsWith(scriptEntry.getValue()));
+    }
+
+    @Test
+    public void testUsingNonFQNamesInDifferentPackage() {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", string)
+                .create();
+        EntityType tester1 = new EntityCreator("Tester1")
+                .withAttribute("attr", string)
+                .create();
+        Package types = createPackage("types", string);
+        Package entities = createPackage("entities", tester);
+        Package entities1 = createPackage("entities1", tester1);
+        initResources(createTestModel(entities, entities1, types));
+
+        assertDoesNotThrow(() -> createExpression(tester, "Tester"));
+        assertDoesNotThrow(() -> createExpression(tester1, "Tester1"));
+
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () -> createExpression(tester, "Tester1"));
+        assertThat(exception.getMessage(), containsString("Unknown symbol: Tester1"));
+        JqlExpressionBuildException exception1 =
+                assertThrows(JqlExpressionBuildException.class, () -> createExpression(tester1, "Tester"));
+        assertThat(exception1.getMessage(), containsString("Unknown symbol: Tester"));
     }
 
 }
