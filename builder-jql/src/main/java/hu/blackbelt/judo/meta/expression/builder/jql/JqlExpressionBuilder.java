@@ -1,12 +1,8 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
-import hu.blackbelt.judo.meta.expression.binding.Binding;
-import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
+import hu.blackbelt.judo.meta.expression.binding.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -14,9 +10,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -29,9 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newAttributeBindingBuilder;
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newFilterBindingBuilder;
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.*;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
@@ -370,29 +362,28 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
+        if (qName == null) return null;
         return getTypeNameFromResource(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName getTypeNameFromResource(String namespace, String name) {
-        if (namespace == null || namespace.isEmpty()) {
-            return null;
-        }
-        TypeName resolvedTypeName = buildTypeName(namespace, name);
-        return all(expressionResource.getResourceSet(), TypeName.class)
-                .filter(tn -> tn.getName() != null && tn.getName().equals(resolvedTypeName.getName()) &&
-                              tn.getNamespace() != null && tn.getNamespace().equals(resolvedTypeName.getNamespace()))
-                .findAny()
+        return Optional.ofNullable(buildTypeName(namespace, name))
+                .flatMap(resolvedTypeName ->
+                                 all(expressionResource.getResourceSet(), TypeName.class)
+                                         .filter(tn -> tn.getName() != null && tn.getName().equals(resolvedTypeName.getName()) &&
+                                                       tn.getNamespace() != null && tn.getNamespace().equals(resolvedTypeName.getNamespace()))
+                                         .findAny())
                 .orElse(null);
     }
 
     public TypeName buildTypeName(QualifiedName qName) {
+        if (qName == null) return null;
         return buildTypeName(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + typeName));
-        return modelAdapter.buildTypeName(ne).get();
+        return modelAdapter.get(typeName).flatMap(modelAdapter::buildTypeName).orElse(null);
     }
 
     public enum BindingRole {

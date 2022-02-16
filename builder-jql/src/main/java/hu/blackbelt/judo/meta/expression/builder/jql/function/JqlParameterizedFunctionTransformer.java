@@ -3,10 +3,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
-import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
-import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
-import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
+import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +11,8 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.NAMESPACE_SEPARATOR;
 
 public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM, RESULT extends Expression> extends AbstractJqlFunctionTransformer<BASE> {
 
@@ -53,7 +52,7 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
                 ((QualifiedName) castParam).getNamespaceElements().isEmpty() &&
                 context.getContextNamespace().isPresent()) {
                 QualifiedName qualifiedName = (QualifiedName) castParam;
-                qualifiedName.getNamespaceElements().addAll(List.of(context.getContextNamespace().get().split("(\\.|::|#)")));
+                qualifiedName.getNamespaceElements().addAll(List.of(context.getContextNamespace().get().split(NAMESPACE_SEPARATOR)));
             }
             return builder.apply(argument, castParam);
         } catch (ClassCastException e) {

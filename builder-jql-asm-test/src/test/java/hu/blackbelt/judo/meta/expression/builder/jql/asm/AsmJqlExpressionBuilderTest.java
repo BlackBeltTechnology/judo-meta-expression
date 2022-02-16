@@ -6,15 +6,11 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
-import hu.blackbelt.judo.meta.expression.collection.SortExpression;
+import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
+import hu.blackbelt.judo.meta.expression.object.*;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -25,35 +21,22 @@ import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.hamcrest.*;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
@@ -1005,12 +988,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
                 Map.entry("person", "Unknown symbol: person"),
                 Map.entry("person!any()", "Unknown symbol: person"),
                 Map.entry("Person!filter(e | person!any().height == e.height)", "Unknown symbol: person"),
-                Map.entry("Person!any()!asType(student)", "No such element: schools::student"),
-                Map.entry("Person!any()!kindOf(student)", "No such element: schools::student"),
-                Map.entry("Person!any()!typeOf(student)", "No such element: schools::student"),
-                Map.entry("Person!asCollection(student)", "No such element: schools::student"),
-                Map.entry("Class!any()!container(student)", "No such element: schools::student"),
-                Map.entry("Person!filter(e | schools::person!any().height == e.height)", "No such element: schools::person")
+                Map.entry("Person!any()!asType(student)", "Type not found: schools::student"),
+                Map.entry("Person!any()!kindOf(student)", "Type not found: schools::student"),
+                Map.entry("Person!any()!typeOf(student)", "Type not found: schools::student"),
+                Map.entry("Person!asCollection(student)", "Type not found: schools::student"),
+                Map.entry("Class!any()!container(student)", "Type not found: schools::student"),
+                Map.entry("Person!filter(e | schools::student!any().height == e.height)", "Type not found: schools::student")
         );
     }
 

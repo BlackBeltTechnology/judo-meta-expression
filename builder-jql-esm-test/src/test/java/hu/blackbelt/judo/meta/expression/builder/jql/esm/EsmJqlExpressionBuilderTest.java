@@ -3,14 +3,8 @@ package hu.blackbelt.judo.meta.expression.builder.jql.esm;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
-import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
-import hu.blackbelt.judo.meta.esm.type.BooleanType;
-import hu.blackbelt.judo.meta.esm.type.DateType;
-import hu.blackbelt.judo.meta.esm.type.EnumerationType;
-import hu.blackbelt.judo.meta.esm.type.StringType;
-import hu.blackbelt.judo.meta.esm.type.TimestampType;
+import hu.blackbelt.judo.meta.esm.structure.*;
+import hu.blackbelt.judo.meta.esm.type.*;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
@@ -20,31 +14,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilderTest {
@@ -263,11 +244,11 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 Map.entry("tester", "Unknown symbol: tester"),
                 Map.entry("tester!any()", "Unknown symbol: tester"),
                 Map.entry("Tester!filter(e | tester!any().attr == e.attr)", "Unknown symbol: tester"),
-                Map.entry("AncientTester!any()!asType(tester)", "No such element: demo::entities::tester"),
-                Map.entry("AncientTester!any()!kindOf(tester)", "No such element: demo::entities::tester"),
-                Map.entry("AncientTester!any()!typeOf(tester)", "No such element: demo::entities::tester"),
-                Map.entry("AncientTester!asCollection(tester)", "No such element: demo::entities::tester"),
-                Map.entry("Tester!filter(e | demo::entities::tester!any().attr == e.attr)", "No such element: demo::entities::tester")
+                Map.entry("AncientTester!any()!asType(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("AncientTester!any()!kindOf(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("AncientTester!any()!typeOf(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("AncientTester!asCollection(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("Tester!filter(e | demo::entities::tester!any().attr == e.attr)", "Type not found: demo::entities::tester")
                 // TODO: !container(...) => TODO add option for containment test
         );
     }
