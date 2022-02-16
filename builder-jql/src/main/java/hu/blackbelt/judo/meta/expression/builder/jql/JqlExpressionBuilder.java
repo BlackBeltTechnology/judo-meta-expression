@@ -1,12 +1,8 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
-import hu.blackbelt.judo.meta.expression.binding.Binding;
-import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
+import hu.blackbelt.judo.meta.expression.binding.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -14,9 +10,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -217,6 +211,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+        if (context.getContextNamespace().isEmpty()) {
+            getModelAdapter().buildTypeName(clazz)
+                    .ifPresent(typeName -> context.setContextNamespace(typeName.getNamespace()));
+        }
         context.pushBase(clazz);
         return createExpression(jqlExpression, context);
     }
@@ -326,8 +324,8 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return binding;
     }
 
-    public Binding createGetterBinding(C base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Binding binding = createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, null, expression);
+    public Binding createGetterBinding(C base, Expression expression, String feature, BindingType bindingType) {
+        Binding binding = createBinding(new BindingContext(feature, bindingType, BindingRole.GETTER), base, null, expression);
         return binding;
     }
 
@@ -364,31 +362,28 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return getTypeNameFromResource(namespace, name);
+        if (qName == null) return null;
+        return getTypeNameFromResource(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName getTypeNameFromResource(String namespace, String name) {
-        if (!namespace.isEmpty()) {
-        	TypeName resolvedTypeName = buildTypeName(namespace, name);
-            return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
-        } else {
-            return null;
-        }
+        return Optional.ofNullable(buildTypeName(namespace, name))
+                .flatMap(resolvedTypeName ->
+                                 all(expressionResource.getResourceSet(), TypeName.class)
+                                         .filter(tn -> tn.getName() != null && tn.getName().equals(resolvedTypeName.getName()) &&
+                                                       tn.getNamespace() != null && tn.getNamespace().equals(resolvedTypeName.getNamespace()))
+                                         .findAny())
+                .orElse(null);
     }
 
     public TypeName buildTypeName(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return buildTypeName(namespace, name);
+        if (qName == null) return null;
+        return buildTypeName(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + String.valueOf(typeName)));
-        TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
-        return resolvedTypeName;
+        return modelAdapter.get(typeName).flatMap(modelAdapter::buildTypeName).orElse(null);
     }
 
     public enum BindingRole {

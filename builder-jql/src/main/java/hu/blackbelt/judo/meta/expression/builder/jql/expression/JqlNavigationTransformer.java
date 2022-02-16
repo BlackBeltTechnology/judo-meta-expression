@@ -1,24 +1,18 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.expression;
 
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildingError;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.JqlFeatureTransformResult;
 import hu.blackbelt.judo.meta.expression.constant.StringConstant;
 import hu.blackbelt.judo.meta.expression.variable.*;
-import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
-import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.NavigationExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
+import hu.blackbelt.judo.meta.jql.jqldsl.*;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.NAMESPACE_SEPARATOR;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
@@ -30,15 +24,10 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampVariableReferenceBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newStaticSequenceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.variable.util.builder.VariableBuilders.*;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<NavigationExpression, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
@@ -91,29 +80,25 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
             baseExpression = base.baseExpression;
             navigationBase = base.navigationBase;
         } else {
-            TypeName typeName = jqlTransformers.getTypeNameFromResource(navigation.getQName());
-            if (typeName != null) {
-                if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
-                    baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
-                    navigationBase = null;
-                } else if (getModelAdapter().isPrimitiveType(getModelAdapter().get(typeName).get())) {
-                    baseExpression = newTypeNameExpressionBuilder().withName(typeName.getName()).withNamespace(typeName.getNamespace()).build();
-                    navigationBase = null;
-                } else {
-                    baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();
-                    navigationBase = (C) getModelAdapter().get(typeName).get();
-                }
-            } else {
+            try {
                 Expression contextBaseExpression = context.peekBaseExpression();
-                String name = navigation.getQName().getName();
+                QualifiedName qName = navigation.getQName();
+                if (!qName.getNamespaceElements().isEmpty()) {
+                    Optional<? extends NE> optNe = getModelAdapter().get(jqlTransformers.getTypeNameFromResource(qName));
+                    String name = optNe.isPresent()
+                            ? getModelAdapter().getFqName(optNe.get())
+                            : qName.getName();
+                    throw new IllegalArgumentException(name + " is a type");
+                }
+                String name = qName.getName();
                 if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
                 } else {
                     Optional<Variable> baseVariable = context.resolveVariable(name);
-                    if (!baseVariable.isPresent()) {
+                    if (baseVariable.isEmpty()) {
                         TA parameterAttribute = Optional.ofNullable(navigation.getFeatures().size() == 1 ? (TO) context.getInputParameterType() : null)
-                                .map(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()).orElse(null))
+                                .flatMap(t -> getModelAdapter().getTransferAttribute(t, navigation.getFeatures().get(0).getName()))
                                 .orElseThrow(() -> {
                                     String errorMessage = "Base variable '" + name;
                                     if (JqlExpressionBuilder.SELF_NAME.equals(name) && context.resolveOnlyCurrentLambdaScope()) {
@@ -209,6 +194,32 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                         navigationBase = createVariableReferenceResult.navigationBase;
                     }
                 }
+                return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
+            } catch (Exception ignored) { }
+
+            TypeName typeName = navigation.getQName().getNamespaceElements().isEmpty() && context.getContextNamespace().isPresent()
+                    ? jqlTransformers.getTypeNameFromResource(context.getContextNamespace().get(), navigation.getQName().getName())
+                    : jqlTransformers.getTypeNameFromResource(navigation.getQName());
+            if (typeName == null) {
+                QualifiedName qName = navigation.getQName();
+                String message = qName.getNamespaceElements().isEmpty()
+                        ? "Unknown symbol: " + qName.getName()
+                        : String.format("Type not found: %s%s%s",
+                                        String.join(NAMESPACE_SEPARATOR, qName.getNamespaceElements()),
+                                        NAMESPACE_SEPARATOR,
+                                        qName.getName());
+                throw new JqlExpressionBuildException(baseExpression, List.of(new JqlExpressionBuildingError(message, navigation)));
+            }
+
+            if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
+                baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
+                navigationBase = null;
+            } else if (getModelAdapter().isPrimitiveType(getModelAdapter().get(typeName).get())) {
+                baseExpression = newTypeNameExpressionBuilder().withName(typeName.getName()).withNamespace(typeName.getNamespace()).build();
+                navigationBase = null;
+            } else {
+                baseExpression = newImmutableCollectionBuilder().withElementName(typeName).build();
+                navigationBase = (C) getModelAdapter().get(typeName).get();
             }
         }
         return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
@@ -245,7 +256,7 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
         return new JqlFeatureTransformResult<C>(navigationBase, baseExpression);
     }
 
-    
+
     public Expression doTransform(NavigationExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         NavigationExpression navigation = jqlExpression;
         LOG.debug("Transform navigation: {}", navigationString(navigation));
