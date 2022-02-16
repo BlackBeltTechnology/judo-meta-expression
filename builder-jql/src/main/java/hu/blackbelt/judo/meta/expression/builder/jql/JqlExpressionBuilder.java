@@ -29,7 +29,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.*;
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newAttributeBindingBuilder;
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newFilterBindingBuilder;
+import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 
@@ -217,6 +219,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+        if (context.getContextNamespace().isEmpty()) {
+            getModelAdapter().buildTypeName(clazz)
+                    .ifPresent(typeName -> context.setContextNamespace(typeName.getNamespace()));
+        }
         context.pushBase(clazz);
         return createExpression(jqlExpression, context);
     }
@@ -326,8 +332,8 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return binding;
     }
 
-    public Binding createGetterBinding(C base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Binding binding = createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, null, expression);
+    public Binding createGetterBinding(C base, Expression expression, String feature, BindingType bindingType) {
+        Binding binding = createBinding(new BindingContext(feature, bindingType, BindingRole.GETTER), base, null, expression);
         return binding;
     }
 
@@ -364,31 +370,29 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return getTypeNameFromResource(namespace, name);
+        return getTypeNameFromResource(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName getTypeNameFromResource(String namespace, String name) {
-        if (!namespace.isEmpty()) {
-        	TypeName resolvedTypeName = buildTypeName(namespace, name);
-            return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
-        } else {
+        if (namespace == null || namespace.isEmpty()) {
             return null;
         }
+        TypeName resolvedTypeName = buildTypeName(namespace, name);
+        return all(expressionResource.getResourceSet(), TypeName.class)
+                .filter(tn -> tn.getName() != null && tn.getName().equals(resolvedTypeName.getName()) &&
+                              tn.getNamespace() != null && tn.getNamespace().equals(resolvedTypeName.getNamespace()))
+                .findAny()
+                .orElse(null);
     }
 
     public TypeName buildTypeName(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return buildTypeName(namespace, name);
+        return buildTypeName(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + String.valueOf(typeName)));
-        TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
-        return resolvedTypeName;
+        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + typeName));
+        return modelAdapter.buildTypeName(ne).get();
     }
 
     public enum BindingRole {

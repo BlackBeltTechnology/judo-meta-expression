@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionTransformer;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
+import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,12 @@ public class JqlParameterizedFunctionTransformer<BASE extends Expression, PARAM,
         }
         try {
             PARAM castParam = (PARAM) parameter;
+            if (castParam instanceof QualifiedName &&
+                ((QualifiedName) castParam).getNamespaceElements().isEmpty() &&
+                context.getContextNamespace().isPresent()) {
+                QualifiedName qualifiedName = (QualifiedName) castParam;
+                qualifiedName.getNamespaceElements().addAll(List.of(context.getContextNamespace().get().split("(\\.|::|#)")));
+            }
             return builder.apply(argument, castParam);
         } catch (ClassCastException e) {
             log.debug(String.format("Error in expression %s!%s, illegal argument type: %s", argument, function.getName(), argument.getClass()), e);
