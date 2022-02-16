@@ -982,7 +982,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
                 "Person",
                 "Person!any()",
                 "Person!filter(e | Person!any().height == e.height)",
-                "Person!filter(Person | schools::Person!any().height == Person.height)"
+                "Person!filter(Person | schools::Person!any().height == Person.height)",
+                "Person!any()!asType(Student)",
+                "Person!any()!kindOf(Student)",
+                "Person!any()!typeOf(Student)",
+                "Person!asCollection(Student)",
+                "Class!any()!container(School)"
         );
     }
 
@@ -1000,6 +1005,11 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
                 Map.entry("person", "Unknown symbol: person"),
                 Map.entry("person!any()", "Unknown symbol: person"),
                 Map.entry("Person!filter(e | person!any().height == e.height)", "Unknown symbol: person"),
+                Map.entry("Person!any()!asType(student)", "No such element: schools::student"),
+                Map.entry("Person!any()!kindOf(student)", "No such element: schools::student"),
+                Map.entry("Person!any()!typeOf(student)", "No such element: schools::student"),
+                Map.entry("Person!asCollection(student)", "No such element: schools::student"),
+                Map.entry("Class!any()!container(student)", "No such element: schools::student"),
                 Map.entry("Person!filter(e | schools::person!any().height == e.height)", "No such element: schools::person")
         );
     }

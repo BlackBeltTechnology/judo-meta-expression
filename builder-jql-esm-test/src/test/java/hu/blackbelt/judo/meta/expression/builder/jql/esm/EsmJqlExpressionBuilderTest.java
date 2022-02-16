@@ -232,9 +232,14 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 "Tester",
                 "Tester!any()",
                 "Timestamp!now()",
+                "AncientTester!any()!asType(Tester)",
+                "AncientTester!any()!kindOf(Tester)",
+                "AncientTester!any()!typeOf(Tester)",
+                "AncientTester!asCollection(Tester)",
                 "String!getVariable('SYSTEM', 'variable')",
                 "Tester!filter(e | Tester!any().attr == e.attr)",
                 "Tester!filter(Tester | demo::entities::Tester!any().attr == Tester.attr)"
+                // TODO: !container(...) => TODO add option for containment test
         );
     }
 
@@ -243,10 +248,12 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
     public void testUsingNonFQNames(final String script) {
         StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
         TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
+        EntityType ancientTester = new EntityCreator("AncientTester").create();
         EntityType tester = new EntityCreator("Tester")
                 .withAttribute("attr", string)
+                .withGeneralization(ancientTester)
                 .create();
-        initResources(createTestModel(createPackage("entities", tester, string, timestamp)));
+        initResources(createTestModel(createPackage("entities", ancientTester, tester, string, timestamp)));
 
         assertDoesNotThrow(() -> createExpression(tester, script));
     }
@@ -256,7 +263,12 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 Map.entry("tester", "Unknown symbol: tester"),
                 Map.entry("tester!any()", "Unknown symbol: tester"),
                 Map.entry("Tester!filter(e | tester!any().attr == e.attr)", "Unknown symbol: tester"),
+                Map.entry("AncientTester!any()!asType(tester)", "No such element: demo::entities::tester"),
+                Map.entry("AncientTester!any()!kindOf(tester)", "No such element: demo::entities::tester"),
+                Map.entry("AncientTester!any()!typeOf(tester)", "No such element: demo::entities::tester"),
+                Map.entry("AncientTester!asCollection(tester)", "No such element: demo::entities::tester"),
                 Map.entry("Tester!filter(e | demo::entities::tester!any().attr == e.attr)", "No such element: demo::entities::tester")
+                // TODO: !container(...) => TODO add option for containment test
         );
     }
 
@@ -265,10 +277,12 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
     public void testInvalidUsingNonFQNames(final Entry<String, String> scriptEntry) {
         StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
         TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
+        EntityType ancientTester = new EntityCreator("AncientTester").create();
         EntityType tester = new EntityCreator("Tester")
                 .withAttribute("attr", string)
+                .withGeneralization(ancientTester)
                 .create();
-        initResources(createTestModel(createPackage("entities", tester, string, timestamp)));
+        initResources(createTestModel(createPackage("entities", ancientTester, tester, string, timestamp)));
 
         JqlExpressionBuildException exception = assertThrows(
                 JqlExpressionBuildException.class, () -> createExpression(tester, scriptEntry.getKey()));
