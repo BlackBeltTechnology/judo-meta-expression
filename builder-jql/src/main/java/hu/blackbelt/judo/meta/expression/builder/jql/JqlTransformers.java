@@ -462,7 +462,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         } else if (subject instanceof SortExpression) {
             addLambdaVariable(((SortExpression) subject).getCollectionExpression(), context, lambdaArgument);
         }*/ else {
-            throw new IllegalArgumentException(String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
+            throw new IllegalArgumentException("Lambda variable cannot be created with type: " + subject.getClass());
         }
     }
 
