@@ -519,7 +519,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     void testObjectSelectorToFilterExpressionsWithShortenedNames() {
         EClass category = findBase("Category");
         Expression headImmutableSetExpression = createExpression(category, "Product!head(p | p.unitPrice).unitPrice");
-        assertThat(headImmutableSetExpression.toString(), is("demo::entities::Product!filter(_iterator_3 | (_iterator_3.unitPrice == demo::entities::Product!min(_iterator_3 | _iterator_3.unitPrice)))!any().unitPrice"));
+        assertThat(headImmutableSetExpression.toString(), is("demo::entities::Product!filter(_iterator_1 | (_iterator_1.unitPrice == demo::entities::Product!min(_iterator_1 | _iterator_1.unitPrice)))!any().unitPrice"));
     }
 
     /*
