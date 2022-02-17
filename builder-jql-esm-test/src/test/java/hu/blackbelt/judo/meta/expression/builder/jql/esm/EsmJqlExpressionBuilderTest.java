@@ -121,6 +121,32 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
     }
 
     @Test
+    void testCastWithShortenedNames() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
+                .withName("customer")
+                .withUpper(1).build();
+        Class order = new EntityCreator("Order").withTwoWayRelation(twr).create();
+        Class address = new EntityCreator("Address").create();
+        Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, twr, true).withCollectionRelation("addresses", address).create();
+        twr.setTarget(customer);
+
+        Class internationalOrder = new EntityCreator("InternationalOrder").withGeneralization(order).create();
+        Class internationalAddress = new EntityCreator("InternationalAddress")
+                .withAttribute("country", stringType)
+                .withGeneralization(address)
+                .create();
+        Class company = new EntityCreator("Company").withGeneralization(customer).create();
+
+        initResources(createTestModel(createPackage("entities", order, internationalOrder, customer, address, internationalAddress, company), stringType));
+        Expression expression = createExpression(customer, "self=>orders!asCollection(InternationalOrder)");
+        Expression expression1 = createExpression(customer, "self=>addresses!sort()!head()!asType(InternationalAddress).country");
+
+        createExpression(order, "self=>customer!asType(Company)");
+
+    }
+
+    @Test
     void testStaticExpressions() {
         EntityType product = new EntityCreator("Product").create();
         EntityType order = new EntityCreator("Order").create();
