@@ -6,15 +6,11 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
-import hu.blackbelt.judo.meta.expression.collection.SortExpression;
+import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
+import hu.blackbelt.judo.meta.expression.object.*;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -25,32 +21,22 @@ import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.hamcrest.*;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
@@ -307,9 +293,25 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    void testCastWithShortenedNames() {
+        EClass customer = findBase("Customer");
+        createExpression(customer, "self=>orders!asCollection(InternationalOrder)");
+        createExpression(customer, "self=>addresses!sort()!head()!asType(InternationalAddress).country");
+
+        EClass order = findBase("Order");
+        createExpression(order, "self=>customer!asType(Company)");
+    }
+
+    @Test
     void testContainer() {
         EClass address = findBase("Address");
         createExpression(address, "self!container(demo::entities::Customer)");
+    }
+
+    @Test
+    void testContainerWithShortenedNames() {
+        EClass address = findBase("Address");
+        createExpression(address, "self!container(Customer)");
     }
 
     @Test
@@ -513,6 +515,13 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertThat(tailsAscExpression.toString(), is("self=>products!filter(_iterator_9 | (_iterator_9.unitPrice == self=>products!max(_iterator_9 | _iterator_9.unitPrice)))"));        
     }
 
+    @Test
+    void testObjectSelectorToFilterExpressionsWithShortenedNames() {
+        EClass category = findBase("Category");
+        Expression headImmutableSetExpression = createExpression(category, "Product!head(p | p.unitPrice).unitPrice");
+        assertThat(headImmutableSetExpression.toString(), is("demo::entities::Product!filter(_iterator_1 | (_iterator_1.unitPrice == demo::entities::Product!min(_iterator_1 | _iterator_1.unitPrice)))!any().unitPrice"));
+    }
+
     /*
      * See JNG-1700 for details.
      * The simple resolution for tallesStudent would be: 
@@ -593,6 +602,15 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         EClass order = findBase("Order");
         createExpression(order, "self->customer!asType(demo::entities::Individual)!filter(c | c.firstName == 'joe')");
+        ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')");
+        assertThat(objectFilter.getObjectExpression().getIteratorVariableName(), is("_iterator_2"));
+
+    }
+
+    @Test
+    void testObjectOperationsWithShortenedNames() {
+        EClass order = findBase("Order");
+        createExpression(order, "self->customer!asType(Individual)!filter(c | c.firstName == 'joe')");
         ObjectFilterExpression objectFilter = (ObjectFilterExpression) createExpression(order, "self.shipper!filter(s | s.companyName == 'DHL')");
         assertThat(objectFilter.getObjectExpression().getIteratorVariableName(), is("_iterator_2"));
 
@@ -740,6 +758,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    public void testSpawnOperatorWithShortenedNames() {
+        EClass order = findBase("Order");
+        assertThrows(UnsupportedOperationException.class, () -> createExpression(order, "self.shipper as Shipper"));
+    }
+
+    @Test
     public void testEnvironmentVariables() {
         createExpression("demo::types::Timestamp!getVariable('SYSTEM', 'current_timestamp')");
         createExpression("demo::types::Time!getVariable('SYSTEM', 'current_time')");
@@ -749,6 +773,12 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     public void testExternalVariablesAreNotAllowed() {
         EClass order = findBase("Order");
         assertThrows(JqlExpressionBuildException.class, () -> createExpression(order, "demo::entities::Order!filter(o | o == self)"));
+    }
+
+    @Test
+    public void testExternalVariablesAreNotAllowedWithShortenedNames() {
+        EClass order = findBase("Order");
+        assertThrows(JqlExpressionBuildException.class, () -> createExpression(order, "Order!filter(o | o == self)"));
     }
 
     @Test
@@ -817,6 +847,26 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         // #4 valid - same
         assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!kindOf(schools::Student)"));
     }
+    @Test
+    public void testKindOfWithShortenedNames() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!kindOf(Student)"));
+        assertTrue(exception.getMessage().contains("Element type Student is not compatible with School"));
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!kindOf(Person)"));
+        assertTrue(exception2.getMessage().contains("Element type Person is not compatible with Student"));
+
+        // #3 valid - different
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!kindOf(Student)"));
+
+        // #4 valid - same
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!kindOf(Student)"));
+    }
 
     @Test
     public void testTypeOf() {
@@ -837,6 +887,26 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #4 valid - same
         assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!typeOf(schools::Student)"));
+    }
+    @Test
+    public void testTypeOfWithShortenedNames() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!typeOf(Student)"));
+        assertTrue(exception.getMessage().contains("Element type Student is not School"));
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!typeOf(Person)"));
+        assertTrue(exception2.getMessage().contains("Element type Person is not Student"));
+
+        // #3 valid - different
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!typeOf(Student)"));
+
+        // #4 valid - same
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!typeOf(Student)"));
     }
 
     @Test
@@ -864,6 +934,30 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    public void testAsTypeWithShortenedNames() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!asType(Student)"));
+        assertTrue(exception.getMessage().contains("Invalid casting type: School is not supertype of Student"));
+
+        // #2 invalid - reverse
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!asType(Person)"));
+        assertTrue(exception2.getMessage().contains("Invalid casting type: Student is not supertype of Person"));
+
+        // #3 invalid - same
+        JqlExpressionBuildException exception3 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Student"), "self!asType(Student)"));
+        assertTrue(exception3.getMessage().contains("Invalid casting type: Student is not supertype of Student"));
+
+        // #4 valid
+        assertDoesNotThrow(() -> createExpression(findBase("Person"), "self!asType(Student)"));
+    }
+
+    @Test
     public void testContainerValidation() {
         // #1 invalid - different
         JqlExpressionBuildException exception =
@@ -879,6 +973,24 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #3 valid
         assertDoesNotThrow(() -> createExpression(findBase("Class"), "self!container(schools::School)"));
+    }
+
+    @Test
+    public void testContainerValidationWithShortenedNames() {
+        // #1 invalid - different
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self!container(Class)"));
+        assertTrue(exception.getMessage().contains("Class type is not a container of School"));
+
+        // #2 invalid - same
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("Class"), "self!container(Class)"));
+        assertTrue(exception2.getMessage().contains("Class type is not a container of Class"));
+
+        // #3 valid
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "self!container(School)"));
     }
 
     @Test
@@ -900,6 +1012,24 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
+    public void testContainsWithShortenedNames() {
+        // #1 invalid - collection's- and parameter's type are not compatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!contains(Person!any())"));
+        assertTrue(exception.getMessage().contains("Types of collection 'Class' and object 'Person' are not compatible"));
+
+        // #2 valid - collection's- and parameter's type are the same
+        assertDoesNotThrow(() -> createExpression(findBase("School"), "self.classes!contains(Class!any())"));
+
+        // #3 valid - collection's type is supertype of parameter's type
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "self.parents!contains(Student!any())"));
+
+        // #4 valid - parameter's type is supertype of collection's type
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "self.students!contains(Person!any())"));
+    }
+
+    @Test
     public void testMemberOf() {
         // #1 invalid - object's- and parameter's type are not compatible
         JqlExpressionBuildException exception =
@@ -915,6 +1045,23 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #4 valid - parameter's type is supertype of object's type
         assertDoesNotThrow(() -> createExpression(findBase("Class"), "schools::Person!any()!memberOf(self.students)"));
+    }
+    @Test
+    public void testMemberOfWithShortenedNames() {
+        // #1 invalid - object's- and parameter's type are not compatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "Person!any()!memberOf(self.classes)"));
+        assertTrue(exception.getMessage().contains("Types of collection 'Person' and object 'Class' are not compatible"));
+
+        // #2 valid - object's- and parameter's type are the same
+        assertDoesNotThrow(() -> createExpression(findBase("School"), "Class!any()!memberOf(self.classes)"));
+
+        // #3 valid - object's type is supertype of parameter's type
+        assertDoesNotThrow(() -> createExpression(findBase("Student"), "Student!any()!memberOf(self.parents)"));
+
+        // #4 valid - parameter's type is supertype of object's type
+        assertDoesNotThrow(() -> createExpression(findBase("Class"), "Person!any()!memberOf(self.students)"));
     }
 
     @Test
@@ -933,6 +1080,24 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         // #3 valid
         assertDoesNotThrow(() -> findBase("Student"), "self.parents!asCollection(schools::Student)");
+    }
+
+    @Test
+    public void testAsCollectionWithShortenedNames() {
+        // #1 invalid - incompatible
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!asCollection(Student)"));
+        assertTrue(exception.getMessage().contains("Invalid casting: Class as Student. Class is not supertype of Student"));
+
+        // #2 invalid - same type
+        JqlExpressionBuildException exception2 =
+                assertThrows(JqlExpressionBuildException.class, () ->
+                        createExpression(findBase("School"), "self.classes!asCollection(Class)"));
+        assertTrue(exception2.getMessage().contains("Invalid casting: Class as Class. Class is not supertype of Class"));
+
+        // #3 valid
+        assertDoesNotThrow(() -> findBase("Student"), "self.parents!asCollection(Student)");
     }
 
     private static Stream<String> testValidEqualsWithBooleanExpressionsSource() {
@@ -958,10 +1123,9 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     private static Stream<String> testInvalidEqualsWithBooleanExpressionsSource() {
-        List<String> operators = List.of("==", "!=");
         List<String> expressions = new ArrayList<>();
         for (String expression : List.of("1", "'apple'", "schools::Student!count()")) {
-            for (String operator : operators) {
+            for (String operator : List.of("==", "!=")) {
                 expressions.add(String.format("true %s %s", operator, expression));
                 expressions.add(String.format("%s %s true", expression, operator));
             }
@@ -973,6 +1137,53 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
     public void testInvalidEqualsWithBooleanExpressions(String expression) {
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
+    }
+
+    private static Stream<String> testUsingNonFQNamesSource() {
+        return Stream.of(
+                "Person",
+                "Person!any()",
+                "Person!filter(e | Person!any().height == e.height)",
+                "Person!filter(Person | schools::Person!any().height == Person.height)",
+                "Person!any()!asType(Student)",
+                "Person!any()!kindOf(Student)",
+                "Person!any()!typeOf(Student)",
+                "Person!asCollection(Student)",
+                "Class!any()!container(School)"
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testUsingNonFQNamesSource")
+    public void testUsingNonFQNames(final String script) {
+        EClass person = findBase("Person");
+        assertThat(person, notNullValue());
+
+        assertDoesNotThrow(() -> createExpression(person, script));
+    }
+
+    private static Stream<Entry<String, String>> testInvalidUsingNonFQNamesSource() {
+        return Stream.of(
+                Map.entry("person", "Unknown symbol: person"),
+                Map.entry("person!any()", "Unknown symbol: person"),
+                Map.entry("Person!filter(e | person!any().height == e.height)", "Unknown symbol: person"),
+                Map.entry("Person!any()!asType(student)", "Type not found: schools::student"),
+                Map.entry("Person!any()!kindOf(student)", "Type not found: schools::student"),
+                Map.entry("Person!any()!typeOf(student)", "Type not found: schools::student"),
+                Map.entry("Person!asCollection(student)", "Type not found: schools::student"),
+                Map.entry("Class!any()!container(student)", "Type not found: schools::student"),
+                Map.entry("Person!filter(e | schools::student!any().height == e.height)", "Type not found: schools::student")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testInvalidUsingNonFQNamesSource")
+    public void testInvalidUsingNonFQNames(final Entry<String, String> scriptEntry) {
+        EClass person = findBase("Person");
+        assertThat(person, notNullValue());
+
+        Exception exception = assertThrows(Exception.class, () -> createExpression(person, scriptEntry.getKey()));
+        assertThat(exception.getMessage(), containsString(scriptEntry.getValue()));
     }
 
 }
