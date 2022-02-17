@@ -1,12 +1,8 @@
 package hu.blackbelt.judo.meta.expression.builder.jql;
 
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
-import hu.blackbelt.judo.meta.expression.binding.AttributeBindingRole;
-import hu.blackbelt.judo.meta.expression.binding.Binding;
-import hu.blackbelt.judo.meta.expression.binding.ReferenceBindingRole;
+import hu.blackbelt.judo.meta.expression.binding.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.constant.Instance;
@@ -14,9 +10,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.common.util.ECollections;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.EMap;
+import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -26,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -217,6 +212,10 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+        if (context.getContextNamespace().isEmpty()) {
+            getModelAdapter().buildTypeName(clazz)
+                    .ifPresent(typeName -> context.setContextNamespace(typeName.getNamespace()));
+        }
         context.pushBase(clazz);
         return createExpression(jqlExpression, context);
     }
@@ -326,8 +325,8 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return binding;
     }
 
-    public Binding createGetterBinding(C base, Expression expression, String feature, JqlExpressionBuilder.BindingType bindingType) {
-        Binding binding = createBinding(new JqlExpressionBuilder.BindingContext(feature, bindingType, JqlExpressionBuilder.BindingRole.GETTER), base, null, expression);
+    public Binding createGetterBinding(C base, Expression expression, String feature, BindingType bindingType) {
+        Binding binding = createBinding(new BindingContext(feature, bindingType, BindingRole.GETTER), base, null, expression);
         return binding;
     }
 
@@ -364,31 +363,87 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName getTypeNameFromResource(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return getTypeNameFromResource(namespace, name);
+        if (qName == null) return null;
+        return getTypeNameFromResource(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName getTypeNameFromResource(String namespace, String name) {
-        if (!namespace.isEmpty()) {
-        	TypeName resolvedTypeName = buildTypeName(namespace, name);
-            return JqlExpressionBuilder.all(expressionResource.getResourceSet(), TypeName.class).filter(tn -> Objects.equals(tn.getName(), resolvedTypeName.getName()) && Objects.equals(tn.getNamespace(), resolvedTypeName.getNamespace())).findAny().orElse(null);
-        } else {
-            return null;
-        }
+        return Optional.ofNullable(buildTypeName(namespace, name))
+                .flatMap(resolvedTypeName ->
+                                 all(expressionResource.getResourceSet(), TypeName.class)
+                                         .filter(tn -> tn.getName() != null && tn.getName().equals(resolvedTypeName.getName()) &&
+                                                       tn.getNamespace() != null && tn.getNamespace().equals(resolvedTypeName.getNamespace()))
+                                         .findAny())
+                .orElse(null);
     }
 
     public TypeName buildTypeName(QualifiedName qName) {
-        String namespace = createQNamespaceString(qName);
-        String name = qName.getName();
-        return buildTypeName(namespace, name);
+        if (qName == null) return null;
+        return buildTypeName(createQNamespaceString(qName), qName.getName());
     }
 
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
-        NE ne = modelAdapter.get(typeName).orElseThrow(() -> new NoSuchElementException("No such element: " + String.valueOf(typeName)));
-        TypeName resolvedTypeName = modelAdapter.buildTypeName(ne).get();
-        return resolvedTypeName;
+        return modelAdapter.get(typeName).flatMap(modelAdapter::buildTypeName).orElse(null);
+    }
+
+    /**
+     * Simplified definition of {@link #getTypeNameOf(QualifiedName, Supplier)} where namespace is not calculated
+     *
+     * @see #getTypeNameOf(QualifiedName, Supplier)
+     */
+    public static TypeName getTypeNameOf(QualifiedName qualifiedName, Supplier<TypeName> getIfNamespaceDefined) {
+        return getTypeNameOf(qualifiedName, null, getIfNamespaceDefined);
+    }
+
+    /**
+     * <p>If namespace is not defined it is calculated.</p>
+     * <p>Beware that in case type name is not found, exception is thrown.</p>
+     * <p>
+     * <p>Returns {@link TypeName} with namespace and name defined</p>
+     * <p>if namespace is not defined and typename is not found, symbol is unknown</p>
+     * <p>if namespace is defined and typename is not found, type is unknown</p>
+     *
+     * @param qualifiedName         {@link QualifiedName} that contains information about given namespace and name
+     * @param getIfNamespaceDefined Supplier that returns {@link TypeName} if namespace is defined in <i>qualifiedName</i>.
+     *                              Note that defined could mean here that namespace is intentionally left empty meaning a symbol is used.
+     * @param getIfNamespaceEmpty   Supplier that returns {@link TypeName} if namespace is not defined in <i>qualifiedName</i>
+     *                              and <i>context</i> contains current namespace
+     * @return {@link TypeName} with namespace and name defined
+     * @throws IllegalArgumentException   if <i>qualifiedName</i> is null
+     * @throws NoSuchElementException if {@link TypeName} cannot be found
+     */
+    public static TypeName getTypeNameOf(QualifiedName qualifiedName, Supplier<TypeName> getIfNamespaceEmpty, Supplier<TypeName> getIfNamespaceDefined) {
+        if (qualifiedName == null) {
+            throw new IllegalArgumentException("QualifiedName cannot be null");
+        }
+
+        TypeName typeName = null;
+        try {
+            try {
+                typeName = getIfNamespaceDefined.get();
+            } catch (Exception ignored) { }
+            if (typeName == null) {
+                if (qualifiedName.getNamespaceElements().isEmpty()) {
+                    throw new IllegalArgumentException("Symbol not found or type is used in short form");
+                } else {
+                    String nameSpace = String.join(NAMESPACE_SEPARATOR, qualifiedName.getNamespaceElements()) + NAMESPACE_SEPARATOR;
+                    throw new NoSuchElementException(String.format("Type not found: %s%s", nameSpace, qualifiedName.getName()));
+                }
+            }
+        } catch (NoSuchElementException nse) {
+            throw nse;
+        } catch (Exception e) {
+            try {
+                typeName = getIfNamespaceEmpty.get();
+            } catch (Exception ignored) { }
+        }
+
+        if (typeName == null) {
+            throw new NoSuchElementException("Unknown symbol: " + qualifiedName.getName());
+        }
+
+        return typeName;
     }
 
     public enum BindingRole {
