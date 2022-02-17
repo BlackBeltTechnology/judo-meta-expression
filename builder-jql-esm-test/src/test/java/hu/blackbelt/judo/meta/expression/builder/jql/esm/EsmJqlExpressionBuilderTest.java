@@ -6,7 +6,6 @@ import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.*;
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import lombok.extern.slf4j.Slf4j;
@@ -265,9 +264,8 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
                 .create();
         initResources(createTestModel(createPackage("entities", ancientTester, tester, string, timestamp)));
 
-        JqlExpressionBuildException exception = assertThrows(
-                JqlExpressionBuildException.class, () -> createExpression(tester, scriptEntry.getKey()));
-        assertThat(exception.getMessage(), endsWith(scriptEntry.getValue()));
+        Exception exception = assertThrows(Exception.class, () -> createExpression(tester, scriptEntry.getKey()));
+        assertThat(exception.getMessage(), containsString(scriptEntry.getValue()));
     }
 
     @Test
@@ -287,11 +285,9 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertDoesNotThrow(() -> createExpression(tester, "Tester"));
         assertDoesNotThrow(() -> createExpression(tester1, "Tester1"));
 
-        JqlExpressionBuildException exception =
-                assertThrows(JqlExpressionBuildException.class, () -> createExpression(tester, "Tester1"));
+        Exception exception = assertThrows(Exception.class, () -> createExpression(tester, "Tester1"));
         assertThat(exception.getMessage(), containsString("Unknown symbol: Tester1"));
-        JqlExpressionBuildException exception1 =
-                assertThrows(JqlExpressionBuildException.class, () -> createExpression(tester1, "Tester"));
+        Exception exception1 = assertThrows(Exception.class, () -> createExpression(tester1, "Tester"));
         assertThat(exception1.getMessage(), containsString("Unknown symbol: Tester"));
     }
 

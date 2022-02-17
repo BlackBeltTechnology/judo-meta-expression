@@ -27,11 +27,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, TO inputParameterType) {
         this.inputParameterType = inputParameterType;
-        if (config == null) {
-            this.config = new JqlExpressionBuilderConfig();
-        } else {
-            this.config = config;
-        }
+        this.config = Objects.requireNonNullElseGet(config, JqlExpressionBuilderConfig::new);
         pushVariableScope();
     }
     
@@ -66,6 +62,8 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
 
     @Override
     public Optional<Variable> resolveVariable(String name) {
+        if (name == null || name.isEmpty()) return Optional.empty();
+
         Stream<Variable> variablesInScope;
         if (resolveOnlyCurrentLambdaScope()) {
             variablesInScope = variableScope().stream();
@@ -73,8 +71,8 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
             variablesInScope = lambdaScopes.stream().flatMap(Deque::stream);
         }
         return variablesInScope
-                .filter(v -> Objects.equals(Optional.ofNullable(v.getHumanName()).orElse(v.getName()), name))
-                .findAny();    
+                .filter(v -> name.equals(Objects.requireNonNullElse(v.getHumanName(), v.getName())))
+                .findAny();
     }
 
     @Override

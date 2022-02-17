@@ -35,7 +35,7 @@ import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -1003,9 +1003,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EClass person = findBase("Person");
         assertThat(person, notNullValue());
 
-        JqlExpressionBuildException exception = assertThrows(
-                JqlExpressionBuildException.class, () -> createExpression(person, scriptEntry.getKey()));
-        assertThat(exception.getMessage(), endsWith(scriptEntry.getValue()));
+        Exception exception = assertThrows(Exception.class, () -> createExpression(person, scriptEntry.getKey()));
+        assertThat(exception.getMessage(), containsString(scriptEntry.getValue()));
     }
 
 }

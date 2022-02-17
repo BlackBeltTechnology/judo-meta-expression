@@ -10,9 +10,10 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Optional;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.NAMESPACE_SEPARATOR;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.getTypeNameOf;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionVariableReferenceBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newLiteralBuilder;
@@ -73,24 +74,25 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
     protected JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> findBase(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
         // According to the JQL grammar a Navigation's base is not necessarily a NavigationExpression. This is used by JCL.
         NavigationExpression navigation = (NavigationExpression) jqlExpression;
-        Expression baseExpression = null;
+        Expression baseExpression;
         C navigationBase;
         if (navigation.getBase() != null) {
             JqlNavigationFeatureTransformer.JqlFeatureTransformResult<C> base = findBase(navigation.getBase(), context);
             baseExpression = base.baseExpression;
             navigationBase = base.navigationBase;
         } else {
+            QualifiedName qualifiedName = navigation.getQName();
+            boolean transformFailure = false;
             try {
                 Expression contextBaseExpression = context.peekBaseExpression();
-                QualifiedName qName = navigation.getQName();
-                if (!qName.getNamespaceElements().isEmpty()) {
-                    Optional<? extends NE> optNe = getModelAdapter().get(jqlTransformers.getTypeNameFromResource(qName));
+                if (!qualifiedName.getNamespaceElements().isEmpty()) {
+                    Optional<? extends NE> optNe = getModelAdapter().get(jqlTransformers.getTypeNameFromResource(qualifiedName));
                     String name = optNe.isPresent()
                             ? getModelAdapter().getFqName(optNe.get())
-                            : qName.getName();
+                            : qualifiedName.getName();
                     throw new IllegalArgumentException(name + " is a type");
                 }
-                String name = qName.getName();
+                String name = qualifiedName.getName();
                 if (name.equals(JqlExpressionBuilder.SELF_NAME) && contextBaseExpression != null) {
                     baseExpression = EcoreUtil.copy(contextBaseExpression);
                     navigationBase = (C) context.peekBase();
@@ -189,28 +191,20 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                         }
                         return new JqlFeatureTransformResult<>(null, getVariableExpression);
                     } else {
-                        JqlFeatureTransformResult<C> createVariableReferenceResult = createVariableReference(baseVariable.get(), baseExpression);
+                        JqlFeatureTransformResult<C> createVariableReferenceResult = createVariableReference(baseVariable.get(), null);
                         baseExpression = createVariableReferenceResult.baseExpression;
                         navigationBase = createVariableReferenceResult.navigationBase;
                     }
                 }
+                transformFailure = true; // IntelliJ might suggest it is not used, but it is
                 return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
-            } catch (Exception ignored) { }
-
-            TypeName typeName = navigation.getQName().getNamespaceElements().isEmpty() && context.getContextNamespace().isPresent()
-                    ? jqlTransformers.getTypeNameFromResource(context.getContextNamespace().get(), navigation.getQName().getName())
-                    : jqlTransformers.getTypeNameFromResource(navigation.getQName());
-            if (typeName == null) {
-                QualifiedName qName = navigation.getQName();
-                String message = qName.getNamespaceElements().isEmpty()
-                        ? "Unknown symbol: " + qName.getName()
-                        : String.format("Type not found: %s%s%s",
-                                        String.join(NAMESPACE_SEPARATOR, qName.getNamespaceElements()),
-                                        NAMESPACE_SEPARATOR,
-                                        qName.getName());
-                throw new JqlExpressionBuildException(baseExpression, List.of(new JqlExpressionBuildingError(message, navigation)));
+            } catch (Exception e) {
+                if (transformFailure) throw e;
             }
-
+            TypeName typeName = getTypeNameOf(
+                    qualifiedName,
+                    () -> jqlTransformers.getTypeNameFromResource(context.getContextNamespace().get(), qualifiedName.getName()),
+                    () -> jqlTransformers.getTypeNameFromResource(navigation.getQName()));
             if (getModelAdapter().isSequence(getModelAdapter().get(typeName).get())) {
                 baseExpression = newStaticSequenceBuilder().withTypeName(typeName).build();
                 navigationBase = null;

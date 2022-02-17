@@ -13,10 +13,11 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstrin
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.variable.GetVariableFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.*;
-import hu.blackbelt.judo.meta.expression.collection.*;
+import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
-import hu.blackbelt.judo.meta.expression.object.*;
+import hu.blackbelt.judo.meta.expression.object.CastObject;
+import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -28,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.NAMESPACE_SEPARATOR;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.getTypeNameOf;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCastCollectionBuilder;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.*;
@@ -114,13 +115,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private TypeName getParameterTypeName(ObjectExpression expression, QualifiedName parameter, boolean kindOf) {
-        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
-        if (typeNameFromResource == null) {
-            throw new IllegalArgumentException(String.format("Type not found: %s%s%s",
-                                                             String.join(NAMESPACE_SEPARATOR, parameter.getNamespaceElements()),
-                                                             NAMESPACE_SEPARATOR,
-                                                             parameter.getName()));
-        }
+        TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
         C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
@@ -134,13 +129,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private TypeName getAsTypeTypeName(ObjectExpression expression, QualifiedName parameter) {
-        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
-        if (typeNameFromResource == null) {
-            String namespace = !parameter.getNamespaceElements().isEmpty()
-                    ? String.join(NAMESPACE_SEPARATOR, parameter.getNamespaceElements()) + NAMESPACE_SEPARATOR
-                    : "";
-            throw new IllegalArgumentException(String.format("Type not found: %s%s", namespace, parameter.getName()));
-        }
+        TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
         C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
@@ -154,13 +143,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private TypeName getContainerTypeName(ObjectExpression expression, QualifiedName parameter) {
-        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
-        if (typeNameFromResource == null) {
-            String namespace = !parameter.getNamespaceElements().isEmpty()
-                    ? String.join(NAMESPACE_SEPARATOR, parameter.getNamespaceElements()) + NAMESPACE_SEPARATOR
-                    : "";
-            throw new IllegalArgumentException(String.format("Type not found: %s%s", namespace, parameter.getName()));
-        }
+        TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
         C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
@@ -261,13 +244,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private TypeName getAsCollectionTypeName(CollectionExpression expression, QualifiedName parameter) {
-        TypeName typeNameFromResource = expressionBuilder.getTypeNameFromResource(parameter);
-        if (typeNameFromResource == null) {
-            String namespace = !parameter.getNamespaceElements().isEmpty()
-                    ? String.join(NAMESPACE_SEPARATOR, parameter.getNamespaceElements()) + NAMESPACE_SEPARATOR
-                    : "";
-            throw new IllegalArgumentException(String.format("Type not found: %s%s", namespace, parameter.getName()));
-        }
+        TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
         C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
@@ -463,22 +440,20 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return subject;
     }
 
-    private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context,
-                                   String lambdaArgument) {
+    private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
         String generatedName = newGeneratedIteratorName();
-        String humanName = lambdaArgument;
         if (subject instanceof IterableExpression) {
             IterableExpression iterableExpression = (IterableExpression) subject;
             if (iterableExpression.getIteratorVariable() == null) {
                 ObjectVariable variable = iterableExpression.createIterator(generatedName,
                         expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
-                variable.setHumanName(humanName);
+                variable.setHumanName(lambdaArgument);
                 context.pushVariable(variable);
             } else {
                 iterableExpression.getIteratorVariable().setName(generatedName);
                 context.pushVariable(iterableExpression.getIteratorVariable());
             }
-        } else if (subject instanceof ObjectSelectorExpression) {
+        }/* else if (subject instanceof ObjectSelectorExpression) { // TODO: check!!!
             addLambdaVariable(((ObjectSelectorExpression) subject).getCollectionExpression(), context, lambdaArgument);
         } else if (subject instanceof ObjectFilterExpression) {
             addLambdaVariable(((ObjectFilterExpression) subject).getObjectExpression(), context, lambdaArgument);
@@ -486,9 +461,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
             addLambdaVariable(((CollectionFilterExpression) subject).getCollectionExpression(), context, lambdaArgument);
         } else if (subject instanceof SortExpression) {
             addLambdaVariable(((SortExpression) subject).getCollectionExpression(), context, lambdaArgument);
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
+        }*/ else {
+            throw new IllegalArgumentException(String.format("Lambda variable cannot be created with type: %s", subject.getClass()));
         }
     }
 

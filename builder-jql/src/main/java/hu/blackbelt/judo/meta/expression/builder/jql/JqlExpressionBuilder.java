@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -384,6 +385,65 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public TypeName buildTypeName(String namespace, String name) {
     	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
         return modelAdapter.get(typeName).flatMap(modelAdapter::buildTypeName).orElse(null);
+    }
+
+    /**
+     * Simplified definition of {@link #getTypeNameOf(QualifiedName, Supplier)} where namespace is not calculated
+     *
+     * @see #getTypeNameOf(QualifiedName, Supplier)
+     */
+    public static TypeName getTypeNameOf(QualifiedName qualifiedName, Supplier<TypeName> getIfNamespaceDefined) {
+        return getTypeNameOf(qualifiedName, null, getIfNamespaceDefined);
+    }
+
+    /**
+     * <p>If namespace is not defined it is calculated.</p>
+     * <p>Beware that in case type name is not found, exception is thrown.</p>
+     * <p>
+     * <p>Returns {@link TypeName} with namespace and name defined</p>
+     * <p>if namespace is not defined and typename is not found, symbol is unknown</p>
+     * <p>if namespace is defined and typename is not found, type is unknown</p>
+     *
+     * @param qualifiedName         {@link QualifiedName} that contains information about given namespace and name
+     * @param getIfNamespaceDefined Supplier that returns {@link TypeName} if namespace is defined in <i>qualifiedName</i>.
+     *                              Note that defined could mean here that namespace is intentionally left empty meaning a symbol is used.
+     * @param getIfNamespaceEmpty   Supplier that returns {@link TypeName} if namespace is not defined in <i>qualifiedName</i>
+     *                              and <i>context</i> contains current namespace
+     * @return {@link TypeName} with namespace and name defined
+     * @throws IllegalArgumentException   if <i>qualifiedName</i> is null
+     * @throws NoSuchElementException if {@link TypeName} cannot be found
+     */
+    public static TypeName getTypeNameOf(QualifiedName qualifiedName, Supplier<TypeName> getIfNamespaceEmpty, Supplier<TypeName> getIfNamespaceDefined) {
+        if (qualifiedName == null) {
+            throw new IllegalArgumentException("QualifiedName cannot be null");
+        }
+
+        TypeName typeName = null;
+        try {
+            try {
+                typeName = getIfNamespaceDefined.get();
+            } catch (Exception ignored) { }
+            if (typeName == null) {
+                if (qualifiedName.getNamespaceElements().isEmpty()) {
+                    throw new IllegalArgumentException("Symbol not found or type is used in short form");
+                } else {
+                    String nameSpace = String.join(NAMESPACE_SEPARATOR, qualifiedName.getNamespaceElements()) + NAMESPACE_SEPARATOR;
+                    throw new NoSuchElementException(String.format("Type not found: %s%s", nameSpace, qualifiedName.getName()));
+                }
+            }
+        } catch (NoSuchElementException nse) {
+            throw nse;
+        } catch (Exception e) {
+            try {
+                typeName = getIfNamespaceEmpty.get();
+            } catch (Exception ignored) { }
+        }
+
+        if (typeName == null) {
+            throw new NoSuchElementException("Unknown symbol: " + qualifiedName.getName());
+        }
+
+        return typeName;
     }
 
     public enum BindingRole {
