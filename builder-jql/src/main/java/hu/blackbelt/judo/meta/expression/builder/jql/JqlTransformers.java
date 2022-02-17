@@ -441,28 +441,21 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void addLambdaVariable(Expression subject, ExpressionBuildingVariableResolver context, String lambdaArgument) {
+        if (!(subject instanceof IterableExpression)) {
+            throw new IllegalArgumentException("Lambda variable cannot be created with type: " + subject.getClass().getName());
+        }
+
         String generatedName = newGeneratedIteratorName();
-        if (subject instanceof IterableExpression) {
-            IterableExpression iterableExpression = (IterableExpression) subject;
-            if (iterableExpression.getIteratorVariable() == null) {
-                ObjectVariable variable = iterableExpression.createIterator(generatedName,
-                        expressionBuilder.getModelAdapter(), expressionBuilder.getExpressionResource());
-                variable.setHumanName(lambdaArgument);
-                context.pushVariable(variable);
-            } else {
-                iterableExpression.getIteratorVariable().setName(generatedName);
-                context.pushVariable(iterableExpression.getIteratorVariable());
-            }
-        }/* else if (subject instanceof ObjectSelectorExpression) { // TODO: check!!!
-            addLambdaVariable(((ObjectSelectorExpression) subject).getCollectionExpression(), context, lambdaArgument);
-        } else if (subject instanceof ObjectFilterExpression) {
-            addLambdaVariable(((ObjectFilterExpression) subject).getObjectExpression(), context, lambdaArgument);
-        } else if (subject instanceof CollectionFilterExpression) {
-            addLambdaVariable(((CollectionFilterExpression) subject).getCollectionExpression(), context, lambdaArgument);
-        } else if (subject instanceof SortExpression) {
-            addLambdaVariable(((SortExpression) subject).getCollectionExpression(), context, lambdaArgument);
-        }*/ else {
-            throw new IllegalArgumentException("Lambda variable cannot be created with type: " + subject.getClass());
+        IterableExpression iterableExpression = (IterableExpression) subject;
+        if (iterableExpression.getIteratorVariable() == null) {
+            ObjectVariable variable = iterableExpression.createIterator(generatedName,
+                                                                        expressionBuilder.getModelAdapter(),
+                                                                        expressionBuilder.getExpressionResource());
+            variable.setHumanName(lambdaArgument);
+            context.pushVariable(variable);
+        } else {
+            iterableExpression.getIteratorVariable().setName(generatedName);
+            context.pushVariable(iterableExpression.getIteratorVariable());
         }
     }
 
