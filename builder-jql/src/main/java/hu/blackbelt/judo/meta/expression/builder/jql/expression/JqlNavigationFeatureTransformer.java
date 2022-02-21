@@ -44,8 +44,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                 Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
                 if (attribute.isPresent()) {
                     if (!(baseExpression instanceof ObjectExpression)) {
-                        throw new IllegalStateException(String.format("Attribute selector on %s expression is not supported",
-                                                                      baseExpression.getClass().getSimpleName()));
+                        throw new IllegalStateException("Attribute selector is supported only on ObjectExpressions. Got " +
+                                                        baseExpression.getClass().getSimpleName());
                     }
                     JqlFeatureTransformResult<C> transformResult =
                             transformAttribute(attribute.get(), context, baseExpression, navigationBase, jqlFeature);
@@ -58,8 +58,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                     navigationBase = transformResult.navigationBase;
                 } else if (sequence.isPresent()) {
                     if (!(baseExpression instanceof ObjectExpression)) {
-                        throw new IllegalStateException(String.format("Sequence selector on %s expression is not supported",
-                                                                      baseExpression.getClass().getSimpleName()));
+                        throw new IllegalStateException("Sequence selector is supported only on ObjectExpressions. Got " +
+                                                        baseExpression.getClass().getSimpleName());
                     }
                     baseExpression = newObjectSequenceBuilder()
                             .withObjectExpression((ObjectExpression) baseExpression)

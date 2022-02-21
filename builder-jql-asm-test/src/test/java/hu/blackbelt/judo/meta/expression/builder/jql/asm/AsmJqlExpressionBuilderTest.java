@@ -967,7 +967,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () -> createExpression("schools::Person.height"));
         assertThat(exception.getMessage(),
-                   containsString("Attribute selector on ImmutableCollectionImpl expression is not supported"));
+                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
     }
 
 }

@@ -219,7 +219,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () -> createExpression("demo::Tester.name"));
         assertThat(exception.getMessage(),
-                   containsString("Attribute selector on ImmutableCollectionImpl expression is not supported"));
+                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
     }
 
 }
