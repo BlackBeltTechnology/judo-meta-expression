@@ -6,15 +6,11 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionSwitchExpression;
-import hu.blackbelt.judo.meta.expression.collection.SortExpression;
+import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalSwitchExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectFilterExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectSelectorExpression;
-import hu.blackbelt.judo.meta.expression.object.ObjectSwitchExpression;
+import hu.blackbelt.judo.meta.expression.object.*;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
@@ -25,13 +21,8 @@ import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
+import org.hamcrest.*;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -42,15 +33,10 @@ import java.util.stream.Stream;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
@@ -973,6 +959,15 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
     public void testInvalidEqualsWithBooleanExpressions(String expression) {
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
+    }
+
+    @Test
+    public void testAttributeSelector() {
+        assertDoesNotThrow(() -> createExpression("schools::Person!any().height"));
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () -> createExpression("schools::Person.height"));
+        assertThat(exception.getMessage(),
+                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
     }
 
 }

@@ -3,14 +3,10 @@ package hu.blackbelt.judo.meta.expression.builder.jql.esm;
 import hu.blackbelt.judo.meta.esm.measure.MeasuredType;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.NamespaceSequence;
-import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
-import hu.blackbelt.judo.meta.esm.type.BooleanType;
-import hu.blackbelt.judo.meta.esm.type.DateType;
-import hu.blackbelt.judo.meta.esm.type.EnumerationType;
-import hu.blackbelt.judo.meta.esm.type.StringType;
+import hu.blackbelt.judo.meta.esm.structure.*;
+import hu.blackbelt.judo.meta.esm.type.*;
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import lombok.extern.slf4j.Slf4j;
@@ -25,19 +21,11 @@ import java.util.stream.Stream;
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newDateTypeBuilder;
-import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.EntityCreator;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createEnum;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createPackage;
-import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.createTestModel;
+import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
+import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilderTest {
@@ -218,6 +206,20 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         EntityType tester = new EntityCreator("Tester").create();
         initResources(createTestModel(createPackage("entities", tester)));
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
+    }
+
+    @Test
+    public void testAttributeSelector() {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("name", string)
+                .create();
+        initResources(createTestModel(tester, string));
+        assertDoesNotThrow(() -> createExpression("demo::Tester!any().name"));
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () -> createExpression("demo::Tester.name"));
+        assertThat(exception.getMessage(),
+                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
     }
 
 }
