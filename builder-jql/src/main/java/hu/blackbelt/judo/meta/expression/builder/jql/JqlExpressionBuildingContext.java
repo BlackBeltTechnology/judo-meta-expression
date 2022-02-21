@@ -4,7 +4,6 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.variable.Variable;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVariableResolver {
@@ -14,6 +13,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
     private final TO inputParameterType;
+    private String contextNamespace;
 
     private final JqlExpressionBuilderConfig config;
     
@@ -27,11 +27,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, TO inputParameterType) {
         this.inputParameterType = inputParameterType;
-        if (config == null) {
-            this.config = new JqlExpressionBuilderConfig();
-        } else {
-            this.config = config;
-        }
+        this.config = Objects.requireNonNullElseGet(config, JqlExpressionBuilderConfig::new);
         pushVariableScope();
     }
     
@@ -66,6 +62,8 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
 
     @Override
     public Optional<Variable> resolveVariable(String name) {
+        if (name == null || name.isEmpty()) return Optional.empty();
+
         Stream<Variable> variablesInScope;
         if (resolveOnlyCurrentLambdaScope()) {
             variablesInScope = variableScope().stream();
@@ -73,8 +71,8 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
             variablesInScope = lambdaScopes.stream().flatMap(Deque::stream);
         }
         return variablesInScope
-                .filter(v -> Objects.equals(Optional.ofNullable(v.getHumanName()).orElse(v.getName()), name))
-                .findAny();    
+                .filter(v -> name.equals(Objects.requireNonNullElse(v.getHumanName(), v.getName())))
+                .findAny();
     }
 
     @Override
@@ -96,6 +94,16 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
 
     public TO getInputParameterType() {
         return inputParameterType;
+    }
+
+    @Override
+    public Optional<String> getContextNamespace() {
+        return Optional.ofNullable(contextNamespace);
+    }
+
+    @Override
+    public void setContextNamespace(String contextNamespace) {
+        this.contextNamespace = contextNamespace;
     }
 
     @Override
