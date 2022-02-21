@@ -196,7 +196,7 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                         navigationBase = createVariableReferenceResult.navigationBase;
                     }
                 }
-                transformFailure = true; // IntelliJ might suggest it is not used, but it is
+                transformFailure = true; // IntelliJ might say it is never used, but it is
                 return getFeatureTransformer().transform(navigation.getFeatures(), baseExpression, navigationBase, context);
             } catch (Exception e) {
                 if (transformFailure) throw e;

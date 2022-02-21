@@ -63,11 +63,11 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         addActors();
         addPrimitiveTypes();
     }
-    
+
     public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
         this(modelAdapter, expressionResource, new JqlExpressionBuilderConfig());
     }
-    
+
     @SuppressWarnings("unchecked")
     private static <T> Stream<T> all(ResourceSet resourceSet, Class<T> clazz) {
         final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
@@ -104,7 +104,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
             transferObjectTypes.put(t, typeName);
         });
     }
-    
+
     private void addActors() {
         modelAdapter.getAllActorTypes().forEach(t -> {
             TypeName typeName = modelAdapter.buildTypeName(t).get();
@@ -388,9 +388,9 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     /**
-     * Simplified definition of {@link #getTypeNameOf(QualifiedName, Supplier)} where namespace is not calculated
+     * Simplified definition of {@link #getTypeNameOf(QualifiedName, Supplier, Supplier)} where namespace is not calculated
      *
-     * @see #getTypeNameOf(QualifiedName, Supplier)
+     * @see #getTypeNameOf(QualifiedName, Supplier, Supplier)
      */
     public static TypeName getTypeNameOf(QualifiedName qualifiedName, Supplier<TypeName> getIfNamespaceDefined) {
         return getTypeNameOf(qualifiedName, null, getIfNamespaceDefined);
@@ -409,7 +409,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
      *                              in <i>qualifiedName</i>. Note that defined could mean here that namespace is
      *                              intentionally left empty meaning a symbol is used.
      * @param getIfNamespaceEmpty   {@link Supplier<TypeName>} that returns {@link TypeName} if namespace is not defined
-     *                              in <i>qualifiedName</i> and <i>context</i> contains current namespace
+     *                              in <i>qualifiedName</i>.
      * @return {@link TypeName} with namespace and name defined
      * @throws IllegalArgumentException if <i>qualifiedName</i> is null
      * @throws NoSuchElementException   if {@link TypeName} cannot be found
@@ -483,7 +483,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public void overrideTransformer(Class<? extends JqlExpression> jqlType, Function<JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA,TR, S, M, U>, ? extends JqlExpressionTransformerFunction> transformer) {
         jqlTransformers.overrideTransformer(jqlType, transformer);
     }
-    
+
     public void addFunctionTransformer(String functionName, Function<JqlTransformers, JqlFunctionTransformer<? extends Expression>> transformer) {
     	jqlTransformers.addFunctionTransformer(functionName, transformer);
     }
@@ -491,7 +491,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public void setResolveDerived(boolean resolveDerived) {
 		jqlTransformers.setResolveDerived(resolveDerived);
     }
-    
+
     /**
      * Returns true if c2 equals c1 or, c2 is a supertype of c1
      */
@@ -511,7 +511,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         }
         return false;
     }
-    
+
     public MappedTransferObjectCompatibility getMappedTransferObjectTypeCompatibility(TO from, TO to) {
     	MappedTransferObjectCompatibility result = MappedTransferObjectCompatibility.NONE;
         if (from.equals(to)) {
@@ -531,7 +531,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         }
         return result;
     }
-    
+
     public enum MappedTransferObjectCompatibility {
     	NONE, KINDOF, SUPERTYPE
     }
@@ -539,5 +539,5 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public void setBuilderConfig(JqlExpressionBuilderConfig builderConfig) {
         this.config = builderConfig;
     }
-    
+
 }
