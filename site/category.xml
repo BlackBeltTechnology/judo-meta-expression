@@ -99,12 +99,12 @@
       <category name="adapters_source"/>
    </feature>
 
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.22.0.20220207_104221_b25849a5_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20211025_235843_5805ea16_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20220208_205620_7d1d86c0_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20220208_205705_ff163ca5_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20220208_205625_7d624d23_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20220208_205636_94f73b06_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20220208_205036_f329fbd1_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.22.0.20220213_103636_174d4715_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20220212_202907_82dc20eb_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20220222_211534_9f9ca295_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20220222_211619_d19dabc1_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20220222_211540_d9c63dd9_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20220222_211601_54f3e4c5_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20220222_210947_183237a0_develop" enabled="true" />
 
 </site>
