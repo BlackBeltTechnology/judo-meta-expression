@@ -22,6 +22,7 @@ import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.ne
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newNamespaceSequenceBuilder;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.newTwoWayRelationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.*;
+import static hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.INVALID_ATTRIBUTE_SELECTOR;
 import static hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -328,8 +329,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertDoesNotThrow(() -> createExpression("demo::Tester!any().name"));
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () -> createExpression("demo::Tester.name"));
-        assertThat(exception.getMessage(),
-                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
+        assertThat(exception.getMessage(), containsString(INVALID_ATTRIBUTE_SELECTOR));
     }
 
 }

@@ -8,7 +8,6 @@ import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +23,8 @@ import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBu
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newObjectSequenceBuilder;
 
 public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> {
+    public static final String INVALID_ATTRIBUTE_SELECTOR = "Attribute selector is supported only on ObjectExpressions";
+    public static final String INVALID_SEQUENCE_SELECTOR = "Sequence selector is supported only on ObjectExpressions";
 
     private static final Logger LOG = LoggerFactory.getLogger(JqlNavigationFeatureTransformer.class.getName());
     private final JqlTransformers<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> jqlTransformers;
@@ -44,8 +45,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                 Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
                 if (attribute.isPresent()) {
                     if (!(baseExpression instanceof ObjectExpression)) {
-                        throw new IllegalStateException("Attribute selector is supported only on ObjectExpressions. Got " +
-                                                        baseExpression.getClass().getSimpleName());
+                        throw new IllegalStateException(
+                                String.format("%s. Got %s", INVALID_ATTRIBUTE_SELECTOR, baseExpression.getClass().getSimpleName()));
                     }
                     JqlFeatureTransformResult<C> transformResult =
                             transformAttribute(attribute.get(), context, baseExpression, navigationBase, jqlFeature);
@@ -58,8 +59,8 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                     navigationBase = transformResult.navigationBase;
                 } else if (sequence.isPresent()) {
                     if (!(baseExpression instanceof ObjectExpression)) {
-                        throw new IllegalStateException("Sequence selector is supported only on ObjectExpressions. Got " +
-                                                        baseExpression.getClass().getSimpleName());
+                        throw new IllegalStateException(
+                                String.format("%s. Got %s", INVALID_SEQUENCE_SELECTOR, baseExpression.getClass().getSimpleName()));
                     }
                     baseExpression = newObjectSequenceBuilder()
                             .withObjectExpression((ObjectExpression) baseExpression)

@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.INVALID_ATTRIBUTE_SELECTOR;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -1194,8 +1195,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertDoesNotThrow(() -> createExpression("schools::Person!any().height"));
         JqlExpressionBuildException exception =
                 assertThrows(JqlExpressionBuildException.class, () -> createExpression("schools::Person.height"));
-        assertThat(exception.getMessage(),
-                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
+        assertThat(exception.getMessage(), containsString(INVALID_ATTRIBUTE_SELECTOR));
     }
 
 }
