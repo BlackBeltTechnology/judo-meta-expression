@@ -27,6 +27,10 @@ public interface ExpressionBuildingVariableResolver {
 
     Object getInputParameterType();
 
+    Optional<String> getContextNamespace();
+
+    void setContextNamespace(String contextNamespace);
+
     void pushBaseExpression(Expression baseExpression);
 
     Expression popBaseExpression();

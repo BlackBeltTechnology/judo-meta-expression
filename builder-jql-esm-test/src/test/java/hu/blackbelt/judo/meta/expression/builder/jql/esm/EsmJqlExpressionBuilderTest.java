@@ -14,8 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
@@ -122,6 +122,32 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
     }
 
     @Test
+    void testCastWithShortenedNames() {
+        StringType stringType = newStringTypeBuilder().withName("string").build();
+        TwoWayRelationMember twr = newTwoWayRelationMemberBuilder()
+                .withName("customer")
+                .withUpper(1).build();
+        Class order = new EntityCreator("Order").withTwoWayRelation(twr).create();
+        Class address = new EntityCreator("Address").create();
+        Class customer = new EntityCreator("Customer").withTwoWayRelation("orders", order, twr, true).withCollectionRelation("addresses", address).create();
+        twr.setTarget(customer);
+
+        Class internationalOrder = new EntityCreator("InternationalOrder").withGeneralization(order).create();
+        Class internationalAddress = new EntityCreator("InternationalAddress")
+                .withAttribute("country", stringType)
+                .withGeneralization(address)
+                .create();
+        Class company = new EntityCreator("Company").withGeneralization(customer).create();
+
+        initResources(createTestModel(createPackage("entities", order, internationalOrder, customer, address, internationalAddress, company), stringType));
+        Expression expression = createExpression(customer, "self=>orders!asCollection(InternationalOrder)");
+        Expression expression1 = createExpression(customer, "self=>addresses!sort()!head()!asType(InternationalAddress).country");
+
+        createExpression(order, "self=>customer!asType(Company)");
+
+    }
+
+    @Test
     void testStaticExpressions() {
         EntityType product = new EntityCreator("Product").create();
         EntityType order = new EntityCreator("Order").create();
@@ -179,7 +205,7 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
 
     @ParameterizedTest
     @MethodSource("testValidEqualsWithBooleanExpressionsSource")
-    public void testValidEqualsWithBooleanExpressions(String expression) {
+    public void testValidEqualsWithBooleanExpressions(final String expression) {
         BooleanType bool = newBooleanTypeBuilder().withName("boolean").build();
         EntityType tester = new EntityCreator("Tester")
                 .withAttribute("b", bool)
@@ -202,10 +228,94 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
 
     @ParameterizedTest
     @MethodSource("testInvalidEqualsWithBooleanExpressionsSource")
-    public void testInvalidEqualsWithBooleanExpressions(String expression) {
+    public void testInvalidEqualsWithBooleanExpressions(final String expression) {
         EntityType tester = new EntityCreator("Tester").create();
         initResources(createTestModel(createPackage("entities", tester)));
         assertThrows(UnsupportedOperationException.class, () -> createExpression(expression));
+    }
+
+    private static Stream<String> testUsingNonFQNamesSource() {
+        return Stream.of(
+                "Tester",
+                "Tester!any()",
+                "Timestamp!now()",
+                "AncientTester!any()!asType(Tester)",
+                "AncientTester!any()!kindOf(Tester)",
+                "AncientTester!any()!typeOf(Tester)",
+                "AncientTester!asCollection(Tester)",
+                "String!getVariable('SYSTEM', 'variable')",
+                "Tester!filter(e | Tester!any().attr == e.attr)",
+                "Tester!filter(Tester | demo::entities::Tester!any().attr == Tester.attr)"
+                // TODO: !container(...) => TODO add option for containment test
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testUsingNonFQNamesSource")
+    public void testUsingNonFQNames(final String script) {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
+        EntityType ancientTester = new EntityCreator("AncientTester").create();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", string)
+                .withGeneralization(ancientTester)
+                .create();
+        initResources(createTestModel(createPackage("entities", ancientTester, tester, string, timestamp)));
+
+        assertDoesNotThrow(() -> createExpression(tester, script));
+    }
+
+    private static Stream<Entry<String, String>> testInvalidUsingNonFQNamesSource() {
+        return Stream.of(
+                Map.entry("tester", "Unknown symbol: tester"),
+                Map.entry("tester!any()", "Unknown symbol: tester"),
+                Map.entry("Tester!filter(e | tester!any().attr == e.attr)", "Unknown symbol: tester"),
+                Map.entry("AncientTester!any()!asType(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("AncientTester!any()!kindOf(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("AncientTester!any()!typeOf(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("AncientTester!asCollection(tester)", "Type not found: demo::entities::tester"),
+                Map.entry("Tester!filter(e | demo::entities::tester!any().attr == e.attr)", "Type not found: demo::entities::tester")
+                // TODO: !container(...) => TODO add option for containment test
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("testInvalidUsingNonFQNamesSource")
+    public void testInvalidUsingNonFQNames(final Entry<String, String> scriptEntry) {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        TimestampType timestamp = newTimestampTypeBuilder().withName("Timestamp").build();
+        EntityType ancientTester = new EntityCreator("AncientTester").create();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", string)
+                .withGeneralization(ancientTester)
+                .create();
+        initResources(createTestModel(createPackage("entities", ancientTester, tester, string, timestamp)));
+
+        Exception exception = assertThrows(Exception.class, () -> createExpression(tester, scriptEntry.getKey()));
+        assertThat(exception.getMessage(), containsString(scriptEntry.getValue()));
+    }
+
+    @Test
+    public void testUsingNonFQNamesInDifferentPackage() {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("attr", string)
+                .create();
+        EntityType tester1 = new EntityCreator("Tester1")
+                .withAttribute("attr", string)
+                .create();
+        Package types = createPackage("types", string);
+        Package entities = createPackage("entities", tester);
+        Package entities1 = createPackage("entities1", tester1);
+        initResources(createTestModel(entities, entities1, types));
+
+        assertDoesNotThrow(() -> createExpression(tester, "Tester"));
+        assertDoesNotThrow(() -> createExpression(tester1, "Tester1"));
+
+        Exception exception = assertThrows(Exception.class, () -> createExpression(tester, "Tester1"));
+        assertThat(exception.getMessage(), containsString("Unknown symbol: Tester1"));
+        Exception exception1 = assertThrows(Exception.class, () -> createExpression(tester1, "Tester"));
+        assertThat(exception1.getMessage(), containsString("Unknown symbol: Tester"));
     }
 
     @Test
