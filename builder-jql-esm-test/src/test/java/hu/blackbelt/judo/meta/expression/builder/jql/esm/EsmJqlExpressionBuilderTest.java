@@ -6,6 +6,7 @@ import hu.blackbelt.judo.meta.esm.structure.Class;
 import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.type.*;
 import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
 import hu.blackbelt.judo.meta.expression.numeric.SequenceExpression;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import lombok.extern.slf4j.Slf4j;
@@ -315,6 +316,20 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertThat(exception.getMessage(), containsString("Unknown symbol: Tester1"));
         Exception exception1 = assertThrows(Exception.class, () -> createExpression(tester1, "Tester"));
         assertThat(exception1.getMessage(), containsString("Unknown symbol: Tester"));
+    }
+
+    @Test
+    public void testAttributeSelector() {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        EntityType tester = new EntityCreator("Tester")
+                .withAttribute("name", string)
+                .create();
+        initResources(createTestModel(tester, string));
+        assertDoesNotThrow(() -> createExpression("demo::Tester!any().name"));
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () -> createExpression("demo::Tester.name"));
+        assertThat(exception.getMessage(),
+                   containsString("Attribute selector is supported only on ObjectExpressions. Got ImmutableCollectionImpl"));
     }
 
 }
