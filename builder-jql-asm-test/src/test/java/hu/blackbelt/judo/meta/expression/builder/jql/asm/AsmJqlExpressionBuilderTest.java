@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.INVALID_ATTRIBUTE_SELECTOR;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +45,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     private JqlExpressionBuilder<EClassifier, EDataType, EEnum, EClass, EAttribute, EReference, EClass, EAttribute, EReference, EClassifier, Measure, Unit> expressionBuilder;
 
     private ExpressionModelResourceSupport expressionModelResourceSupport;
-    
+
     @Override
     protected void populateAsmModel() {
         super.populateAsmModel();
@@ -71,14 +72,14 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         EReference classStudents = newEReferenceBuilder().withName("students").withEType(student).withLowerBound(0).withUpperBound(-1).build();
         EReference tallestStudent = newEReferenceBuilder().withName("tallestStudent").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
         EReference tallestStudents = newEReferenceBuilder().withName("tallestStudents").withDerived(true).withEType(student).withLowerBound(0).withUpperBound(1).build();
-        EClass clazz= newEClassBuilder().withName("Class").withEStructuralFeatures(classStudents, tallestStudent, tallestStudents).build();
+        EClass clazz = newEClassBuilder().withName("Class").withEStructuralFeatures(classStudents, tallestStudent, tallestStudents).build();
         EReference schoolClasses = newEReferenceBuilder().withName("classes").withEType(clazz).withContainment(true).withLowerBound(0).withUpperBound(-1).build();
         EClass school = newEClassBuilder().withName("School").withEStructuralFeatures(schoolClasses).build();
 
         EAnnotation getterAnnotationForMother = AsmUtils.getExtensionAnnotationByName(mother, "expression", true).get();
         getterAnnotationForMother.getDetails().put("getter", "self.parents!filter(p | p.gender == schools::Gender#FEMALE)!any()");
         getterAnnotationForMother.getDetails().put("getter.dialect", "JQL");
-        
+
         EAnnotation getterAnnotationTallestStudent = AsmUtils.getExtensionAnnotationByName(tallestStudent, "expression", true).get();
         getterAnnotationTallestStudent.getDetails().put("getter", "self.students!head(s | s.height DESC)");
         getterAnnotationTallestStudent.getDetails().put("getter.dialect", "JQL");
@@ -101,24 +102,24 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
             orderAnnotation.getDetails().put("value", "true");
         }
     }
-    
+
     @BeforeEach
     void setUp() throws Exception {
-    	super.setUp();
-    	expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
+        super.setUp();
+        expressionModelResourceSupport = ExpressionModelResourceSupport.expressionModelResourceSupportBuilder()
                 .uri(URI.createURI("urn:test.judo-meta-expression"))
                 .build();
         expressionBuilder = new JqlExpressionBuilder<>(modelAdapter, expressionModelResourceSupport.getResource());
     }
-    
+
     @AfterEach
     void tearDown(final TestInfo testInfo) throws Exception {
         ExpressionModel expressionModel = ExpressionModel.buildExpressionModel()
                 .expressionModelResourceSupport(expressionModelResourceSupport)
                 .name(asmModel.getName())
                 .build();
-        
-        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(),asmModel,measureModel,expressionModel,ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+
+        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(), asmModel, measureModel, expressionModel, ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
         modelAdapter = null;
         asmUtils = null;
         expressionModelResourceSupport = null;
@@ -207,7 +208,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testOrderCategories() {
         EClass order = findBase("Order");
-        ReferenceExpression expression = (ReferenceExpression)createExpression(order, "self.orderDetails.product.category");
+        ReferenceExpression expression = (ReferenceExpression) createExpression(order, "self.orderDetails.product.category");
         assertNotNull(expression);
         expressionBuilder.createGetterBinding(order, expression, "categories", RELATION);
         assertThat(expression, collectionOf("Category"));
@@ -488,14 +489,14 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         Expression containsProduct = createExpression(category, "self=>products!contains(self=>products!sort(p | p.unitPrice)!tail())");
         assertThat(containsProduct, instanceOf(LogicalExpression.class));
     }
-    
+
     @Test
     void testObjectSelectorToFilterExpressions() {
         EClass category = findBase("Category");
         Expression headDescExpression = createExpression(category, "self=>products!head(p | p.unitPrice DESC).unitPrice");
-        assertThat(headDescExpression.toString(), is("self=>products!filter(_iterator_1 | (_iterator_1.unitPrice == self=>products!max(_iterator_1 | _iterator_1.unitPrice)))!any().unitPrice"));        
+        assertThat(headDescExpression.toString(), is("self=>products!filter(_iterator_1 | (_iterator_1.unitPrice == self=>products!max(_iterator_1 | _iterator_1.unitPrice)))!any().unitPrice"));
         Expression headAscExpression = createExpression(category, "self=>products!head(p | p.unitPrice).unitPrice");
-        assertThat(headAscExpression.toString(), is("self=>products!filter(_iterator_2 | (_iterator_2.unitPrice == self=>products!min(_iterator_2 | _iterator_2.unitPrice)))!any().unitPrice"));        
+        assertThat(headAscExpression.toString(), is("self=>products!filter(_iterator_2 | (_iterator_2.unitPrice == self=>products!min(_iterator_2 | _iterator_2.unitPrice)))!any().unitPrice"));
         Expression headImmutableSetExpression = createExpression(category, "demo::entities::Product!head(p | p.unitPrice).unitPrice");
         assertThat(headImmutableSetExpression.toString(), is("demo::entities::Product!filter(_iterator_3 | (_iterator_3.unitPrice == demo::entities::Product!min(_iterator_3 | _iterator_3.unitPrice)))!any().unitPrice"));
 
@@ -503,7 +504,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         assertThat(tailDescExpression.toString(), is("self=>products!filter(_iterator_4 | (_iterator_4.unitPrice == self=>products!min(_iterator_4 | _iterator_4.unitPrice)))!any().unitPrice"));
         Expression tailAscExpression = createExpression(category, "self=>products!tail(p | p.unitPrice).unitPrice");
         assertThat(tailAscExpression.toString(), is("self=>products!filter(_iterator_5 | (_iterator_5.unitPrice == self=>products!max(_iterator_5 | _iterator_5.unitPrice)))!any().unitPrice"));
-        
+
         Expression headsDescExpression = createExpression(category, "self=>products!heads(p | p.unitPrice DESC)");
         assertThat(headsDescExpression.toString(), is("self=>products!filter(_iterator_6 | (_iterator_6.unitPrice == self=>products!max(_iterator_6 | _iterator_6.unitPrice)))"));
         Expression headsAscExpression = createExpression(category, "self=>products!heads(p | p.unitPrice)");
@@ -512,7 +513,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         Expression tailsDescExpression = createExpression(category, "self=>products!tails(p | p.unitPrice DESC)");
         assertThat(tailsDescExpression.toString(), is("self=>products!filter(_iterator_8 | (_iterator_8.unitPrice == self=>products!min(_iterator_8 | _iterator_8.unitPrice)))"));
         Expression tailsAscExpression = createExpression(category, "self=>products!tails(p | p.unitPrice)");
-        assertThat(tailsAscExpression.toString(), is("self=>products!filter(_iterator_9 | (_iterator_9.unitPrice == self=>products!max(_iterator_9 | _iterator_9.unitPrice)))"));        
+        assertThat(tailsAscExpression.toString(), is("self=>products!filter(_iterator_9 | (_iterator_9.unitPrice == self=>products!max(_iterator_9 | _iterator_9.unitPrice)))"));
     }
 
     @Test
@@ -524,14 +525,14 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
     /*
      * See JNG-1700 for details.
-     * The simple resolution for tallesStudent would be: 
+     * The simple resolution for tallesStudent would be:
      * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
      * But we need to first get all students of all classes:
      * self.classes.students
      * And choose those for which the following is true:
      * there is a class in self.classes, where the student is the tallest, ie.:
      * self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any()
-     * self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == _c.students!max(s | s.height)))!any() == _s)) 
+     * self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == _c.students!max(s | s.height)))!any() == _s))
      */
     @Test
     void testDerivedHeadTail() {
@@ -589,10 +590,10 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice) != demo::entities::Category!any()=>products!tail(p | p.unitPrice)");
         createExpression("demo::entities::Category!any()=>products!sort(p | p.unitPrice)!head() != demo::entities::Category!any()=>products!sort(p | p.unitPrice)!tail()");
     }
-    
+
     @Test
     void testHeadToFilter() {
-    	Expression expression = createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice).category");
+        Expression expression = createExpression("demo::entities::Category!any()=>products!head(p | p.unitPrice).category");
     }
 
     @Test
@@ -652,7 +653,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     @Test
     void testMeasures() {
         createExpression("5[demo::measures::Time#min]");
-        MeasuredDecimal unitNoFqName = (MeasuredDecimal)createExpression("1.23[min]");
+        MeasuredDecimal unitNoFqName = (MeasuredDecimal) createExpression("1.23[min]");
         assertThat(unitNoFqName.getUnitName(), is("minute"));
         assertThat(unitNoFqName.getMeasure().getNamespace(), is("demo::measures"));
         assertThat(unitNoFqName.getMeasure().getName(), is("Time"));
@@ -768,7 +769,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         createExpression("demo::types::Timestamp!getVariable('SYSTEM', 'current_timestamp')");
         createExpression("demo::types::Time!getVariable('SYSTEM', 'current_time')");
     }
-    
+
     @Test
     public void testExternalVariablesAreNotAllowed() {
         EClass order = findBase("Order");
@@ -800,7 +801,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         Expression timeStampAddition = createExpression("demo::entities::Order!sort()!head().orderDate - 3[day]");
         assertThat(timeStampAddition, instanceOf(TimestampExpression.class));
         createExpression("`2019-01-02T03:04:05.678+01:00`!elapsedTimeFrom(`2019-01-30T15:57:08.123+01:00`)");
-        
+
         Expression customerExpression = createExpression(
         		"demo::entities::Order!filter("
         				+ "o | o=>orderDetails->product!contains("
@@ -847,6 +848,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         // #4 valid - same
         assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!kindOf(schools::Student)"));
     }
+
     @Test
     public void testKindOfWithShortenedNames() {
         // #1 invalid - different
@@ -888,6 +890,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         // #4 valid - same
         assertDoesNotThrow(() -> createExpression(findBase("Student"), "self!typeOf(schools::Student)"));
     }
+
     @Test
     public void testTypeOfWithShortenedNames() {
         // #1 invalid - different
@@ -1046,6 +1049,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         // #4 valid - parameter's type is supertype of object's type
         assertDoesNotThrow(() -> createExpression(findBase("Class"), "schools::Person!any()!memberOf(self.students)"));
     }
+
     @Test
     public void testMemberOfWithShortenedNames() {
         // #1 invalid - object's- and parameter's type are not compatible
@@ -1184,6 +1188,14 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
         Exception exception = assertThrows(Exception.class, () -> createExpression(person, scriptEntry.getKey()));
         assertThat(exception.getMessage(), containsString(scriptEntry.getValue()));
+    }
+
+    @Test
+    public void testAttributeSelector() {
+        assertDoesNotThrow(() -> createExpression("schools::Person!any().height"));
+        JqlExpressionBuildException exception =
+                assertThrows(JqlExpressionBuildException.class, () -> createExpression("schools::Person.height"));
+        assertThat(exception.getMessage(), containsString(INVALID_ATTRIBUTE_SELECTOR));
     }
 
 }
