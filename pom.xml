@@ -58,8 +58,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-        <epsilon-runtime-version>1.4.0.20211025_234532_02f4b628_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.4.0.20220212_202907_82dc20eb_develop</epsilon-runtime-eclipse-version>
+        <epsilon-runtime-version>1.4.0.20220301_160608_fabab744_develop</epsilon-runtime-version>
+        <epsilon-runtime-eclipse-version>1.4.0.20220309_104744_dcfdd783_develop</epsilon-runtime-eclipse-version>
 
         <src.dir>src/main</src.dir>
 
@@ -67,9 +67,9 @@
         <maven.compiler.target>11</maven.compiler.target>
         <tycho-version>2.6.0</tycho-version>
 
-        <emf-genmodel-generator-version>1.0.2.20220212_195247_075b50e5_develop</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.0.1.20220222_205326_ef241ecc_develop</judo-genmodel-generator-version>
-        <judo-epp-common-version>4.22.0.20220213_103636_174d4715_develop</judo-epp-common-version>
+        <emf-genmodel-generator-version>1.0.2.20220301_152315_3cec0ca9_develop</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.0.1.20220309_093555_ad7e77c3_develop</judo-genmodel-generator-version>
+        <judo-epp-common-version>4.22.0.20220301_152447_0053c071_develop</judo-epp-common-version>
 
         <xtext-version>2.22.0</xtext-version>
         <emf-mwe2-launch-version>2.12.1</emf-mwe2-launch-version>
@@ -92,11 +92,11 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20220222_211619_d19dabc1_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20220222_211534_9f9ca295_develop</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20220222_211540_d9c63dd9_develop</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1.20220222_210947_183237a0_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.0.20220222_211601_54f3e4c5_develop</judo-meta-measure-version>
+        <judo-meta-psm-version>1.1.0.20220309_105350_cafa720b_develop</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20220309_105250_23aa469e_develop</judo-meta-asm-version>
+        <judo-meta-esm-version>1.1.0.20220309_105257_5569efaa_develop</judo-meta-esm-version>
+        <judo-meta-jql-version>1.0.1.20220309_095309_255850b0_develop</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.0.20220309_105316_91673219_develop</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
