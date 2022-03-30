@@ -1,38 +1,23 @@
 package hu.blackbelt.judo.meta.expression.esm;
 
-import hu.blackbelt.judo.meta.esm.measure.DurationType;
-import hu.blackbelt.judo.meta.esm.measure.Measure;
-import hu.blackbelt.judo.meta.esm.measure.MeasureDefinitionTerm;
-import hu.blackbelt.judo.meta.esm.measure.Unit;
+import hu.blackbelt.judo.meta.esm.measure.*;
 import hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilder;
-import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
+import hu.blackbelt.judo.meta.esm.namespace.*;
 import hu.blackbelt.judo.meta.esm.namespace.util.builder.PackageBuilder;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.DataFeature;
-import hu.blackbelt.judo.meta.esm.structure.MemberType;
-import hu.blackbelt.judo.meta.esm.structure.EntitySequence;
-import hu.blackbelt.judo.meta.esm.structure.EntityType;
-import hu.blackbelt.judo.meta.esm.structure.Generalization;
-import hu.blackbelt.judo.meta.esm.structure.RelationFeature;
-import hu.blackbelt.judo.meta.esm.structure.TwoWayRelationMember;
-import hu.blackbelt.judo.meta.esm.structure.util.builder.DataMemberBuilder;
-import hu.blackbelt.judo.meta.esm.structure.util.builder.EntityTypeBuilder;
-import hu.blackbelt.judo.meta.esm.structure.util.builder.OneWayRelationMemberBuilder;
-import hu.blackbelt.judo.meta.esm.type.EnumerationMember;
-import hu.blackbelt.judo.meta.esm.type.EnumerationType;
-import hu.blackbelt.judo.meta.esm.type.Primitive;
+import hu.blackbelt.judo.meta.esm.structure.*;
+import hu.blackbelt.judo.meta.esm.structure.util.builder.*;
+import hu.blackbelt.judo.meta.esm.type.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static hu.blackbelt.judo.meta.esm.measure.util.builder.MeasureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
 import static hu.blackbelt.judo.meta.esm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
+import static hu.blackbelt.judo.meta.esm.structure.MemberType.DERIVED;
+import static hu.blackbelt.judo.meta.esm.structure.MemberType.STORED;
+import static hu.blackbelt.judo.meta.esm.structure.RelationKind.ASSOCIATION;
 import static hu.blackbelt.judo.meta.esm.structure.util.builder.StructureBuilders.*;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newEnumerationMemberBuilder;
 import static hu.blackbelt.judo.meta.esm.type.util.builder.TypeBuilders.newEnumerationTypeBuilder;
@@ -78,10 +63,11 @@ public class EsmTestModelCreator {
 
     public static class EntityCreator {
         private String name;
-        private Collection<DataFeature> attributes = new LinkedList<>();
-        private Collection<RelationFeature> relations = new LinkedList<>();
-        private Collection<Generalization> generalizations = new LinkedList<>();
-        private Collection<EntitySequence> sequences = new LinkedList<>();
+        private final Collection<DataFeature> attributes = new LinkedList<>();
+        private final Collection<RelationFeature> relations = new LinkedList<>();
+        private final Collection<QueryFeature> queries = new LinkedList<>();
+        private final Collection<Generalization> generalizations = new LinkedList<>();
+        private final Collection<EntitySequence> sequences = new LinkedList<>();
 
         public EntityCreator(String name) {
             this.name = name;
@@ -89,6 +75,20 @@ public class EsmTestModelCreator {
 
         public EntityCreator withAttribute(String name, Primitive datatype) {
             attributes.add(createAttribute(name, datatype, ""));
+            return this;
+        }
+
+        public EntityCreator withPrimitiveQuery(String name, TransferObjectType input, String expression, Primitive output) {
+            DataFeature primitiveQuery = createPrimitiveQuery(name, input, expression, output);
+            queries.add(primitiveQuery);
+            attributes.add(primitiveQuery);
+            return this;
+        }
+
+        public EntityCreator withComplexQuery(String name, TransferObjectType input, String expression, TransferObjectType output) {
+            OneWayRelationMember complexQuery = createComplexQuery(name, input, expression, output);
+            queries.add(complexQuery);
+            relations.add(complexQuery);
             return this;
         }
 
@@ -129,6 +129,9 @@ public class EsmTestModelCreator {
 
         public EntityType create() {
             EntityTypeBuilder builder = newEntityTypeBuilder().withName(name);
+            if (!queries.isEmpty()) {
+                builder.withQueries(queries);
+            }
             if (!attributes.isEmpty()) {
                 builder.withAttributes(attributes);
             }
@@ -142,9 +145,7 @@ public class EsmTestModelCreator {
                 builder.withSequences(sequences);
             }
             EntityType entityType = builder.build();
-            useEntityType(entityType)
-                    .withMapping(newMappingBuilder().withTarget(entityType).build())
-                    .build();
+            entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
             return entityType;
         }
 
@@ -177,15 +178,43 @@ public class EsmTestModelCreator {
     public static RelationFeature createRelation(String name, Class target, int upperBound, String getterExpression) {
         OneWayRelationMemberBuilder builder = newOneWayRelationMemberBuilder().withName(name).withTarget(target).withUpper(upperBound);
         builder.withGetterExpression(getterExpression);
-        builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? MemberType.DERIVED : MemberType.STORED);
+        builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? DERIVED : STORED);
         return builder.build();
     }
 
     public static DataFeature createAttribute(String name, Primitive datatype, String getterExpression) {
         DataMemberBuilder builder = newDataMemberBuilder().withName(name).withDataType(datatype);
         builder.withGetterExpression(getterExpression);
-        builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? MemberType.DERIVED : MemberType.STORED);
+        builder.withMemberType(getterExpression != null && !getterExpression.trim().isEmpty() ? DERIVED : STORED);
         return builder.build();
+    }
+
+    public static DataFeature createPrimitiveQuery(String name, TransferObjectType input, String expression, Primitive output) {
+        DataMember dataMember = newDataMemberBuilder()
+                .withName(name)
+                .withInput(input)
+                .withIsQuery(true)
+                .withDataType(output)
+                .withMemberType(DERIVED)
+                .withGetterExpression(expression)
+                .build();
+        dataMember.setBinding(dataMember);
+        return dataMember;
+    }
+
+    public static OneWayRelationMember createComplexQuery(String name, TransferObjectType input, String expression, TransferObjectType output) {
+        OneWayRelationMember relationMember = newOneWayRelationMemberBuilder()
+                .withName(name)
+                .withInput(input)
+                .withIsQuery(true)
+                .withTarget(output)
+                .withMemberType(DERIVED)
+                .withLower(0).withUpper(-1)
+                .withRelationKind(ASSOCIATION)
+                .withGetterExpression(expression)
+                .build();
+        relationMember.setBinding(relationMember);
+        return relationMember;
     }
 
     public static EnumerationType createEnum(String name, String... members) {
