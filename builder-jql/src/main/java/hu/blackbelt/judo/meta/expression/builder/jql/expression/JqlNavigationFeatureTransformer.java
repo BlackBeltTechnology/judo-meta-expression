@@ -5,6 +5,8 @@ import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalAttribute;
 import hu.blackbelt.judo.meta.jql.jqldsl.Feature;
+import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
+import org.eclipse.emf.common.util.EList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,16 +109,23 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         Expression resultBaseExpression = baseExpression;
         Optional<String> getterExpression = getModelAdapter().getReferenceGetter(accessor);
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedReference(accessor) && getterExpression.isPresent()) {
+            Object contextInputParameterType = context.getInputParameterType();
+            Optional<TO> referenceParameterType = getModelAdapter().getReferenceParameterType(accessor);
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
-            } else if (context.getInputParameterType() != null && getModelAdapter().getReferenceParameterType(accessor).isPresent() && !isCompatibleParameter((TO) context.getInputParameterType(), getModelAdapter().getReferenceParameterType(accessor).orElse(null))) {
-                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(context.getInputParameterType()));
             } else {
-                context.pushAccessor(accessor);
+                if (contextInputParameterType != null && referenceParameterType.isPresent() &&
+                    !isCompatibleParameter((TO) contextInputParameterType, referenceParameterType.orElse(null))) {
+                    throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
+                } else {
+                    context.pushAccessor(accessor);
+                }
             }
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
+            context.setInputParameterType(referenceParameterType.orElse(null));
             resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression.get(), context);
+            context.setInputParameterType(contextInputParameterType);
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
@@ -133,16 +142,23 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         Expression resultBaseExpression = baseExpression;
         Optional<String> getterExpression = getModelAdapter().getAttributeGetter(accessor);
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedAttribute(accessor) && getterExpression.isPresent()) {
+            Optional<TO> attributeParameterType = getModelAdapter().getAttributeParameterType(accessor);
+            TO contextInputParameterType = (TO) context.getInputParameterType();
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
-            } else if (context.getInputParameterType() != null && getModelAdapter().getAttributeParameterType(accessor).isPresent() && !isCompatibleParameter((TO) context.getInputParameterType(), getModelAdapter().getAttributeParameterType(accessor).orElse(null))) {
-                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(context.getInputParameterType()));
             } else {
-                context.pushAccessor(accessor);
+                if (contextInputParameterType != null && attributeParameterType.isPresent() &&
+                    !isCompatibleParameter(contextInputParameterType, attributeParameterType.get())) {
+                    throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
+                } else {
+                    context.pushAccessor(accessor);
+                }
             }
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
+            context.setInputParameterType(attributeParameterType.orElse(null));
             resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression.get(), context);
+            context.setInputParameterType(contextInputParameterType);
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();

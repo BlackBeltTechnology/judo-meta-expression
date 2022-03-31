@@ -12,7 +12,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
 	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
-    private final TO inputParameterType;
+    private TO inputParameterType;
     private String contextNamespace;
 
     private final JqlExpressionBuilderConfig config;
@@ -90,6 +90,11 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     @Override
     public Object peekBase() {
         return resolvedBases.peek();
+    }
+
+    @Override
+    public void setInputParameterType(Object inputParameterType) {
+        this.inputParameterType = (TO) inputParameterType;
     }
 
     public TO getInputParameterType() {
