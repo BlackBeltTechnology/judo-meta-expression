@@ -6,24 +6,16 @@ import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.esm.measure.DurationType;
-import hu.blackbelt.judo.meta.esm.measure.Measure;
-import hu.blackbelt.judo.meta.esm.measure.Unit;
-import hu.blackbelt.judo.meta.esm.namespace.Model;
-import hu.blackbelt.judo.meta.esm.namespace.NamespaceElement;
+import hu.blackbelt.judo.meta.esm.measure.*;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
+import hu.blackbelt.judo.meta.esm.namespace.*;
 import hu.blackbelt.judo.meta.esm.structure.Class;
-import hu.blackbelt.judo.meta.esm.structure.PrimitiveTypedElement;
-import hu.blackbelt.judo.meta.esm.structure.ReferenceTypedElement;
 import hu.blackbelt.judo.meta.esm.structure.Sequence;
-import hu.blackbelt.judo.meta.esm.structure.TransferObjectType;
+import hu.blackbelt.judo.meta.esm.structure.*;
 import hu.blackbelt.judo.meta.esm.support.EsmModelResourceSupport;
 import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.Primitive;
-import hu.blackbelt.judo.meta.expression.CollectionExpression;
-import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.ObjectExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
@@ -32,18 +24,11 @@ import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.hamcrest.Description;
-import org.hamcrest.DiagnosingMatcher;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
+import org.hamcrest.*;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.util.*;
 
 import static hu.blackbelt.epsilon.runtime.execution.ExecutionContext.executionContextBuilder;
@@ -185,12 +170,22 @@ public class AbstractEsmJqlExpressionBuilderTest {
         executionContext.close();
     }
 
-    protected Expression createExpression(String jqlExpressionAsString) {
-        return createExpression(null, jqlExpressionAsString);
+    protected Expression createExpression(String jqlExpression) {
+        return createExpression(null, jqlExpression);
     }
 
-    protected Expression createExpression(hu.blackbelt.judo.meta.esm.structure.Class clazz, final String jqlExpressionString) {
-        final Expression expression = esmJqlExpressionBuilder.createExpression(clazz, jqlExpressionString);
+    protected Expression createExpression(Class clazz, String jqlExpression) {
+        final Expression expression = esmJqlExpressionBuilder.createExpression(clazz, jqlExpression);
+        assertThat(expression, notNullValue());
+        return expression;
+    }
+
+    protected Expression createExpressionWithInput(TransferObjectType input, String jqlExpression) {
+        return createExpressionWithInput(null, input, jqlExpression);
+    }
+
+    protected Expression createExpressionWithInput(Class clazz, TransferObjectType input, String jqlExpression) {
+        Expression expression = esmJqlExpressionBuilder.createExpressionWithInput(clazz, jqlExpression, input);
         assertThat(expression, notNullValue());
         return expression;
     }
