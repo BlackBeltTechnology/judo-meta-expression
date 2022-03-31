@@ -332,4 +332,20 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertThat(exception.getMessage(), containsString(INVALID_ATTRIBUTE_SELECTOR));
     }
 
+    @Test
+    public void testQueryFeatures() {
+        StringType string = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        EntityType queryInput = new EntityCreator("QueryInput")
+                .withAttribute("attr", string)
+                .create();
+        EntityType queryHolder = new EntityCreator("QueryHolder")
+                .withPrimitiveQuery("pq", queryInput, "input.attr", string)
+                .withComplexQuery("cq", queryInput, "QueryInput!filter(q | q.attr == input.attr)", queryInput)
+                .create();
+        EntityType tester = new EntityCreator("Tester").create();
+        initResources(createTestModel(string, queryInput, queryHolder, tester));
+        Expression expression = createExpression(queryHolder, "QueryHolder!any().pq(QueryInput!filter(qi | qi.attr == 'apple')!any()) + 'pear'");
+        Expression expression1 = createExpression(queryHolder, "QueryHolder!any().cq(QueryInput!any())");
+    }
+
 }
