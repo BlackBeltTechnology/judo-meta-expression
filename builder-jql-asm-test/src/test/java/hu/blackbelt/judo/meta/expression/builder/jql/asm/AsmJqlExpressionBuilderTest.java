@@ -4,8 +4,7 @@ import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuildException;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
 import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
@@ -130,7 +129,11 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
-        Expression expression = expressionBuilder.createExpression(clazz, jqlExpressionString);
+        Expression expression =
+                expressionBuilder.createExpression(CreateExpressionArguments.<EClass, EClass, EClassifier>builder()
+                                                           .withClazz(clazz)
+                                                           .withJqlExpressionAsString(jqlExpressionString)
+                                                           .build());
         assertThat(expression, notNullValue());
         expressionBuilder.storeExpression(expression);
         return expression;

@@ -2,7 +2,7 @@ context EXPR!ReferenceBinding {
 	
 	constraint ReferenceBindingExpressionIsValid {
 		check: self.expression.isKindOf(EXPR!ReferenceExpression)
-		message: "Expression of reference binding for reference named: " + self.referenceName + " must be reference expression"
+		message: "Expression of reference binding for reference named " + self.referenceName + " must be reference expression"
 	}
 	
 	constraint ReferenceExpressionMatchesBinding {
@@ -10,7 +10,7 @@ context EXPR!ReferenceBinding {
 		check: modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).isPresent() and 
 		modelAdapter.getSuperTypes(self.expression.getObjectType(modelAdapter)).including(self.expression.getObjectType(modelAdapter))
 			.includes(modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).get())
-		message: "Reference named " + self.referenceName + " does not match the type of the assigned expression" 
+		message: "Reference named " + self.referenceName + " does not match the type (" + modelAdapter.getFqName(modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).get()) + ") of the assigned expression"
 	}
 	
 	constraint ObjectExpressionMatchesBinding {

@@ -17,6 +17,7 @@ import hu.blackbelt.judo.meta.esm.type.EnumerationType;
 import hu.blackbelt.judo.meta.esm.type.Primitive;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.esm.EsmModelAdapter;
+import hu.blackbelt.judo.meta.expression.builder.jql.CreateExpressionArguments;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
@@ -175,7 +176,11 @@ public class AbstractEsmJqlExpressionBuilderTest {
     }
 
     protected Expression createExpression(Class clazz, String jqlExpression) {
-        final Expression expression = esmJqlExpressionBuilder.createExpression(clazz, jqlExpression);
+        final Expression expression =
+                esmJqlExpressionBuilder.createExpression(CreateExpressionArguments.<Class, TransferObjectType, NamespaceElement>builder()
+                                                                 .withClazz(clazz)
+                                                                 .withJqlExpressionAsString(jqlExpression)
+                                                                 .build());
         assertThat(expression, notNullValue());
         return expression;
     }
@@ -185,7 +190,12 @@ public class AbstractEsmJqlExpressionBuilderTest {
     }
 
     protected Expression createExpressionWithInput(Class clazz, TransferObjectType input, String jqlExpression) {
-        Expression expression = esmJqlExpressionBuilder.createExpressionWithInput(clazz, jqlExpression, input);
+        Expression expression = esmJqlExpressionBuilder
+                .createExpression(CreateExpressionArguments.<Class, TransferObjectType, NamespaceElement>builder()
+                                          .withClazz(clazz)
+                                          .withJqlExpressionAsString(jqlExpression)
+                                          .withInputParameterType(input)
+                                          .build());
         assertThat(expression, notNullValue());
         return expression;
     }
