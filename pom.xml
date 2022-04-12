@@ -95,7 +95,7 @@
         <judo-meta-psm-version>1.1.0.20220316_215604_2f3c646e_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.0.20220316_215523_298f5cab_develop</judo-meta-asm-version>
         <judo-meta-esm-version>1.1.0.20220318_125447_6a723342_develop</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1-SNAPSHOT</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1.20220316_214616_cc62939d_develop</judo-meta-jql-version>
         <judo-meta-measure-version>1.0.0.20220316_215539_4a54e021_develop</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>

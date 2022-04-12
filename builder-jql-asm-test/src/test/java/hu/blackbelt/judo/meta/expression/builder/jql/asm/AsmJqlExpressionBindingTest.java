@@ -104,7 +104,6 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
     }
 
     @Test
-    @Disabled
     void testReferenceBinding() throws Exception {
 
         EClass order = findBase("Order");

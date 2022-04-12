@@ -236,11 +236,6 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                                           .withClazz(entityType)
                                           .withJqlExpressionAsString(jql)
                                           .withInputParameterType(inputParameterType)
-//                                          .withContextNamespacePreset(
-//                                                  entityType != null || transferObjectType != null
-//                                                          ? Objects.requireNonNullElse(entityType, transferObjectType)
-//                                                          : null
-//                                          )
                                           .build());
         builder.storeExpression(expression);
         builder.createBinding(bindingContext, entityType, transferObjectType, expression);

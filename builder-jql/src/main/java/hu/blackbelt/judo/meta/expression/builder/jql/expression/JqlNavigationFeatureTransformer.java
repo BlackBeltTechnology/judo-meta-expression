@@ -111,23 +111,20 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
             Optional<TO> referenceParameterType = getModelAdapter().getReferenceParameterType(accessor);
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
-            } else {
-                if (contextInputParameterType != null && referenceParameterType.isPresent() &&
-                    !isCompatibleParameter((TO) contextInputParameterType, referenceParameterType.orElse(null))) {
-                    throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
-                } else {
-                    context.pushAccessor(accessor);
-                }
             }
+            if (contextInputParameterType != null && referenceParameterType.isPresent() &&
+                !isCompatibleParameter((TO) contextInputParameterType, referenceParameterType.orElse(null))) {
+                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
+            }
+
+            context.pushAccessor(accessor);
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
-            context.setInputParameterType(referenceParameterType.orElse(null));
             resultBaseExpression = jqlTransformers.getExpressionBuilder()
                     .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
                                               .withJqlExpressionAsString(getterExpression.get())
                                               .withContext(context)
                                               .build());
-            context.setInputParameterType(contextInputParameterType);
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
@@ -148,23 +145,20 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
             TO contextInputParameterType = (TO) context.getInputParameterType();
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
-            } else {
-                if (contextInputParameterType != null && attributeParameterType.isPresent() &&
-                    !isCompatibleParameter(contextInputParameterType, attributeParameterType.get())) {
-                    throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
-                } else {
-                    context.pushAccessor(accessor);
-                }
             }
+            if (contextInputParameterType != null && attributeParameterType.isPresent() &&
+                !isCompatibleParameter(contextInputParameterType, attributeParameterType.get())) {
+                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
+            }
+
+            context.pushAccessor(accessor);
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
-            context.setInputParameterType(attributeParameterType.orElse(null));
             resultBaseExpression = jqlTransformers.getExpressionBuilder()
                     .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
                                               .withJqlExpressionAsString(getterExpression.get())
                                               .withContext(context)
                                               .build());
-            context.setInputParameterType(contextInputParameterType);
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
