@@ -1,28 +1,10 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
-import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.Collections;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EReference;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.google.common.collect.ImmutableList;
-
 import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
 import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
+import hu.blackbelt.judo.meta.expression.builder.jql.CreateExpressionArguments;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
@@ -30,6 +12,17 @@ import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.Measure;
 import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.*;
+import org.junit.jupiter.api.*;
+
+import java.util.Collections;
+
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
+import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @Slf4j
 public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
@@ -55,7 +48,11 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
     }
 
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
-        final Expression expression = expressionBuilder.createExpression(clazz, jqlExpressionString);
+        final Expression expression =
+                expressionBuilder.createExpression(CreateExpressionArguments.<EClass, EClass, EClassifier>builder()
+                                                           .withClazz(clazz)
+                                                           .withJqlExpressionAsString(jqlExpressionString)
+                                                           .build());
         assertThat(expression, notNullValue());
         return expression;
     }
