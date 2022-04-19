@@ -43,7 +43,12 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                 Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
                 Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
                 Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
-                if (attribute.isPresent()) {
+                if (isExtendedFeature(jqlFeature, context)) {
+                    JqlFeatureTransformResult<C> transformResult =
+                            transformExtendedFeature(jqlFeature, context, baseExpression, navigationBase);
+                    baseExpression = transformResult.baseExpression;
+                    navigationBase = transformResult.navigationBase;
+                } else if (attribute.isPresent()) {
                     if (!(baseExpression instanceof ObjectExpression)) {
                         throw new IllegalStateException(
                                 String.format("%s. Got %s", INVALID_ATTRIBUTE_SELECTOR, baseExpression.getClass().getSimpleName()));
@@ -66,11 +71,6 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                             .withObjectExpression((ObjectExpression) baseExpression)
                             .withSequenceName(jqlFeature.getName())
                             .build();
-                } else if (isExtendedFeature(jqlFeature, context)) {
-                    JqlFeatureTransformResult<C> transformResult =
-                            transformExtendedFeature(jqlFeature, context, baseExpression, navigationBase);
-                    baseExpression = transformResult.baseExpression;
-                    navigationBase = transformResult.navigationBase;
                 } else {
                     LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
                     String errorMessage = String.format("Feature %s of %s not found", jqlFeature.getName(),
