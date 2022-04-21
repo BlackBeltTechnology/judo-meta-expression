@@ -224,7 +224,7 @@ public class AsmModelAdapter implements
 	@Override
 	public Optional<EClass> getAttributeParameterType(EAttribute attribute) {
 		return attribute.isDerived()
-				? AsmUtils.getExtensionAnnotationCustomValue(attribute, "parameterized", "type", false)
+				? AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.parameter", false)
 						  .flatMap(asmUtils::resolve)
 						  .map(eClassifier -> (EClass) eClassifier)
 				: Optional.empty();
@@ -233,7 +233,7 @@ public class AsmModelAdapter implements
 	@Override
 	public Optional<EClass> getReferenceParameterType(EReference reference) {
 		return reference.isDerived()
-				? AsmUtils.getExtensionAnnotationCustomValue(reference, "parameterized", "type", false)
+				? AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.parameter", false)
 						  .flatMap(asmUtils::resolve)
 						  .map(eClassifier -> (EClass) eClassifier)
 				: Optional.empty();
