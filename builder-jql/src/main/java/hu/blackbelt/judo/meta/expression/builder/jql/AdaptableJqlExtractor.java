@@ -112,7 +112,11 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
 
             if (!hasBinding(typeName, FilterBinding.class)) {
                 JqlExpressionBuilder.BindingContext filterBindingContext = new JqlExpressionBuilder.BindingContext(null, JqlExpressionBuilder.BindingType.FILTER, JqlExpressionBuilder.BindingRole.GETTER);
-                Expression expression = builder.createExpression(modelAdapter.getMappedEntityType(mappedTransferObjectType).get(), filterJql);
+                Expression expression =
+                        builder.createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                                         .withClazz(modelAdapter.getMappedEntityType(mappedTransferObjectType).get())
+                                                         .withJqlExpressionAsString(filterJql)
+                                                         .build());
                 builder.storeExpression(expression);
                 builder.createBinding(filterBindingContext, null, mappedTransferObjectType, expression);
             } else {
@@ -227,7 +231,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     }
 
     private void buildAndBind(C entityType, TO transferObjectType, TO inputParameterType, JqlExpressionBuilder.BindingContext bindingContext, String jql) {
-        Expression expression = builder.createExpressionWithInput(entityType, jql, inputParameterType);
+        Expression expression = builder
+                .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                          .withClazz(entityType)
+                                          .withJqlExpressionAsString(jql)
+                                          .withInputParameterType(inputParameterType)
+                                          .build());
         builder.storeExpression(expression);
         builder.createBinding(bindingContext, entityType, transferObjectType, expression);
     }

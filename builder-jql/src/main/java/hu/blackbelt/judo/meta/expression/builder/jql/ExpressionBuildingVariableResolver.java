@@ -25,6 +25,8 @@ public interface ExpressionBuildingVariableResolver {
 
     Object peekBase();
 
+    void setInputParameterType(Object inputParameterType);
+
     Object getInputParameterType();
 
     Optional<String> getContextNamespace();
