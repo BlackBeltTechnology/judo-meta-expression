@@ -649,8 +649,8 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
 
     @Test
     void testEnumTypeDifference() {
-        assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::types::Countries#AT : demo::types::Titles#MR"));
-        assertThrows(IllegalArgumentException.class, () -> createExpression("demo::types::Countries#AT == demo::types::Titles#MR"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression("true ? demo::types::Countries#AT : schools::Gender#MALE"));
+        assertThrows(IllegalArgumentException.class, () -> createExpression("demo::types::Countries#AT == schools::Gender#MALE"));
     }
 
     @Test
