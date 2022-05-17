@@ -196,12 +196,27 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="iteratorVariable" eType="#//variable/ObjectVariable"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="OffsetDateTime" instanceClassName="java.time.OffsetDateTime"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalDate" instanceClassName="java.time.LocalDate">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="convert" value="return it == null ? null : it.toString();"/>
+      <details key="create" value="return it == null ? null : java.time.LocalDate.parse(it);"/>
+    </eAnnotations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="OffsetDateTime" instanceClassName="java.time.OffsetDateTime">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="convert" value="return it == null ? null : it.toString();"/>
+      <details key="create" value="return it == null ? null : java.time.OffsetDateTime.parse(it);"/>
+    </eAnnotations>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeNameExpression" eSuperTypes="#//TypeName #//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="TimeExpression" abstract="true" interface="true"
       eSuperTypes="#//DataExpression"/>
-  <eClassifiers xsi:type="ecore:EDataType" name="LocalTime" instanceClassName="java.time.LocalTime"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalTime" instanceClassName="java.time.LocalTime">
+    <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+      <details key="convert" value="return it == null ? null : it.toString();"/>
+      <details key="create" value="return it == null ? null : java.time.LocalTime.parse(it);"/>
+    </eAnnotations>
+  </eClassifiers>
   <eSubpackages name="constant" nsURI="http://blackbelt.hu/judo/meta/expression/constant"
       nsPrefix="const">
     <eClassifiers xsi:type="ecore:EClass" name="Constant" abstract="true" eSuperTypes="#//Expression">
