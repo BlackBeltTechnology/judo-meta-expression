@@ -98,7 +98,9 @@ public class AsmModelAdapter implements
 			return namespace.get().getEClassifiers().stream()
 					.filter(e -> Objects.equals(e.getName(), elementName.getName())).findAny();
 		} else {
-			log.warn("Namespace not found: {}", elementName.getNamespace());
+			if (elementName.getNamespace() != null && !"".equals(elementName.getNamespace().trim())) {
+				log.warn("Namespace not found: {}", elementName.getNamespace());
+			}
 			return Optional.empty();
 		}
 	}
