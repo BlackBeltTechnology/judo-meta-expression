@@ -17,17 +17,17 @@ import java.util.stream.StreamSupport;
 public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> implements JqlExtractor {
 
     private static final Logger log = LoggerFactory.getLogger(AdaptableJqlExtractor.class.getName());
-    
+
     private final ResourceSet expressionResourceSet;
     private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> builder;
 
     public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, JqlExpressionBuilderConfig builderConfig) {
         this.expressionResourceSet = expressionResourceSet;
-        this.modelAdapter = modelAdapter; 
+        this.modelAdapter = modelAdapter;
         this.builder = new JqlExpressionBuilder(modelAdapter, expressionResourceSet.getResources().get(0), builderConfig);
     }
-    
+
     public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter) {
         this(asmResourceSet, measureResourceSet, expressionResourceSet, modelAdapter, new JqlExpressionBuilderConfig());
     }
@@ -114,9 +114,9 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
                 JqlExpressionBuilder.BindingContext filterBindingContext = new JqlExpressionBuilder.BindingContext(null, JqlExpressionBuilder.BindingType.FILTER, JqlExpressionBuilder.BindingRole.GETTER);
                 Expression expression =
                         builder.createExpression(CreateExpressionArguments.<C, TO, NE>builder()
-                                                         .withClazz(modelAdapter.getMappedEntityType(mappedTransferObjectType).get())
-                                                         .withJqlExpressionAsString(filterJql)
-                                                         .build());
+                                                                          .withClazz(modelAdapter.getMappedEntityType(mappedTransferObjectType).orElseThrow())
+                                                                          .withJqlExpressionAsString(filterJql)
+                                                                          .build());
                 builder.storeExpression(expression);
                 builder.createBinding(filterBindingContext, null, mappedTransferObjectType, expression);
             } else {
@@ -231,12 +231,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     }
 
     private void buildAndBind(C entityType, TO transferObjectType, TO inputParameterType, JqlExpressionBuilder.BindingContext bindingContext, String jql) {
-        Expression expression = builder
-                .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
-                                          .withClazz(entityType)
-                                          .withJqlExpressionAsString(jql)
-                                          .withInputParameterType(inputParameterType)
-                                          .build());
+        Expression expression =
+                builder.createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                                                  .withClazz(entityType)
+                                                                  .withJqlExpressionAsString(jql)
+                                                                  .withInputParameterType(inputParameterType)
+                                                                  .build());
         builder.storeExpression(expression);
         builder.createBinding(bindingContext, entityType, transferObjectType, expression);
     }
@@ -244,7 +244,7 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     public void setBuilderConfig(JqlExpressionBuilderConfig builderConfig) {
         builder.setBuilderConfig(builderConfig);
     }
-    
+
     static <T> Stream<T> all(final ResourceSet resourceSet, final Class<T> clazz) {
         final Iterable<Notifier> resourceContents = resourceSet::getAllContents;
         return StreamSupport.stream(resourceContents.spliterator(), true)

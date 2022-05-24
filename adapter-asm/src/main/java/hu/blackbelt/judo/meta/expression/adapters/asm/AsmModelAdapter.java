@@ -2,10 +2,7 @@ package hu.blackbelt.judo.meta.expression.adapters.asm;
 
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils.OperationBehaviour;
-import hu.blackbelt.judo.meta.expression.MeasureName;
-import hu.blackbelt.judo.meta.expression.NumericExpression;
-import hu.blackbelt.judo.meta.expression.ReferenceSelector;
-import hu.blackbelt.judo.meta.expression.TypeName;
+import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureAdapter;
 import hu.blackbelt.judo.meta.expression.adapters.measure.MeasureProvider;
@@ -13,10 +10,7 @@ import hu.blackbelt.judo.meta.expression.constant.MeasuredDecimal;
 import hu.blackbelt.judo.meta.expression.numeric.DecimalVariableReference;
 import hu.blackbelt.judo.meta.expression.numeric.NumericAttribute;
 import hu.blackbelt.judo.meta.expression.variable.MeasuredDecimalEnvironmentVariable;
-import hu.blackbelt.judo.meta.measure.DurationType;
-import hu.blackbelt.judo.meta.measure.DurationUnit;
-import hu.blackbelt.judo.meta.measure.Measure;
-import hu.blackbelt.judo.meta.measure.Unit;
+import hu.blackbelt.judo.meta.measure.*;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.*;
@@ -25,7 +19,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.slf4j.Logger;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -224,19 +217,19 @@ public class AsmModelAdapter implements
 	@Override
 	public Optional<EClass> getAttributeParameterType(EAttribute attribute) {
 		return attribute.isDerived()
-				? AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.parameter", false)
-						  .flatMap(asmUtils::resolve)
-						  .map(eClassifier -> (EClass) eClassifier)
-				: Optional.empty();
+			   ? AsmUtils.getExtensionAnnotationCustomValue(attribute, "expression", "getter.parameter", false)
+						 .flatMap(asmUtils::resolve)
+						 .map(eClassifier -> (EClass) eClassifier)
+			   : Optional.empty();
 	}
 
 	@Override
 	public Optional<EClass> getReferenceParameterType(EReference reference) {
 		return reference.isDerived()
-				? AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.parameter", false)
-						  .flatMap(asmUtils::resolve)
-						  .map(eClassifier -> (EClass) eClassifier)
-				: Optional.empty();
+			   ? AsmUtils.getExtensionAnnotationCustomValue(reference, "expression", "getter.parameter", false)
+						 .flatMap(asmUtils::resolve)
+						 .map(eClassifier -> (EClass) eClassifier)
+			   : Optional.empty();
 	}
 
 	@Override

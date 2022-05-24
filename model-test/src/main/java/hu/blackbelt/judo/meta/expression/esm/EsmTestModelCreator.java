@@ -145,7 +145,7 @@ public class EsmTestModelCreator {
                 builder.withSequences(sequences);
             }
             EntityType entityType = builder.build();
-            entityType.setMapping(newMappingBuilder().withTarget(entityType).build());
+            entityType.setMappedEntity(entityType);
             return entityType;
         }
 
@@ -190,7 +190,7 @@ public class EsmTestModelCreator {
     }
 
     public static DataFeature createPrimitiveQuery(String name, TransferObjectType input, String expression, Primitive output) {
-        DataMember dataMember = newDataMemberBuilder()
+        return newDataMemberBuilder()
                 .withName(name)
                 .withInput(input)
                 .withIsQuery(true)
@@ -198,12 +198,10 @@ public class EsmTestModelCreator {
                 .withMemberType(DERIVED)
                 .withGetterExpression(expression)
                 .build();
-        dataMember.setBinding(dataMember);
-        return dataMember;
     }
 
     public static OneWayRelationMember createComplexQuery(String name, TransferObjectType input, String expression, TransferObjectType output) {
-        OneWayRelationMember relationMember = newOneWayRelationMemberBuilder()
+        return newOneWayRelationMemberBuilder()
                 .withName(name)
                 .withInput(input)
                 .withIsQuery(true)
@@ -213,8 +211,6 @@ public class EsmTestModelCreator {
                 .withRelationKind(ASSOCIATION)
                 .withGetterExpression(expression)
                 .build();
-        relationMember.setBinding(relationMember);
-        return relationMember;
     }
 
     public static EnumerationType createEnum(String name, String... members) {

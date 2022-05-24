@@ -178,9 +178,9 @@ public class AbstractEsmJqlExpressionBuilderTest {
     protected Expression createExpression(Class clazz, String jqlExpression) {
         final Expression expression =
                 esmJqlExpressionBuilder.createExpression(CreateExpressionArguments.<Class, TransferObjectType, NamespaceElement>builder()
-                                                                 .withClazz(clazz)
-                                                                 .withJqlExpressionAsString(jqlExpression)
-                                                                 .build());
+                                                                                  .withClazz(clazz)
+                                                                                  .withJqlExpressionAsString(jqlExpression)
+                                                                                  .build());
         assertThat(expression, notNullValue());
         return expression;
     }
@@ -192,16 +192,16 @@ public class AbstractEsmJqlExpressionBuilderTest {
     protected Expression createExpressionWithInput(Class clazz, TransferObjectType input, String jqlExpression) {
         Expression expression = esmJqlExpressionBuilder
                 .createExpression(CreateExpressionArguments.<Class, TransferObjectType, NamespaceElement>builder()
-                                          .withClazz(clazz)
-                                          .withJqlExpressionAsString(jqlExpression)
-                                          .withInputParameterType(input)
-                                          .build());
+                                                           .withClazz(clazz)
+                                                           .withJqlExpressionAsString(jqlExpression)
+                                                           .withInputParameterType(input)
+                                                           .build());
         assertThat(expression, notNullValue());
         return expression;
     }
 
     protected Matcher<Expression> collectionOf(String typeName) {
-        return new DiagnosingMatcher<Expression>() {
+        return new DiagnosingMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -229,7 +229,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
     }
 
     protected Matcher<Expression> objectOf(String typeName) {
-        return new DiagnosingMatcher<Expression>() {
+        return new DiagnosingMatcher<>() {
 
             @Override
             public void describeTo(Description description) {

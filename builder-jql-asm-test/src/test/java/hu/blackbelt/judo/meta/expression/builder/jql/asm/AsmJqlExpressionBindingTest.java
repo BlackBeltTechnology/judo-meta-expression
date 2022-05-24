@@ -14,7 +14,8 @@ import hu.blackbelt.judo.meta.measure.Unit;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
@@ -50,9 +51,9 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
         final Expression expression =
                 expressionBuilder.createExpression(CreateExpressionArguments.<EClass, EClass, EClassifier>builder()
-                                                           .withClazz(clazz)
-                                                           .withJqlExpressionAsString(jqlExpressionString)
-                                                           .build());
+                                                                            .withClazz(clazz)
+                                                                            .withJqlExpressionAsString(jqlExpressionString)
+                                                                            .build());
         assertThat(expression, notNullValue());
         return expression;
     }
@@ -73,7 +74,7 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
         EClass order = findBase("Order");
 
         createGetterExpression(order, "self.shipper.companyName", "orderDate", ATTRIBUTE); //string expr to time stamp
-        createGetterExpression(order, "self.orderDate", "freight", ATTRIBUTE); //time stamp expr to string 
+        createGetterExpression(order, "self.orderDate", "freight", ATTRIBUTE); //time stamp expr to string
         createGetterExpression(order, "demo::types::Time!now()", "shipperName", ATTRIBUTE); //time stamp expr to string
 
         EClass internationalOrder = findBase("InternationalOrder");

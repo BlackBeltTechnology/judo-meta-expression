@@ -120,11 +120,12 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
             context.pushAccessor(accessor);
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
-            resultBaseExpression = jqlTransformers.getExpressionBuilder()
-                    .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
-                                              .withJqlExpressionAsString(getterExpression.get())
-                                              .withContext(context)
-                                              .build());
+            resultBaseExpression =
+                    jqlTransformers.getExpressionBuilder()
+                                   .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                                                              .withJqlExpressionAsString(getterExpression.get())
+                                                                              .withContext(context)
+                                                                              .build());
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
@@ -154,17 +155,17 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
             context.pushAccessor(accessor);
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
-            resultBaseExpression = jqlTransformers.getExpressionBuilder()
-                    .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
-                                              .withJqlExpressionAsString(getterExpression.get())
-                                              .withContext(context)
-                                              .build());
+            resultBaseExpression =
+                    jqlTransformers.getExpressionBuilder()
+                                   .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                                                              .withJqlExpressionAsString(getterExpression.get())
+                                                                              .withContext(context)
+                                                                              .build());
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
         } else {
-            resultBaseExpression = createAttributeSelector(accessor, jqlFeature.getName(),
-                    (ObjectExpression) resultBaseExpression);
+            resultBaseExpression = createAttributeSelector(accessor, jqlFeature.getName(), (ObjectExpression) resultBaseExpression);
         }
         return new JqlFeatureTransformResult<>(null, resultBaseExpression);
     }

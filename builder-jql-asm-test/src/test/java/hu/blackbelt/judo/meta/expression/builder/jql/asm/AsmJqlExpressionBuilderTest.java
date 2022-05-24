@@ -131,16 +131,16 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     private Expression createExpression(final EClass clazz, final String jqlExpressionString) {
         Expression expression =
                 expressionBuilder.createExpression(CreateExpressionArguments.<EClass, EClass, EClassifier>builder()
-                                                           .withClazz(clazz)
-                                                           .withJqlExpressionAsString(jqlExpressionString)
-                                                           .build());
+                                                                            .withClazz(clazz)
+                                                                            .withJqlExpressionAsString(jqlExpressionString)
+                                                                            .build());
         assertThat(expression, notNullValue());
         expressionBuilder.storeExpression(expression);
         return expression;
     }
 
     private Matcher<Expression> collectionOf(String typeName) {
-        return new DiagnosingMatcher<Expression>() {
+        return new DiagnosingMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -167,7 +167,7 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
     }
 
     private Matcher<Expression> objectOf(String typeName) {
-        return new DiagnosingMatcher<Expression>() {
+        return new DiagnosingMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -819,7 +819,6 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
         		+ "!filter(c | "
         			+ "c=>addresses!sort()!head()"
         			+ "!asType(demo::entities::InternationalAddress).country == demo::types::Countries#RO and c=>addresses!sort()!head().postalCode!matches('11%'))=>addresses"
-        		
         		);
         assertThat(customerExpression, instanceOf(CollectionNavigationFromObjectExpression.class));
     }

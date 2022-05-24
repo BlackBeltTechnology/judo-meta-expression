@@ -10,11 +10,8 @@ public final class CreateExpressionArguments<C, TO, NE> {
     private final String jqlExpressionAsString;
     private final ExpressionBuildingVariableResolver context;
 
-    private CreateExpressionArguments(C clazz,
-                                      TO inputParameterType,
-                                      NE contextNamespacePreset,
-                                      JqlExpression jqlExpression,
-                                      String jqlExpressionAsString,
+    private CreateExpressionArguments(C clazz, TO inputParameterType, NE contextNamespacePreset,
+                                      JqlExpression jqlExpression, String jqlExpressionAsString,
                                       ExpressionBuildingVariableResolver context) {
         this.clazz = clazz;
         this.inputParameterType = inputParameterType;
@@ -61,12 +58,8 @@ public final class CreateExpressionArguments<C, TO, NE> {
         private JqlExpression jqlExpression;
 
         public CreateExpressionArguments<C, TO, NE> build() {
-            return new CreateExpressionArguments<>(clazz,
-                                                   inputParameterType,
-                                                   contextNamespacePreset,
-                                                   jqlExpression,
-                                                   jqlExpressionAsString,
-                                                   context);
+            return new CreateExpressionArguments<>(clazz, inputParameterType, contextNamespacePreset, jqlExpression,
+                                                   jqlExpressionAsString, context);
         }
 
         public C getClazz() {
