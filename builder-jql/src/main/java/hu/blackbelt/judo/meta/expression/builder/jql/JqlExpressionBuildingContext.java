@@ -12,11 +12,11 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
 	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
-    private final TO inputParameterType;
+    private TO inputParameterType;
     private String contextNamespace;
 
     private final JqlExpressionBuilderConfig config;
-    
+
     public JqlExpressionBuildingContext() {
         this(new JqlExpressionBuilderConfig());
     }
@@ -24,13 +24,13 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config) {
         this(config, null);
     }
-    
+
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, TO inputParameterType) {
         this.inputParameterType = inputParameterType;
         this.config = Objects.requireNonNullElseGet(config, JqlExpressionBuilderConfig::new);
         pushVariableScope();
     }
-    
+
     @Override
     public void pushAccessor(Object accessor) {
         resolvedAccessors.push(accessor);
@@ -92,6 +92,12 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
         return resolvedBases.peek();
     }
 
+    @Override
+    public void setInputParameterType(Object inputParameterType) {
+        this.inputParameterType = (TO) inputParameterType;
+    }
+
+    @Override
     public TO getInputParameterType() {
         return inputParameterType;
     }
@@ -153,7 +159,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     public void pushVariableScope() {
         lambdaScopes.push(new ArrayDeque<>());
     }
-    
+
     @Override
     public void popVariableScope() {
         lambdaScopes.pop();
