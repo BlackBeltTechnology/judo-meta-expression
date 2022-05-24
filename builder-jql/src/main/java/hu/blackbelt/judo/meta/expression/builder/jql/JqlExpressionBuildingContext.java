@@ -16,7 +16,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     private String contextNamespace;
 
     private final JqlExpressionBuilderConfig config;
-    
+
     public JqlExpressionBuildingContext() {
         this(new JqlExpressionBuilderConfig());
     }
@@ -24,13 +24,13 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config) {
         this(config, null);
     }
-    
+
     public JqlExpressionBuildingContext(JqlExpressionBuilderConfig config, TO inputParameterType) {
         this.inputParameterType = inputParameterType;
         this.config = Objects.requireNonNullElseGet(config, JqlExpressionBuilderConfig::new);
         pushVariableScope();
     }
-    
+
     @Override
     public void pushAccessor(Object accessor) {
         resolvedAccessors.push(accessor);
@@ -97,6 +97,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
         this.inputParameterType = (TO) inputParameterType;
     }
 
+    @Override
     public TO getInputParameterType() {
         return inputParameterType;
     }
@@ -158,7 +159,7 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
     public void pushVariableScope() {
         lambdaScopes.push(new ArrayDeque<>());
     }
-    
+
     @Override
     public void popVariableScope() {
         lambdaScopes.pop();
