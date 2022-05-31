@@ -177,6 +177,12 @@ public class JqlNavigationTransformer<NE, P extends NE, E extends P, C extends N
                                     .withVariableName(variableName)
                                     .withTypeName(parameterAttributeTypeName)
                                     .build();
+                        } else if (getModelAdapter().isTime(parameterAttributeType)) {
+                            getVariableExpression = newTimeEnvironmentVariableBuilder()
+                                    .withCategory(PARAMETER_CATEGORY)
+                                    .withVariableName(variableName)
+                                    .withTypeName(parameterAttributeTypeName)
+                                    .build();
                         } else if (getModelAdapter().isDate(parameterAttributeType)) {
                             getVariableExpression = newDateEnvironmentVariableBuilder()
                                     .withCategory(PARAMETER_CATEGORY)
