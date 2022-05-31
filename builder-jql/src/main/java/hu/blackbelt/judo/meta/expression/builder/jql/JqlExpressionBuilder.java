@@ -191,53 +191,54 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return jqlParser.parseString(jqlString);
     }
 
-    public Expression createExpression(C clazz, String jqlExpressionString) {
-        return createExpression(clazz, parseJqlString(jqlExpressionString));
-    }
-
-    public Expression createExpressionWithInput(C clazz, String jqlExpressionString, TO inputParameterType) {
-        return createExpression(clazz, parseJqlString(jqlExpressionString), inputParameterType);
-    }
-
-    public Expression createExpression(String jqlString, ExpressionBuildingVariableResolver context) {
-        return createExpression(parseJqlString(jqlString), context);
-    }
-
-    public Expression createExpression(C entityType, JqlExpression jqlExpression) {
-        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext<TO>(config));
-    }
-
-    public Expression createExpression(C entityType, JqlExpression jqlExpression, TO inputParameterType) {
-        return createExpression(entityType, jqlExpression, new JqlExpressionBuildingContext<TO>(config, inputParameterType));
-    }
-
-    public Expression createExpression(C clazz, JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
-        if (context.getContextNamespace().isEmpty()) {
-            getModelAdapter().buildTypeName(clazz)
-                    .ifPresent(typeName -> context.setContextNamespace(typeName.getNamespace()));
-        }
-        context.pushBase(clazz);
-        return createExpression(jqlExpression, context);
-    }
-
     /**
      * Create and return expression of a given JQL expression.
-     *
-     * @param jqlExpression JQL expression
-     * @return expression
      */
-    public Expression createExpression(JqlExpression jqlExpression, ExpressionBuildingVariableResolver context) {
+    public Expression createExpression(CreateExpressionArguments<C, TO, NE> arguments) {
+        if (arguments == null) {
+            throw new IllegalArgumentException("CreateExpressionArguments (arguments) cannot be null");
+        }
+
+        JqlExpression jqlExpression;
+        if (arguments.getJqlExpression() == null && arguments.getJqlExpressionAsString() == null) {
+            throw new IllegalArgumentException("Neither jqlExpression or jqlExpressionAsString of CreateExpressionArguments can be null");
+        } else {
+            jqlExpression = Objects.requireNonNullElseGet(arguments.getJqlExpression(),
+                                                          () -> parseJqlString(arguments.getJqlExpressionAsString()));
+        }
+
+        ExpressionBuildingVariableResolver context =
+                Objects.requireNonNullElseGet(arguments.getContext(),
+                                              () -> new JqlExpressionBuildingContext<TO>(config));
+
+        context.pushBase(arguments.getClazz());
+        if (arguments.getInputParameterType() != null) {
+            context.setInputParameterType(arguments.getInputParameterType());
+        }
+
+        if (context.getContextNamespace().isEmpty()) {
+            if (arguments.getContextNamespacePreset() != null || arguments.getClazz() != null) {
+                context.setContextNamespace(
+                        buildTypeName(Objects.requireNonNullElse(arguments.getContextNamespacePreset(), arguments.getClazz()))
+                                .map(TypeName::getNamespace)
+                                .orElse(null)
+                );
+            }
+        }
+
+        // ARGUMENTS PREP
+        /////////////////////////////////////////
+        // EXPRESSION PREP
+
         Object base = context.peekBase();
         final Instance instance = base != null ? entityInstances.get(base) : null;
         if (instance != null) {
             context.pushVariable(instance);
         }
         final Expression expression = transformJqlToExpression(jqlExpression, context);
-
         if (instance != null) {
             context.popVariable();
         }
-
         return expression;
     }
 
