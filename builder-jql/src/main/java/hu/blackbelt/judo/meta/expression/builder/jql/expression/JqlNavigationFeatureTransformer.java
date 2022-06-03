@@ -40,43 +40,46 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
                 if (navigationBase == null) {
                     throw new IllegalStateException("Invalid selector: " + jqlFeature.getName());
                 }
-                Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
-                Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
-                Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
-                if (attribute.isPresent()) {
-                    if (!(baseExpression instanceof ObjectExpression)) {
-                        throw new IllegalStateException(
-                                String.format("%s. Got %s", INVALID_ATTRIBUTE_SELECTOR, baseExpression.getClass().getSimpleName()));
-                    }
-                    JqlFeatureTransformResult<C> transformResult =
-                            transformAttribute(attribute.get(), context, baseExpression, navigationBase, jqlFeature);
-                    baseExpression = transformResult.baseExpression;
-                    navigationBase = transformResult.navigationBase;
-                } else if (reference.isPresent()) {
-                    JqlFeatureTransformResult<C> transformResult =
-                            transformReference(reference.get(), context, baseExpression, navigationBase, jqlFeature);
-                    baseExpression = transformResult.baseExpression;
-                    navigationBase = transformResult.navigationBase;
-                } else if (sequence.isPresent()) {
-                    if (!(baseExpression instanceof ObjectExpression)) {
-                        throw new IllegalStateException(
-                                String.format("%s. Got %s", INVALID_SEQUENCE_SELECTOR, baseExpression.getClass().getSimpleName()));
-                    }
-                    baseExpression = newObjectSequenceBuilder()
-                            .withObjectExpression((ObjectExpression) baseExpression)
-                            .withSequenceName(jqlFeature.getName())
-                            .build();
-                } else if (isExtendedFeature(jqlFeature, context)) {
+                // extended feature check must be done before searching for attributes and references
+                if (isExtendedFeature(jqlFeature, context)) {
                     JqlFeatureTransformResult<C> transformResult =
                             transformExtendedFeature(jqlFeature, context, baseExpression, navigationBase);
                     baseExpression = transformResult.baseExpression;
                     navigationBase = transformResult.navigationBase;
                 } else {
-                    LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
-                    String errorMessage = String.format("Feature %s of %s not found", jqlFeature.getName(),
-                            getModelAdapter().buildTypeName(navigationBase).orElse(null));
-                    JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, jqlFeature);
-                    throw new JqlExpressionBuildException(subject, List.of(error));
+                    Optional<? extends PTE> attribute = getModelAdapter().getAttribute(navigationBase, jqlFeature.getName());
+                    Optional<? extends RTE> reference = getModelAdapter().getReference(navigationBase, jqlFeature.getName());
+                    Optional<? extends S> sequence = getModelAdapter().getSequence(navigationBase, jqlFeature.getName());
+                    if (attribute.isPresent()) {
+                        if (!(baseExpression instanceof ObjectExpression)) {
+                            throw new IllegalStateException(String.format("%s. Got %s", INVALID_ATTRIBUTE_SELECTOR,
+                                                                          baseExpression.getClass().getSimpleName()));
+                        }
+                        JqlFeatureTransformResult<C> transformResult =
+                                transformAttribute(attribute.get(), context, baseExpression, navigationBase, jqlFeature);
+                        baseExpression = transformResult.baseExpression;
+                        navigationBase = transformResult.navigationBase;
+                    } else if (reference.isPresent()) {
+                        JqlFeatureTransformResult<C> transformResult =
+                                transformReference(reference.get(), context, baseExpression, navigationBase, jqlFeature);
+                        baseExpression = transformResult.baseExpression;
+                        navigationBase = transformResult.navigationBase;
+                    } else if (sequence.isPresent()) {
+                        if (!(baseExpression instanceof ObjectExpression)) {
+                            throw new IllegalStateException(String.format("%s. Got %s", INVALID_SEQUENCE_SELECTOR,
+                                                                          baseExpression.getClass().getSimpleName()));
+                        }
+                        baseExpression = newObjectSequenceBuilder()
+                                .withObjectExpression((ObjectExpression) baseExpression)
+                                .withSequenceName(jqlFeature.getName())
+                                .build();
+                    } else {
+                        LOG.error("Feature {} of {} not found", jqlFeature.getName(), navigationBase);
+                        String errorMessage = String.format("Feature %s of %s not found", jqlFeature.getName(),
+                                                            getModelAdapter().buildTypeName(navigationBase).orElse(null));
+                        JqlExpressionBuildingError error = new JqlExpressionBuildingError(errorMessage, jqlFeature);
+                        throw new JqlExpressionBuildException(subject, List.of(error));
+                    }
                 }
             } catch (Exception e) {
                 throw new JqlExpressionBuildException(
@@ -107,16 +110,25 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         Expression resultBaseExpression = baseExpression;
         Optional<String> getterExpression = getModelAdapter().getReferenceGetter(accessor);
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedReference(accessor) && getterExpression.isPresent()) {
+            Object contextInputParameterType = context.getInputParameterType();
+            Optional<TO> referenceParameterType = getModelAdapter().getReferenceParameterType(accessor);
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
-            } else if (context.getInputParameterType() != null && getModelAdapter().getReferenceParameterType(accessor).isPresent() && !isCompatibleParameter((TO) context.getInputParameterType(), getModelAdapter().getReferenceParameterType(accessor).orElse(null))) {
-                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(context.getInputParameterType()));
-            } else {
-                context.pushAccessor(accessor);
             }
+            if (contextInputParameterType != null && referenceParameterType.isPresent() &&
+                !isCompatibleParameter((TO) contextInputParameterType, referenceParameterType.orElse(null))) {
+                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
+            }
+
+            context.pushAccessor(accessor);
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
-            resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression.get(), context);
+            resultBaseExpression =
+                    jqlTransformers.getExpressionBuilder()
+                                   .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                                                              .withJqlExpressionAsString(getterExpression.get())
+                                                                              .withContext(context)
+                                                                              .build());
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
@@ -133,22 +145,30 @@ public class JqlNavigationFeatureTransformer<NE, P extends NE, E extends P, C ex
         Expression resultBaseExpression = baseExpression;
         Optional<String> getterExpression = getModelAdapter().getAttributeGetter(accessor);
         if (jqlTransformers.isResolveDerived() && getModelAdapter().isDerivedAttribute(accessor) && getterExpression.isPresent()) {
+            Optional<TO> attributeParameterType = getModelAdapter().getAttributeParameterType(accessor);
+            TO contextInputParameterType = (TO) context.getInputParameterType();
             if (context.containsAccessor(accessor)) {
                 throw new CircularReferenceException(getModelAdapter().getFqName(accessor));
-            } else if (context.getInputParameterType() != null && getModelAdapter().getAttributeParameterType(accessor).isPresent() && !isCompatibleParameter((TO) context.getInputParameterType(), getModelAdapter().getAttributeParameterType(accessor).orElse(null))) {
-                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(context.getInputParameterType()));
-            } else {
-                context.pushAccessor(accessor);
             }
+            if (contextInputParameterType != null && attributeParameterType.isPresent() &&
+                !isCompatibleParameter(contextInputParameterType, attributeParameterType.get())) {
+                throw new IncompatibleInputParameterException(getModelAdapter().getFqName(accessor), getModelAdapter().getFqName(contextInputParameterType));
+            }
+
+            context.pushAccessor(accessor);
             context.pushBaseExpression(resultBaseExpression);
             context.pushBase(resultNavigationBase);
-            resultBaseExpression = jqlTransformers.getExpressionBuilder().createExpression(getterExpression.get(), context);
+            resultBaseExpression =
+                    jqlTransformers.getExpressionBuilder()
+                                   .createExpression(CreateExpressionArguments.<C, TO, NE>builder()
+                                                                              .withJqlExpressionAsString(getterExpression.get())
+                                                                              .withContext(context)
+                                                                              .build());
             context.popBaseExpression();
             context.popBase();
             context.popAccessor();
         } else {
-            resultBaseExpression = createAttributeSelector(accessor, jqlFeature.getName(),
-                    (ObjectExpression) resultBaseExpression);
+            resultBaseExpression = createAttributeSelector(accessor, jqlFeature.getName(), (ObjectExpression) resultBaseExpression);
         }
         return new JqlFeatureTransformResult<>(null, resultBaseExpression);
     }
