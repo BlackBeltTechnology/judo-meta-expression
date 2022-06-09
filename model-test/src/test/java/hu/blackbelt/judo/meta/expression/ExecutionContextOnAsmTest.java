@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
@@ -39,9 +40,8 @@ import hu.blackbelt.judo.meta.measure.DerivedMeasure;
 import hu.blackbelt.judo.meta.measure.DurationType;
 import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
 
+@Slf4j
 public class ExecutionContextOnAsmTest {
-
-	public final Log log = new Slf4jLog();
 
     public AsmModel asmModel;
     public MeasureModel measureModel;

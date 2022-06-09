@@ -1,12 +1,11 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
 import com.google.common.collect.ImmutableList;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.expression.Expression;
-import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.CreateExpressionArguments;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.Measure;
@@ -19,8 +18,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
+import static hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator.calculateExpressionValidationScriptURI;
 import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -92,16 +93,20 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
                 .expressionModelResourceSupport(expressionModelResourceSupport)
                 .name(asmModel.getName())
                 .build();
-        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(), asmModel, measureModel, expressionModel, ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(),
-                ImmutableList.of(
-                        "StringExpressionMatchesBinding|Attribute named orderDate must be string type, because the assigned expression evaluates to a string.",
-                        "TimestampExpressionMatchesBinding|Attribute named freight must be timestamp type, because the assigned expression evaluates to a timestamp.",
-                        "TimeExpressionMatchesBinding|Attribute named shipperName must be time type, because the assigned expression evaluates to a time.",
-                        "DecimalExpressionMatchesBinding|Attribute named customsDescription must be decimal type, because the assigned expression evaluates to a decimal.",
-                        "DateExpressionMatchesBinding|Attribute named productName must be date type, because the assigned expression evaluates to a date.",
-                        "EnumerationExpressionMatchesBinding|Attribute named unitPrice must be enumeration type, because the assigned expression evaluates to an enumeration.",
-                        "BooleanExpressionMatchesBinding|Attribute named weight must be boolean type, because the assigned expression evaluates to a boolean."),
-                Collections.emptyList());
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            validateExpressionOnAsm(
+                    bufferedLog, asmModel, measureModel, expressionModel, calculateExpressionValidationScriptURI(),
+                    ImmutableList.of(
+                            "StringExpressionMatchesBinding|Attribute named orderDate must be string type, because the assigned expression evaluates to a string.",
+                            "TimestampExpressionMatchesBinding|Attribute named freight must be timestamp type, because the assigned expression evaluates to a timestamp.",
+                            "TimeExpressionMatchesBinding|Attribute named shipperName must be time type, because the assigned expression evaluates to a time.",
+                            "DecimalExpressionMatchesBinding|Attribute named customsDescription must be decimal type, because the assigned expression evaluates to a decimal.",
+                            "DateExpressionMatchesBinding|Attribute named productName must be date type, because the assigned expression evaluates to a date.",
+                            "EnumerationExpressionMatchesBinding|Attribute named unitPrice must be enumeration type, because the assigned expression evaluates to an enumeration.",
+                            "BooleanExpressionMatchesBinding|Attribute named weight must be boolean type, because the assigned expression evaluates to a boolean."),
+                    Collections.emptyList()
+            );
+        }
     }
 
     @Test
@@ -117,12 +122,16 @@ public class AsmJqlExpressionBindingTest extends ExecutionContextOnAsmTest {
                 .expressionModelResourceSupport(expressionModelResourceSupport)
                 .name(asmModel.getName())
                 .build();
-        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(), asmModel, measureModel, expressionModel, ExpressionEpsilonValidator.calculateExpressionValidationScriptURI(),
-                ImmutableList.of(
-                        "CollectionExpressionMatchesBinding|Reference named category refers to an object but the assigned expression evaluates to a collection.",
-                        "ReferenceExpressionMatchesBinding|Reference named category does not match the type of the assigned expression",
-                        "ObjectExpressionMatchesBinding|Reference named products refers to a collection but the assigned expression evaluates to an object.",
-                        "ReferenceExpressionMatchesBinding|Reference named products does not match the type of the assigned expression"),
-                Collections.emptyList());
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            validateExpressionOnAsm(
+                    bufferedLog, asmModel, measureModel, expressionModel, calculateExpressionValidationScriptURI(),
+                    ImmutableList.of(
+                            "CollectionExpressionMatchesBinding|Reference named category refers to an object but the assigned expression evaluates to a collection.",
+                            "ReferenceExpressionMatchesBinding|Reference named category does not match the type of the assigned expression",
+                            "ObjectExpressionMatchesBinding|Reference named products refers to a collection but the assigned expression evaluates to an object.",
+                            "ReferenceExpressionMatchesBinding|Reference named products does not match the type of the assigned expression"),
+                    Collections.emptyList()
+            );
+        }
     }
 }

@@ -1,72 +1,40 @@
 package hu.blackbelt.judo.meta.expression;
 
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAssociationEndBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newAttributeBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newContainmentBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.newEntityTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.useAssociationEnd;
-import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.useEntityType;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newDerivedMeasureBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newDurationUnitBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasureBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasureDefinitionTermBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newMeasuredTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.newUnitBuilder;
-import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newModelBuilder;
-import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.newPackageBuilder;
-import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.useModel;
-import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.usePackage;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCardinalityBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newEnumerationMemberBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newEnumerationTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newNumericTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newStringTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newTimestampTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newBooleanTypeBuilder;
-import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.newCustomTypeBuilder;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import org.eclipse.emf.common.notify.Notifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
-
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.exceptions.EvlScriptExecutionException;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.expression.adapters.psm.PsmModelAdapterTest;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
 import hu.blackbelt.judo.meta.psm.PsmEpsilonValidator;
 import hu.blackbelt.judo.meta.psm.PsmUtils;
-import hu.blackbelt.judo.meta.psm.data.AssociationEnd;
-import hu.blackbelt.judo.meta.psm.data.Containment;
-import hu.blackbelt.judo.meta.psm.data.EntityType;
-import hu.blackbelt.judo.meta.psm.measure.DerivedMeasure;
-import hu.blackbelt.judo.meta.psm.measure.DurationType;
-import hu.blackbelt.judo.meta.psm.measure.Measure;
-import hu.blackbelt.judo.meta.psm.measure.Unit;
+import hu.blackbelt.judo.meta.psm.data.*;
+import hu.blackbelt.judo.meta.psm.measure.*;
 import hu.blackbelt.judo.meta.psm.namespace.Model;
 import hu.blackbelt.judo.meta.psm.namespace.Package;
 import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
 import hu.blackbelt.judo.meta.psm.type.EnumerationType;
 import hu.blackbelt.judo.meta.psm.type.Primitive;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.notify.Notifier;
 
+import java.util.Collections;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static hu.blackbelt.judo.meta.psm.data.util.builder.DataBuilders.*;
+import static hu.blackbelt.judo.meta.psm.measure.util.builder.MeasureBuilders.*;
+import static hu.blackbelt.judo.meta.psm.namespace.util.builder.NamespaceBuilders.*;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static hu.blackbelt.judo.meta.psm.type.util.builder.TypeBuilders.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@Slf4j
 public class ExecutionContextOnPsmTest {
 
-    public final Log log = new Slf4jLog();
-	
     public PsmModel psmModel;
     public ExpressionModel expressionModel;
     public PsmUtils psmUtils;
-    
-    private static final Logger logger = LoggerFactory.getLogger(ExecutionContextOnPsmTest.class);
-    
+
     public void setUp() throws Exception {
 
         psmModel = buildPsmModel().name("test").build();
@@ -323,16 +291,16 @@ public class ExecutionContextOnPsmTest {
     }
     
     private void runEpsilon() throws Exception {
-        try {
-            PsmEpsilonValidator.validatePsm(new Slf4jLog(),
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            PsmEpsilonValidator.validatePsm(bufferedLog,
             		psmModel,
             		PsmEpsilonValidator.calculatePsmValidationScriptURI(),
             		Collections.emptyList(),
             		Collections.emptyList());
         } catch (EvlScriptExecutionException ex) {
-            logger.error("EVL failed", ex);
-            logger.error("\u001B[31m - unexpected errors: {}\u001B[0m", ex.getUnexpectedErrors());
-            logger.error("\u001B[33m - unexpected warnings: {}\u001B[0m", ex.getUnexpectedWarnings());
+            log.error("EVL failed", ex);
+            log.error("\u001B[31m - unexpected errors: {}\u001B[0m", ex.getUnexpectedErrors());
+            log.error("\u001B[33m - unexpected warnings: {}\u001B[0m", ex.getUnexpectedWarnings());
             throw ex;
         }
     }

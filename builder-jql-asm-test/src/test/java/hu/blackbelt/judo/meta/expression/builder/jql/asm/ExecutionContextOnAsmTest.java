@@ -1,53 +1,26 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
-import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
-import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newBaseMeasureBuilder;
-import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newBaseMeasureTermBuilder;
-import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newDerivedMeasureBuilder;
-import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newDurationUnitBuilder;
-import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.newUnitBuilder;
-
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.EvlScriptExecutionException;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.judo.meta.asm.runtime.*;
+import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
+import hu.blackbelt.judo.meta.measure.*;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureEpsilonValidator;
+import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.*;
 
 import java.math.BigDecimal;
 import java.util.Collections;
 
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEAttributeBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEClassBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEDataTypeBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEEnumBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEEnumLiteralBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEOperationBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEPackageBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.newEReferenceBuilder;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.useEPackage;
-import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.useEReference;
+import static hu.blackbelt.judo.meta.asm.runtime.AsmModel.buildAsmModel;
+import static hu.blackbelt.judo.meta.measure.runtime.MeasureModel.buildMeasureModel;
+import static hu.blackbelt.judo.meta.measure.util.builder.MeasureBuilders.*;
+import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EDataType;
-import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EOperation;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import hu.blackbelt.epsilon.runtime.execution.exceptions.EvlScriptExecutionException;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.asm.runtime.AsmEpsilonValidator;
-import hu.blackbelt.judo.meta.asm.runtime.AsmModel;
-import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
-import hu.blackbelt.judo.meta.expression.adapters.asm.AsmModelAdapter;
-import hu.blackbelt.judo.meta.measure.BaseMeasure;
-import hu.blackbelt.judo.meta.measure.DerivedMeasure;
-import hu.blackbelt.judo.meta.measure.DurationType;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureEpsilonValidator;
-import hu.blackbelt.judo.meta.measure.runtime.MeasureModel;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ExecutionContextOnAsmTest {
@@ -404,8 +377,8 @@ public class ExecutionContextOnAsmTest {
     }
     
     private void runEpsilonOnMeasure() throws Exception {
-        try {
-            MeasureEpsilonValidator.validateMeasure(new Slf4jLog(),
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            MeasureEpsilonValidator.validateMeasure(bufferedLog,
                     measureModel,
                     MeasureEpsilonValidator.calculateMeasureValidationScriptURI(),
                     Collections.emptyList(),
@@ -419,8 +392,8 @@ public class ExecutionContextOnAsmTest {
     }
     
     private void runEpsilonOnAsm() throws Exception {
-        try {
-            AsmEpsilonValidator.validateAsm(new Slf4jLog(),
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            AsmEpsilonValidator.validateAsm(bufferedLog,
                     asmModel,
                     AsmEpsilonValidator.calculateAsmValidationScriptURI(),
                     Collections.emptyList(),

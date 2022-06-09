@@ -1,30 +1,26 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.judo.meta.expression.builder.jql.JqlExtractor;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
+import hu.blackbelt.judo.meta.expression.runtime.*;
+import hu.blackbelt.judo.meta.expression.string.StringAttribute;
+import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
+import lombok.extern.slf4j.Slf4j;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.util.Optional;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
-import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlExtractor;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
-import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionUtils;
-import hu.blackbelt.judo.meta.expression.string.StringAttribute;
-import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
-import lombok.extern.slf4j.Slf4j;
+import static hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator.calculateExpressionValidationScriptURI;
+import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport.SaveArguments.expressionSaveArgumentsBuilder;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 public class AsmJqlExtractorTest extends ExecutionContextOnAsmTest {
@@ -75,7 +71,9 @@ public class AsmJqlExtractorTest extends ExecutionContextOnAsmTest {
         
   		log.info(expressionModel.getDiagnosticsAsString());
     	assertTrue(expressionModel.isValid());
-    	ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(),asmModel,measureModel,expressionModel,ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+		try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+			validateExpressionOnAsm(bufferedLog, asmModel, measureModel, expressionModel, calculateExpressionValidationScriptURI());
+		}
 
     	expressionUtils = new ExpressionUtils(expressionResourceSet);
     	

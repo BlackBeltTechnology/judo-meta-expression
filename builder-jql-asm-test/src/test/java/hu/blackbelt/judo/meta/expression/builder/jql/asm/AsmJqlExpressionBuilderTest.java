@@ -1,9 +1,9 @@
 package hu.blackbelt.judo.meta.expression.builder.jql.asm;
 
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.asm.runtime.AsmUtils;
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
 import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.collection.*;
 import hu.blackbelt.judo.meta.expression.constant.DateConstant;
@@ -29,9 +29,11 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
+import static hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.ATTRIBUTE;
 import static hu.blackbelt.judo.meta.expression.builder.jql.JqlExpressionBuilder.BindingType.RELATION;
 import static hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlNavigationFeatureTransformer.INVALID_ATTRIBUTE_SELECTOR;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator.calculateExpressionValidationScriptURI;
 import static org.eclipse.emf.ecore.util.builder.EcoreBuilders.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -118,7 +120,9 @@ public class AsmJqlExpressionBuilderTest extends ExecutionContextOnAsmTest {
                 .name(asmModel.getName())
                 .build();
 
-        ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(new Slf4jLog(), asmModel, measureModel, expressionModel, ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            validateExpressionOnAsm(bufferedLog, asmModel, measureModel, expressionModel, calculateExpressionValidationScriptURI());
+        }
         modelAdapter = null;
         asmUtils = null;
         expressionModelResourceSupport = null;
