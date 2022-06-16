@@ -58,8 +58,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-		<epsilon-runtime-version>1.4.0.20220523_132344_09a0b54b_develop</epsilon-runtime-version>
-        <epsilon-runtime-eclipse-version>1.4.0.20220608_090549_cdc1588c_feature_JNG_3769_Improve_logging</epsilon-runtime-eclipse-version>
+		<epsilon-runtime-version>1.4.0.20220616_093846_72efef9e_develop</epsilon-runtime-version>
+		<epsilon-runtime-eclipse-version>1.4.0.20220616_120313_0d84d4a0_develop</epsilon-runtime-eclipse-version>
         
         <src.dir>src/main</src.dir>
 
@@ -69,7 +69,7 @@
 
         <emf-genmodel-generator-version>1.0.2.20220330_082302_0cadb6da_develop</emf-genmodel-generator-version>
         <judo-genmodel-generator-version>1.0.1.20220405_155701_8eaa7eb0_develop</judo-genmodel-generator-version>
-        <judo-epp-common-version>4.22.0.20220316_195019_68b6d470_develop</judo-epp-common-version>
+        <judo-epp-common-version>4.23.0-SNAPSHOT</judo-epp-common-version>
 
         <xtext-version>2.27.0</xtext-version>
         <emf-mwe2-launch-version>2.12.1</emf-mwe2-launch-version>
@@ -95,11 +95,11 @@
         <apache-httpclient-karaf-features-version>1.0.0</apache-httpclient-karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-psm-version>1.1.0.20220616_130458_6bde2e8a_develop</judo-meta-psm-version>
-        <judo-meta-asm-version>1.1.0.20220616_125224_61404e35_develop</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20220616_130704_ec64052c_develop</judo-meta-esm-version>
-        <judo-meta-jql-version>1.0.1.20220616_130213_845c05f1_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.0.20220616_130413_8b5d8659_develop</judo-meta-measure-version>
+        <judo-meta-psm-version>1.1.0.20220616_233527_1f1d6701_feature_JNG_3784_FixingTycho</judo-meta-psm-version>
+        <judo-meta-asm-version>1.1.0.20220616_233557_c20986c3_feature_JNG_3784_FixingTycho</judo-meta-asm-version>
+        <judo-meta-esm-version>1.1.0.20220616_233610_9dfe1524_feature_JNG_3784_FixingTycho</judo-meta-esm-version>
+        <judo-meta-jql-version>1.0.1.20220616_233726_d15ba154_feature_JNG_3784_FixingTycho</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.0.20220616_233813_180a2739_feature_JNG_3784_FixingTycho</judo-meta-measure-version>
 
         <log4j.configuration>log4j.properties</log4j.configuration>
 
@@ -127,23 +127,33 @@
                             <version>${project.version}</version>
                         </artifact>
                     </target>
-                    <environments>
-                        <environment>
-                            <os>linux</os>
-                            <ws>gtk</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                        <environment>
-                            <os>win32</os>
-                            <ws>win32</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                        <environment>
-                            <os>macosx</os>
-                            <ws>cocoa</ws>
-                            <arch>x86_64</arch>
-                        </environment>
-                    </environments>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>aarch64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>aarch64</arch>
+						</environment>
+					</environments>
                 </configuration>
             </plugin>
 
@@ -403,6 +413,17 @@
                         </execution>
                     </executions>
                 </plugin>
+
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-packaging-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<!-- required to have valid consumable Maven artifacts
+						https://github.com/eclipse/tycho/issues/781 -->
+						<skipPomGeneration>true</skipPomGeneration>
+					</configuration>
+				</plugin>
 
                 <plugin>
                     <groupId>org.sonatype.plugins</groupId>
