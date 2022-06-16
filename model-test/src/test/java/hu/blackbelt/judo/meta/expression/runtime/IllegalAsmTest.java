@@ -1,23 +1,25 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.constant.Instance;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newInstanceBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectNavigationExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectVariableReferenceBuilder;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator.calculateExpressionValidationScriptURI;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringAttributeBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
-import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
-import hu.blackbelt.judo.meta.expression.StringExpression;
-import hu.blackbelt.judo.meta.expression.TypeName;
-import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
-import hu.blackbelt.judo.meta.expression.constant.Instance;
-
+@Slf4j
 public class IllegalAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
@@ -51,9 +53,12 @@ public class IllegalAsmTest extends ExecutionContextOnAsmTest {
     }
    
     @Test
-    void test() {
-        assertThrows(ScriptExecutionException.class, () -> ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(log,
-                asmModel, measureModel, expressionModel,
-                ExpressionEpsilonValidator.calculateExpressionValidationScriptURI()));
+    void test() throws Exception {
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            assertThrows(
+                    ScriptExecutionException.class,
+                    () -> validateExpressionOnAsm(bufferedLog, asmModel, measureModel, expressionModel, calculateExpressionValidationScriptURI())
+            );
+        }
     }
 }

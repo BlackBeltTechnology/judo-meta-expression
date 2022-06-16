@@ -1,26 +1,14 @@
 package hu.blackbelt.judo.meta.expression.osgi.itest;
 
-import static hu.blackbelt.judo.meta.expression.osgi.itest.KarafFeatureProvider.karafConfig;
-import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
-import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.ops4j.pax.exam.CoreOptions.maven;
-import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
-import static org.ops4j.pax.exam.CoreOptions.provision;
-import static org.ops4j.pax.exam.OptionUtils.combine;
-import static org.ops4j.pax.swissbox.core.BundleUtils.getBundle;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
-import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-
-import javax.inject.Inject;
-
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
+import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.ExpressionValidationException;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
+import hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments;
+import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ops4j.pax.exam.Configuration;
@@ -28,25 +16,27 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
-import org.osgi.service.log.LogService;
-import org.osgi.service.log.LoggerFactory;
+import org.osgi.framework.*;
 
-import hu.blackbelt.epsilon.runtime.execution.exceptions.ScriptExecutionException;
-import hu.blackbelt.epsilon.runtime.execution.impl.StringBuilderLogger;
-import hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel;
-import hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.ExpressionValidationException;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel.PsmValidationException;
-import hu.blackbelt.judo.meta.psm.runtime.PsmModel.SaveArguments;
-import hu.blackbelt.osgi.utils.osgi.api.BundleTrackerManager;
+import javax.inject.Inject;
+import java.io.*;
+
+import static hu.blackbelt.judo.meta.expression.adapters.psm.ExpressionEpsilonValidatorOnPsm.validateExpressionOnPsm;
+import static hu.blackbelt.judo.meta.expression.osgi.itest.KarafFeatureProvider.karafConfig;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator.calculateExpressionValidationScriptURI;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.buildExpressionModel;
+import static hu.blackbelt.judo.meta.psm.runtime.PsmModel.buildPsmModel;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.swissbox.core.BundleUtils.getBundle;
+import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
+import static org.ops4j.pax.tinybundles.core.TinyBundles.withBnd;
 
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
+@Slf4j
 public class ExpressionBundleITest {
 
     public static final String HU_BLACKBELT_JUDO_META_EXPRESSION_OSGI = "hu.blackbelt.judo.meta.expression.osgi";
@@ -60,9 +50,6 @@ public class ExpressionBundleITest {
 
     private static final String DEMO_PSM = "northwind-psm";
     private static final String DEMO_EXPRESSION = "t002";
-
-    @Inject
-    LoggerFactory log;
 
     @Inject
     protected BundleTrackerManager bundleTrackerManager;
@@ -198,11 +185,9 @@ public class ExpressionBundleITest {
     }
     
     @Test
-    public void testModelValidation() throws ScriptExecutionException, URISyntaxException {
-        StringBuilderLogger logger = new StringBuilderLogger(StringBuilderLogger.LogLevel.DEBUG);
-
-        ExpressionEpsilonValidatorOnPsm.validateExpressionOnPsm(logger,
-                psmModel, expressionModel,
-                ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+    public void testModelValidation() throws Exception {
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            validateExpressionOnPsm(bufferedLog, psmModel, expressionModel, calculateExpressionValidationScriptURI());
+        }
     }
 }
