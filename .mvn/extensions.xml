@@ -2,7 +2,7 @@
 <extensions>
     <extension>
         <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-builder</artifactId>
+        <artifactId>tycho-build</artifactId>
         <version>2.7.3</version>
     </extension>
 
