@@ -16,23 +16,4 @@
     <name>JUDO :: Expression :: Model :: ESM Model adapter</name>
     <description>JUDO Expression ESM Model adapter</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>hu.blackbelt.epsilon</groupId>
-            <artifactId>epsilon-runtime-execution</artifactId>
-        </dependency>
-
-    </dependencies>
 </project>

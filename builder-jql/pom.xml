@@ -16,15 +16,4 @@
     <name>JUDO :: Expression :: Model :: JQL builder</name>
     <description>JUDO Expression ASM Model builder based on JQL</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.jql.model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-        </dependency>
-    </dependencies>
 </project>

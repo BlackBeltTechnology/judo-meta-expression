@@ -16,16 +16,4 @@
     <name>JUDO :: Expression :: Model :: Measure Model adapter</name>
     <description>JUDO Expression Measure Model adapter</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
-        </dependency>
-    </dependencies>
-
 </project>

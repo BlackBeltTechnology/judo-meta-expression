@@ -102,6 +102,7 @@
         </plugins>
     </build>
 
+    <!--
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -172,5 +173,5 @@
             <scope>provided</scope>
         </dependency>
 
-    </dependencies>
+    </dependencies> -->
 </project>
