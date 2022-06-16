@@ -99,6 +99,7 @@
       <category name="adapters_source"/>
    </feature>
 
+   <!--
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.22.0.20220316_195019_68b6d470_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20220316_214959_b720d1b7_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20220405_162156_c69f1a74_develop" enabled="true" />
@@ -106,5 +107,5 @@
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20220405_162202_08801cc6_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20220405_162220_28539f03_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20220405_161348_f273cd5a_develop" enabled="true" />
-
+   -->
 </site>
