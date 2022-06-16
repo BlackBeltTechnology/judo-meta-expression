@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import hu.blackbelt.epsilon.runtime.execution.ExecutionContext;
 import hu.blackbelt.epsilon.runtime.execution.api.Log;
 import hu.blackbelt.epsilon.runtime.execution.api.ModelContext;
-import hu.blackbelt.epsilon.runtime.execution.impl.Slf4jLog;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
 import hu.blackbelt.judo.meta.esm.measure.*;
 import hu.blackbelt.judo.meta.esm.namespace.Package;
 import hu.blackbelt.judo.meta.esm.namespace.*;
@@ -23,6 +23,7 @@ import hu.blackbelt.judo.meta.expression.esm.EsmTestModelCreator;
 import hu.blackbelt.judo.meta.expression.runtime.ExpressionEvaluator;
 import hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceSupport;
 import hu.blackbelt.judo.meta.measure.support.MeasureModelResourceSupport;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.hamcrest.*;
@@ -42,12 +43,12 @@ import static hu.blackbelt.judo.meta.expression.support.ExpressionModelResourceS
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
+@Slf4j
 public class AbstractEsmJqlExpressionBuilderTest {
 
     private static final String TARGET_TEST_CLASSES = "target/test-classes";
     private static final String ESM_RESOURCE_URI = "urn:esm.judo-meta-esm";
     private static final String EXPRESSION_RESOURCE_URI = "urn:test.judo-meta-expression";
-    private static final Log log = new Slf4jLog();
     private JqlExpressionBuilder<NamespaceElement, Primitive, EnumerationType, Class, PrimitiveTypedElement, ReferenceTypedElement, TransferObjectType, PrimitiveTypedElement, ReferenceTypedElement, Sequence, Measure, Unit> esmJqlExpressionBuilder;
     private Resource measureResource;
     protected EsmModelAdapter modelAdapter;
@@ -108,7 +109,9 @@ public class AbstractEsmJqlExpressionBuilderTest {
 
     @AfterEach
     void tearDown(final TestInfo testInfo) throws Exception {
-        validateExpressions(expressionModelResourceSupport.getResource());
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            validateExpressions(expressionModelResourceSupport.getResource(), bufferedLog);
+        }
         expressionModelResourceSupport.saveExpression(expressionSaveArgumentsBuilder()
                 .file(new File(TARGET_TEST_CLASSES, testInfo.getDisplayName().replace("(", "").replace(")", "") + "-expression.model"))
                 .build());
@@ -122,7 +125,7 @@ public class AbstractEsmJqlExpressionBuilderTest {
         esmModelResourceSupport = null;
     }
 
-    private void validateExpressions(final Resource expressionResource) throws Exception {
+    private void validateExpressions(final Resource expressionResource, Log log) throws Exception {
         final List<ModelContext> modelContexts = Arrays.asList(
                 wrappedEmfModelContextBuilder()
                         .log(log)

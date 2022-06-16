@@ -1,13 +1,17 @@
 package hu.blackbelt.judo.meta.expression.runtime;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import hu.blackbelt.epsilon.runtime.execution.api.Log;
+import hu.blackbelt.epsilon.runtime.execution.impl.BufferedSlf4jLogger;
+import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import hu.blackbelt.judo.meta.expression.ExecutionContextOnAsmTest;
-import hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm;
+import static hu.blackbelt.judo.meta.expression.adapters.asm.ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm;
+import static hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidator.calculateExpressionValidationScriptURI;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Slf4j
 class FullAsmTest extends ExecutionContextOnAsmTest {
 
     @BeforeEach
@@ -20,8 +24,8 @@ class FullAsmTest extends ExecutionContextOnAsmTest {
 
     @Test
     void test() throws Exception {
-    	ExpressionEpsilonValidatorOnAsm.validateExpressionOnAsm(log,
-        		asmModel, measureModel, expressionModel,
-        		ExpressionEpsilonValidator.calculateExpressionValidationScriptURI());
+        try (Log bufferedLog = new BufferedSlf4jLogger(log)) {
+            validateExpressionOnAsm(bufferedLog, asmModel, measureModel, expressionModel, calculateExpressionValidationScriptURI());
+        }
     }
 }
