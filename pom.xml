@@ -491,11 +491,6 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.builder.jql.asm</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -518,11 +513,6 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                 <version>${judo-meta-measure-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-                <version>${judo-meta-asm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
@@ -667,22 +657,12 @@
                 <module>targetdefinition</module>
                 <module>model</module>
                 <module>adapter-measure</module>
-                <module>adapter-asm</module>
-                <module>adapter-esm</module>
-                <module>adapter-psm</module>
                 <module>builder-jql</module>
-                <module>builder-jql-asm</module>
-                <module>builder-jql-asm-test</module>
-                <module>builder-jql-esm-test</module>
                 <module>model-test</module>
                 <module>osgi</module>
                 <module>osgi-itest</module>
                 <module>feature-model</module>
                 <module>feature-builder-jql</module>
-                <module>feature-builder-jql-asm</module>
-                <module>feature-adapter-asm</module>
-                <module>feature-adapter-esm</module>
-                <module>feature-adapter-psm</module>
                 <module>feature-adapter-measure</module>
                 <module>site</module>
             </modules>
@@ -849,25 +829,6 @@
                                     <token>(repository-reference\ location\=\")(.*?)(epsilon-runtime-eclipse\/)(.*?)(\")</token>
                                     <value>repository-reference location="$2$3${epsilon-runtime-eclipse-version}"</value>
                                 </replacement>
-
-                                <!-- ASM -->
-                                <replacement>
-                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-asm\/)(.*?)(\")</token>
-                                    <value>repository-reference location="$2$3${judo-meta-asm-version}"</value>
-                                </replacement>
-
-                                <!-- PSM -->
-                                <replacement>
-                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-psm\/)(.*?)(\")</token>
-                                    <value>repository-reference location="$2$3${judo-meta-psm-version}"</value>
-                                </replacement>
-
-                                <!-- ESM -->
-                                <replacement>
-                                    <token>(repository-reference\ location\=\")(.*?)(judo-meta-esm\/)(.*?)(\")</token>
-                                    <value>repository-reference location="$2$3${judo-meta-esm-version}"</value>
-                                </replacement>
-
 
                                 <!-- MEASURE -->
                                 <replacement>
