@@ -552,6 +552,27 @@
         <genOperations ecoreOperation="expression.ecore#//numeric/ExtractTimeExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/AbsoluteExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/AbsoluteExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/AbsoluteExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/AbsoluteExpression/toString"
+            body="return &quot;ABS(&quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/CeilExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/CeilExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/CeilExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/CeilExpression/toString"
+            body="return &quot;CEIL(&quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/FloorExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/FloorExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/FloorExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/FloorExpression/toString"
+            body="return &quot;FLOOR(&quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Logical" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

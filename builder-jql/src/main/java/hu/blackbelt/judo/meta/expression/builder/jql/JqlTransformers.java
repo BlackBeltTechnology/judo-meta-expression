@@ -258,9 +258,28 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return typeNameFromResource;
     }
 
+    private void checkNumericExpression(Expression expression) {
+        if (!(expression instanceof NumericExpression)) {
+            throw new IllegalArgumentException("NumericExpression expected. Got: " + expression.getClass().getSimpleName());
+        }
+    }
+
     private void numericFunctions() {
+        // TODO: Change to numeric
         functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder()
                 .withExpression((DecimalExpression) expression).build());
+        functionTransformers.put("abs", (expression, functionCall, variables) -> {
+            checkNumericExpression(expression);
+            return newAbsoluteExpressionBuilder().withExpression((NumericExpression) expression).build();
+        });
+        functionTransformers.put("ceil", (expression, functionCall, variables) -> {
+            checkNumericExpression(expression);
+            return newCeilExpressionBuilder().withExpression((NumericExpression) expression).build();
+        });
+        functionTransformers.put("floor", (expression, functionCall, variables) -> {
+            checkNumericExpression(expression);
+            return newFloorExpressionBuilder().withExpression((NumericExpression) expression).build();
+        });
     }
 
     private void environmentVariableFunctions() {
