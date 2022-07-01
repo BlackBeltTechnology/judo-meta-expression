@@ -9,9 +9,12 @@
   <genPackages prefix="Expression" basePackage="hu.blackbelt.judo.meta" resource="XMI"
       disposableProviderFactory="true" dataTypeConverters="true" extensibleProviderFactory="true"
       childCreationExtenders="true" fileExtensions="expression" ecorePackage="expression.ecore#/">
-    <genDataTypes ecoreDataType="expression.ecore#//LocalDate"/>
-    <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime"/>
-    <genDataTypes ecoreDataType="expression.ecore#//LocalTime"/>
+    <genDataTypes ecoreDataType="expression.ecore#//LocalDate" create="return it == null ? null : java.time.LocalDate.parse(it);"
+        convert="return it == null ? null : it.toString();"/>
+    <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime" create="return it == null ? null : java.time.OffsetDateTime.parse(it);"
+        convert="return it == null ? null : it.toString();"/>
+    <genDataTypes ecoreDataType="expression.ecore#//LocalTime" create="return it == null ? null : java.time.LocalTime.parse(it);"
+        convert="return it == null ? null : it.toString();"/>
     <genClasses image="false" ecoreClass="expression.ecore#//Expression">
       <genOperations ecoreOperation="expression.ecore#//Expression/getOperands"/>
       <genOperations ecoreOperation="expression.ecore#//Expression/getLambdaFunctions"
@@ -774,6 +777,13 @@
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//string/UpperCase/toString"
             body="return &quot;UPPER(&quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/Capitalize">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Capitalize/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Capitalize/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Capitalize/toString"
+            body="return &quot;CAPITALIZE(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/SubString">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/SubString/expression"/>
