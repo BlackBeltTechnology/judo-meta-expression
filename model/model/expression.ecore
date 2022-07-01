@@ -1303,6 +1303,20 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Capitalize" eSuperTypes="#//StringExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;CAPITALIZE(&quot; + getExpression() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//StringExpression" containment="true"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="SubString" eSuperTypes="#//StringExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1339,6 +1353,11 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="replacement" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="TrimType">
+      <eLiterals name="LEFT"/>
+      <eLiterals name="RIGHT" value="1"/>
+      <eLiterals name="BOTH" value="2"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Trim" eSuperTypes="#//StringExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1347,11 +1366,13 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
+          <details key="body" value="return (TrimType.LEFT.equals(getTrimType()) ? &quot;L&quot; : (TrimType.RIGHT.equals(getTrimType()) ? &quot;R&quot; : &quot;&quot;)) + &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="trimType" lowerBound="1"
+          eType="#//string/TrimType"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="StringSwitchExpression" eSuperTypes="#//SwitchExpression #//StringExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="ConcatenateCollection" eSuperTypes="#//StringExpression #//AggregatedExpression">

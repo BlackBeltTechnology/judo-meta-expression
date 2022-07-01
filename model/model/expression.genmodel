@@ -9,9 +9,12 @@
   <genPackages prefix="Expression" basePackage="hu.blackbelt.judo.meta" resource="XMI"
       disposableProviderFactory="true" dataTypeConverters="true" extensibleProviderFactory="true"
       childCreationExtenders="true" fileExtensions="expression" ecorePackage="expression.ecore#/">
-    <genDataTypes ecoreDataType="expression.ecore#//LocalDate"/>
-    <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime"/>
-    <genDataTypes ecoreDataType="expression.ecore#//LocalTime"/>
+    <genDataTypes ecoreDataType="expression.ecore#//LocalDate" create="return it == null ? null : java.time.LocalDate.parse(it);"
+        convert="return it == null ? null : it.toString();"/>
+    <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime" create="return it == null ? null : java.time.OffsetDateTime.parse(it);"
+        convert="return it == null ? null : it.toString();"/>
+    <genDataTypes ecoreDataType="expression.ecore#//LocalTime" create="return it == null ? null : java.time.LocalTime.parse(it);"
+        convert="return it == null ? null : it.toString();"/>
     <genClasses image="false" ecoreClass="expression.ecore#//Expression">
       <genOperations ecoreOperation="expression.ecore#//Expression/getOperands"/>
       <genOperations ecoreOperation="expression.ecore#//Expression/getLambdaFunctions"
@@ -752,6 +755,11 @@
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-string" ecorePackage="expression.ecore#//string">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//string/TrimType">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/LEFT"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/RIGHT"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/BOTH"/>
+      </genEnums>
       <genClasses ecoreClass="expression.ecore#//string/StringAttribute"/>
       <genClasses ecoreClass="expression.ecore#//string/Concatenate">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Concatenate/left"/>
@@ -775,6 +783,13 @@
         <genOperations ecoreOperation="expression.ecore#//string/UpperCase/toString"
             body="return &quot;UPPER(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/Capitalize">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Capitalize/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Capitalize/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Capitalize/toString"
+            body="return &quot;CAPITALIZE(&quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/SubString">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/SubString/expression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/SubString/position"/>
@@ -796,9 +811,10 @@
       <genClasses ecoreClass="expression.ecore#//string/Trim">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//string/Trim/expression"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//string/Trim/trimType"/>
         <genOperations ecoreOperation="expression.ecore#//string/Trim/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
-        <genOperations ecoreOperation="expression.ecore#//string/Trim/toString" body="return &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Trim/toString" body="return (TrimType.LEFT.equals(getTrimType()) ? &quot;L&quot; : (TrimType.RIGHT.equals(getTrimType()) ? &quot;R&quot; : &quot;&quot;)) + &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/StringSwitchExpression"/>
       <genClasses ecoreClass="expression.ecore#//string/ConcatenateCollection">
