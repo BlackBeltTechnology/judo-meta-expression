@@ -58,15 +58,6 @@
       <category name="builders_source"/>
    </feature>
 
-   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature">
-      <category name="builders"/>
-   </feature>
-
-   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.asm.feature.source">
-      <category name="builders_source"/>
-   </feature>
-
-
    <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature">
       <category name="adapters"/>
    </feature>
@@ -75,37 +66,11 @@
       <category name="adapters_source"/>
    </feature>
 
-   <feature id="hu.blackbelt.judo.meta.expression.adapter.psm.feature">
-      <category name="adapters"/>
-   </feature>
-
-   <feature id="hu.blackbelt.judo.meta.expression.adapter.psm.feature.source">
-      <category name="adapters_source"/>
-   </feature>
-
-   <feature id="hu.blackbelt.judo.meta.expression.adapter.asm.feature">
-      <category name="adapters"/>
-   </feature>
-
-   <feature id="hu.blackbelt.judo.meta.expression.adapter.asm.feature.source">
-      <category name="adapters_source"/>
-   </feature>
-
-   <feature id="hu.blackbelt.judo.meta.expression.adapter.esm.feature">
-      <category name="adapters"/>
-   </feature>
-
-   <feature id="hu.blackbelt.judo.meta.expression.adapter.esm.feature.source">
-      <category name="adapters_source"/>
-   </feature>
 
    <!--
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.23.0.20220617_120427_1e370db3_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20220616_120313_0d84d4a0_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-asm/1.1.0.20220618_232613_0c08e3ef_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-psm/1.1.0.20220618_232648_f4311fb9_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-esm/1.1.0.20220618_232617_29c542f7_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20220618_232641_47cbbd4b_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20220618_232004_193cd19d_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20220629_124147_7f70e44e_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20220629_125044_16e15b24_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20220629_123627_2802d30e_develop" enabled="true" />
    -->
 </site>

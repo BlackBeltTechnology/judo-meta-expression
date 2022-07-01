@@ -26,10 +26,6 @@
 	</dependencyManagement>
 
 	<dependencies>
-        <dependency>
-            <groupId>hu.blackbelt.judo.meta</groupId>
-            <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model</artifactId>
@@ -38,38 +34,13 @@
 
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.asm.model</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.psm.model</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>hu.blackbelt.judo.meta</groupId>
-			<artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

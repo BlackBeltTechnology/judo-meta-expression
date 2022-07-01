@@ -112,6 +112,7 @@
             <scope>test</scope>
         </dependency>
 
+<!--
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.asm.osgi</artifactId>
@@ -125,7 +126,7 @@
             <version>${judo-meta-psm-version}</version>
             <scope>test</scope>
         </dependency>
-
+-->
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.measure.osgi</artifactId>
@@ -139,6 +140,7 @@
             <scope>test</scope>
         </dependency>
 
+<!--
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.asm</artifactId>
@@ -150,13 +152,13 @@
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
             <scope>test</scope>
         </dependency>
+-->
 
         <dependency>
             <groupId>hu.blackbelt.judo.meta</groupId>
             <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.measure</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
