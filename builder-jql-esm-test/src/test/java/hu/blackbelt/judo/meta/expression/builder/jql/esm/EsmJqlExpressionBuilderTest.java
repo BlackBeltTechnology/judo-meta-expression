@@ -332,4 +332,14 @@ public class EsmJqlExpressionBuilderTest extends AbstractEsmJqlExpressionBuilder
         assertThat(exception.getMessage(), containsString(INVALID_ATTRIBUTE_SELECTOR));
     }
 
+    @Test
+    public void testLowerAndUpper() {
+        StringType stringType = newStringTypeBuilder().withName("String").withMaxLength(255).build();
+        initResources(createTestModel(stringType));
+        assertDoesNotThrow(() -> createExpression("'str'!upper()"));
+        assertDoesNotThrow(() -> createExpression("'str'!upperCase()"));
+        assertDoesNotThrow(() -> createExpression("'STR'!lower()"));
+        assertDoesNotThrow(() -> createExpression("'STR'!lowerCase()"));
+    }
+
 }
