@@ -755,6 +755,11 @@
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-string" ecorePackage="expression.ecore#//string">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//string/TrimType">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/LEFT"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/RIGHT"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/BOTH"/>
+      </genEnums>
       <genClasses ecoreClass="expression.ecore#//string/StringAttribute"/>
       <genClasses ecoreClass="expression.ecore#//string/Concatenate">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Concatenate/left"/>
@@ -806,9 +811,10 @@
       <genClasses ecoreClass="expression.ecore#//string/Trim">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//string/Trim/expression"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//string/Trim/trimType"/>
         <genOperations ecoreOperation="expression.ecore#//string/Trim/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
-        <genOperations ecoreOperation="expression.ecore#//string/Trim/toString" body="return &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//string/Trim/toString" body="return (TrimType.LEFT.equals(getTrimType()) ? &quot;L&quot; : (TrimType.RIGHT.equals(getTrimType()) ? &quot;R&quot; : &quot;&quot;)) + &quot;TRIM(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//string/StringSwitchExpression"/>
       <genClasses ecoreClass="expression.ecore#//string/ConcatenateCollection">

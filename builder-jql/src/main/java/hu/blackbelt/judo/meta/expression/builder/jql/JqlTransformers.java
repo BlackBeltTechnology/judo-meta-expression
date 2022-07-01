@@ -20,6 +20,7 @@ import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
+import hu.blackbelt.judo.meta.expression.string.TrimType;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
@@ -299,7 +300,11 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("capitalize", (expression, functionCall, variables) -> newCapitalizeBuilder()
                 .withExpression((StringExpression) expression).build());
         functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder()
-                .withExpression((StringExpression) expression).build());
+                .withExpression((StringExpression) expression).withTrimType(TrimType.BOTH).build());
+        functionTransformers.put("ltrim", (expression, functionCall, variables) -> newTrimBuilder()
+                .withExpression((StringExpression) expression).withTrimType(TrimType.LEFT).build());
+        functionTransformers.put("rtrim", (expression, functionCall, variables) -> newTrimBuilder()
+                .withExpression((StringExpression) expression).withTrimType(TrimType.RIGHT).build());
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position",
                 new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Position>(this, (argument,
