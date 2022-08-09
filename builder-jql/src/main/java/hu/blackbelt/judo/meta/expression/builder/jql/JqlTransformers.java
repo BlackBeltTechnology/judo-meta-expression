@@ -316,8 +316,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 .withExpression((StringExpression) expression).build());
         functionTransformers.put("upper", (expression, functionCall, variables) -> newUpperCaseBuilder()
                 .withExpression((StringExpression) expression).build());
-        functionTransformers.put("capitalize", (expression, functionCall, variables) -> newCapitalizeBuilder()
-                .withExpression((StringExpression) expression).build());
+//        functionTransformers.put("capitalize", (expression, functionCall, variables) -> newCapitalizeBuilder()
+//                .withExpression((StringExpression) expression).build());
         functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder()
                 .withExpression((StringExpression) expression).withTrimType(TrimType.BOTH).build());
         functionTransformers.put("ltrim", (expression, functionCall, variables) -> newTrimBuilder()
