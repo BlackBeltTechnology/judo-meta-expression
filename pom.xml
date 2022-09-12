@@ -97,7 +97,6 @@
 
         <judo-meta-psm-version>1.1.0.20220901_121101_7fe3d5e1_develop</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.0.20220901_121048_5b18a69d_develop</judo-meta-asm-version>
-        <judo-meta-esm-version>1.1.0.20220831_205922_ce084765_develop</judo-meta-esm-version>
         <judo-meta-jql-version>1.0.1.20220901_121131_aff994b2_develop</judo-meta-jql-version>
         <judo-meta-measure-version>1.0.0.20220901_121041_607ea7b1_develop</judo-meta-measure-version>
 
@@ -496,11 +495,6 @@
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.esm</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.expression.model.adapter.psm</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -513,11 +507,6 @@
                 <groupId>hu.blackbelt.judo.meta</groupId>
                 <artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
                 <version>${judo-meta-measure-version}</version>
-            </dependency>
-            <dependency>
-                <groupId>hu.blackbelt.judo.meta</groupId>
-                <artifactId>hu.blackbelt.judo.meta.esm.model</artifactId>
-                <version>${judo-meta-esm-version}</version>
             </dependency>
             <dependency>
                 <groupId>hu.blackbelt.judo.meta</groupId>
