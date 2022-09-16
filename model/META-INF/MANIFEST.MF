@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
+Bundle-Name: JUDO Meta Expression model
 Bundle-SymbolicName: hu.blackbelt.judo.meta.expression.model;singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Bundle-ClassPath: .
-Bundle-Vendor: %providerName
+Bundle-Vendor: BlackBelt Technology
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Activator: hu.blackbelt.judo.eclipse.expression.Activator
