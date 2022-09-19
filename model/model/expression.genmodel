@@ -423,6 +423,9 @@
     <nestedGenPackages prefix="Numeric" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
         fileExtensions="judo-meta-expression-numeric" ecorePackage="expression.ecore#//numeric">
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//numeric/TimestampConversion">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//numeric/TimestampConversion/MILLISEC"/>
+      </genEnums>
       <genClasses ecoreClass="expression.ecore#//numeric/CountExpression">
         <genOperations ecoreOperation="expression.ecore#//numeric/CountExpression/toString"
             body="return getCollectionExpression() + &quot;!count()&quot;;"/>
@@ -551,6 +554,15 @@
             body="return &quot;EXTRACT(&quot; + getPart() + &quot; FROM &quot; + getTime() + &quot;)&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/ExtractTimeExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/TimestampConversionExpression">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//numeric/TimestampConversionExpression/timestamp"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//numeric/TimestampConversionExpression/timestampConversion"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/TimestampConversionExpression/toString"
+            body="return &quot;CONVERT(&quot; + getTimestamp() + &quot; TO &quot; + getTimestampConversion() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/TimestampConversionExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/AbsoluteExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/AbsoluteExpression/expression"/>

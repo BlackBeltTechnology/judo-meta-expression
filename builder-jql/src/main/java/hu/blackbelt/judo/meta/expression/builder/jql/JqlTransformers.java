@@ -36,6 +36,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.*;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
+import hu.blackbelt.judo.meta.expression.numeric.TimestampConversion;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
@@ -317,6 +318,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
         functionTransformers.put("of", new ConstructorTransformer(this));
+        functionTransformers.put("asmilliseconds", new TimestampConversionTransformer(this, TimestampConversion.MILLISEC));
     }
 
     private void primitiveFunctions() {
