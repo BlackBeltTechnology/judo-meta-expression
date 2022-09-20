@@ -2311,6 +2311,15 @@
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//variable/TimeVariable"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampFromMillisecondsExpression"
+        eSuperTypes="#//TimestampExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;FROM_MILLISECONDS(&quot; + getMilliseconds() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="milliseconds" eType="#//IntegerExpression"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
       nsPrefix="b">

@@ -26,10 +26,10 @@ public class TimestampConversionTransformer extends AbstractJqlFunctionTransform
                                                            .withTimestampConversion(timestampConversion)
                                                            .build();
             } else {
-                throw new IllegalArgumentException("Timestamp conversion not supported: " + timestampConversion);
+                throw new IllegalArgumentException("Timestamp conversion not supported with unit " + timestampConversion);
             }
         } else {
-            throw new IllegalArgumentException("Unsupported expression: " + argument.getClass().getSimpleName());
+            throw new IllegalArgumentException("Timestamp conversion not supported: " + argument.getClass().getSimpleName());
         }
     }
 
