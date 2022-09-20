@@ -1384,6 +1384,8 @@
             ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampFromMillisecondsExpression/milliseconds"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampFromMillisecondsExpression/toString"
             body="return &quot;FROM_MILLISECONDS(&quot; + getMilliseconds() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampFromMillisecondsExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getMilliseconds());"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
