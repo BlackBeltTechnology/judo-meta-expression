@@ -95,7 +95,7 @@
 
         <judo-meta-psm-version>1.2.1</judo-meta-psm-version>
         <judo-meta-asm-version>1.1.1</judo-meta-asm-version>
-        <judo-meta-jql-version>1.1.1</judo-meta-jql-version>
+        <judo-meta-jql-version>1.0.1</judo-meta-jql-version>
         <judo-meta-measure-version>1.0.0</judo-meta-measure-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
