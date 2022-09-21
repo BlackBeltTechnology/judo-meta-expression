@@ -9,24 +9,26 @@ import hu.blackbelt.judo.meta.expression.numeric.TimestampConversion;
 import hu.blackbelt.judo.meta.expression.numeric.util.builder.TimestampConversionExpressionBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
+import java.time.temporal.ChronoUnit;
+
 public class TimestampConversionTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
 
-    private final TimestampConversion timestampConversion;
+    private final ChronoUnit conversionUnit;
 
-    public TimestampConversionTransformer(ExpressionTransformer jqlTransformers, TimestampConversion timestampConversion) {
+    public TimestampConversionTransformer(ExpressionTransformer jqlTransformers, ChronoUnit timestampConversion) {
         super(jqlTransformers);
-        this.timestampConversion = timestampConversion;
+        this.conversionUnit = timestampConversion;
     }
 
     @Override
     public Expression apply(TimestampExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        if (timestampConversion == TimestampConversion.MILLISEC) {
+        if (conversionUnit == ChronoUnit.MILLIS) {
             return TimestampConversionExpressionBuilder.create()
                                                        .withTimestamp(argument)
-                                                       .withTimestampConversion(timestampConversion)
+                                                       .withTimestampConversion(TimestampConversion.MILLISEC)
                                                        .build();
         } else {
-            throw new IllegalArgumentException("Timestamp conversion not supported with unit " + timestampConversion);
+            throw new IllegalArgumentException("Timestamp conversion not supported with unit " + conversionUnit);
         }
     }
 

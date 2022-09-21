@@ -318,7 +318,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
         functionTransformers.put("of", new ConstructorTransformer(this));
-        functionTransformers.put("asmilliseconds", new TimestampConversionTransformer(this, TimestampConversion.MILLISEC));
+        functionTransformers.put("asmilliseconds", new TimestampConversionTransformer(this, ChronoUnit.MILLIS));
         functionTransformers.put("frommilliseconds", new TimestampConstructionTransformer(this, ChronoUnit.MILLIS));
     }
 
