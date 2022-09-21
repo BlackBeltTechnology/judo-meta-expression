@@ -1186,6 +1186,8 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/MINUTE"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/SECOND"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/MILLISECOND"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/DATE"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/TIME"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//temporal/TimePart">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimePart/HOUR"/>
@@ -1386,6 +1388,20 @@
             body="return &quot;FROM_MILLISECONDS(&quot; + getMilliseconds() + &quot;)&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampFromMillisecondsExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getMilliseconds());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/ExtractDateOfTimestampExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/ExtractDateOfTimestampExpression/timestamp"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/ExtractDateOfTimestampExpression/toString"
+            body="return &quot;EXTRACT(DATE FROM &quot; + getTimestamp() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/ExtractDateOfTimestampExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/ExtractTimeOfTimestampExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/ExtractTimeOfTimestampExpression/timestamp"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/ExtractTimeOfTimestampExpression/toString"
+            body="return &quot;EXTRACT(TIME FROM &quot; + getTimestamp() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/ExtractTimeOfTimestampExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"

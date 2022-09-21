@@ -2158,6 +2158,8 @@
       <eLiterals name="MINUTE" value="4"/>
       <eLiterals name="SECOND" value="5"/>
       <eLiterals name="MILLISECOND" value="6"/>
+      <eLiterals name="DATE" value="7"/>
+      <eLiterals name="TIME" value="8"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DateConstructionExpression" eSuperTypes="#//DateExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -2324,6 +2326,36 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="milliseconds" eType="#//IntegerExpression"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtractDateOfTimestampExpression"
+        eSuperTypes="#//DateExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;EXTRACT(DATE FROM &quot; + getTimestamp() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtractTimeOfTimestampExpression"
+        eSuperTypes="#//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;EXTRACT(TIME FROM &quot; + getTimestamp() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
