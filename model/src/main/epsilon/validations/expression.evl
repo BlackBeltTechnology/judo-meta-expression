@@ -1,0 +1,16 @@
+import "expression/_importExpression.evl";
+
+// Utility for EVLs: check if dimension is defined for a given numeric expression.
+@cached
+operation EXPR!NumericExpression isDimensionDefined() {
+    var dimension = modelAdapter.getDimension(self);
+    return dimension.isPresent() and not dimension.get().isEmpty();
+}
+
+pre {
+    evaluator.init(EXPR!Expression.ALL);
+}
+
+post {
+    evaluator.cleanup();
+}

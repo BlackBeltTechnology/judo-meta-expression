@@ -1,0 +1,5 @@
+import "expression.evl";
+
+pre {
+  var expressionUtils = new Native("hu.blackbelt.judo.meta.expression.runtime.ExpressionUtils")(EXPRESSION.resource.resourceSet, false);
+}

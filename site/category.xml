@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description>
+      To install these features, point Eclipse at this site.
+   </description>
+
+   <category-def name="expression" label="JUDO Expression Model">
+      <description>
+         JUDO Expression Model
+      </description>
+   </category-def>
+
+   <category-def name="adapters" label="JUDO Expression Adapters">
+      <description>
+         JUDO Expression Model adapters for other metamodels
+      </description>
+   </category-def>
+
+   <category-def name="builders" label="JUDO Expression Builders">
+      <description>
+         JUDO Expression builders uses other metamodels
+      </description>
+   </category-def>
+
+   <category-def name="expression_source" label="JUDO Expression Model Source">
+      <description>
+         JUDO Expression Model source
+      </description>
+   </category-def>
+
+   <category-def name="adapters_source" label="JUDO Expression Adapters Source">
+      <description>
+         Judo Expression Model adapters for other metamodels source
+      </description>
+   </category-def>
+
+   <category-def name="builders_source" label="Judo Expression Builders Source">
+      <description>
+         Judo Expression builders uses other metamodels source
+      </description>
+   </category-def>
+
+
+   <feature id="hu.blackbelt.judo.meta.expression.feature">
+      <category name="expression"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.feature.source">
+      <category name="expression_source"/>
+   </feature>
+
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.feature">
+      <category name="builders"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.builder.jql.feature.source">
+      <category name="builders_source"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature">
+      <category name="adapters"/>
+   </feature>
+
+   <feature id="hu.blackbelt.judo.meta.expression.adapter.measure.feature.source">
+      <category name="adapters_source"/>
+   </feature>
+
+
+   <!--
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.23.0.20220617_120427_1e370db3_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.4.0.20220629_124147_7f70e44e_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.0.20220901_121041_607ea7b1_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.1.20220901_121131_aff994b2_develop" enabled="true" />
+   -->
+</site>

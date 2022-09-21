@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+<plugin>
+    <extension
+            point="org.eclipse.epsilon.common.dt.tool">
+        <tool
+                class="hu.blackbelt.judo.meta.expression.runtime.ExpressionUtils"
+                defaultName="expressionUtils"/>
+    </extension>
+
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression"
+            class="hu.blackbelt.judo.meta.expression.ExpressionPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="expression"
+            class="hu.blackbelt.judo.meta.expression.util.ExpressionResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/constant"
+            class="hu.blackbelt.judo.meta.expression.constant.ConstantPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-constant"
+            class="hu.blackbelt.judo.meta.expression.constant.util.ConstantResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/variable"
+            class="hu.blackbelt.judo.meta.expression.variable.VariablePackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-variable"
+            class="hu.blackbelt.judo.meta.expression.variable.util.VariableResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/operator"
+            class="hu.blackbelt.judo.meta.expression.operator.OperatorPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-operator"
+            class="hu.blackbelt.judo.meta.expression.operator.util.OperatorResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/numeric"
+            class="hu.blackbelt.judo.meta.expression.numeric.NumericPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-numeric"
+            class="hu.blackbelt.judo.meta.expression.numeric.util.NumericResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/logical"
+            class="hu.blackbelt.judo.meta.expression.logical.LogicalPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-logical"
+            class="hu.blackbelt.judo.meta.expression.logical.util.LogicalResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/string"
+            class="hu.blackbelt.judo.meta.expression.string.StringPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-string"
+            class="hu.blackbelt.judo.meta.expression.string.util.StringResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/enumeration"
+            class="hu.blackbelt.judo.meta.expression.enumeration.EnumerationPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-enumeration"
+            class="hu.blackbelt.judo.meta.expression.enumeration.util.EnumerationResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/object"
+            class="hu.blackbelt.judo.meta.expression.object.ObjectPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-object"
+            class="hu.blackbelt.judo.meta.expression.object.util.ObjectResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/collection"
+            class="hu.blackbelt.judo.meta.expression.collection.CollectionPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-collection"
+            class="hu.blackbelt.judo.meta.expression.collection.util.CollectionResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/custom"
+            class="hu.blackbelt.judo.meta.expression.custom.CustomPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-custom"
+            class="hu.blackbelt.judo.meta.expression.custom.util.CustomResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/temporal"
+            class="hu.blackbelt.judo.meta.expression.temporal.TemporalPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-temporal"
+            class="hu.blackbelt.judo.meta.expression.temporal.util.TemporalResourceFactoryImpl"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <!-- @generated expression -->
+      <package
+            uri="http://blackbelt.hu/judo/meta/expression/binding"
+            class="hu.blackbelt.judo.meta.expression.binding.BindingPackage"
+            genModel="model/expression.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <!-- @generated expression -->
+      <parser
+            type="judo-meta-expression-binding"
+            class="hu.blackbelt.judo.meta.expression.binding.util.BindingResourceFactoryImpl"/>
+   </extension>
+</plugin>
