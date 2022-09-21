@@ -420,16 +420,15 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     /**
      * <p>Returns {@link TypeName} with namespace and name defined.</p>
      * <p>If namespace is not defined it is calculated.</p>
-     * <p/>
      * <p>Beware that in case type name is not found, exception is thrown.</p>
      * <p>if namespace is not defined and typename is not found, symbol is unknown.</p>
      * <p>if namespace is defined and typename is not found, type is unknown.</p>
      *
      * @param qualifiedName         {@link QualifiedName} that contains information about given namespace and name
-     * @param getIfNamespaceDefined {@link Supplier<TypeName>} that returns {@link TypeName} if namespace is defined
+     * @param getIfNamespaceDefined {@link Supplier} that returns {@link TypeName} if namespace is defined
      *                              in <i>qualifiedName</i>. Note that defined could mean here that namespace is
      *                              intentionally left empty meaning a symbol is used.
-     * @param getIfNamespaceEmpty   {@link Supplier<TypeName>} that returns {@link TypeName} if namespace is not defined
+     * @param getIfNamespaceEmpty   {@link Supplier} that returns {@link TypeName} if namespace is not defined
      *                              in <i>qualifiedName</i>.
      * @return {@link TypeName} with namespace and name defined
      * @throws IllegalArgumentException if <i>qualifiedName</i> is null
