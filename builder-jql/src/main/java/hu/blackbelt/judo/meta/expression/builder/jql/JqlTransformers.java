@@ -36,11 +36,13 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.*;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
+import hu.blackbelt.judo.meta.expression.numeric.TimestampConversion;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.string.TrimType;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampPart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
@@ -316,7 +318,11 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
+        functionTransformers.put("date", new ExtractDateTimeOfTimestampTransformer(this, TimestampPart.DATE));
+        functionTransformers.put("time", new ExtractDateTimeOfTimestampTransformer(this, TimestampPart.TIME));
         functionTransformers.put("of", new ConstructorTransformer(this));
+        functionTransformers.put("asmilliseconds", new TimestampConversionTransformer(this, ChronoUnit.MILLIS));
+        functionTransformers.put("frommilliseconds", new TimestampConstructionTransformer(this, ChronoUnit.MILLIS));
     }
 
     private void primitiveFunctions() {
