@@ -1,0 +1,110 @@
+context EXPR!IntegerConstant {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of integer constant is not defined: " + self
+    }
+
+    constraint MeasureIsValid {   	
+        check: true
+        message: "Measured constant: " + self
+    }
+}
+
+context EXPR!DecimalConstant {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of decimal constant is not defined: " + self
+    }
+
+    constraint MeasureIsValid {
+        check: true
+        message: "Measured decimal constant: " + self
+    }
+}
+
+context EXPR!BooleanConstant {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of boolean constant is not defined: " + self
+    }
+}
+
+context EXPR!StringConstant {
+    constraint Resolved {
+        check: "" == self.value or self.value.isDefined()
+        message: "Value of string constant is not defined: " + self
+    }
+}
+
+context EXPR!Literal {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of literal constant is not defined: " + self
+    }
+}
+
+context EXPR!Instance {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!CustomData {
+    constraint Resolved {
+        check: self.value.isDefined()
+        message: "Value of custom (primitive) constant is not defined: " + self
+    }
+}
+
+context EXPR!IntegerEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of integer environment variable is not defined: " + self
+    }
+
+    constraint MeasureIsValid {
+        check: true
+        message: "Measured constant: " + self
+    }
+}
+
+context EXPR!DecimalEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of decimal environment variable is not defined: " + self
+    }
+
+    constraint MeasureIsValid {
+        check: true
+        message: "Measured decimal constant: " + self
+    }
+}
+
+context EXPR!BooleanEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of boolean environment variable is not defined: " + self
+    }
+}
+
+context EXPR!StringEnvironmentVariable {
+    constraint Resolved {
+        check: "" == self.variableName or self.variableName.isDefined()
+        message: "Value of string environment variable is not defined: " + self
+    }
+}
+
+context EXPR!LiteralEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of literal environment variable is not defined: " + self
+    }
+}
+
+context EXPR!CustomEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of custom (primitive) environment variable is not defined: " + self
+    }
+}

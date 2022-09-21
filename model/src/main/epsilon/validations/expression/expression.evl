@@ -1,0 +1,19 @@
+context EXPR!TypeName {
+    
+    // object type with name defined by ElementName must exists in the namespace
+    constraint ObjectTypeIsValid {
+        check: self.get(modelAdapter).isDefined()
+        message: "Element named " + self.name + " not found in namespace " + self.namespace 
+    }
+}
+
+context EXPR!Expression {
+
+    // variable reference in lambda expression is referencing to variable visible from its scope
+    constraint LambdaVariableIsValid {
+        guard: evaluator.isLambdaFunction(self)
+        
+        check: evaluator.getVariablesOfScope(self).containsAll(evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable))
+        message: "Invalid variable references: " + evaluator.getExpressionTerms(self).select(e | e.isKindOf(EXPR!VariableReference)).collect(e | e.variable).excludingAll(evaluator.getVariablesOfScope(self)) + " in expression: " + self
+    }
+}

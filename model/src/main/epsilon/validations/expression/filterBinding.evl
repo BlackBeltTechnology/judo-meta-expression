@@ -1,0 +1,7 @@
+context EXPR!FilterBinding {
+
+	constraint LogicalExpressionMatchesBinding {
+		check: self.expression.isKindOf(EXPR!LogicalExpression)
+		message: "Expression of filter binding for filter of " + self.typeName + " must be logical expression"
+	}
+}

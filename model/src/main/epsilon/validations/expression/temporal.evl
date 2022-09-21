@@ -1,0 +1,264 @@
+context EXPR!TimestampAdditionExpression {
+    constraint Resolved {
+        guard: self.timestamp.satisfiesAll("Resolved") and self.duration.satisfiesAll("Resolved")
+    
+        check: self.duration.isMeasured(modelAdapter)
+        message: "Duration is not measured: " + self.duration
+    }
+    
+    constraint DurationIsSystemUnit {
+        guard: self.satisfiesAll("Resolved")
+    
+        check: modelAdapter.isDurationSupportingAddition(modelAdapter.getUnit(self.duration).orElse(null))
+        message: "Duration is not a valid temporal unit: " + self.duration
+    }
+}
+
+context EXPR!TimeAdditionExpression {
+    constraint Resolved {
+        guard: self.time.satisfiesAll("Resolved") and self.duration.satisfiesAll("Resolved")
+    
+        check: self.duration.isMeasured(modelAdapter)
+        message: "Duration is not measured: " + self.duration
+    }
+    
+    constraint DurationIsSystemUnit {
+        guard: self.satisfiesAll("Resolved")
+    
+        check: modelAdapter.isDurationSupportingAddition(modelAdapter.getUnit(self.duration).orElse(null))
+        message: "Duration is not a valid temporal unit: " + self.duration
+    }
+}
+
+context EXPR!DateAttribute {
+    constraint AttributeTypeIsDate {
+        guard: self.satisfiesAll("Resolved")
+    
+        check: modelAdapter.isDate(self.getAttributeType(modelAdapter).get())
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not date"
+    }
+}
+
+context EXPR!TimestampAttribute {
+    constraint AttributeTypeIsTimestamp {
+        guard: self.satisfiesAll("Resolved")
+    
+        check: modelAdapter.isTimestamp(self.getAttributeType(modelAdapter).get())
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not timestamp"
+    }
+}
+
+context EXPR!TimeAttribute {
+    constraint AttributeTypeIsTime {
+        guard: self.satisfiesAll("Resolved")
+    
+        check: modelAdapter.isTime(self.getAttributeType(modelAdapter).get())
+        message: "Attribute type of " + self.attributeName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not time"
+    }
+}
+
+context EXPR!DateSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+    
+    constraint TypeOfDefaultCaseIsDate {
+        guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
+        
+        check: self.defaultExpression.isKindOf(EXPR!DateExpression)
+        message: "Type of default case expression is not date (expression type): " + self.defaultExpression
+    }
+}
+
+context EXPR!TimestampSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+    
+    constraint TypeOfDefaultCaseIsTimestamp {
+        guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
+        
+        check: self.defaultExpression.isKindOf(EXPR!TimestampExpression)
+        message: "Type of default case expression is not timestamp (expression type): " + self.defaultExpression
+    }
+}
+
+context EXPR!TimeSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+    
+    constraint TypeOfDefaultCaseIsTime {
+        guard: self.defaultExpression.isDefined() and self.defaultExpression.satisfiesAll("Resolved")
+        
+        check: self.defaultExpression.isKindOf(EXPR!TimeExpression)
+        message: "Type of default case expression is not time (expression type): " + self.defaultExpression
+    }
+}
+
+context EXPR!SwitchCase {
+    constraint TypeOfSwitchCaseIsDate {
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!DateExpression)
+        
+        check: self.expression.isKindOf(EXPR!DateExpression)
+        message: "Type of switch case expression is not date (expression type): " + self.expression
+    }
+    
+    constraint TypeOfSwitchCaseIsTimestamp {
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!TimestampExpression)
+        
+        check: self.expression.isKindOf(EXPR!TimestampExpression)
+        message: "Type of switch case expression is not timestamp (expression type): " + self.expression
+    }
+
+    constraint TypeOfSwitchCaseIsTime {
+        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!TimeExpression)
+        
+        check: self.expression.isKindOf(EXPR!TimeExpression)
+        message: "Type of switch case expression is not time (expression type): " + self.expression
+    }
+}
+
+context EXPR!TimestampConstant {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!TimeConstant {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!DateConstant {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!TimestampEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of timestamp environment variable is not defined: " + self
+    }
+}
+
+context EXPR!TimeEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of time environment variable is not defined: " + self
+    }
+}
+
+context EXPR!DateEnvironmentVariable {
+    constraint Resolved {
+        check: self.variableName.isDefined()
+        message: "Value of date environment variable is not defined: " + self
+    }
+}
+
+context EXPR!TimestampDifferenceExpression {
+    constraint Resolved {
+        guard: self.startTimestamp.satisfiesAll("Resolved") and self.endTimestamp.satisfiesAll("Resolved")
+    
+        check: self.isDimensionDefined() 
+        message: "Difference of timestamps is not duration"
+    }
+}
+
+context EXPR!TimeDifferenceExpression {
+    constraint Resolved {
+        guard: self.startTime.satisfiesAll("Resolved") and self.endTime.satisfiesAll("Resolved")
+    
+        check: self.isDimensionDefined() 
+        message: "Difference of time is not duration"
+    }
+}
+
+context EXPR!DateAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
+    }
+}
+
+context EXPR!TimestampAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
+    }
+}
+
+context EXPR!TimeAggregatedExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Attribute named " + self.attributeName + " of object type " + self.collectionExpression.getObjectType(modelAdapter).getName() + " not found"
+    }
+}
+
+context EXPR!ExtractDateExpression {
+    constraint Resolved {
+        guard: self.date.satisfiesAll("Resolved")
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!ExtractTimestampExpression {
+    constraint Resolved {
+        guard: self.date.satisfiesAll("Resolved")
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!ExtractTimeExpression {
+    constraint Resolved {
+        guard: self.date.satisfiesAll("Resolved")
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!DateConstructionExpression {
+    constraint Resolved {
+        guard: self.getOperands().forAll(o -> o.satisfiesAll("Resolved"))
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!TimestampConstructionExpression {
+    constraint Resolved {
+        guard: self.getOperands().forAll(o -> o.satisfiesAll("Resolved"))
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!TimeConstructionExpression {
+    constraint Resolved {
+        guard: self.getOperands().forAll(o -> o.satisfiesAll("Resolved"))
+
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}

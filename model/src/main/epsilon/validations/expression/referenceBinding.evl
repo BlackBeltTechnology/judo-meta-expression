@@ -1,0 +1,27 @@
+context EXPR!ReferenceBinding {
+	
+	constraint ReferenceBindingExpressionIsValid {
+		check: self.expression.isKindOf(EXPR!ReferenceExpression)
+		message: "Expression of reference binding for reference named " + self.referenceName + " must be reference expression"
+	}
+	
+	constraint ReferenceExpressionMatchesBinding {
+		guard: self.satisfies("ReferenceBindingExpressionIsValid")
+		check: modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).isPresent() and 
+		modelAdapter.getSuperTypes(self.expression.getObjectType(modelAdapter)).including(self.expression.getObjectType(modelAdapter))
+			.includes(modelAdapter.getEntityTypeOfTransferObjectRelationTarget(self.typeName, self.referenceName).get())
+		message: "Reference named " + self.referenceName + " does not match the type of the assigned expression"
+	}
+	
+	constraint ObjectExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!ObjectExpression)
+		check: not modelAdapter.isCollectionReference(self.typeName, self.referenceName)
+		message: "Reference named " + self.referenceName + " refers to a collection but the assigned expression evaluates to an object."
+	}
+	
+	constraint CollectionExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!CollectionExpression)
+		check: modelAdapter.isCollectionReference(self.typeName, self.referenceName)
+		message: "Reference named " + self.referenceName + " refers to an object but the assigned expression evaluates to a collection."
+	}
+}

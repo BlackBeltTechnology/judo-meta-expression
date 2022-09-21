@@ -1,0 +1,86 @@
+context EXPR!ObjectNavigationExpression {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " not found"
+    }
+    
+    constraint TargetIsCollection {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: not modelAdapter.isCollection(self)
+        message: "Reference named " + self.referenceName + " of object type " + self.objectExpression.getObjectType(modelAdapter).getName() + " is collection"
+    }
+}
+
+context EXPR!ObjectSelectorExpression {
+    constraint Resolved {
+        guard: self.collectionExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of object selector expression is not defined: " + self
+    }
+    
+    constraint ObjectSelectorOperatorIsValid {
+        guard: self.satisfiesAll("Resolved")
+        
+        check: self.operator == EXPR!ObjectSelector#any
+        message: "Only 'any' is supported: " + self
+    }
+}
+
+context EXPR!ObjectFilterExpression {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of object filter expression is not defined: " + self
+    }
+}
+
+context EXPR!ObjectVariableReference {
+    constraint Resolved {
+        check: self.variable.type().isDefined()
+        message: "Object variable reference is unknown: " + self
+    }
+
+    constraint TypeIsDefined {
+        guard: self.satisfiesAll("Resolved") and self.variable.satisfiesAll("Resolved")
+        
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of variable " + self.variable.name + " is unknown"
+    }
+}
+
+context EXPR!CastObject {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
+        check: self.getObjectType(modelAdapter).isDefined()
+        message: "Type of cast object expression is not defined: " + self
+    }
+
+    constraint CastedTypeIsCompatible {
+        guard: self.satisfiesAll("Resolved") and self.objectExpression.satisfiesAll("Resolved")
+        
+        check: modelAdapter.getSuperTypes(self.getObjectType(modelAdapter)).contains(self.objectExpression.getObjectType(modelAdapter))
+        message: "Invalid casting type: " + self.objectExpression.getObjectType(modelAdapter).getName() + " is not supertype of " + self.getObjectType(modelAdapter).getName()
+    }
+}
+
+context EXPR!ContainerExpression {
+    constraint Resolved {
+        guard: self.objectExpression.satisfiesAll("Resolved")
+        
+        check: modelAdapter.getContainerTypesOf(self.objectExpression.getObjectType(modelAdapter)).exists(typeName | typeName == modelAdapter.get(self.elementName).orElse(null))
+        message: "Invalid container type of: " + self
+    }
+}
+
+context EXPR!ObjectSwitchExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
