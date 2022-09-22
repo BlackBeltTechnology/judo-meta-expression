@@ -286,9 +286,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void numericFunctions() {
-        // TODO: Change to numeric
-        functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder()
-                .withExpression((DecimalExpression) expression).build());
+        functionTransformers.put("round", (expression, functionCall, variables) -> {
+            checkNumericExpression(expression);
+            return newRoundExpressionBuilder().withExpression((NumericExpression) expression).build();
+        });
         functionTransformers.put("abs", (expression, functionCall, variables) -> {
             checkNumericExpression(expression);
             return newAbsoluteExpressionBuilder().withExpression((NumericExpression) expression).build();
