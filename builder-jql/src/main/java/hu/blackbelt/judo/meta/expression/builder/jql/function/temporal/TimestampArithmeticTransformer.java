@@ -32,14 +32,12 @@ import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampArithmeticExpressionBuilder;
 
-public class TimestampArithmeticsTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
+public class TimestampArithmeticTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
 
-    private final ExpressionTransformer jqlTransformers;
     private final TimestampPart timestampPart;
 
-    public TimestampArithmeticsTransformer(ExpressionTransformer jqlTransformers, TimestampPart timestampPart) {
-        super(jqlTransformers);
-        this.jqlTransformers = jqlTransformers;
+    public TimestampArithmeticTransformer(ExpressionTransformer expressionTransformer, TimestampPart timestampPart) {
+        super(expressionTransformer);
         this.timestampPart = timestampPart;
     }
 
@@ -49,7 +47,7 @@ public class TimestampArithmeticsTransformer extends AbstractJqlFunctionTransfor
         if (parameters.size() != 1) {
             throw new IllegalArgumentException("Unexpected number of arguments: Expected: 1. Got: " + parameters.size());
         }
-        Expression parameterExpression = jqlTransformers.transform(parameters.get(0).getExpression(), context);
+        Expression parameterExpression = expressionTransformer.transform(parameters.get(0).getExpression(), context);
         if (!(parameterExpression instanceof IntegerExpression)) {
             throw new IllegalArgumentException("Unsupported parameter type: " + parameterExpression.getClass().getSimpleName());
         }

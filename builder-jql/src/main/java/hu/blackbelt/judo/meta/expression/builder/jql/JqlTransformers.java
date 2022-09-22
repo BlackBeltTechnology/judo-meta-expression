@@ -321,24 +321,24 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
-        functionTransformers.put("date", new ExtractDateTimeOfTimestampTransformer(this, TimestampPart.DATE));
-        functionTransformers.put("time", new ExtractDateTimeOfTimestampTransformer(this, TimestampPart.TIME));
+        functionTransformers.put("date", new ExtractFromTimestampTransformer(this, TimestampPart.DATE));
+        functionTransformers.put("time", new ExtractFromTimestampTransformer(this, TimestampPart.TIME));
 
         // construct
         functionTransformers.put("of", new ConstructorTransformer(this));
 
         // convert
-        functionTransformers.put("asmilliseconds", new TimestampConversionTransformer(this, ChronoUnit.MILLIS));
-        functionTransformers.put("frommilliseconds", new TimestampConstructionTransformer(this, ChronoUnit.MILLIS));
+        functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
+        functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
 
         // arithmetics
-        functionTransformers.put("plusyears", new TimestampArithmeticsTransformer(this, TimestampPart.YEAR));
-        functionTransformers.put("plusmonths", new TimestampArithmeticsTransformer(this, TimestampPart.MONTH));
-        functionTransformers.put("plusdays", new TimestampArithmeticsTransformer(this, TimestampPart.DAY));
-        functionTransformers.put("plushours", new TimestampArithmeticsTransformer(this, TimestampPart.HOUR));
-        functionTransformers.put("plusminutes", new TimestampArithmeticsTransformer(this, TimestampPart.MINUTE));
-        functionTransformers.put("plusseconds", new TimestampArithmeticsTransformer(this, TimestampPart.SECOND));
-        functionTransformers.put("plusmilliseconds", new TimestampArithmeticsTransformer(this, TimestampPart.MILLISECOND));
+        functionTransformers.put("plusyears", new TimestampArithmeticTransformer(this, TimestampPart.YEAR));
+        functionTransformers.put("plusmonths", new TimestampArithmeticTransformer(this, TimestampPart.MONTH));
+        functionTransformers.put("plusdays", new TimestampArithmeticTransformer(this, TimestampPart.DAY));
+        functionTransformers.put("plushours", new TimestampArithmeticTransformer(this, TimestampPart.HOUR));
+        functionTransformers.put("plusminutes", new TimestampArithmeticTransformer(this, TimestampPart.MINUTE));
+        functionTransformers.put("plusseconds", new TimestampArithmeticTransformer(this, TimestampPart.SECOND));
+        functionTransformers.put("plusmilliseconds", new TimestampArithmeticTransformer(this, TimestampPart.MILLISECOND));
     }
 
     private void primitiveFunctions() {

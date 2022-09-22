@@ -31,11 +31,11 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newExtractDateOfTimestampExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newExtractTimeOfTimestampExpressionBuilder;
 
-public class ExtractDateTimeOfTimestampTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
+public class ExtractFromTimestampTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
 
     private final TimestampPart timestampPart;
 
-    public ExtractDateTimeOfTimestampTransformer(ExpressionTransformer jqlTransformers, TimestampPart timestampPart) {
+    public ExtractFromTimestampTransformer(ExpressionTransformer jqlTransformers, TimestampPart timestampPart) {
         super(jqlTransformers);
         this.timestampPart = timestampPart;
     }
