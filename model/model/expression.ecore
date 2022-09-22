@@ -2357,6 +2357,24 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampArithmeticExpression" eSuperTypes="#//TimestampExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getAmount());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;TIMESTAMP_PLUS(&quot; + getTimestamp() + &quot; + &quot; + getAmount() + &quot; &quot; + getTimestampPart() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestampPart" lowerBound="1"
+          eType="#//temporal/TimestampPart"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="amount" lowerBound="1"
+          eType="#//IntegerExpression"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
       nsPrefix="b">

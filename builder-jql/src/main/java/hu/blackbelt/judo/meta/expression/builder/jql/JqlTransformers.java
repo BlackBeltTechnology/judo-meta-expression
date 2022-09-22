@@ -36,7 +36,6 @@ import hu.blackbelt.judo.meta.expression.builder.jql.operation.*;
 import hu.blackbelt.judo.meta.expression.collection.CastCollection;
 import hu.blackbelt.judo.meta.expression.logical.*;
 import hu.blackbelt.judo.meta.expression.numeric.Position;
-import hu.blackbelt.judo.meta.expression.numeric.TimestampConversion;
 import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
@@ -310,7 +309,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void temporalFunctions() {
+        // diff
         functionTransformers.put("elapsedtimefrom", new JqlDifferenceFunctionTransformer(this, this));
+
+        // extract
         functionTransformers.put("year", new ExtractTransformer(this, ChronoUnit.YEARS));
         functionTransformers.put("month", new ExtractTransformer(this, ChronoUnit.MONTHS));
         functionTransformers.put("day", new ExtractTransformer(this, ChronoUnit.DAYS));
@@ -320,9 +322,22 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
         functionTransformers.put("date", new ExtractDateTimeOfTimestampTransformer(this, TimestampPart.DATE));
         functionTransformers.put("time", new ExtractDateTimeOfTimestampTransformer(this, TimestampPart.TIME));
+
+        // construct
         functionTransformers.put("of", new ConstructorTransformer(this));
+
+        // convert
         functionTransformers.put("asmilliseconds", new TimestampConversionTransformer(this, ChronoUnit.MILLIS));
         functionTransformers.put("frommilliseconds", new TimestampConstructionTransformer(this, ChronoUnit.MILLIS));
+
+        // arithmetics
+        functionTransformers.put("plusyears", new TimestampArithmeticsTransformer(this, TimestampPart.YEAR));
+        functionTransformers.put("plusmonths", new TimestampArithmeticsTransformer(this, TimestampPart.MONTH));
+        functionTransformers.put("plusdays", new TimestampArithmeticsTransformer(this, TimestampPart.DAY));
+        functionTransformers.put("plushours", new TimestampArithmeticsTransformer(this, TimestampPart.HOUR));
+        functionTransformers.put("plusminutes", new TimestampArithmeticsTransformer(this, TimestampPart.MINUTE));
+        functionTransformers.put("plusseconds", new TimestampArithmeticsTransformer(this, TimestampPart.SECOND));
+        functionTransformers.put("plusmilliseconds", new TimestampArithmeticsTransformer(this, TimestampPart.MILLISECOND));
     }
 
     private void primitiveFunctions() {

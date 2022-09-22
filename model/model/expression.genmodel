@@ -1403,6 +1403,17 @@
         <genOperations ecoreOperation="expression.ecore#//temporal/ExtractTimeOfTimestampExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimestampArithmeticExpression">
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampArithmeticExpression/timestamp"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//temporal/TimestampArithmeticExpression/timestampPart"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampArithmeticExpression/amount"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampArithmeticExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getAmount());"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimestampArithmeticExpression/toString"
+            body="return &quot;TIMESTAMP_PLUS(&quot; + getTimestamp() + &quot; + &quot; + getAmount() + &quot; &quot; + getTimestampPart() + &quot;)&quot;;"/>
+      </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
