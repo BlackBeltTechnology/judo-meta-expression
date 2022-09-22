@@ -45,7 +45,7 @@ public class TimestampArithmeticTransformer extends AbstractJqlFunctionTransform
     public Expression apply(TimestampExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         List<FunctionParameter> parameters = functionCall.getParameters();
         if (parameters.size() != 1) {
-            throw new IllegalArgumentException("Unexpected number of arguments: Expected: 1. Got: " + parameters.size());
+            throw new IllegalArgumentException("Invalid number of arguments: Expected: 1. Got: " + parameters.size());
         }
         Expression parameterExpression = expressionTransformer.transform(parameters.get(0).getExpression(), context);
         if (!(parameterExpression instanceof IntegerExpression)) {
