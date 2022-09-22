@@ -41,6 +41,7 @@ import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.string.TrimType;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampPart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
@@ -285,9 +286,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void numericFunctions() {
-        // TODO: Change to numeric
-        functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder()
-                .withExpression((DecimalExpression) expression).build());
+        functionTransformers.put("round", (expression, functionCall, variables) -> {
+            checkNumericExpression(expression);
+            return newRoundExpressionBuilder().withExpression((NumericExpression) expression).build();
+        });
         functionTransformers.put("abs", (expression, functionCall, variables) -> {
             checkNumericExpression(expression);
             return newAbsoluteExpressionBuilder().withExpression((NumericExpression) expression).build();
@@ -308,7 +310,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void temporalFunctions() {
+        // diff
         functionTransformers.put("elapsedtimefrom", new JqlDifferenceFunctionTransformer(this, this));
+
+        // extract
         functionTransformers.put("year", new ExtractTransformer(this, ChronoUnit.YEARS));
         functionTransformers.put("month", new ExtractTransformer(this, ChronoUnit.MONTHS));
         functionTransformers.put("day", new ExtractTransformer(this, ChronoUnit.DAYS));
@@ -316,7 +321,24 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
+        functionTransformers.put("date", new ExtractFromTimestampTransformer(this, TimestampPart.DATE));
+        functionTransformers.put("time", new ExtractFromTimestampTransformer(this, TimestampPart.TIME));
+
+        // construct
         functionTransformers.put("of", new ConstructorTransformer(this));
+
+        // convert
+        functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
+        functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
+
+        // arithmetics
+        functionTransformers.put("plusyears", new TimestampArithmeticTransformer(this, TimestampPart.YEAR));
+        functionTransformers.put("plusmonths", new TimestampArithmeticTransformer(this, TimestampPart.MONTH));
+        functionTransformers.put("plusdays", new TimestampArithmeticTransformer(this, TimestampPart.DAY));
+        functionTransformers.put("plushours", new TimestampArithmeticTransformer(this, TimestampPart.HOUR));
+        functionTransformers.put("plusminutes", new TimestampArithmeticTransformer(this, TimestampPart.MINUTE));
+        functionTransformers.put("plusseconds", new TimestampArithmeticTransformer(this, TimestampPart.SECOND));
+        functionTransformers.put("plusmilliseconds", new TimestampArithmeticTransformer(this, TimestampPart.MILLISECOND));
     }
 
     private void primitiveFunctions() {
