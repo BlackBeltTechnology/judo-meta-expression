@@ -220,7 +220,7 @@ context EXPR!ExtractDateExpression {
 
 context EXPR!ExtractTimestampExpression {
     constraint Resolved {
-        guard: self.date.satisfiesAll("Resolved")
+        guard: self.timestamp.satisfiesAll("Resolved")
 
         check: true
         message: "Unsupported expression: " + self
@@ -229,7 +229,7 @@ context EXPR!ExtractTimestampExpression {
 
 context EXPR!ExtractTimeExpression {
     constraint Resolved {
-        guard: self.date.satisfiesAll("Resolved")
+        guard: self.time.satisfiesAll("Resolved")
 
         check: true
         message: "Unsupported expression: " + self
