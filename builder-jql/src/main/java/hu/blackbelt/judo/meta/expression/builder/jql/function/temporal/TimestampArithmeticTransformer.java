@@ -32,7 +32,7 @@ import java.util.List;
 
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampArithmeticExpressionBuilder;
 
-public class TimestampArithmeticTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
+public class TimestampArithmeticTransformer extends AbstractJqlFunctionTransformer<Expression> {
 
     private final TimestampPart timestampPart;
 
@@ -42,21 +42,25 @@ public class TimestampArithmeticTransformer extends AbstractJqlFunctionTransform
     }
 
     @Override
-    public Expression apply(TimestampExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        List<FunctionParameter> parameters = functionCall.getParameters();
-        if (parameters.size() != 1) {
-            throw new IllegalArgumentException("Invalid number of arguments: Expected: 1. Got: " + parameters.size());
-        }
-        Expression parameterExpression = expressionTransformer.transform(parameters.get(0).getExpression(), context);
-        if (!(parameterExpression instanceof IntegerExpression)) {
-            throw new IllegalArgumentException("Unsupported parameter type: " + parameterExpression.getClass().getSimpleName());
-        }
+    public Expression apply(Expression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+        if (argument instanceof TimestampExpression){
+            List<FunctionParameter> parameters = functionCall.getParameters();
+            if (parameters.size() != 1) {
+                throw new IllegalArgumentException("Invalid number of arguments: Expected: 1. Got: " + parameters.size());
+            }
+            Expression parameterExpression = expressionTransformer.transform(parameters.get(0).getExpression(), context);
+            if (!(parameterExpression instanceof IntegerExpression)) {
+                throw new IllegalArgumentException("Unsupported parameter type: " + parameterExpression.getClass().getSimpleName());
+            }
 
-        return newTimestampArithmeticExpressionBuilder()
-                .withTimestamp(argument)
-                .withAmount((IntegerExpression) parameterExpression)
-                .withTimestampPart(timestampPart)
-                .build();
+            return newTimestampArithmeticExpressionBuilder()
+                    .withTimestamp((TimestampExpression) argument)
+                    .withAmount((IntegerExpression) parameterExpression)
+                    .withTimestampPart(timestampPart)
+                    .build();
+        } else {
+            throw new IllegalArgumentException(String.format("Function %s not supported on %s", functionCall.getName(), argument.getClass().getSimpleName()));
+        }
     }
 
 }

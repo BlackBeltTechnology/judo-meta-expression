@@ -31,7 +31,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newExtractDateOfTimestampExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newExtractTimeOfTimestampExpressionBuilder;
 
-public class ExtractFromTimestampTransformer extends AbstractJqlFunctionTransformer<TimestampExpression> {
+public class ExtractFromTimestampTransformer extends AbstractJqlFunctionTransformer<Expression> {
 
     private final TimestampPart timestampPart;
 
@@ -41,17 +41,21 @@ public class ExtractFromTimestampTransformer extends AbstractJqlFunctionTransfor
     }
 
     @Override
-    public Expression apply(TimestampExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        if (TimestampPart.DATE.equals(timestampPart)) {
-            return newExtractDateOfTimestampExpressionBuilder()
-                    .withTimestamp(argument)
-                    .build();
-        } else if (TimestampPart.TIME.equals(timestampPart)) {
-            return newExtractTimeOfTimestampExpressionBuilder()
-                    .withTimestamp(argument)
-                    .build();
+    public Expression apply(Expression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+        if (argument instanceof TimestampExpression) {
+            if (TimestampPart.DATE.equals(timestampPart)) {
+                return newExtractDateOfTimestampExpressionBuilder()
+                        .withTimestamp((TimestampExpression) argument)
+                        .build();
+            } else if (TimestampPart.TIME.equals(timestampPart)) {
+                return newExtractTimeOfTimestampExpressionBuilder()
+                        .withTimestamp((TimestampExpression) argument)
+                        .build();
+            } else {
+                throw new IllegalArgumentException("Unsupported timestamp part: " + timestampPart);
+            }
         } else {
-            throw new IllegalArgumentException("Unsupported timestamp part: " + timestampPart);
+            throw new IllegalArgumentException(String.format("Function '%s' is not supported on %s", functionCall.getName(), argument.getClass().getSimpleName()));
         }
     }
 
