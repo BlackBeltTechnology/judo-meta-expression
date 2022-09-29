@@ -876,7 +876,7 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
-          eType="#//TimestampExpression"/>
+          eType="#//TimestampExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
@@ -2321,7 +2321,8 @@
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getMilliseconds());"/>
         </eAnnotations>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="milliseconds" eType="#//IntegerExpression"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="milliseconds" eType="#//IntegerExpression"
+          containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ExtractDateOfTimestampExpression"
         eSuperTypes="#//DateExpression">
@@ -2365,11 +2366,11 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
-          eType="#//TimestampExpression"/>
+          eType="#//TimestampExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestampPart" lowerBound="1"
           eType="#//temporal/TimestampPart"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="amount" lowerBound="1"
-          eType="#//IntegerExpression"/>
+          eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"
