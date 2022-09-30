@@ -28,8 +28,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransfo
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.variable.GetVariableFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.*;
@@ -358,8 +357,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 .withExpression((StringExpression) expression).build());
         functionTransformers.put("upper", (expression, functionCall, variables) -> newUpperCaseBuilder()
                 .withExpression((StringExpression) expression).build());
-//        functionTransformers.put("capitalize", (expression, functionCall, variables) -> newCapitalizeBuilder()
-//                .withExpression((StringExpression) expression).build());
+        functionTransformers.put("capitalize", new JqlCapitalizeFunctionTransformer(this));
         functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder()
                 .withExpression((StringExpression) expression).withTrimType(TrimType.BOTH).build());
         functionTransformers.put("ltrim", (expression, functionCall, variables) -> newTrimBuilder()
