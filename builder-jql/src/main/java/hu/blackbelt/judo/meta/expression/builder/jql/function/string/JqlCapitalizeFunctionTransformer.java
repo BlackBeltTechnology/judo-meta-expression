@@ -46,12 +46,12 @@ public class JqlCapitalizeFunctionTransformer extends AbstractJqlFunctionTransfo
             throw new IllegalArgumentException("Capitalize is not supported on " + expression.getClass().getSimpleName());
         }
 
-        // if the string expression is more complex this solution could be slower than expected
+        // with more complex string expressions this solution could be slower than expected
         final StringExpression expressionForSubstringLeft = (StringExpression) expression;
         final StringExpression expressionForSubstringRight = EcoreUtil.copy((StringExpression) expression);
         final StringExpression expressionForLength = EcoreUtil.copy((StringExpression) expression);
 
-        // because of undefined rules, strings to be capitalized does not course error if those are undefined, empty or contain only 1 character.
+        // because of undefined rules, strings to be capitalized does not cause error if those are undefined, empty or contain only 1 character.
         return newConcatenateBuilder()
                 .withLeft(newUpperCaseBuilder()
                                   .withExpression(newSubStringBuilder()
