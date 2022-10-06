@@ -360,14 +360,15 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/add"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/substract"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/multiply"/>
-        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/modulo"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/divide"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/modulo"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/DecimalOperator">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/add"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/substract"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/multiply"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/divide"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/modulo"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/NumericComparator">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/NumericComparator/lessThan"/>

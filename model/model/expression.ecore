@@ -560,14 +560,15 @@
       <eLiterals name="add" literal="+"/>
       <eLiterals name="substract" value="1" literal="-"/>
       <eLiterals name="multiply" value="2" literal="*"/>
+      <eLiterals name="divide" value="3" literal="/"/>
       <eLiterals name="modulo" value="4" literal="%"/>
-      <eLiterals name="divide" value="5" literal="//"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="DecimalOperator">
       <eLiterals name="add" literal="+"/>
       <eLiterals name="substract" value="1" literal="-"/>
       <eLiterals name="multiply" value="2" literal="*"/>
       <eLiterals name="divide" value="3" literal="/"/>
+      <eLiterals name="modulo" value="4" literal="%"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="NumericComparator">
       <eLiterals name="lessThan" literal="&lt;"/>
@@ -641,9 +642,9 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
-          eType="#//IntegerExpression" containment="true"/>
+          eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
-          eType="#//IntegerExpression" containment="true"/>
+          eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/IntegerOperator"/>
     </eClassifiers>

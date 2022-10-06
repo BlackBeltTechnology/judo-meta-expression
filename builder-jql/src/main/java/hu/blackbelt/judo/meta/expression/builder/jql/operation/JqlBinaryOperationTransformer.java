@@ -353,12 +353,14 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
         switch (operator) {
             case "*":
                 return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.MULTIPLY).build();
-            case "/":
+            case "/": case "div":
                 return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.DIVIDE).build();
+            case "mod":
+                return newDecimalArithmeticExpressionBuilder().withLeft(left).withRight(right).withOperator(DecimalOperator.MODULO).build();
         }
         
         if (left.isMeasured(getModelAdapter()) != right.isMeasured(getModelAdapter())) {
-            throw new UnsupportedOperationException("Invalid numeric operation: " + operator + ", both sides must be meausered or not measured.");
+            throw new UnsupportedOperationException("Invalid numeric operation: " + operator + ", both sides must be measured or not measured.");
         } else if (left.isMeasured(getModelAdapter()) && right.isMeasured(getModelAdapter()) &&
                 !getModelAdapter().getMeasure(left).equals(getModelAdapter().getMeasure(right))) {
             throw new UnsupportedOperationException("Invalid measured operation: " + operator + ", measures of operation are not matching.");
