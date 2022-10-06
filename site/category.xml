@@ -70,7 +70,7 @@
    <!--
    <repository-reference location="https://nexus.judo.technology/repository/p2/judo-epp-common/4.23.2.20220923_134801_d39d5940_develop" enabled="true" />
    <repository-reference location="https://nexus.judo.technology/repository/p2/epsilon-runtime-eclipse/1.5.1.20221005_231518_678a5c17_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.1.20221005_232337_1ea69442_develop" enabled="true" />
-   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.2.20221005_231503_a3db91bb_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-measure/1.0.1.20221006_004558_6a14e94b_develop" enabled="true" />
+   <repository-reference location="https://nexus.judo.technology/repository/p2/judo-meta-jql/1.0.2.20221006_004537_4e35baab_develop" enabled="true" />
    -->
 </site>
