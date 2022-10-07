@@ -41,6 +41,7 @@ import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
 import hu.blackbelt.judo.meta.expression.string.PaddignType;
 import hu.blackbelt.judo.meta.expression.string.TrimType;
+import hu.blackbelt.judo.meta.expression.temporal.DatePart;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampPart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
@@ -318,6 +319,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("year", new ExtractTransformer(this, ChronoUnit.YEARS));
         functionTransformers.put("month", new ExtractTransformer(this, ChronoUnit.MONTHS));
         functionTransformers.put("day", new ExtractTransformer(this, ChronoUnit.DAYS));
+        functionTransformers.put("dayofweek", new ExtractFromDateTransformer(this, DatePart.DAY_OF_WEEK));
+        functionTransformers.put("dayofyear", new ExtractFromDateTransformer(this, DatePart.DAY_OF_YEAR));
         functionTransformers.put("hour", new ExtractTransformer(this, ChronoUnit.HOURS));
         functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
@@ -331,6 +334,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         // convert
         functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
         functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
+        functionTransformers.put("toseconds", new TimeAsSecondsTransformer(this));
+        functionTransformers.put("fromseconds", new TimeFromSecondsTransformer(this));
 
         // arithmetics
         functionTransformers.put("plusyears", new TimestampArithmeticTransformer(this, TimestampPart.YEAR));
