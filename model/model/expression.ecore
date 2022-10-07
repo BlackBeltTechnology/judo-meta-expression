@@ -745,8 +745,8 @@
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//NumericExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="scale" eType="#//IntegerExpression"
-          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="scale" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression"/>
@@ -881,7 +881,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//IntegerExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//NumericExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
@@ -1538,8 +1538,8 @@
           eType="#//StringExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="length" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="padding" eType="#//StringExpression"
-          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="padding" lowerBound="1"
+          eType="#//StringExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="paddingType" lowerBound="1"
           eType="#//string/PaddignType"/>
     </eClassifiers>

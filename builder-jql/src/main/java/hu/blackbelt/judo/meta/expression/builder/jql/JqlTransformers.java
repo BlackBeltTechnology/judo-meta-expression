@@ -27,6 +27,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.numeric.JqlRoundFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.*;
@@ -288,10 +289,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void numericFunctions() {
-        functionTransformers.put("round", (expression, functionCall, variables) -> {
-            checkNumericExpression(expression);
-            return newRoundExpressionBuilder().withExpression((NumericExpression) expression).build();
-        });
+        functionTransformers.put("round", new JqlRoundFunctionTransformer(this));
         functionTransformers.put("abs", (expression, functionCall, variables) -> {
             checkNumericExpression(expression);
             return newAbsoluteExpressionBuilder().withExpression((NumericExpression) expression).build();
