@@ -39,6 +39,7 @@ import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
+import hu.blackbelt.judo.meta.expression.string.PaddignType;
 import hu.blackbelt.judo.meta.expression.string.TrimType;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampPart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
@@ -278,6 +279,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return typeNameFromResource;
     }
 
+    @Deprecated
     private void checkNumericExpression(Expression expression) {
         if (!(expression instanceof NumericExpression)) {
             throw new IllegalArgumentException("NumericExpression expected. Got: " + expression.getClass().getSimpleName());
@@ -364,6 +366,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 .withExpression((StringExpression) expression).withTrimType(TrimType.LEFT).build());
         functionTransformers.put("rtrim", (expression, functionCall, variables) -> newTrimBuilder()
                 .withExpression((StringExpression) expression).withTrimType(TrimType.RIGHT).build());
+        functionTransformers.put("lpad", new JqlPaddingFunctionTransformer(this, PaddignType.LEFT));
+        functionTransformers.put("rpad", new JqlPaddingFunctionTransformer(this, PaddignType.RIGHT));
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position",
                 new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Position>(this, (argument,
