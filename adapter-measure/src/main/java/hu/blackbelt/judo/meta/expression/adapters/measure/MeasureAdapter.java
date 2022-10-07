@@ -117,8 +117,10 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             return isMeasured(((IntegerAggregatedExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalAggregatedExpression) {
             return isMeasured(((DecimalAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof RoundExpression) {
-            return isMeasured(((RoundExpression) numericExpression).getExpression());
+        } else if (numericExpression instanceof DecimalRoundExpression) {
+            return isMeasured(((DecimalRoundExpression) numericExpression).getExpression());
+        } else if (numericExpression instanceof IntegerRoundExpression) {
+            return isMeasured(((IntegerRoundExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof IntegerSwitchExpression) {
             final IntegerSwitchExpression integerSwitchExpression = (IntegerSwitchExpression) numericExpression;
             // an integer switch expression is measured if any case (including default) is measured
@@ -282,6 +284,7 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
                     return Optional.empty();
                 }
             case MULTIPLY:
+            case MODULO:
             case DIVIDE:
                 final Map<MeasureId, Integer> base = new HashMap<>();
                 if (left.isPresent()) {
@@ -301,10 +304,11 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
                                 newExponent = currentExponent + exponent;
                                 break;
                             case DIVIDE:
+                            case MODULO:
                                 newExponent = currentExponent - exponent;
                                 break;
                             default:
-                                throw new IllegalStateException("Unsupported operation");
+                                throw new IllegalStateException("Unsupported operation: " + decimalArithmeticExpression.getOperator());
                         }
                         if (newExponent != 0) {
                             base.put(measure, newExponent);
