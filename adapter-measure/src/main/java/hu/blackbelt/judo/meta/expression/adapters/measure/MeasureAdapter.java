@@ -117,8 +117,10 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
             return isMeasured(((IntegerAggregatedExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof DecimalAggregatedExpression) {
             return isMeasured(((DecimalAggregatedExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof RoundExpression) {
-            return isMeasured(((RoundExpression) numericExpression).getExpression());
+        } else if (numericExpression instanceof DecimalRoundExpression) {
+            return isMeasured(((DecimalRoundExpression) numericExpression).getExpression());
+        } else if (numericExpression instanceof IntegerRoundExpression) {
+            return isMeasured(((IntegerRoundExpression) numericExpression).getExpression());
         } else if (numericExpression instanceof IntegerSwitchExpression) {
             final IntegerSwitchExpression integerSwitchExpression = (IntegerSwitchExpression) numericExpression;
             // an integer switch expression is measured if any case (including default) is measured

@@ -732,7 +732,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//NumericExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="RoundExpression" eSuperTypes="#//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalRoundExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getScale());"/>
@@ -740,13 +740,27 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;ROUND(&quot; + getExpression() + &quot;, &quot; + getScale() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;DECIMAL_ROUND(&quot; + getExpression() + &quot;, &quot; + getScale() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="scale" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerRoundExpression" eSuperTypes="#//IntegerExpression">
+      <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;INTEGER_ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//NumericExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression"/>
@@ -881,7 +895,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
           eType="#//TimestampExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//NumericExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
@@ -926,7 +940,7 @@
     <eClassifiers xsi:type="ecore:EClass" name="TimeAsSecondsExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;TIMES_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;TIME_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">

@@ -332,7 +332,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         // convert
         functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
         functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
-        functionTransformers.put("toseconds", new TimeAsSecondsTransformer(this));
+        functionTransformers.put("asseconds", new TimeAsSecondsTransformer(this));
         functionTransformers.put("fromseconds", new TimeFromSecondsTransformer(this));
 
         // arithmetics

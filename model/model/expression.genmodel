@@ -481,13 +481,20 @@
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/toString"
             body="return String.format(&quot;%s!%s(%s | %s)&quot;, getCollectionExpression(), getOperator(), getCollectionExpression().getIteratorVariableName(), getExpression());"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//numeric/RoundExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/RoundExpression/expression"/>
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/RoundExpression/scale"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/RoundExpression/getOperands"
+      <genClasses ecoreClass="expression.ecore#//numeric/DecimalRoundExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalRoundExpression/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalRoundExpression/scale"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalRoundExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getScale());"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/RoundExpression/toString"
-            body="return &quot;ROUND(&quot; + getExpression() + &quot;, &quot; + getScale() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalRoundExpression/toString"
+            body="return &quot;DECIMAL_ROUND(&quot; + getExpression() + &quot;, &quot; + getScale() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/IntegerRoundExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/IntegerRoundExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerRoundExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerRoundExpression/toString"
+            body="return &quot;INTEGER_ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerSwitchExpression"/>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalSwitchExpression"/>
@@ -586,7 +593,7 @@
       <genClasses ecoreClass="expression.ecore#//numeric/TimeAsSecondsExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/TimeAsSecondsExpression/time"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsSecondsExpression/toString"
-            body="return &quot;TIMES_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
+            body="return &quot;TIME_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsSecondsExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
       </genClasses>

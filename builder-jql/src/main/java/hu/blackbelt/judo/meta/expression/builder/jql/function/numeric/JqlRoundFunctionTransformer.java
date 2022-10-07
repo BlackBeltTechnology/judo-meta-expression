@@ -23,11 +23,9 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.numeric;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.constant.util.builder.IntegerConstantBuilder;
-import hu.blackbelt.judo.meta.expression.numeric.util.builder.RoundExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.numeric.util.builder.DecimalRoundExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.numeric.util.builder.IntegerRoundExpressionBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
-
-import java.math.BigInteger;
 
 public class JqlRoundFunctionTransformer extends AbstractJqlFunctionTransformer<Expression> {
 
@@ -39,13 +37,12 @@ public class JqlRoundFunctionTransformer extends AbstractJqlFunctionTransformer<
     public Expression apply(Expression expression, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         NumericExpression numericExpression = JqlTransformerUtils.castExpression(NumericExpression.class, () -> expression, functionCall.getName() + " no supported on {1}");
         JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 0, 1);
-        IntegerExpression scale;
         if (functionCall.getParameters().size() == 1) {
-            scale = JqlTransformerUtils.castExpression(IntegerExpression.class, () -> expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context));
+            IntegerExpression scale = JqlTransformerUtils.castExpression(IntegerExpression.class, () -> expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context));
+            return DecimalRoundExpressionBuilder.create().withExpression(numericExpression).withScale(scale).build();
         } else {
-            scale = IntegerConstantBuilder.create().withValue(BigInteger.valueOf(0)).build();
+            return IntegerRoundExpressionBuilder.create().withExpression(numericExpression).build();
         }
-        return RoundExpressionBuilder.create().withExpression(numericExpression).withScale(scale).build();
     }
 
 }
