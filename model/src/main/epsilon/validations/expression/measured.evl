@@ -137,10 +137,19 @@ context EXPR!DecimalAggregatedExpression {
     }
 }
 
-context EXPR!RoundExpression {
+context EXPR!DecimalRoundExpression {
     constraint MeasureIsValid {
         guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
         
+        check: self.isDimensionDefined()
+        message: "Measure of expression is invalid: " + self
+    }
+}
+
+context EXPR!IntegerRoundExpression {
+    constraint MeasureIsValid {
+        guard: self.satisfiesAll("Resolved") and modelAdapter.isMeasured(self) and self.expression.satisfiesAll("MeasureIsValid")
+
         check: self.isDimensionDefined()
         message: "Measure of expression is invalid: " + self
     }

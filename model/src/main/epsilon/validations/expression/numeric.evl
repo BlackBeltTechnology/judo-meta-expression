@@ -5,7 +5,14 @@ context EXPR!CountExpression {
     } 
 }
 
-context EXPR!RoundExpression {
+context EXPR!IntegerRoundExpression {
+    constraint Resolved {
+        check: true
+        message: "Unsupported expression: " + self
+    }
+}
+
+context EXPR!DecimalRoundExpression {
     constraint Resolved {
         check: true
         message: "Unsupported expression: " + self

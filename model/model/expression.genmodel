@@ -360,14 +360,15 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/add"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/substract"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/multiply"/>
-        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/modulo"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/divide"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/IntegerOperator/modulo"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/DecimalOperator">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/add"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/substract"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/multiply"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/divide"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/DecimalOperator/modulo"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/NumericComparator">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/NumericComparator/lessThan"/>
@@ -480,12 +481,20 @@
         <genOperations ecoreOperation="expression.ecore#//numeric/DecimalAggregatedExpression/toString"
             body="return String.format(&quot;%s!%s(%s | %s)&quot;, getCollectionExpression(), getOperator(), getCollectionExpression().getIteratorVariableName(), getExpression());"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//numeric/RoundExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/RoundExpression/expression"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/RoundExpression/getOperands"
+      <genClasses ecoreClass="expression.ecore#//numeric/DecimalRoundExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalRoundExpression/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/DecimalRoundExpression/scale"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalRoundExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getScale());"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/DecimalRoundExpression/toString"
+            body="return &quot;DECIMAL_ROUND(&quot; + getExpression() + &quot;, &quot; + getScale() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/IntegerRoundExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/IntegerRoundExpression/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerRoundExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/RoundExpression/toString"
-            body="return &quot;ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/IntegerRoundExpression/toString"
+            body="return &quot;INTEGER_ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//numeric/IntegerSwitchExpression"/>
       <genClasses ecoreClass="expression.ecore#//numeric/DecimalSwitchExpression"/>
@@ -580,6 +589,13 @@
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//numeric/FloorExpression/toString"
             body="return &quot;FLOOR(&quot; + getExpression() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//numeric/TimeAsSecondsExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/TimeAsSecondsExpression/time"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsSecondsExpression/toString"
+            body="return &quot;TIME_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsSecondsExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Logical" resource="XMI" disposableProviderFactory="true"
@@ -789,6 +805,10 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/RIGHT"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/TrimType/BOTH"/>
       </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//string/PaddignType">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/PaddignType/LEFT"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//string/PaddignType/RIGHT"/>
+      </genEnums>
       <genClasses ecoreClass="expression.ecore#//string/StringAttribute"/>
       <genClasses ecoreClass="expression.ecore#//string/Concatenate">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/Concatenate/left"/>
@@ -886,6 +906,17 @@
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//string/AsString/toString"
             body="return getExpression() +&quot;::STRING&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//string/PaddingExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/PaddingExpression/expression"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//string/PaddingExpression/length"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference expression.ecore#//string/PaddingExpression/padding"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//string/PaddingExpression/paddingType"/>
+        <genOperations ecoreOperation="expression.ecore#//string/PaddingExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getLength(), getPadding());"/>
+        <genOperations ecoreOperation="expression.ecore#//string/PaddingExpression/toString"
+            body="return getPaddingType() + &quot;_PAD(&quot; + getExpression() + &quot;, &quot; + getLength() + &quot;, &quot; + getPadding() + &quot;)&quot;;"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Enumeration" resource="XMI" disposableProviderFactory="true"
@@ -1173,6 +1204,8 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/DatePart/YEAR"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/DatePart/MONTH"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/DatePart/DAY"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/DatePart/DAY_OF_WEEK"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/DatePart/DAY_OF_YEAR"/>
       </genEnums>
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//temporal/TimestampPart">
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//temporal/TimestampPart/YEAR"/>
@@ -1409,6 +1442,13 @@
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getAmount());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampArithmeticExpression/toString"
             body="return &quot;TIMESTAMP_PLUS(&quot; + getTimestamp() + &quot; + &quot; + getAmount() + &quot; &quot; + getTimestampPart() + &quot;)&quot;;"/>
+      </genClasses>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimeFromSecondsExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeFromSecondsExpression/seconds"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimeFromSecondsExpression/toString"
+            body="return &quot;TIME_FROM_SECONDS(&quot; + getSeconds() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimeFromSecondsExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getSeconds());"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"
