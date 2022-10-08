@@ -42,12 +42,9 @@ public class JqlPaddingFunctionTransformer extends AbstractJqlFunctionTransforme
 
     @Override
     public Expression apply(Expression expression, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
-        StringExpression stringExpression = JqlTransformerUtils.castExpression(StringExpression.class, () -> expression, "Padding is not supported on {1}");
+        StringExpression stringExpression = JqlTransformerUtils.castExpression(StringExpression.class, () -> expression, functionCall.getName() + " is not supported on {1}");
         List<FunctionParameter> parameters = functionCall.getParameters();
-
-        if (parameters.size() < 1 || parameters.size() > 2) {
-            throw new IllegalArgumentException("Invalid number of arguments: Expected: 1 or 2, Got: " + parameters.size());
-        }
+        JqlTransformerUtils.validateParameterCount(parameters, 1, 2);
 
         IntegerExpression length = JqlTransformerUtils.castExpression(IntegerExpression.class, () -> expressionTransformer.transform(parameters.get(0).getExpression(), context));
         StringExpression padding;

@@ -21,7 +21,7 @@ public class TimeFromSecondsTransformer<NE, P extends NE, E extends P, C extends
 
         NE ne = jqlTransformers.getModelAdapter().get(typeNameExpression).orElseThrow();
         if (!(jqlTransformers.getModelAdapter().isPrimitiveType(ne) && jqlTransformers.getModelAdapter().isTime((P) ne))) {
-            throw new IllegalArgumentException(functionCall.getName() + " is not supported on " + jqlTransformers.getModelAdapter().getName(ne));
+            throw new IllegalArgumentException(functionCall.getName() + " is not supported on " + jqlTransformers.getModelAdapter().getName(ne).orElse("<unknown>"));
         }
 
         JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 1);

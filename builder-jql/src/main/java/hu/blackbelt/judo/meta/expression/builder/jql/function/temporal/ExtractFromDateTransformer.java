@@ -40,6 +40,7 @@ public class ExtractFromDateTransformer extends AbstractJqlFunctionTransformer<E
     @Override
     public Expression apply(Expression expression, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         DateExpression dateExpression = JqlTransformerUtils.castExpression(DateExpression.class, () -> expression, functionCall.getName() + " is not supported on {1}");
+        JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 0);
         return ExtractDateExpressionBuilder.create().withDate(dateExpression).withPart(datePart).build();
     }
 
