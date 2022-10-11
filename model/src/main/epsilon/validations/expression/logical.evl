@@ -59,21 +59,7 @@ context EXPR!TypeOfExpression {
     }
 }
 
-context EXPR!UndefinedAttributeComparison {
-    constraint Resolved {
-        check: true
-        message: "Unsupported expression: " + self
-    }
-}
-
-context EXPR!UndefinedNavigationComparison {
-    constraint Resolved {
-        check: true
-        message: "Unsupported expression: " + self
-    }
-}
-
-context EXPR!UndefinedEnvironmentVariableComparison {
+context EXPR!UndefinedComparison {
     constraint Resolved {
         check: true
         message: "Unsupported expression: " + self

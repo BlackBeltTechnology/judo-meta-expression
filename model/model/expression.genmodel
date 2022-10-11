@@ -624,7 +624,7 @@
         <genOperations ecoreOperation="expression.ecore#//logical/NegationExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         <genOperations ecoreOperation="expression.ecore#//logical/NegationExpression/toString"
-            body="return &quot;NOT &quot; + getExpression();"/>
+            body="return &quot;NOT(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/KleeneExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/KleeneExpression/left"/>
@@ -645,26 +645,12 @@
             body="return &quot;(&quot; + getObjectExpression() + &quot; instanceOf &quot; + getElementName() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/LogicalAttribute"/>
-      <genClasses ecoreClass="expression.ecore#//logical/UndefinedAttributeComparison">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedAttributeComparison/attributeSelector"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedAttributeComparison/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getAttributeSelector());"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedAttributeComparison/toString"
-            body="return &quot;(&quot; + getAttributeSelector() + &quot; IS NULL)&quot;;"/>
-      </genClasses>
-      <genClasses ecoreClass="expression.ecore#//logical/UndefinedNavigationComparison">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedNavigationComparison/objectNavigationExpression"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getObjectNavigationExpression());"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedNavigationComparison/toString"
-            body="return &quot;(&quot; + getObjectNavigationExpression() + &quot; IS NULL)&quot;;"/>
-      </genClasses>
-      <genClasses ecoreClass="expression.ecore#//logical/UndefinedEnvironmentVariableComparison">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedEnvironmentVariableComparison/environmentVariable"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedEnvironmentVariableComparison/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getEnvironmentVariable());"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedEnvironmentVariableComparison/toString"
-            body="return &quot;(&quot; + getEnvironmentVariable() + &quot; IS NULL)&quot;;"/>
+      <genClasses ecoreClass="expression.ecore#//logical/UndefinedComparison">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/UndefinedComparison/expression"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedComparison/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/UndefinedComparison/toString"
+            body="return &quot;IS_NULL(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/ContainsExpression">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/ContainsExpression/collectionExpression"/>
