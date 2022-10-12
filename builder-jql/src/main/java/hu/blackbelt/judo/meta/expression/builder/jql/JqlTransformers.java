@@ -27,6 +27,7 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlBooleanAggregatorFunctionTransformer.BooleanAggregatorType;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.numeric.JqlRoundFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
@@ -214,6 +215,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 new JqlParameterizedFunctionTransformer<CollectionExpression, LogicalExpression, FilteringExpression>(
                         this, (expression, parameter) -> newForAllBuilder().withCollectionExpression(expression)
                         .withCondition(parameter).build()));
+        functionTransformers.put("anytrue", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ANY_TRUE));
+        functionTransformers.put("alltrue", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ALL_TRUE));
+        functionTransformers.put("anyfalse", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ANY_FALSE));
+        functionTransformers.put("allfalse", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ALL_FALSE));
         functionTransformers.put("empty", (expression, functionCall, variables) -> newEmptyBuilder()
                 .withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
