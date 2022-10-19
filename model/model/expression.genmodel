@@ -768,10 +768,10 @@
       <genClasses ecoreClass="expression.ecore#//logical/Like">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/Like/expression"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/Like/pattern"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//logical/Like/caseInsensitive"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/Like/caseInsensitive"/>
         <genOperations ecoreOperation="expression.ecore#//logical/Like/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern());"/>
-        <genOperations ecoreOperation="expression.ecore#//logical/Like/toString" body="return &quot;LIKE(&quot; + getExpression() + &quot;, &quot; + getPattern() + &quot;)&quot;;"/>
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern(), getCaseInsensitive());"/>
+        <genOperations ecoreOperation="expression.ecore#//logical/Like/toString" body="return &quot;LIKE(&quot; + getExpression() + &quot;, PATTERN=&quot; + getPattern() + &quot;, CASE-INSENSITIVE=&quot; + getCaseInsensitive() + &quot;)&quot;;"/>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//logical/TimeComparison">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//logical/TimeComparison/left"/>
