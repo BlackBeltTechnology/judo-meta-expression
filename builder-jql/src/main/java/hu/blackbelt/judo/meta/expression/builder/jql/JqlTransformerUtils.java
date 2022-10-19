@@ -14,6 +14,10 @@ public interface JqlTransformerUtils {
         return castExpression(target, expressionSupplier, "Invalid argument type: Expected: {0}, Got: {1}");
     }
 
+    /**
+     * <p>Use {0} for <i>target</i> class's name in <i>errorMessage</i></p>
+     * <p>Use {1} for actual class's name in <i>errorMessage</i></p>
+     */
     static <T extends Expression> T castExpression(Class<T> target, Supplier<? extends Expression> expressionSupplier, String errorMessage) {
         Object result = expressionSupplier.get();
         if (target.isInstance(result)) {

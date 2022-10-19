@@ -23,6 +23,7 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.string;
 import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.BooleanConstantBuilder;
 import hu.blackbelt.judo.meta.expression.logical.NegationExpression;
 import hu.blackbelt.judo.meta.expression.logical.util.builder.LikeBuilder;
@@ -51,10 +52,12 @@ public class JqlLikeFunctionTransformer extends AbstractJqlFunctionTransformer<E
         StringExpression pattern = JqlTransformerUtils.castExpression(StringExpression.class, () -> expressionTransformer.transform(parameters.get(0).getExpression(), context));
 
         if (parameters.size() == 1) {
+            BooleanConstant caseInsensitive = BooleanConstantBuilder.create().withValue(explicitCaseInsensitive).build();
+
             return LikeBuilder.create()
                               .withExpression(string)
                               .withPattern(pattern)
-                              .withCaseInsensitive(BooleanConstantBuilder.create().withValue(explicitCaseInsensitive).build())
+                              .withCaseInsensitive(caseInsensitive)
                               .build();
         } else {
             LogicalExpression exact = JqlTransformerUtils.castExpression(LogicalExpression.class, () -> expressionTransformer.transform(parameters.get(1).getExpression(), context));
