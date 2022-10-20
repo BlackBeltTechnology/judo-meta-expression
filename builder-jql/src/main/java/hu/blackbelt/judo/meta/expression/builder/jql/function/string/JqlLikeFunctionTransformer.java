@@ -20,14 +20,12 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.string;
  * #L%
  */
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.StringExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.constant.BooleanConstant;
-import hu.blackbelt.judo.meta.expression.constant.util.builder.BooleanConstantBuilder;
-import hu.blackbelt.judo.meta.expression.logical.NegationExpression;
+import hu.blackbelt.judo.meta.expression.constant.StringConstant;
 import hu.blackbelt.judo.meta.expression.logical.util.builder.LikeBuilder;
-import hu.blackbelt.judo.meta.expression.logical.util.builder.NegationExpressionBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 
@@ -47,33 +45,16 @@ public class JqlLikeFunctionTransformer extends AbstractJqlFunctionTransformer<E
         StringExpression string = JqlTransformerUtils.castExpression(StringExpression.class, () -> expression, functionCall.getName() + " is not supported on {1}");
 
         List<FunctionParameter> parameters = functionCall.getParameters();
-        if (explicitCaseInsensitive) {
-            // ilike should accept only one parameter
-            JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 1);
-        } else {
-            JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 1, 2);
-        }
+        JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 1);
 
-        StringExpression pattern = JqlTransformerUtils.castExpression(StringExpression.class, () -> expressionTransformer.transform(parameters.get(0).getExpression(), context));
+        StringConstant pattern = JqlTransformerUtils.castExpression(StringConstant.class, () -> expressionTransformer.transform(parameters.get(0).getExpression(), context));
 
-        if (parameters.size() == 1) {
-            BooleanConstant caseInsensitive = BooleanConstantBuilder.create().withValue(explicitCaseInsensitive).build();
+        return LikeBuilder.create()
+                          .withExpression(string)
+                          .withPattern(pattern)
+                          .withCaseInsensitive(explicitCaseInsensitive)
+                          .build();
 
-            return LikeBuilder.create()
-                              .withExpression(string)
-                              .withPattern(pattern)
-                              .withCaseInsensitive(caseInsensitive)
-                              .build();
-        } else {
-            LogicalExpression exact = JqlTransformerUtils.castExpression(LogicalExpression.class, () -> expressionTransformer.transform(parameters.get(1).getExpression(), context));
-            NegationExpression caseInsensitive = NegationExpressionBuilder.create().withExpression(exact).build();
-
-            return LikeBuilder.create()
-                              .withExpression(string)
-                              .withPattern(pattern)
-                              .withCaseInsensitive(caseInsensitive)
-                              .build();
-        }
     }
 
 }
