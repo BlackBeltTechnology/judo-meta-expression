@@ -24,7 +24,7 @@ public class TimeFromSecondsTransformer<NE, P extends NE, E extends P, C extends
             throw new IllegalArgumentException(functionCall.getName() + " is not supported on " + jqlTransformers.getModelAdapter().getName(ne).orElse("<unknown>"));
         }
 
-        JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 1);
+        JqlTransformerUtils.validateParameterCount(functionCall.getName(), functionCall.getParameters(), 1);
         IntegerExpression seconds = JqlTransformerUtils.castExpression(IntegerExpression.class, () -> expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context));
         return TimeFromSecondsExpressionBuilder.create().withSeconds(seconds).build();
     }
