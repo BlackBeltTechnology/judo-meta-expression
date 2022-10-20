@@ -47,7 +47,12 @@ public class JqlLikeFunctionTransformer extends AbstractJqlFunctionTransformer<E
         StringExpression string = JqlTransformerUtils.castExpression(StringExpression.class, () -> expression, functionCall.getName() + " is not supported on {1}");
 
         List<FunctionParameter> parameters = functionCall.getParameters();
-        JqlTransformerUtils.validateParameterCount(parameters, 1, 2);
+        if (explicitCaseInsensitive) {
+            // ilike should accept only one parameter
+            JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 1);
+        } else {
+            JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 1, 2);
+        }
 
         StringExpression pattern = JqlTransformerUtils.castExpression(StringExpression.class, () -> expressionTransformer.transform(parameters.get(0).getExpression(), context));
 
