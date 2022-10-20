@@ -16,7 +16,7 @@ public class TimeAsSecondsTransformer extends AbstractJqlFunctionTransformer<Exp
     @Override
     public Expression apply(Expression expression, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         TimeExpression timeExpression = JqlTransformerUtils.castExpression(TimeExpression.class, () -> expression, functionCall.getName() + " is not supported on {1}");
-        JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 0);
+        JqlTransformerUtils.validateParameterCount(functionCall.getName(), functionCall.getParameters(), 0);
         return TimeAsSecondsExpressionBuilder.create().withTime(timeExpression).build();
     }
 
