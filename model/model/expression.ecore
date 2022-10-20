@@ -1280,21 +1280,20 @@
     <eClassifiers xsi:type="ecore:EClass" name="Like" eSuperTypes="#//LogicalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern());"/>
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getPattern(), getCaseInsensitive());"/>
         </eAnnotations>
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;LIKE(&quot; + getExpression() + &quot;, &quot; + getPattern() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;LIKE(&quot; + getExpression() + &quot;, PATTERN=&quot; + getPattern() + &quot;, CASE-INSENSITIVE=&quot; + getCaseInsensitive() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="caseInsensitive" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
-          defaultValueLiteral="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="caseInsensitive" lowerBound="1"
+          eType="#//LogicalExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimeComparison" eSuperTypes="#//LogicalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
