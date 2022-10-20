@@ -36,7 +36,7 @@ public class JqlRoundFunctionTransformer extends AbstractJqlFunctionTransformer<
     @Override
     public Expression apply(Expression expression, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         NumericExpression numericExpression = JqlTransformerUtils.castExpression(NumericExpression.class, () -> expression, functionCall.getName() + " no supported on {1}");
-        JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 0, 1);
+        JqlTransformerUtils.validateParameterCount(functionCall.getName(), functionCall.getParameters(), 0, 1);
         if (functionCall.getParameters().size() == 1) {
             IntegerExpression scale = JqlTransformerUtils.castExpression(IntegerExpression.class, () -> expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context));
             return DecimalRoundExpressionBuilder.create().withExpression(numericExpression).withScale(scale).build();
