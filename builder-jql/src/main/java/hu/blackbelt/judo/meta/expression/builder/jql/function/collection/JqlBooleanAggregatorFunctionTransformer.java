@@ -45,7 +45,7 @@ public class JqlBooleanAggregatorFunctionTransformer extends AbstractJqlFunction
     @Override
     public Expression apply(Expression expression, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         CollectionExpression collection = JqlTransformerUtils.castExpression(CollectionExpression.class, () -> expression, functionCall.getName() + " not supported on {1}");
-        JqlTransformerUtils.validateParameterCount(functionCall.getParameters(), 1);
+        JqlTransformerUtils.validateParameterCount(functionCall.getName(), functionCall.getParameters(), 1);
         LogicalExpression condition = JqlTransformerUtils.castExpression(LogicalExpression.class, () -> expressionTransformer.transform(functionCall.getParameters().get(0).getExpression(), context));
 
         // [COLLECTION]!anyTrue([VAR] | [CONDITION])  => same
