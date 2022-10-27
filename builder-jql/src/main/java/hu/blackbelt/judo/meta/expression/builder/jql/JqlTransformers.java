@@ -27,9 +27,10 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.JqlParameterizedFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.*;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlBooleanAggregatorFunctionTransformer.BooleanAggregatorType;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.numeric.JqlRoundFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.object.JqlIsDefinedFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlReplaceFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.builder.jql.function.string.JqlSubstringFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.builder.jql.function.string.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.temporal.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.variable.GetVariableFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.*;
@@ -40,7 +41,10 @@ import hu.blackbelt.judo.meta.expression.object.CastObject;
 import hu.blackbelt.judo.meta.expression.object.ContainerExpression;
 import hu.blackbelt.judo.meta.expression.operator.IntegerOperator;
 import hu.blackbelt.judo.meta.expression.operator.SequenceOperator;
+import hu.blackbelt.judo.meta.expression.string.PaddignType;
 import hu.blackbelt.judo.meta.expression.string.TrimType;
+import hu.blackbelt.judo.meta.expression.temporal.DatePart;
+import hu.blackbelt.judo.meta.expression.temporal.TimestampPart;
 import hu.blackbelt.judo.meta.expression.variable.ObjectVariable;
 import hu.blackbelt.judo.meta.jql.jqldsl.*;
 
@@ -211,6 +215,10 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 new JqlParameterizedFunctionTransformer<CollectionExpression, LogicalExpression, FilteringExpression>(
                         this, (expression, parameter) -> newForAllBuilder().withCollectionExpression(expression)
                         .withCondition(parameter).build()));
+        functionTransformers.put("anytrue", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ANY_TRUE));
+        functionTransformers.put("alltrue", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ALL_TRUE));
+        functionTransformers.put("anyfalse", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ANY_FALSE));
+        functionTransformers.put("allfalse", new JqlBooleanAggregatorFunctionTransformer(this, BooleanAggregatorType.ALL_FALSE));
         functionTransformers.put("empty", (expression, functionCall, variables) -> newEmptyBuilder()
                 .withCollectionExpression((CollectionExpression) expression).build());
         functionTransformers.put("join", new JqlJoinFunctionTransformer(this));
@@ -278,6 +286,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return typeNameFromResource;
     }
 
+    @Deprecated
     private void checkNumericExpression(Expression expression) {
         if (!(expression instanceof NumericExpression)) {
             throw new IllegalArgumentException("NumericExpression expected. Got: " + expression.getClass().getSimpleName());
@@ -285,9 +294,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void numericFunctions() {
-        // TODO: Change to numeric
-        functionTransformers.put("round", (expression, functionCall, variables) -> newRoundExpressionBuilder()
-                .withExpression((DecimalExpression) expression).build());
+        functionTransformers.put("round", new JqlRoundFunctionTransformer(this));
         functionTransformers.put("abs", (expression, functionCall, variables) -> {
             checkNumericExpression(expression);
             return newAbsoluteExpressionBuilder().withExpression((NumericExpression) expression).build();
@@ -308,15 +315,39 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     }
 
     private void temporalFunctions() {
+        // diff
         functionTransformers.put("elapsedtimefrom", new JqlDifferenceFunctionTransformer(this, this));
+
+        // extract
         functionTransformers.put("year", new ExtractTransformer(this, ChronoUnit.YEARS));
         functionTransformers.put("month", new ExtractTransformer(this, ChronoUnit.MONTHS));
         functionTransformers.put("day", new ExtractTransformer(this, ChronoUnit.DAYS));
+        functionTransformers.put("dayofweek", new ExtractFromDateTransformer(this, DatePart.DAY_OF_WEEK));
+        functionTransformers.put("dayofyear", new ExtractFromDateTransformer(this, DatePart.DAY_OF_YEAR));
         functionTransformers.put("hour", new ExtractTransformer(this, ChronoUnit.HOURS));
         functionTransformers.put("minute", new ExtractTransformer(this, ChronoUnit.MINUTES));
         functionTransformers.put("second", new ExtractTransformer(this, ChronoUnit.SECONDS));
         functionTransformers.put("millisecond", new ExtractTransformer(this, ChronoUnit.MILLIS));
+        functionTransformers.put("date", new ExtractFromTimestampTransformer(this, TimestampPart.DATE));
+        functionTransformers.put("time", new ExtractFromTimestampTransformer(this, TimestampPart.TIME));
+
+        // construct
         functionTransformers.put("of", new ConstructorTransformer(this));
+
+        // convert
+        functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
+        functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
+        functionTransformers.put("asseconds", new TimeAsSecondsTransformer(this));
+        functionTransformers.put("fromseconds", new TimeFromSecondsTransformer(this));
+
+        // arithmetics
+        functionTransformers.put("plusyears", new TimestampArithmeticTransformer(this, TimestampPart.YEAR));
+        functionTransformers.put("plusmonths", new TimestampArithmeticTransformer(this, TimestampPart.MONTH));
+        functionTransformers.put("plusdays", new TimestampArithmeticTransformer(this, TimestampPart.DAY));
+        functionTransformers.put("plushours", new TimestampArithmeticTransformer(this, TimestampPart.HOUR));
+        functionTransformers.put("plusminutes", new TimestampArithmeticTransformer(this, TimestampPart.MINUTE));
+        functionTransformers.put("plusseconds", new TimestampArithmeticTransformer(this, TimestampPart.SECOND));
+        functionTransformers.put("plusmilliseconds", new TimestampArithmeticTransformer(this, TimestampPart.MILLISECOND));
     }
 
     private void primitiveFunctions() {
@@ -336,14 +367,15 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 .withExpression((StringExpression) expression).build());
         functionTransformers.put("upper", (expression, functionCall, variables) -> newUpperCaseBuilder()
                 .withExpression((StringExpression) expression).build());
-//        functionTransformers.put("capitalize", (expression, functionCall, variables) -> newCapitalizeBuilder()
-//                .withExpression((StringExpression) expression).build());
+        functionTransformers.put("capitalize", new JqlCapitalizeFunctionTransformer(this));
         functionTransformers.put("trim", (expression, functionCall, variables) -> newTrimBuilder()
                 .withExpression((StringExpression) expression).withTrimType(TrimType.BOTH).build());
         functionTransformers.put("ltrim", (expression, functionCall, variables) -> newTrimBuilder()
                 .withExpression((StringExpression) expression).withTrimType(TrimType.LEFT).build());
         functionTransformers.put("rtrim", (expression, functionCall, variables) -> newTrimBuilder()
                 .withExpression((StringExpression) expression).withTrimType(TrimType.RIGHT).build());
+        functionTransformers.put("lpad", new JqlPaddingFunctionTransformer(this, PaddignType.LEFT));
+        functionTransformers.put("rpad", new JqlPaddingFunctionTransformer(this, PaddignType.RIGHT));
         functionTransformers.put("substring", new JqlSubstringFunctionTransformer(this));
         functionTransformers.put("position",
                 new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Position>(this, (argument,
@@ -370,12 +402,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("matches",
                 new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Matches>(this, (argument,
                                                                                                             parameter) -> newMatchesBuilder().withExpression(argument).withPattern(parameter).build()));
-        functionTransformers.put("like",
-                new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Like>(this, (argument,
-                                                                                                            parameter) -> newLikeBuilder().withExpression(argument).withPattern(parameter).withCaseInsensitive(false).build()));
-        functionTransformers.put("ilike",
-                new JqlParameterizedFunctionTransformer<StringExpression, StringExpression, Like>(this, (argument,
-                                                                                                         parameter) -> newLikeBuilder().withExpression(argument).withPattern(parameter).withCaseInsensitive(true).build()));
+        functionTransformers.put("like", new JqlLikeFunctionTransformer(this, false));
+        functionTransformers.put("ilike", new JqlLikeFunctionTransformer(this, true));
     }
 
     private void sequenceFunctions() {
