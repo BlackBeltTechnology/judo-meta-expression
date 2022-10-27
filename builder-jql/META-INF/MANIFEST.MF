@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JUDO Expression JQL Builder
 Bundle-SymbolicName: hu.blackbelt.judo.meta.expression.builder.jql;singleton:=true
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Bundle-ClassPath: .
 Bundle-Vendor: BlackBelt Technology
 Bundle-Localization: plugin
@@ -39,6 +39,7 @@ Import-Package: hu.blackbelt.judo.meta.expression,
  hu.blackbelt.judo.meta.expression.variable.util.builder,
  hu.blackbelt.judo.meta.jql,
  hu.blackbelt.judo.meta.jql.jqldsl,
+ hu.blackbelt.judo.meta.jql.jqldsl.util.builder,
  hu.blackbelt.judo.meta.jql.runtime,
  org.eclipse.emf.common.notify,
  org.eclipse.emf.ecore,

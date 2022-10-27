@@ -560,14 +560,15 @@
       <eLiterals name="add" literal="+"/>
       <eLiterals name="substract" value="1" literal="-"/>
       <eLiterals name="multiply" value="2" literal="*"/>
+      <eLiterals name="divide" value="3" literal="/"/>
       <eLiterals name="modulo" value="4" literal="%"/>
-      <eLiterals name="divide" value="5" literal="//"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="DecimalOperator">
       <eLiterals name="add" literal="+"/>
       <eLiterals name="substract" value="1" literal="-"/>
       <eLiterals name="multiply" value="2" literal="*"/>
       <eLiterals name="divide" value="3" literal="/"/>
+      <eLiterals name="modulo" value="4" literal="%"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="NumericComparator">
       <eLiterals name="lessThan" literal="&lt;"/>
@@ -641,9 +642,9 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="left" lowerBound="1"
-          eType="#//IntegerExpression" containment="true"/>
+          eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
-          eType="#//IntegerExpression" containment="true"/>
+          eType="#//NumericExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/IntegerOperator"/>
     </eClassifiers>
@@ -731,7 +732,23 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//NumericExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="RoundExpression" eSuperTypes="#//IntegerExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="DecimalRoundExpression" eSuperTypes="#//DecimalExpression">
+      <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getScale());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;DECIMAL_ROUND(&quot; + getExpression() + &quot;, &quot; + getScale() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//NumericExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="scale" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IntegerRoundExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
@@ -739,11 +756,11 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;INTEGER_ROUND(&quot; + getExpression() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
-          eType="#//DecimalExpression" containment="true"/>
+          eType="#//NumericExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="IntegerSwitchExpression" eSuperTypes="#//SwitchExpression #//IntegerExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="DecimalSwitchExpression" eSuperTypes="#//SwitchExpression #//DecimalExpression"/>
@@ -863,7 +880,22 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="time" lowerBound="1"
           eType="#//TimeExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//IntegerExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampAsMillisecondsExpression"
+        eSuperTypes="#//IntegerExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;TIMESTAMP_AS_MILLISECONDS(&quot; + getTimestamp() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AbsoluteExpression" eSuperTypes="#//DecimalExpression">
       <eOperations name="getOperands" lowerBound="1" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
@@ -904,6 +936,20 @@
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//NumericExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeAsSecondsExpression" eSuperTypes="#//IntegerExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;TIME_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="time" lowerBound="1"
+          eType="#//TimeExpression" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="logical" nsURI="http://blackbelt.hu/judo/meta/expression/logical"
@@ -952,7 +998,7 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;NOT &quot; + getExpression();"/>
+          <details key="body" value="return &quot;NOT(&quot; + getExpression() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
@@ -993,48 +1039,19 @@
           eType="#//TypeName"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LogicalAttribute" eSuperTypes="#//LogicalExpression #//AttributeSelector"/>
-    <eClassifiers xsi:type="ecore:EClass" name="UndefinedAttributeComparison" eSuperTypes="#//LogicalExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="UndefinedComparison" eSuperTypes="#//LogicalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getAttributeSelector());"/>
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression());"/>
         </eAnnotations>
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;(&quot; + getAttributeSelector() + &quot; IS NULL)&quot;;"/>
+          <details key="body" value="return &quot;IS_NULL(&quot; + getExpression() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="attributeSelector" lowerBound="1"
-          eType="#//AttributeSelector" containment="true"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UndefinedNavigationComparison" eSuperTypes="#//LogicalExpression">
-      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getObjectNavigationExpression());"/>
-        </eAnnotations>
-      </eOperations>
-      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;(&quot; + getObjectNavigationExpression() + &quot; IS NULL)&quot;;"/>
-        </eAnnotations>
-      </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="objectNavigationExpression"
-          lowerBound="1" eType="#//ObjectExpression" containment="true"/>
-    </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="UndefinedEnvironmentVariableComparison"
-        eSuperTypes="#//LogicalExpression">
-      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getEnvironmentVariable());"/>
-        </eAnnotations>
-      </eOperations>
-      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;(&quot; + getEnvironmentVariable() + &quot; IS NULL)&quot;;"/>
-        </eAnnotations>
-      </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="environmentVariable"
-          lowerBound="1" eType="#//variable/EnvironmentVariable" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//Expression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ContainsExpression" eSuperTypes="#//LogicalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
@@ -1268,13 +1285,13 @@
       </eOperations>
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;LIKE(&quot; + getExpression() + &quot;, &quot; + getPattern() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;LIKE(&quot; + getExpression() + &quot;, PATTERN=&quot; + getPattern() + &quot;, CASE-INSENSITIVE=&quot; + isCaseInsensitive() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//StringExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="pattern" lowerBound="1"
-          eType="#//StringExpression" containment="true"/>
+          eType="#//constant/StringConstant" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="caseInsensitive" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false"/>
@@ -1490,6 +1507,30 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="pattern" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="enumType" eType="#//TypeName"
           containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PaddingExpression" eSuperTypes="#//StringExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getExpression(), getLength(), getPadding());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return getPaddingType() + &quot;_PAD(&quot; + getExpression() + &quot;, &quot; + getLength() + &quot;, &quot; + getPadding() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
+          eType="#//StringExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="length" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="padding" lowerBound="1"
+          eType="#//StringExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="paddingType" lowerBound="1"
+          eType="#//string/PaddignType"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PaddignType">
+      <eLiterals name="LEFT"/>
+      <eLiterals name="RIGHT" value="1"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="enumeration" nsURI="http://blackbelt.hu/judo/meta/expression/enumeration"
@@ -2130,6 +2171,8 @@
       <eLiterals name="YEAR"/>
       <eLiterals name="MONTH" value="1"/>
       <eLiterals name="DAY" value="2"/>
+      <eLiterals name="DAY_OF_WEEK" value="3"/>
+      <eLiterals name="DAY_OF_YEAR" value="4"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="TimestampPart">
       <eLiterals name="YEAR"/>
@@ -2139,6 +2182,8 @@
       <eLiterals name="MINUTE" value="4"/>
       <eLiterals name="SECOND" value="5"/>
       <eLiterals name="MILLISECOND" value="6"/>
+      <eLiterals name="DATE" value="7"/>
+      <eLiterals name="TIME" value="8"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DateConstructionExpression" eSuperTypes="#//DateExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -2291,6 +2336,83 @@
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//variable/TimeVariable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampFromMillisecondsExpression"
+        eSuperTypes="#//TimestampExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;TIMESTAMP_FROM_MILLISECONDS(&quot; + getMilliseconds() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getMilliseconds());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="milliseconds" eType="#//IntegerExpression"
+          containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtractDateOfTimestampExpression"
+        eSuperTypes="#//DateExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;EXTRACT(DATE FROM &quot; + getTimestamp() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtractTimeOfTimestampExpression"
+        eSuperTypes="#//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;EXTRACT(TIME FROM &quot; + getTimestamp() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimestampArithmeticExpression" eSuperTypes="#//TimestampExpression">
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getTimestamp(), getAmount());"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;TIMESTAMP_PLUS(&quot; + getTimestamp() + &quot; + &quot; + getAmount() + &quot; &quot; + getTimestampPart() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timestamp" lowerBound="1"
+          eType="#//TimestampExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestampPart" lowerBound="1"
+          eType="#//temporal/TimestampPart"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="amount" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeFromSecondsExpression" eSuperTypes="#//TimeExpression">
+      <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return &quot;TIME_FROM_SECONDS(&quot; + getSeconds() + &quot;)&quot;;"/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getSeconds());"/>
+        </eAnnotations>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="seconds" eType="#//IntegerExpression"
+          containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="binding" nsURI="http://blackbelt.hu/judo/meta/expression/binding"

@@ -33,7 +33,7 @@ import java.time.temporal.ChronoUnit;
 
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.*;
 
-public class ExtractTransformer extends AbstractJqlFunctionTransformer<DataExpression> {
+public class ExtractTransformer extends AbstractJqlFunctionTransformer<Expression> {
 
     private ChronoUnit chronoUnit;
 
@@ -43,7 +43,7 @@ public class ExtractTransformer extends AbstractJqlFunctionTransformer<DataExpre
     }
 
     @Override
-    public Expression apply(DataExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+    public Expression apply(Expression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         if (argument instanceof DateExpression) {
             return newExtractDateExpressionBuilder()
                     .withDate((DateExpression) argument)
