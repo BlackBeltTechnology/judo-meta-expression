@@ -195,7 +195,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         }
 
         Collection<?> parameterSuperTypes = getModelAdapter().getSuperTypes(parameterType);
-        if (!parameterSuperTypes.contains(objectType) || !parameterType.equals(objectType)) {
+        if (!(parameterSuperTypes.contains(objectType) || parameterType.equals(objectType))) {
             String objectFqName = getModelAdapter().getFqName(objectType);
             String parameterFqName = getModelAdapter().getFqName(parameterType);
             throw new IllegalArgumentException(String.format(CAST_FUNCTION_INVALID_TYPES, "typeof", objectFqName, parameterFqName));
