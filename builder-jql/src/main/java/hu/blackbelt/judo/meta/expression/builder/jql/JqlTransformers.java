@@ -67,6 +67,9 @@ import static org.eclipse.emf.ecore.util.EcoreUtil.copy;
 public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U>
         implements ExpressionTransformer, ExpressionMeasureProvider {
 
+    public static final String CAST_FUNCTION_INVALID_TYPES = "Invalid %s function call: %s cannot be casted to %s";
+    public static final String INVALID_CONTAINER_TYPE = "%s type is not a container type of %s";
+
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> expressionBuilder;
     private final Map<Class<? extends JqlExpression>, JqlExpressionTransformerFunction> transformers = new LinkedHashMap<>();
     private final Map<String, JqlFunctionTransformer> functionTransformers = new LinkedHashMap<>();
@@ -92,79 +95,134 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
     private void objectFunctions() {
         functionTransformers.put("isundefined", new JqlIsDefinedFunctionTransformer(this, false));
         functionTransformers.put("isdefined", new JqlIsDefinedFunctionTransformer(this, true));
-
-        functionTransformers.put(
-                "kindof",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, InstanceOfExpression>(
-                        this,
-                        (expression, parameter) -> newInstanceOfExpressionBuilder()
-                                .withObjectExpression(expression)
-                                .withElementName(getKindOfParameterTypeName(expression, parameter))
-                                .build(),
-                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put(
-                "typeof",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, TypeOfExpression>(
-                        this,
-                        (expression, parameter) -> newTypeOfExpressionBuilder()
-                                .withObjectExpression(expression)
-                                .withElementName(getTypeOfParameterTypeName(expression, parameter))
-                                .build(),
-                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put(
-                "astype",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, CastObject>(
-                        this,
-                        (expression, parameter) -> newCastObjectBuilder()
-                                .withObjectExpression(expression)
-                                .withElementName(getAsTypeTypeName(expression, parameter))
-                                .build(),
-                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
-        functionTransformers.put(
-                "container",
-                new JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression>(
-                        this,
-                        (expression, parameter) -> newContainerExpressionBuilder()
-                                .withObjectExpression(expression)
-                                .withElementName(getContainerTypeName(expression, parameter))
-                                .build(),
-                        jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
+        functionTransformers.put("kindof", getKindOfTransformer());
+        functionTransformers.put("typeof", getTypeOfTransformer());
+        functionTransformers.put("astype", getAsTypeTransformer());
+        functionTransformers.put("container", getContainerTransformer());
     }
 
-    private TypeName getKindOfParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
-        return getParameterTypeName(expression, parameter, true);
+    private JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, LogicalExpression> getKindOfTransformer() {
+        return new JqlParameterizedFunctionTransformer<>(
+                this,
+                (expression, parameter) -> {
+                    Optional<TypeName> typeName = getKindOfTypeName(expression, parameter);
+                    if (typeName.isPresent()) {
+                        return newInstanceOfExpressionBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(typeName.get())
+                                .build();
+                    } else {
+                        return newBooleanConstantBuilder().withValue(true).build();
+                    }
+                },
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName());
     }
 
-    private TypeName getTypeOfParameterTypeName(ObjectExpression expression, QualifiedName parameter) {
-        return getParameterTypeName(expression, parameter, false);
+    private JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, LogicalExpression> getTypeOfTransformer() {
+        return new JqlParameterizedFunctionTransformer<>(
+                this,
+                (expression, parameter) -> {
+                    Optional<TypeName> typeName = getTypeOfTypeName(expression, parameter);
+                    if (typeName.isPresent()) {
+                        return newTypeOfExpressionBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(typeName.get())
+                                .build();
+                    } else {
+                        return newBooleanConstantBuilder().withValue(false).build();
+                    }
+                },
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName());
     }
 
-    private TypeName getParameterTypeName(ObjectExpression expression, QualifiedName parameter, boolean kindOf) {
+    private JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ObjectExpression> getAsTypeTransformer() {
+        return new JqlParameterizedFunctionTransformer<>(
+                this,
+                (expression, parameter) -> {
+                    Optional<TypeName> typeName = getAsTypeTypeName(expression, parameter);
+                    if (typeName.isPresent()) {
+                        return newCastObjectBuilder()
+                                .withObjectExpression(expression)
+                                .withElementName(typeName.get())
+                                .build();
+                    } else {
+                        return expression;
+                    }
+                },
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName());
+    }
+
+    private JqlParameterizedFunctionTransformer<ObjectExpression, QualifiedName, ContainerExpression> getContainerTransformer() {
+        return new JqlParameterizedFunctionTransformer<>(
+                this,
+                (expression, parameter) -> newContainerExpressionBuilder()
+                        .withObjectExpression(expression)
+                        .withElementName(getContainerTypeName(expression, parameter))
+                        .build(),
+                jqlExpression -> ((NavigationExpression) jqlExpression).getQName());
+    }
+
+    private Optional<TypeName> getKindOfTypeName(ObjectExpression expression, QualifiedName parameter) {
         TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
-        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
-        if (!(getModelAdapter().getSuperTypes(parameterType).contains(objectType) || objectType.equals(parameterType))) {
-            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
-            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
-            throw new IllegalArgumentException("Element type " + parameterName + " is not " + (kindOf ? "compatible with " : "") + objectName);
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).orElseThrow();
+
+        Collection<?> objectSuperTypes = getModelAdapter().getSuperTypes(objectType);
+        if (parameterType.equals(objectType) || objectSuperTypes.contains(parameterType)) {
+            return Optional.empty(); // trivial
         }
 
-        return typeNameFromResource;
+        Collection<?> parameterSuperTypes = getModelAdapter().getSuperTypes(parameterType);
+        if (!parameterSuperTypes.contains(objectType)) {
+            String objectFqName = getModelAdapter().getFqName(objectType);
+            String parameterFqName = getModelAdapter().getFqName(parameterType);
+            throw new IllegalArgumentException(String.format(CAST_FUNCTION_INVALID_TYPES, "kindof", objectFqName, parameterFqName));
+        }
+
+        return Optional.of(typeNameFromResource);
     }
 
-    private TypeName getAsTypeTypeName(ObjectExpression expression, QualifiedName parameter) {
+    private Optional<TypeName> getTypeOfTypeName(ObjectExpression expression, QualifiedName parameter) {
         TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
-        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
-        if (!getModelAdapter().getSuperTypes(parameterType).contains(objectType)) {
-            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
-            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
-            throw new IllegalArgumentException("Invalid casting type: " + objectName + " is not supertype of " + parameterName);
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).orElseThrow();
+
+        Collection<?> objectSuperTypes = getModelAdapter().getSuperTypes(objectType);
+        if (objectSuperTypes.contains(parameterType)) {
+            return Optional.empty(); // trivial
         }
 
-        return typeNameFromResource;
+        Collection<?> parameterSuperTypes = getModelAdapter().getSuperTypes(parameterType);
+        if (!(parameterSuperTypes.contains(objectType) || parameterType.equals(objectType))) {
+            String objectFqName = getModelAdapter().getFqName(objectType);
+            String parameterFqName = getModelAdapter().getFqName(parameterType);
+            throw new IllegalArgumentException(String.format(CAST_FUNCTION_INVALID_TYPES, "typeof", objectFqName, parameterFqName));
+        }
+
+        return Optional.of(typeNameFromResource);
+    }
+
+    private Optional<TypeName> getAsTypeTypeName(ObjectExpression expression, QualifiedName parameter) {
+        TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
+
+        C objectType = (C) expression.getObjectType(getModelAdapter());
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).orElseThrow();
+
+        Collection<?> objectSuperTypes = getModelAdapter().getSuperTypes(objectType);
+        if (parameterType.equals(objectType) || objectSuperTypes.contains(parameterType)) {
+            return Optional.empty(); // trivial
+        }
+
+        Collection<?> parameterSuperTypes = getModelAdapter().getSuperTypes(parameterType);
+        if (!parameterSuperTypes.contains(objectType)) {
+            String objectFqName = getModelAdapter().getFqName(objectType);
+            String parameterFqName = getModelAdapter().getFqName(parameterType);
+            throw new IllegalArgumentException(String.format(CAST_FUNCTION_INVALID_TYPES, "astype", objectFqName, parameterFqName));
+        }
+
+        return Optional.of(typeNameFromResource);
     }
 
     private TypeName getContainerTypeName(ObjectExpression expression, QualifiedName parameter) {
@@ -173,9 +231,9 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         C objectType = (C) expression.getObjectType(getModelAdapter());
         C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
         if (!getModelAdapter().getContainerTypesOf(objectType).contains(parameterType)) {
-            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
-            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
-            throw new IllegalArgumentException(parameterName + " type is not a container of " + objectName);
+            String objectName = getModelAdapter().getFqName(objectType);
+            String parameterName = getModelAdapter().getFqName(parameterType);
+            throw new IllegalArgumentException(String.format(INVALID_CONTAINER_TYPE, parameterName, objectName));
         }
 
         return typeNameFromResource;
@@ -251,12 +309,19 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                         }));
         functionTransformers.put(
                 "ascollection",
-                new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CastCollection>(
+                new JqlParameterizedFunctionTransformer<CollectionExpression, QualifiedName, CollectionExpression>(
                         this,
-                        (expression, parameter) -> newCastCollectionBuilder()
-                                .withElementName(getAsCollectionTypeName(expression, parameter))
-                                .withCollectionExpression(expression)
-                                .build(),
+                        (expression, parameter) -> {
+                            Optional<TypeName> typeName = getAsCollectionTypeName(expression, parameter);
+                            if (typeName.isPresent()) {
+                                return newCastCollectionBuilder()
+                                        .withElementName(typeName.get())
+                                        .withCollectionExpression(expression)
+                                        .build();
+                            } else {
+                                return expression;
+                            }
+                        },
                         jqlExpression -> ((NavigationExpression) jqlExpression).getQName()));
     }
 
@@ -272,18 +337,25 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         }
     }
 
-    private TypeName getAsCollectionTypeName(CollectionExpression expression, QualifiedName parameter) {
+    private Optional<TypeName> getAsCollectionTypeName(CollectionExpression expression, QualifiedName parameter) {
         TypeName typeNameFromResource = getTypeNameOf(parameter, () -> expressionBuilder.getTypeNameFromResource(parameter));
 
         C objectType = (C) expression.getObjectType(getModelAdapter());
-        C parameterType = (C) getModelAdapter().get(typeNameFromResource).get();
-        if (!getModelAdapter().getSuperTypes(parameterType).contains(objectType)) {
-            String objectName = getModelAdapter().getName(objectType).orElse(objectType.toString());
-            String parameterName = getModelAdapter().getName(parameterType).orElse(parameterType.toString());
-            throw new IllegalArgumentException("Invalid casting: " + objectName + " as " + parameterName + ". " + objectName + " is not supertype of " + parameterName);
+        C parameterType = (C) getModelAdapter().get(typeNameFromResource).orElseThrow();
+        Collection<?> objectSuperTypes = getModelAdapter().getSuperTypes(objectType);
+
+        String objectFqName = getModelAdapter().getFqName(objectType);
+        if (parameterType.equals(objectType) || objectSuperTypes.contains(parameterType)) {
+            return Optional.empty(); // trivial
         }
 
-        return typeNameFromResource;
+        Collection<?> parameterSuperTypes = getModelAdapter().getSuperTypes(parameterType);
+        if (!parameterSuperTypes.contains(objectType)) {
+            String parameterFqName = getModelAdapter().getFqName(parameterType);
+            throw new IllegalArgumentException(String.format(CAST_FUNCTION_INVALID_TYPES, "astype", objectFqName, parameterFqName));
+        }
+
+        return Optional.of(typeNameFromResource);
     }
 
     @Deprecated
