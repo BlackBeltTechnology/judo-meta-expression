@@ -74,11 +74,11 @@
         <maven.compiler.target>11</maven.compiler.target>
         <tycho-version>2.7.5</tycho-version>
 
-        <emf-genmodel-generator-version>1.1.0</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.1.1</judo-genmodel-generator-version>
-        <judo-epp-common-version>4.23.1</judo-epp-common-version>
+        <emf-genmodel-generator-version>1.1.1.20230111_082001_20af99b0_feature_JNG_4204_Java17</emf-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.1.2.20230111_083018_920c78cc_feature_JNG_4204_Java17</judo-genmodel-generator-version>
+        <judo-epp-common-version>4.26.0.20230110_101424_5c3a7fd3_feature_JNG_4204_Java17</judo-epp-common-version>
 
-        <xtext-version>2.28.0</xtext-version>
+        <xtext-version>2.29.0</xtext-version>
         <emf-mwe2-launch-version>2.13.0</emf-mwe2-launch-version>
         <slf4j-version>1.7.36</slf4j-version>
         <surefire-version>3.0.0-M7</surefire-version>
@@ -112,6 +112,33 @@
 
     </properties>
 
+    <repositories>
+        <repository>
+            <id>judo-epp-commons</id>
+            <url>mvn:hu.blackbelt.judo.eclipse.epp:hu.blackbelt.judo.eclipse.epp.package.common.site:${judo-epp-common-version}:zip</url>
+            <layout>p2</layout>
+        </repository>
+
+        <repository>
+            <id>epsilon-runtime-eclipse</id>
+            <url>mvn:hu.blackbelt.epsilon:hu.blackbelt.epsilon.runtime.site:${epsilon-runtime-eclipse-version}:zip</url>
+            <layout>p2</layout>
+        </repository>
+
+        <repository>
+            <id>emf-genmodel-generator</id>
+            <url>mvn:hu.blackbelt.eclipse:hu.blackbelt.eclipse.emf.genmodel.generator.site:${emf-genmodel-generator-version}:zip</url>
+            <layout>p2</layout>
+        </repository>
+
+        <repository>
+            <id>judo-genmodel-generator</id>
+            <url>mvn:hu.blackbelt.judo:hu.blackbelt.judo.eclipse.emf.genmodel.generator.site:${judo-genmodel-generator-version}:zip</url>
+            <layout>p2</layout>
+        </repository>
+
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
@@ -125,43 +152,6 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho-version}</version>
-                <configuration>
-                    <executionEnvironment>JavaSE-11</executionEnvironment>
-                    <target>
-                        <artifact>
-                            <groupId>hu.blackbelt.judo.meta</groupId>
-                            <artifactId>hu.blackbelt.judo.meta.expression.targetdefinition</artifactId>
-                            <version>${project.version}</version>
-                        </artifact>
-                    </target>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>aarch64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>aarch64</arch>
-						</environment>
-					</environments>
-                </configuration>
             </plugin>
 
             <plugin>
@@ -729,7 +719,6 @@
                 </property>
             </activation>
             <modules>
-                <module>targetdefinition</module>
                 <module>model</module>
                 <module>adapter-measure</module>
                 <module>builder-jql</module>
@@ -820,34 +809,6 @@
                     <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
                 </repository>
             </distributionManagement>
-        </profile>
-
-        <profile>
-            <id>release-p2-judong</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>upload-repository</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>upload</goal>
-                                </goals>
-                                <configuration>
-                                    <serverId>judong-nexus-distribution</serverId>
-                                    <fromDir>${basedir}/site/target/repository</fromDir>
-                                    <includes>*/**</includes>
-                                    <url>dav:https://nexus.judo.technology/repository/p2-judong/</url>
-                                    <toDir>${project-shortname}/${project.version}</toDir>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
 
         <profile>
