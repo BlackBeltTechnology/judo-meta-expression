@@ -249,10 +249,6 @@ public class MeasureAdapter<NE, P extends NE, E extends P, C extends NE, PTE, RT
         } else if (numericExpression instanceof EnvironmentVariable) {
             final NE type = modelAdapter.get(((EnvironmentVariable) numericExpression).getTypeName()).orElse(null);
             return modelAdapter.getMeasureOfType((P) type).map(m -> getDimensionOfMeasure(m).orElse(null));
-        } else if (numericExpression instanceof DecimalRoundExpression) {
-            return getDimension(((DecimalRoundExpression) numericExpression).getExpression());
-        } else if (numericExpression instanceof IntegerRoundExpression) {
-            return getDimension(((IntegerRoundExpression) numericExpression).getExpression());
         } else {
             return Optional.empty();
         }
