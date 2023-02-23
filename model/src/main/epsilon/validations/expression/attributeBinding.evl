@@ -1,15 +1,9 @@
 context EXPR!AttributeBinding {
 	
-	constraint IntegerExpressionMatchesBinding {
-		guard: self.expression.isKindOf(EXPR!IntegerExpression)
+	constraint NumericExpressionMatchesBinding {
+		guard: self.expression.isKindOf(EXPR!NumericExpression)
 		check: modelAdapter.isNumeric(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
-		message: "Attribute named " + self.attributeName + " of object type " + modelAdapter.get(self.typeName).get().name + " must be integer type, because the assigned expression evaluates to an integer."
-	}
-	
-	constraint DecimalExpressionMatchesBinding {
-		guard: self.expression.isKindOf(EXPR!DecimalExpression)
-		check: modelAdapter.isDecimal(modelAdapter.getAttributeType(modelAdapter.get(self.typeName).get(), self.attributeName).get())
-		message: "Attribute named " + self.attributeName + " must be decimal type, because the assigned expression evaluates to a decimal."
+		message: "Attribute named " + self.attributeName + " must be numeric type, because the assigned expression evaluates to a number."
 	}
 	
 	constraint BooleanExpressionMatchesBinding {
