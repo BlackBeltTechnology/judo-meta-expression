@@ -54,19 +54,9 @@ import static java.util.Optional.ofNullable;
 
 @Component(immediate = true)
 @Slf4j
-@Designate(ocd = ExpressionModelBundleTracker.TrackerConfig.class)
 public class ExpressionModelBundleTracker {
 
     public static final String EXPRESSION_MODELS = "Expression-Models";
-
-    @ObjectClassDefinition(name="Expression Model Bundle Tracker")
-    public @interface TrackerConfig {
-        @AttributeDefinition(
-                name = "Tags",
-                description = "Which tags are on the loaded model when there is no one defined in bundle"
-        )
-        String tags() default "";
-    }
 
     @Reference
     BundleTrackerManager bundleTrackerManager;
@@ -75,11 +65,8 @@ public class ExpressionModelBundleTracker {
 
     Map<String, ExpressionModel> expressionModels = new HashMap<>();
 
-    TrackerConfig config;
-
     @Activate
-    public void activate(final ComponentContext componentContext, final TrackerConfig trackerConfig) {
-        this.config = trackerConfig;
+    public void activate(final ComponentContext componentContext) {
         bundleTrackerManager.registerBundleCallback(this.getClass().getName(),
                 new ExpressionRegisterCallback(componentContext.getBundleContext()),
                 new ExpressionUnregisterCallback(),
@@ -117,29 +104,21 @@ public class ExpressionModelBundleTracker {
                 if (expressionModelRegistrations.containsKey(key)) {
                     log.error("Expression model already loaded: " + key);
                 } else {
-                    if (params.containsKey(ExpressionModel.META_VERSION_RANGE)) {
-                        VersionRange versionRange = new VersionRange(params.get(ExpressionModel.META_VERSION_RANGE).replaceAll("\"", ""));
-                        if (versionRange.includes(bundleContext.getBundle().getVersion())) {
-                            // Unpack model
-                            try {
-                                ExpressionModel expressionModel = loadExpressionModel(expressionLoadArgumentsBuilder()
-                                        .inputStream(trackedBundle.getEntry(params.get("file")).openStream())
-                                        .name(params.get(ExpressionModel.NAME))
-                                        .version(trackedBundle.getVersion().toString())
-                                        .checksum(Optional.ofNullable(params.get(ExpressionModel.CHECKSUM)).orElse("notset"))
-                                        .tags(Stream.of(ofNullable(params.get(ExpressionModel.TAGS)).orElse(config.tags()).split(",")).collect(Collectors.toSet()))
-                                        .acceptedMetaVersionRange(Optional.of(versionRange.toString()).orElse("[0,99)")));
+                    // Unpack model
+                    try {
+                        ExpressionModel expressionModel = loadExpressionModel(expressionLoadArgumentsBuilder()
+                                .inputStream(trackedBundle.getEntry(params.get("file")).openStream())
+                                .name(params.get(ExpressionModel.NAME))
+                                .version(trackedBundle.getVersion().toString()));
 
-                                log.info("Registering Expression model: " + expressionModel);
+                        log.info("Registering Expression model: " + expressionModel);
 
-                                ServiceRegistration<ExpressionModel> modelServiceRegistration = bundleContext.registerService(ExpressionModel.class, expressionModel, expressionModel.toDictionary());
-                                expressionModels.put(key, expressionModel);
-                                expressionModelRegistrations.put(key, modelServiceRegistration);
+                        ServiceRegistration<ExpressionModel> modelServiceRegistration = bundleContext.registerService(ExpressionModel.class, expressionModel, expressionModel.toDictionary());
+                        expressionModels.put(key, expressionModel);
+                        expressionModelRegistrations.put(key, modelServiceRegistration);
 
-                            } catch (IOException | ExpressionModel.ExpressionValidationException e) {
-                                log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
-                            }
-                        }
+                    } catch (IOException | ExpressionModel.ExpressionValidationException e) {
+                        log.error("Could not load Expression model: " + params.get(ExpressionModel.NAME) + " from bundle: " + trackedBundle.getBundleId(), e);
                     }
                 }
             }
