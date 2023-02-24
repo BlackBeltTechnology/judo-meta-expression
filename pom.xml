@@ -75,7 +75,7 @@
         <tycho-version>2.7.5</tycho-version>
 
         <emf-genmodel-generator-version>1.1.1.20230120_152641_f8d06d79_develop</emf-genmodel-generator-version>
-        <judo-genmodel-generator-version>1.1.2.20230224_004647_eca70aca_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-genmodel-generator-version>
+        <judo-genmodel-generator-version>1.1.2.20230224_153439_fdca57d3_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-genmodel-generator-version>
         <judo-epp-common-version>4.26.0.20230112_142558_abc6093e_develop</judo-epp-common-version>
 
         <xtext-version>2.29.0</xtext-version>
@@ -93,8 +93,8 @@
         <karaf-features-version>2.0.1</karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-jql-version>1.0.4.20230224_005001_0bdd1f31_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.2.20230224_005004_f1433f2a_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-measure-version>
+        <judo-meta-jql-version>1.0.4.20230224_162058_76f0cb81_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.2.20230224_161953_e6e85088_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-measure-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
         <platformSystemProperties />
