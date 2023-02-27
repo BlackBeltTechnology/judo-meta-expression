@@ -93,8 +93,8 @@
         <karaf-features-version>2.0.1</karaf-features-version>
         <pax-exam-version>4.13.4</pax-exam-version>
 
-        <judo-meta-jql-version>1.0.4.20230224_162058_76f0cb81_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.2.20230224_161953_e6e85088_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-measure-version>
+        <judo-meta-jql-version>1.0.4.20230226_194009_b9ae804e_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.2.20230226_194033_b66023bf_feature_JNG_4269_SemiAutomaticSchemaUpgrade</judo-meta-measure-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
         <platformSystemProperties />
