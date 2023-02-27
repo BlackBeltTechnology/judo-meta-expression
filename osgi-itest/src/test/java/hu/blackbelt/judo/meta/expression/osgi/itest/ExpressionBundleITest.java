@@ -186,7 +186,7 @@ public class ExpressionBundleITest {
                 		new ByteArrayInputStream(os.toByteArray()))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_PSM + "-psm" )
-                .set( "Psm-Models", "file=model/" + DEMO_PSM + ".judo-meta-psm;version=1.0.0;name=" + DEMO_PSM + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .set( "Psm-Models", "file=model/" + DEMO_PSM + ".judo-meta-psm;name=" + DEMO_PSM)
                 .build( withBnd());
     }
     */
@@ -207,7 +207,7 @@ public class ExpressionBundleITest {
                 		new ByteArrayInputStream(os.toByteArray()))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_EXPRESSION + "-expression" )
-                .set( "Expression-Models", "file=model/" + DEMO_EXPRESSION + ".judo-meta-expression;version=1.0.0;name=" + DEMO_EXPRESSION + ";checksum=notset;meta-version-range=\"[1.0.0,2)\"")
+                .set( "Expression-Models", "file=model/" + DEMO_EXPRESSION + ".judo-meta-expression;name=" + DEMO_EXPRESSION)
                 .build( withBnd());
     }
     
