@@ -29,6 +29,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.TimeStampLiteral;
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newTimestampConstantBuilder;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 public class JqlTimestampLiteralTransformer implements JqlExpressionTransformerFunction {
@@ -37,7 +38,8 @@ public class JqlTimestampLiteralTransformer implements JqlExpressionTransformerF
     public Expression apply(JqlExpression expression, ExpressionBuildingVariableResolver context) {
         TimeStampLiteral timestampLiteral = (TimeStampLiteral) expression;
         String stringValue = timestampLiteral.getValue();
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(stringValue, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        // convert timestamp constant with offset to UTC
+        OffsetDateTime offsetDateTime = OffsetDateTime.parse(stringValue, DateTimeFormatter.ISO_OFFSET_DATE_TIME).atZoneSameInstant(ZoneOffset.UTC.normalized()).toOffsetDateTime();
         return newTimestampConstantBuilder().withValue(offsetDateTime).build();
     }
 
