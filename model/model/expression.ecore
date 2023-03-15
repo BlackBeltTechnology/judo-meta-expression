@@ -202,10 +202,10 @@
       <details key="create" value="return it == null ? null : java.time.LocalDate.parse(it);"/>
     </eAnnotations>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EDataType" name="OffsetDateTime" instanceClassName="java.time.OffsetDateTime">
+  <eClassifiers xsi:type="ecore:EDataType" name="LocalDateTime" instanceClassName="java.time.LocalDateTime">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="convert" value="return it == null ? null : it.toString();"/>
-      <details key="create" value="return it == null ? null : java.time.OffsetDateTime.parse(it);"/>
+      <details key="create" value="return it == null ? null : java.time.LocalDateTime.parse(it);"/>
     </eAnnotations>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypeNameExpression" eSuperTypes="#//TypeName #//Expression"/>
@@ -356,11 +356,11 @@
     <eClassifiers xsi:type="ecore:EClass" name="TimestampConstant" eSuperTypes="#//TimestampExpression #//constant/DataConstant">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
+          <details key="body" value="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" lowerBound="1"
-          eType="#//OffsetDateTime"/>
+          eType="#//LocalDateTime"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="DataConstant" abstract="true" eSuperTypes="#//constant/Constant #//DataExpression">
       <eOperations name="getValue" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
