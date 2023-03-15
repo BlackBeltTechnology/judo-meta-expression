@@ -11,7 +11,7 @@
       childCreationExtenders="true" fileExtensions="expression" ecorePackage="expression.ecore#/">
     <genDataTypes ecoreDataType="expression.ecore#//LocalDate" create="return it == null ? null : java.time.LocalDate.parse(it);"
         convert="return it == null ? null : it.toString();"/>
-    <genDataTypes ecoreDataType="expression.ecore#//OffsetDateTime" create="return it == null ? null : java.time.OffsetDateTime.parse(it);"
+    <genDataTypes ecoreDataType="expression.ecore#//LocalDateTime" create="return it == null ? null : java.time.LocalDateTime.parse(it);"
         convert="return it == null ? null : it.toString();"/>
     <genDataTypes ecoreDataType="expression.ecore#//LocalTime" create="return it == null ? null : java.time.LocalTime.parse(it);"
         convert="return it == null ? null : it.toString();"/>
@@ -219,7 +219,7 @@
       <genClasses ecoreClass="expression.ecore#//constant/TimestampConstant">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute expression.ecore#//constant/TimestampConstant/value"/>
         <genOperations ecoreOperation="expression.ecore#//constant/TimestampConstant/toString"
-            body="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
+            body="return getValue() != null ? &quot;`&quot; + getValue().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME)+ &quot;`&quot; : &quot;null&quot;;"/>
       </genClasses>
       <genClasses image="false" ecoreClass="expression.ecore#//constant/DataConstant">
         <genOperations ecoreOperation="expression.ecore#//constant/DataConstant/getValue"/>
