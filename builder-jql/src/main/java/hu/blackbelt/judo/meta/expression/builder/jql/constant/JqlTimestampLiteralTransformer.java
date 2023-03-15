@@ -26,21 +26,26 @@ import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTra
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
 import hu.blackbelt.judo.meta.jql.jqldsl.TimeStampLiteral;
 
-import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newTimestampConstantBuilder;
+import java.time.*;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newTimestampConstantBuilder;
 
 public class JqlTimestampLiteralTransformer implements JqlExpressionTransformerFunction {
 
     @Override
     public Expression apply(JqlExpression expression, ExpressionBuildingVariableResolver context) {
-        TimeStampLiteral timestampLiteral = (TimeStampLiteral) expression;
-        String stringValue = timestampLiteral.getValue();
-        // convert timestamp constant with offset to UTC
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(stringValue, DateTimeFormatter.ISO_OFFSET_DATE_TIME).atZoneSameInstant(ZoneOffset.UTC.normalized()).toOffsetDateTime();
-        return newTimestampConstantBuilder().withValue(offsetDateTime).build();
+        String timestamp = ((TimeStampLiteral) expression).getValue();
+
+        final LocalDateTime localDateTime;
+        if (timestamp.matches("^\\d+-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?$")) {
+            localDateTime = LocalDateTime.parse(timestamp);
+        } else if (timestamp.matches("^\\d+-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d+)?)?(Z|[+-]\\d{2}:\\d{2})$")) {
+            localDateTime = OffsetDateTime.parse(timestamp).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+        } else {
+            throw new IllegalArgumentException("Timestamp constant cannot be parsed: " + timestamp);
+        }
+
+        return newTimestampConstantBuilder().withValue(localDateTime).build();
     }
 
 }
