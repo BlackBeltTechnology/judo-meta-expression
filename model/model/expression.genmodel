@@ -590,11 +590,11 @@
         <genOperations ecoreOperation="expression.ecore#//numeric/FloorExpression/toString"
             body="return &quot;FLOOR(&quot; + getExpression() + &quot;)&quot;;"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//numeric/TimeAsSecondsExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/TimeAsSecondsExpression/time"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsSecondsExpression/toString"
-            body="return &quot;TIME_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
-        <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsSecondsExpression/getOperands"
+      <genClasses ecoreClass="expression.ecore#//numeric/TimeAsMillisecondsExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//numeric/TimeAsMillisecondsExpression/time"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsMillisecondsExpression/toString"
+            body="return &quot;TIME_AS_MILLISECONDS(&quot; + getTime() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//numeric/TimeAsMillisecondsExpression/getOperands"
             body="return org.eclipse.emf.common.util.ECollections.asEList(getTime());"/>
       </genClasses>
     </nestedGenPackages>
@@ -1333,6 +1333,7 @@
             ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampConstructionExpression/minute"/>
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
             ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampConstructionExpression/second"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimestampConstructionExpression/millisecond"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampConstructionExpression/toString"
             body="return String.format(&quot;TIMESTAMP(%s, %s, %s, %s, %s, %s)&quot;, getYear(), getMonth(), getDay(), getHour(), getMinute(), getSecond());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampConstructionExpression/getOperands"
@@ -1344,6 +1345,7 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeConstructionExpression/hour"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeConstructionExpression/minute"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeConstructionExpression/second"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeConstructionExpression/millisecond"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimeConstructionExpression/toString"
             body="return String.format(&quot;TIME(%s, %s, %s)&quot;, getHour(), getMinute(), getSecond());"/>
         <genOperations ecoreOperation="expression.ecore#//temporal/TimeConstructionExpression/getOperands"
@@ -1429,12 +1431,12 @@
         <genOperations ecoreOperation="expression.ecore#//temporal/TimestampArithmeticExpression/toString"
             body="return &quot;TIMESTAMP_PLUS(&quot; + getTimestamp() + &quot; + &quot; + getAmount() + &quot; &quot; + getTimestampPart() + &quot;)&quot;;"/>
       </genClasses>
-      <genClasses ecoreClass="expression.ecore#//temporal/TimeFromSecondsExpression">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeFromSecondsExpression/seconds"/>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimeFromSecondsExpression/toString"
-            body="return &quot;TIME_FROM_SECONDS(&quot; + getSeconds() + &quot;)&quot;;"/>
-        <genOperations ecoreOperation="expression.ecore#//temporal/TimeFromSecondsExpression/getOperands"
-            body="return org.eclipse.emf.common.util.ECollections.asEList(getSeconds());"/>
+      <genClasses ecoreClass="expression.ecore#//temporal/TimeFromMillisecondsExpression">
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference expression.ecore#//temporal/TimeFromMillisecondsExpression/milliseconds"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimeFromMillisecondsExpression/toString"
+            body="return &quot;TIME_FROM_MILLISECONDS(&quot; + getMilliseconds() + &quot;)&quot;;"/>
+        <genOperations ecoreOperation="expression.ecore#//temporal/TimeFromMillisecondsExpression/getOperands"
+            body="return org.eclipse.emf.common.util.ECollections.asEList(getMilliseconds());"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Binding" resource="XMI" disposableProviderFactory="true"

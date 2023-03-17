@@ -937,10 +937,10 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="expression" lowerBound="1"
           eType="#//NumericExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="TimeAsSecondsExpression" eSuperTypes="#//IntegerExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimeAsMillisecondsExpression" eSuperTypes="#//IntegerExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;TIME_AS_SECONDS(&quot; + getTime() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;TIME_AS_MILLISECONDS(&quot; + getTime() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
@@ -2226,6 +2226,8 @@
           eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="second" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="millisecond" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimeAttribute" eSuperTypes="#//AttributeSelector #//TimeExpression"/>
     <eClassifiers xsi:type="ecore:EClass" name="TimeSwitchExpression" eSuperTypes="#//SwitchExpression #//TimeExpression"/>
@@ -2251,6 +2253,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="minute" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="second" lowerBound="1"
+          eType="#//IntegerExpression" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="millisecond" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimeAdditionExpression" eSuperTypes="#//TimeExpression">
@@ -2400,18 +2404,18 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="amount" lowerBound="1"
           eType="#//IntegerExpression" containment="true"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="TimeFromSecondsExpression" eSuperTypes="#//TimeExpression">
+    <eClassifiers xsi:type="ecore:EClass" name="TimeFromMillisecondsExpression" eSuperTypes="#//TimeExpression">
       <eOperations name="toString" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return &quot;TIME_FROM_SECONDS(&quot; + getSeconds() + &quot;)&quot;;"/>
+          <details key="body" value="return &quot;TIME_FROM_MILLISECONDS(&quot; + getMilliseconds() + &quot;)&quot;;"/>
         </eAnnotations>
       </eOperations>
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getSeconds());"/>
+          <details key="body" value="return org.eclipse.emf.common.util.ECollections.asEList(getMilliseconds());"/>
         </eAnnotations>
       </eOperations>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="seconds" eType="#//IntegerExpression"
+      <eStructuralFeatures xsi:type="ecore:EReference" name="milliseconds" eType="#//IntegerExpression"
           containment="true"/>
     </eClassifiers>
   </eSubpackages>

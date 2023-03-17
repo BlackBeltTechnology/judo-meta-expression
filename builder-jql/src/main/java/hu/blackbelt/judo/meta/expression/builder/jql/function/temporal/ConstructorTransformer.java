@@ -21,14 +21,13 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.temporal;
  */
 
 import hu.blackbelt.judo.meta.expression.*;
-import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
-import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
+import hu.blackbelt.judo.meta.expression.builder.jql.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
-import hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.IntegerConstantBuilder;
-import hu.blackbelt.judo.meta.expression.temporal.TimestampConstructionExpression;
-import hu.blackbelt.judo.meta.expression.temporal.util.builder.TimestampConstructionExpressionBuilder;
-import hu.blackbelt.judo.meta.jql.jqldsl.*;
+import hu.blackbelt.judo.meta.expression.temporal.*;
+import hu.blackbelt.judo.meta.jql.jqldsl.FunctionParameter;
+import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.math.BigInteger;
@@ -49,50 +48,17 @@ public class ConstructorTransformer<NE, P extends NE, E extends P, C extends NE,
     @Override
     public Expression apply(Expression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         if (!(argument instanceof TypeNameExpression)) {
-            throw new IllegalArgumentException(String.format("Function %s not supported on %s", functionCall.getName(), argument.getClass().getSimpleName()));
+            throw new IllegalArgumentException("Function " + functionCall.getName() + " is not supported on " + argument.getClass().getSimpleName());
         }
         NE ne = jqlTransformers.getModelAdapter().get((TypeNameExpression) argument).get();
         if (jqlTransformers.getModelAdapter().isPrimitiveType(ne)) {
             P primitiveType = (P) ne;
             if (jqlTransformers.getModelAdapter().isDate(primitiveType)) {
-                if (functionCall.getParameters().size() != 3) {
-                    throw new IllegalArgumentException("3 parameters expected");
-                }
-                return newDateConstructionExpressionBuilder()
-                        .withYear((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context))
-                        .withMonth((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context))
-                        .withDay((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(2).getExpression(), context))
-                        .build();
-            } else if (jqlTransformers.getModelAdapter().isTimestamp(primitiveType)) {
-                if (functionCall.getParameters().size() == 1 || functionCall.getParameters().size() == 2) {
-                    return getTimestampConstructionWithDateAndTime(functionCall, context);
-                } else if (functionCall.getParameters().size() == 6 || functionCall.getParameters().size() == 5) {
-                    final IntegerExpression second;
-                    if (functionCall.getParameters().size() == 6) {
-                        second = (IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(5).getExpression(), context);
-                    } else {
-                        second = ConstantBuilders.newIntegerConstantBuilder().withValue(BigInteger.ZERO).build();
-                    }
-                    return newTimestampConstructionExpressionBuilder()
-                            .withYear((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context))
-                            .withMonth((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context))
-                            .withDay((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(2).getExpression(), context))
-                            .withHour((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(3).getExpression(), context))
-                            .withMinute((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(4).getExpression(), context))
-                            .withSecond(second)
-                            .build();
-                } else {
-                    throw new IllegalArgumentException("Invalid number of arguments. Expected: 1, 2, 5 or 6. Got: " + functionCall.getParameters().size());
-                }
+                return getDateConstructionExpression(functionCall, context);
             } else if (jqlTransformers.getModelAdapter().isTime(primitiveType)) {
-                if (functionCall.getParameters().size() != 3) {
-                    throw new IllegalArgumentException("3 parameters expected");
-                }
-                return newTimeConstructionExpressionBuilder()
-                        .withHour((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context))
-                        .withMinute((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context))
-                        .withSecond((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(2).getExpression(), context))
-                        .build();
+                return getTimeConstructionExpression(functionCall, context);
+            } else if (jqlTransformers.getModelAdapter().isTimestamp(primitiveType)) {
+                return getTimestampConstructionExpression(functionCall, context);
             } else {
                 throw new IllegalArgumentException("Function is not valid for given type");
             }
@@ -101,35 +67,114 @@ public class ConstructorTransformer<NE, P extends NE, E extends P, C extends NE,
         }
     }
 
+    private DateConstructionExpression getDateConstructionExpression(JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+        EList<FunctionParameter> parameters = functionCall.getParameters();
+
+        JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 3);
+
+        return newDateConstructionExpressionBuilder()
+                .withYear((IntegerExpression) jqlTransformers.transform(parameters.get(0).getExpression(), context))
+                .withMonth((IntegerExpression) jqlTransformers.transform(parameters.get(1).getExpression(), context))
+                .withDay((IntegerExpression) jqlTransformers.transform(parameters.get(2).getExpression(), context))
+                .build();
+    }
+
+    private TimeConstructionExpression getTimeConstructionExpression(JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+        EList<FunctionParameter> parameters = functionCall.getParameters();
+
+        int parameterCount = JqlTransformerUtils.validateParameterCount(functionCall.getName(), parameters, 2, 3, 4);
+
+        final IntegerExpression second;
+        if (parameterCount > 2) {
+            second = (IntegerExpression) jqlTransformers.transform(parameters.get(2).getExpression(), context);
+        } else {
+            second = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
+        }
+
+        final IntegerExpression millisecond;
+        if (parameterCount == 4) {
+            millisecond = (IntegerExpression) jqlTransformers.transform(parameters.get(3).getExpression(), context);
+        } else {
+            millisecond = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
+        }
+
+        return newTimeConstructionExpressionBuilder()
+                .withHour((IntegerExpression) jqlTransformers.transform(parameters.get(0).getExpression(), context))
+                .withMinute((IntegerExpression) jqlTransformers.transform(parameters.get(1).getExpression(), context))
+                .withSecond(second)
+                .withMillisecond(millisecond)
+                .build();
+    }
+
+    private TimestampConstructionExpression getTimestampConstructionExpression(JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+        int parameterCount = JqlTransformerUtils.validateParameterCount(functionCall.getName(), functionCall.getParameters(), 1, 2, 5, 6, 7);
+
+        if (parameterCount == 1 || parameterCount == 2) {
+            return getTimestampConstructionWithDateAndTime(functionCall, context);
+        } else {
+            return getTimestampConstructionWithNumbers(functionCall, context);
+        }
+    }
+
     private TimestampConstructionExpression getTimestampConstructionWithDateAndTime(JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         // expressions must be transformed each time with a "new" instance, because transformation has composite relation to argument
         List<FunctionParameter> parameters = functionCall.getParameters();
-        final DateExpression dateExpression = (DateExpression) jqlTransformers.transform(parameters.get(0).getExpression(), context);
-        final TimeExpression timeExpression;
-        if (parameters.size() == 1) {
-            timeExpression = null;
-        } else if (parameters.size() == 2) {
-            timeExpression = (TimeExpression) jqlTransformers.transform(parameters.get(1).getExpression(), context);
+
+        final IntegerExpression hour;
+        final IntegerExpression minute;
+        final IntegerExpression second;
+        final IntegerExpression millisecond;
+        if (parameters.size() == 2) {
+            TimeExpression timeExpression = (TimeExpression) jqlTransformers.transform(parameters.get(1).getExpression(), context);
+            hour = (IntegerExpression) new ExtractTransformer(null, ChronoUnit.HOURS).apply(timeExpression, null, context);
+            minute = (IntegerExpression) new ExtractTransformer(null, ChronoUnit.MINUTES).apply(EcoreUtil.copy(timeExpression), null, context);
+            second = (IntegerExpression) new ExtractTransformer(null, ChronoUnit.SECONDS).apply(EcoreUtil.copy(timeExpression), null, context);
+            millisecond = (IntegerExpression) new ExtractTransformer(null, ChronoUnit.MILLIS).apply(EcoreUtil.copy(timeExpression), null, context);
         } else {
-            throw new IllegalArgumentException("Invalid number of timestamp construction arguments: " + parameters.size());
+            hour = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
+            minute = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
+            second = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
+            millisecond = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
         }
 
-        TimestampConstructionExpressionBuilder timestampConstructionExpression = newTimestampConstructionExpressionBuilder()
+        final DateExpression dateExpression = (DateExpression) jqlTransformers.transform(parameters.get(0).getExpression(), context);
+        return newTimestampConstructionExpressionBuilder()
                 .withYear((IntegerExpression) new ExtractTransformer(null, ChronoUnit.YEARS).apply(dateExpression, null, context))
                 .withMonth((IntegerExpression) new ExtractTransformer(null, ChronoUnit.MONTHS).apply(EcoreUtil.copy(dateExpression), null, context))
-                .withDay((IntegerExpression) new ExtractTransformer(null, ChronoUnit.DAYS).apply(EcoreUtil.copy(dateExpression), null, context));
-        if (timeExpression != null) {
-            timestampConstructionExpression
-                    .withHour((IntegerExpression) new ExtractTransformer(null, ChronoUnit.HOURS).apply(timeExpression, null, context))
-                    .withMinute((IntegerExpression) new ExtractTransformer(null, ChronoUnit.MINUTES).apply(EcoreUtil.copy(timeExpression), null, context))
-                    .withSecond((IntegerExpression) new ExtractTransformer(null, ChronoUnit.SECONDS).apply(EcoreUtil.copy(timeExpression), null, context));
+                .withDay((IntegerExpression) new ExtractTransformer(null, ChronoUnit.DAYS).apply(EcoreUtil.copy(dateExpression), null, context))
+                .withHour(hour)
+                .withMinute(minute)
+                .withSecond(second)
+                .withMillisecond(millisecond)
+                .build();
+    }
+
+    private TimestampConstructionExpression getTimestampConstructionWithNumbers(JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
+        EList<FunctionParameter> parameters = functionCall.getParameters();
+
+        final IntegerExpression second;
+        if (parameters.size() > 5) {
+            second = (IntegerExpression) jqlTransformers.transform(parameters.get(5).getExpression(), context);
         } else {
-            timestampConstructionExpression
-                    .withHour(IntegerConstantBuilder.create().withValue(BigInteger.valueOf(0)).build())
-                    .withMinute(IntegerConstantBuilder.create().withValue(BigInteger.valueOf(0)).build())
-                    .withSecond(IntegerConstantBuilder.create().withValue(BigInteger.valueOf(0)).build());
+            second = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
         }
-        return timestampConstructionExpression.build();
+
+        final IntegerExpression millisecond;
+        if (parameters.size() == 7) {
+            millisecond = (IntegerExpression) jqlTransformers.transform(parameters.get(6).getExpression(), context);
+        } else {
+            millisecond = IntegerConstantBuilder.create().withValue(BigInteger.ZERO).build();
+        }
+
+        return newTimestampConstructionExpressionBuilder()
+                .withYear((IntegerExpression) jqlTransformers.transform(parameters.get(0).getExpression(), context))
+                .withMonth((IntegerExpression) jqlTransformers.transform(parameters.get(1).getExpression(), context))
+                .withDay((IntegerExpression) jqlTransformers.transform(parameters.get(2).getExpression(), context))
+                .withHour((IntegerExpression) jqlTransformers.transform(parameters.get(3).getExpression(), context))
+                .withMinute((IntegerExpression) jqlTransformers.transform(parameters.get(4).getExpression(), context))
+                .withSecond(second)
+                .withMillisecond(millisecond)
+                .build();
     }
 
 }

@@ -407,10 +407,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("of", new ConstructorTransformer(this));
 
         // convert
-        functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
-        functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
-        functionTransformers.put("asseconds", new TimeAsSecondsTransformer(this));
-        functionTransformers.put("fromseconds", new TimeFromSecondsTransformer(this));
+        functionTransformers.put("frommilliseconds", new TemporalFromMillisecondsTransformer(this));
+        functionTransformers.put("asmilliseconds", new TemporalAsMillisecondsTransformer(this));
 
         // arithmetics
         functionTransformers.put("plusyears", new TimestampArithmeticTransformer(this, TimestampPart.YEAR));
