@@ -504,7 +504,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 .withValue(((StringLiteral) jqlExpression).getValue()).build());
         transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
-        transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
+        transformers.put(TimestampLiteral.class, new JqlTimestampLiteralTransformer());
         transformers.put(TimeLiteral.class, new JqlTimeLiteralTransformer());
     }
 

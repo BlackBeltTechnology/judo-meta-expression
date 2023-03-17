@@ -24,6 +24,7 @@ import hu.blackbelt.judo.meta.expression.*;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
+import hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders;
 import hu.blackbelt.judo.meta.expression.constant.util.builder.IntegerConstantBuilder;
 import hu.blackbelt.judo.meta.expression.temporal.TimestampConstructionExpression;
 import hu.blackbelt.judo.meta.expression.temporal.util.builder.TimestampConstructionExpressionBuilder;
@@ -65,17 +66,23 @@ public class ConstructorTransformer<NE, P extends NE, E extends P, C extends NE,
             } else if (jqlTransformers.getModelAdapter().isTimestamp(primitiveType)) {
                 if (functionCall.getParameters().size() == 1 || functionCall.getParameters().size() == 2) {
                     return getTimestampConstructionWithDateAndTime(functionCall, context);
-                } else if (functionCall.getParameters().size() == 6) {
+                } else if (functionCall.getParameters().size() == 6 || functionCall.getParameters().size() == 5) {
+                    final IntegerExpression second;
+                    if (functionCall.getParameters().size() == 6) {
+                        second = (IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(5).getExpression(), context);
+                    } else {
+                        second = ConstantBuilders.newIntegerConstantBuilder().withValue(BigInteger.ZERO).build();
+                    }
                     return newTimestampConstructionExpressionBuilder()
                             .withYear((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(0).getExpression(), context))
                             .withMonth((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(1).getExpression(), context))
                             .withDay((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(2).getExpression(), context))
                             .withHour((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(3).getExpression(), context))
                             .withMinute((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(4).getExpression(), context))
-                            .withSecond((IntegerExpression) jqlTransformers.transform(functionCall.getParameters().get(5).getExpression(), context))
+                            .withSecond(second)
                             .build();
                 } else {
-                    throw new IllegalArgumentException("Invalid number of arguments. Expected: 1, 2 or 6. Got: " + functionCall.getParameters().size());
+                    throw new IllegalArgumentException("Invalid number of arguments. Expected: 1, 2, 5 or 6. Got: " + functionCall.getParameters().size());
                 }
             } else if (jqlTransformers.getModelAdapter().isTime(primitiveType)) {
                 if (functionCall.getParameters().size() != 3) {

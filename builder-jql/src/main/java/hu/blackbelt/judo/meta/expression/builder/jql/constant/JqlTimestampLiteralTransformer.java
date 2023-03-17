@@ -24,7 +24,7 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.TimeStampLiteral;
+import hu.blackbelt.judo.meta.jql.jqldsl.TimestampLiteral;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -35,7 +35,7 @@ public class JqlTimestampLiteralTransformer implements JqlExpressionTransformerF
 
     @Override
     public Expression apply(JqlExpression expression, ExpressionBuildingVariableResolver context) {
-        String timestamp = ((TimeStampLiteral) expression).getValue();
+        String timestamp = ((TimestampLiteral) expression).getValue();
 
         LocalDateTime localDateTime;
         try {
