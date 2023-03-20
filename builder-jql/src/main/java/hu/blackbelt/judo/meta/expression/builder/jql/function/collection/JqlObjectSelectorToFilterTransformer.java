@@ -9,13 +9,13 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -95,7 +95,7 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
             CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
                     .withCollectionExpression(argument)
                     .withCondition(condition)
-                    .build();            
+                    .build();
             if (selector == HEADS || selector == TAILS) {
                 result = collectionFilterExpression;
                 if (context.peekBaseExpression() instanceof CollectionExpression) {
@@ -106,8 +106,8 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
                 if (context.peekBaseExpression() instanceof CollectionExpression) {
                     result = retransformResult(result, aggregationExpression);
                 }
-            }            
-            
+            }
+
         }
         return result;
     }
@@ -118,7 +118,7 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
         // self.classes.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any() =>
         // self.classes.students!filter(_s | self.classes!exists( _c | _c.students!filter(s | (s.height == self=>classes=>students!max(s | s.height)))!any() == _s))
         // in general
-        // from: SELECTOR.RELATION!FILTER!any() 
+        // from: SELECTOR.RELATION!FILTER!any()
         // to: SELECTOR.RELATION!filter(_s | SELECTOR!exists(_c | _c.RELATION!FILTER!any() == _s))
         // This is supported only for cases there is a SELECTOR.RELATION structure. If not, then we keep it as is.
         Expression resultBaseExpression = exp;
@@ -197,7 +197,7 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
                 .withRight(ObjectVariableReferenceBuilder.create().withVariable(newNavigationIterator).build())
                 .withOperator(ObjectComparator.EQUAL).build();
     }
-    
+
     public ContainsExpression existsConditionMulti(CollectionFilterExpression collectionFilterExpression, CollectionNavigationFromObjectExpression internalFiltered, ObjectVariable newNavigationIterator) {
         return LogicalBuilders.newContainsExpressionBuilder()
                 .withCollectionExpression(newCollectionFilterExpressionBuilder()
