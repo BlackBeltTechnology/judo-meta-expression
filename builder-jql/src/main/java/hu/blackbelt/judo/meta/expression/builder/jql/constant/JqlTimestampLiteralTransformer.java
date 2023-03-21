@@ -24,21 +24,31 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.JqlExpressionTransformerFunction;
 import hu.blackbelt.judo.meta.jql.jqldsl.JqlExpression;
-import hu.blackbelt.judo.meta.jql.jqldsl.TimeStampLiteral;
+import hu.blackbelt.judo.meta.jql.jqldsl.TimestampLiteral;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 import static hu.blackbelt.judo.meta.expression.constant.util.builder.ConstantBuilders.newTimestampConstantBuilder;
-
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class JqlTimestampLiteralTransformer implements JqlExpressionTransformerFunction {
 
     @Override
     public Expression apply(JqlExpression expression, ExpressionBuildingVariableResolver context) {
-        TimeStampLiteral timestampLiteral = (TimeStampLiteral) expression;
-        String stringValue = timestampLiteral.getValue();
-        OffsetDateTime offsetDateTime = OffsetDateTime.parse(stringValue, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        return newTimestampConstantBuilder().withValue(offsetDateTime).build();
+        String timestamp = ((TimestampLiteral) expression).getValue();
+
+        LocalDateTime localDateTime;
+        try {
+            localDateTime = LocalDateTime.from(DateTimeFormatter.ISO_LOCAL_DATE_TIME.parse(timestamp));
+        } catch (Exception e) {
+            try {
+                localDateTime = OffsetDateTime.from(DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(timestamp)).atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
+            } catch (Exception e1) {
+                throw new IllegalArgumentException("Unable to parse string (" + timestamp + ") to LocalDateTime", e);
+            }
+        }
+
+        return newTimestampConstantBuilder().withValue(localDateTime).build();
     }
 
 }
