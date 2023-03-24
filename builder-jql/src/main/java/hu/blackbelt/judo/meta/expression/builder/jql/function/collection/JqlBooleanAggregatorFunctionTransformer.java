@@ -50,7 +50,7 @@ public class JqlBooleanAggregatorFunctionTransformer extends AbstractJqlFunction
 
         // [COLLECTION]!anyTrue([VAR] | [CONDITION])  => same
         // [COLLECTION]!allTrue([VAR] | [CONDITION])  => [COLLECTION]!allTrue([VAR] | [CONDITION]!isDefined() AND [CONDITION])
-        // [COLLECTION]!anyFalse([VAR] | [CONDITION]) => [COLLECTION]!anyFalse([VAR] | not [CONDITION]) 
+        // [COLLECTION]!anyFalse([VAR] | [CONDITION]) => [COLLECTION]!anyFalse([VAR] | not [CONDITION])
         // [COLLECTION]!allFalse([VAR] | [CONDITION]) => [COLLECTION]!allFalse([VAR] | (not [CONDITION])!isDefined() AND (not [CONDITION]))
 
         // For allTrue and allFalse the extra undefined check must be added because in SQL instead of forall-like function
