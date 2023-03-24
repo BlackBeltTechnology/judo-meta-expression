@@ -407,10 +407,8 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         functionTransformers.put("of", new ConstructorTransformer(this));
 
         // convert
-        functionTransformers.put("asmilliseconds", new TimestampAsMillisecondsTransformer(this));
-        functionTransformers.put("frommilliseconds", new TimestampFromMillisecondsTransformer(this));
-        functionTransformers.put("asseconds", new TimeAsSecondsTransformer(this));
-        functionTransformers.put("fromseconds", new TimeFromSecondsTransformer(this));
+        functionTransformers.put("frommilliseconds", new TemporalFromMillisecondsTransformer(this));
+        functionTransformers.put("asmilliseconds", new TemporalAsMillisecondsTransformer(this));
 
         // arithmetics
         functionTransformers.put("plusyears", new TimestampArithmeticTransformer(this, TimestampPart.YEAR));
@@ -504,7 +502,7 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
                 .withValue(((StringLiteral) jqlExpression).getValue()).build());
         transformers.put(MeasuredLiteral.class, new JqlMeasuredLiteralTransformer<>(this));
         transformers.put(DateLiteral.class, new JqlDateLiteralTransformer());
-        transformers.put(TimeStampLiteral.class, new JqlTimestampLiteralTransformer());
+        transformers.put(TimestampLiteral.class, new JqlTimestampLiteralTransformer());
         transformers.put(TimeLiteral.class, new JqlTimeLiteralTransformer());
     }
 

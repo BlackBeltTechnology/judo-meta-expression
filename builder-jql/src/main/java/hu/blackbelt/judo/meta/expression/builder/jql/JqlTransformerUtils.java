@@ -49,7 +49,7 @@ public interface JqlTransformerUtils {
         throw new IllegalArgumentException(format);
     }
 
-    static void validateParameterCount(String functionName, List<FunctionParameter> parameters, Integer possibleParameterCount, Integer... possibleParameterCountExt) {
+    static int validateParameterCount(String functionName, List<FunctionParameter> parameters, Integer possibleParameterCount, Integer... possibleParameterCountExt) {
         List<Integer> possibleParameterCounts = new ArrayList<>(List.of(possibleParameterCountExt));
         possibleParameterCounts.add(possibleParameterCount);
 
@@ -59,6 +59,8 @@ public interface JqlTransformerUtils {
                                                              possibleParameterCounts.stream().sorted().map(Object::toString).collect(Collectors.joining(", ")),
                                                              parameters.size()));
         }
+
+        return parameters.size();
     }
 
 }

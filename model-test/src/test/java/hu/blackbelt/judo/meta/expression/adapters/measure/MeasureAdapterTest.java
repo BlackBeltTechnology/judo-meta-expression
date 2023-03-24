@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newImmutableCollectionBuilder;
@@ -502,10 +503,10 @@ public class MeasureAdapterTest {
     public void testIsMeasuredTimestampDifferenceExpression() {
         final NumericExpression duration = newTimestampDifferenceExpressionBuilder()
                 .withStartTimestamp(newTimestampConstantBuilder()
-                        .withValue(OffsetDateTime.parse("2019-01-01T12:00:00+00:00"))
+                        .withValue(OffsetDateTime.parse("2019-01-01T12:00:00+00:00").atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
                         .build())
                 .withEndTimestamp(newTimestampConstantBuilder()
-                        .withValue(OffsetDateTime.parse("2019-01-01T12:00:00+00:00"))
+                        .withValue(OffsetDateTime.parse("2019-01-01T12:00:00+00:00").atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime())
                         .build())
                 .build();
 
