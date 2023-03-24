@@ -9,13 +9,13 @@ package hu.blackbelt.judo.meta.expression.osgi.itest;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -76,15 +76,15 @@ public class ExpressionBundleITest {
 
     @Inject
     BundleContext bundleContext;
-    
+
 //    @Inject
 //    PsmModel psmModel;
-    
+
     @Inject
     ExpressionModel expressionModel;
 
     @Configuration
-    public Option[] config() throws IOException, ExpressionValidationException { // //, PsmValidationException, 
+    public Option[] config() throws IOException, ExpressionValidationException { // //, PsmValidationException,
 
         return combine(karafConfig(this.getClass()),
                 mavenBundle(maven()
@@ -162,8 +162,8 @@ public class ExpressionBundleITest {
                 .getState());
 
     }
-    
-    public Option getProvisonModelBundle() throws IOException, ExpressionValidationException { // PsmValidationException, 
+
+    public Option getProvisonModelBundle() throws IOException, ExpressionValidationException { // PsmValidationException,
         return provision(
 //                getPsmModelBundle(),
                 getExpressionModelBundle()
@@ -172,45 +172,45 @@ public class ExpressionBundleITest {
 
     /*
     private InputStream getPsmModelBundle() throws IOException, PsmValidationException {
-    	
-    	PsmModel psmModel = buildPsmModel()
+
+        PsmModel psmModel = buildPsmModel()
                 .name(DEMO_PSM)
                 .build();
-    	
-    	ByteArrayOutputStream os = new ByteArrayOutputStream();
-    	
-    	psmModel.savePsmModel(SaveArguments.psmSaveArgumentsBuilder().outputStream(os));
- 	
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        psmModel.savePsmModel(SaveArguments.psmSaveArgumentsBuilder().outputStream(os));
+
         return bundle()
                 .add( "model/" + DEMO_PSM + ".judo-meta-psm",
-                		new ByteArrayInputStream(os.toByteArray()))
+                        new ByteArrayInputStream(os.toByteArray()))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_PSM + "-psm" )
                 .set( "Psm-Models", "file=model/" + DEMO_PSM + ".judo-meta-psm;name=" + DEMO_PSM)
                 .build( withBnd());
     }
     */
-    
+
     private InputStream getExpressionModelBundle() throws IOException, ExpressionValidationException {
-    	
-    	ExpressionModel expressionModel = buildExpressionModel()
+
+        ExpressionModel expressionModel = buildExpressionModel()
                 .name(DEMO_EXPRESSION)
                 .build();
-    	
-    	ByteArrayOutputStream os = new ByteArrayOutputStream();
-    	
-    	expressionModel.saveExpressionModel(hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments
-    			.expressionSaveArgumentsBuilder().outputStream(os));
-    	
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        expressionModel.saveExpressionModel(hu.blackbelt.judo.meta.expression.runtime.ExpressionModel.SaveArguments
+                .expressionSaveArgumentsBuilder().outputStream(os));
+
         return bundle()
                 .add( "model/" + DEMO_EXPRESSION + ".judo-meta-expression",
-                		new ByteArrayInputStream(os.toByteArray()))
+                        new ByteArrayInputStream(os.toByteArray()))
                 .set( Constants.BUNDLE_MANIFESTVERSION, "2")
                 .set( Constants.BUNDLE_SYMBOLICNAME, DEMO_EXPRESSION + "-expression" )
                 .set( "Expression-Models", "file=model/" + DEMO_EXPRESSION + ".judo-meta-expression;name=" + DEMO_EXPRESSION)
                 .build( withBnd());
     }
-    
+
     /*
     @Test
     public void testModelValidation() throws Exception {

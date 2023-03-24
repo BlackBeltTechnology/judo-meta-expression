@@ -9,13 +9,13 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -404,7 +404,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName buildTypeName(String namespace, String name) {
-    	TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
+        TypeName typeName = newTypeNameBuilder().withName(name).withNamespace(namespace).build();
         return modelAdapter.get(typeName).flatMap(modelAdapter::buildTypeName).orElse(null);
     }
 
@@ -505,20 +505,20 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public void addFunctionTransformer(String functionName, Function<JqlTransformers, JqlFunctionTransformer<? extends Expression>> transformer) {
-    	jqlTransformers.addFunctionTransformer(functionName, transformer);
+        jqlTransformers.addFunctionTransformer(functionName, transformer);
     }
 
     public void setResolveDerived(boolean resolveDerived) {
-		jqlTransformers.setResolveDerived(resolveDerived);
+        jqlTransformers.setResolveDerived(resolveDerived);
     }
 
     /**
      * Returns true if c2 equals c1 or, c2 is a supertype of c1
      */
     public boolean isKindOf(C c1, C c2) {
-    	if (c1.equals(c2)) {
-    		return true;
-    	}
+        if (c1.equals(c2)) {
+            return true;
+        }
         Set<C> checkedSuperTypes = new LinkedHashSet<>();
         Collection<? extends C> superTypes = getModelAdapter().getSuperTypes(c1);
         checkedSuperTypes.addAll(superTypes);
@@ -533,9 +533,9 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public MappedTransferObjectCompatibility getMappedTransferObjectTypeCompatibility(TO from, TO to) {
-    	MappedTransferObjectCompatibility result = MappedTransferObjectCompatibility.NONE;
+        MappedTransferObjectCompatibility result = MappedTransferObjectCompatibility.NONE;
         if (from.equals(to)) {
-        	result = MappedTransferObjectCompatibility.KINDOF;
+            result = MappedTransferObjectCompatibility.KINDOF;
         }
         if (result == MappedTransferObjectCompatibility.NONE) {
             EList<TO> allMappedTransferObjectTypes = getModelAdapter().getAllMappedTransferObjectTypes();
@@ -543,9 +543,9 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
                 C mappedEntityFrom = getModelAdapter().getMappedEntityType(from).get();
                 C mappedEntityTo = getModelAdapter().getMappedEntityType(to).get();
                 if (isKindOf(mappedEntityFrom, mappedEntityTo)) {
-                	result = MappedTransferObjectCompatibility.KINDOF;
+                    result = MappedTransferObjectCompatibility.KINDOF;
                 } else if (isKindOf(mappedEntityTo, mappedEntityFrom)) {
-                	result = MappedTransferObjectCompatibility.SUPERTYPE;
+                    result = MappedTransferObjectCompatibility.SUPERTYPE;
                 }
             }
         }
@@ -553,7 +553,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public enum MappedTransferObjectCompatibility {
-    	NONE, KINDOF, SUPERTYPE
+        NONE, KINDOF, SUPERTYPE
     }
 
     public void setBuilderConfig(JqlExpressionBuilderConfig builderConfig) {
