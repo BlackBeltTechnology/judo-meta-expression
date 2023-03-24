@@ -9,13 +9,13 @@ package hu.blackbelt.judo.meta.expression.builder.jql;
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License 2.0 which is available at
  * http://www.eclipse.org/legal/epl-2.0.
- * 
+ *
  * This Source Code may also be made available under the following Secondary
  * Licenses when the conditions for such availability set forth in the Eclipse
  * Public License, v. 2.0 are satisfied: GNU General Public License, version 2
  * with the GNU Classpath Exception which is
  * available at https://www.gnu.org/software/classpath/license.html.
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0 OR GPL-2.0 WITH Classpath-exception-2.0
  * #L%
  */
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVariableResolver {
 
     private final Deque<Deque<Variable>> lambdaScopes = new ArrayDeque<>();
-	private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
+    private final Deque<Object> resolvedAccessors = new ArrayDeque<>();
     private final Deque<Object> resolvedBases = new ArrayDeque<>();
     private final Deque<Expression> baseExpressions = new ArrayDeque<>();
     private TO inputParameterType;
@@ -158,22 +158,22 @@ public class JqlExpressionBuildingContext<TO> implements ExpressionBuildingVaria
         } else {
             lambdaScopes.forEach(scope -> result.addAll(scope));
         }
-		return Collections.unmodifiableCollection(result);
-	}
+        return Collections.unmodifiableCollection(result);
+    }
 
-	@Override
-	public void removeVariable(Variable variable) {
-	    if (resolveOnlyCurrentLambdaScope()) {
-	        variableScope().remove(variable);
-	    } else {
-	        lambdaScopes.forEach(scope -> scope.remove(variable));
-	    }
-	}
+    @Override
+    public void removeVariable(Variable variable) {
+        if (resolveOnlyCurrentLambdaScope()) {
+            variableScope().remove(variable);
+        } else {
+            lambdaScopes.forEach(scope -> scope.remove(variable));
+        }
+    }
 
-	@Override
-	public boolean resolveOnlyCurrentLambdaScope() {
-	    return config.isResolveOnlyCurrentLambdaScope();
-	}
+    @Override
+    public boolean resolveOnlyCurrentLambdaScope() {
+        return config.isResolveOnlyCurrentLambdaScope();
+    }
 
     @Override
     public void pushVariableScope() {
