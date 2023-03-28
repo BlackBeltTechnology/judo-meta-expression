@@ -782,6 +782,7 @@
         <genOperations ecoreOperation="expression.ecore#//logical/TimeComparison/toString"
             body="return &quot;(&quot; + getLeft() + &quot; &quot; + getOperator() + &quot; &quot; + getRight() + &quot;)&quot;;"/>
       </genClasses>
+      <genClasses ecoreClass="expression.ecore#//logical/LogicalSwitchExpression"/>
     </nestedGenPackages>
     <nestedGenPackages prefix="String" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"
