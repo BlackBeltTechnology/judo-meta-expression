@@ -133,7 +133,7 @@ context EXPR!DecimalSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsNumeric {
-        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!NumericExpression)
+        guard: self.eContainer.isKindOf(EXPR!NumericExpression) and self.eContainer.as(EXPR!NumericExpression).satisfiesAll("Resolved")
         
         check: self.expression.isKindOf(EXPR!NumericExpression)
         message: "Type of switch case expression is not numeric: " + self.expression

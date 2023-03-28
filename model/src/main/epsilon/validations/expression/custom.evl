@@ -23,7 +23,7 @@ context EXPR!CustomSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsCustom {
-        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!CustomExpression)
+        guard: self.eContainer.isKindOf(EXPR!CustomSwitchExpression) and self.eContainer.as(EXPR!CustomSwitchExpression).satisfiesAll("Resolved")
         
         check: self.expression.isKindOf(EXPR!CustomExpression)
         message: "Type of switch case expression is not custom (expression type): " + self.expression
