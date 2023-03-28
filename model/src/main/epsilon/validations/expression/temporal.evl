@@ -101,21 +101,21 @@ context EXPR!TimeSwitchExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsDate {
-        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!DateExpression)
+        guard: self.eContainer.isKindOf(EXPR!DateSwitchExpression) and self.eContainer.as(EXPR!DateSwitchExpression).satisfiesAll("Resolved")
         
         check: self.expression.isKindOf(EXPR!DateExpression)
         message: "Type of switch case expression is not date (expression type): " + self.expression
     }
     
     constraint TypeOfSwitchCaseIsTimestamp {
-        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!TimestampExpression)
+        guard: self.eContainer.isKindOf(EXPR!TimestampSwitchExpression) and self.eContainer.as(EXPR!TimestampSwitchExpression).satisfiesAll("Resolved")
         
         check: self.expression.isKindOf(EXPR!TimestampExpression)
         message: "Type of switch case expression is not timestamp (expression type): " + self.expression
     }
 
     constraint TypeOfSwitchCaseIsTime {
-        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!TimeExpression)
+        guard: self.eContainer.isKindOf(EXPR!TimeSwitchExpression) and self.eContainer.as(EXPR!TimeSwitchExpression).satisfiesAll("Resolved")
         
         check: self.expression.isKindOf(EXPR!TimeExpression)
         message: "Type of switch case expression is not time (expression type): " + self.expression
