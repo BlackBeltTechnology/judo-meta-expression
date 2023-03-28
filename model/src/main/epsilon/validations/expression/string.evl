@@ -89,7 +89,7 @@ context EXPR!StringAggregatedExpression {
 
 context EXPR!SwitchCase {
     constraint TypeOfSwitchCaseIsString {
-        guard: self.eContainer.satisfiesAll("Resolved") and self.eContainer.isKindOf(EXPR!StringExpression)
+        guard: self.eContainer.isKindOf(EXPR!StringSwitchExpression) and self.eContainer.as(EXPR!StringSwitchExpression).satisfiesAll("Resolved")
         
         check: self.expression.isKindOf(EXPR!StringExpression)
         message: "Type of switch case expression is not string: " + self.expression
