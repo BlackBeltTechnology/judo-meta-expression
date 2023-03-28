@@ -26,9 +26,12 @@ import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationSwitchExpressionBuilder;
+import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
 import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.util.builder.SwitchCaseBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.TernaryOperation;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -36,6 +39,7 @@ import java.util.function.BiFunction;
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationBuilders.newEnumerationSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newLogicalSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newDecimalSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSwitchExpressionBuilder;
@@ -75,7 +79,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
             put(StringExpression.class, (thenCase, elseExpression) -> newStringSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(TimestampExpression.class, (thenCase, elseExpression) -> newTimestampSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(TimeExpression.class, (thenCase, elseExpression) -> newTimeSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
-
+            put(LogicalExpression.class, (thenCase, elseExpression) -> newLogicalSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
         }
     };
 
@@ -179,7 +183,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
     private void validateEnumTypes(EnumerationExpression thenExpression, EnumerationExpression elseExpression) {
         Object thenEnum = thenExpression.getEnumeration(getModelAdapter());
         Object elseEnum = elseExpression.getEnumeration(getModelAdapter());
-        if (!Objects.equals(thenEnum, elseEnum)) {
+        if (!EcoreUtil.equals((EObject) thenEnum, (EObject) elseEnum)) {
             throw new IllegalArgumentException(String.format("THEN and ELSE part different enumerations: %s vs %s", thenEnum, elseEnum));
         }
     }

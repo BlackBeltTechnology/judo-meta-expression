@@ -1314,6 +1314,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
           eType="#//operator/NumericComparator"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LogicalSwitchExpression" eSuperTypes="#//SwitchExpression #//LogicalExpression"/>
   </eSubpackages>
   <eSubpackages name="string" nsURI="http://blackbelt.hu/judo/meta/expression/string"
       nsPrefix="str">
