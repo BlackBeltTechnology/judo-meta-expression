@@ -282,10 +282,18 @@ public class JqlBinaryOperationTransformer<NE, P extends NE, E extends P, C exte
             throw new IllegalArgumentException(String.format("Operands are not of the same enumeration, %s <-> %s", leftType, rightType));
         }
         switch (operator) {
+            case "<":
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(EnumerationComparator.LESS_THAN).build();
+            case ">":
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(EnumerationComparator.GREATER_THAN).build();
+            case "<=":
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(EnumerationComparator.LESS_OR_EQUAL).build();
+            case ">=":
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(EnumerationComparator.GREATER_OR_EQUAL).build();
             case "==":
-                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.EQUAL).build();
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(EnumerationComparator.EQUAL).build();
             case "!=":
-                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(ObjectComparator.NOT_EQUAL).build();
+                return newEnumerationComparisonBuilder().withLeft(left).withRight(right).withOperator(EnumerationComparator.NOT_EQUAL).build();
             default:
                 throw new UnsupportedOperationException("Invalid enumeration operation: " + operator);
         }
