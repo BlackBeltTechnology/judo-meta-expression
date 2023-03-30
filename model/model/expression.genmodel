@@ -420,6 +420,14 @@
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/TimeAggregator/max"/>
         <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/TimeAggregator/avg"/>
       </genEnums>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="expression.ecore#//operator/EnumerationComparator">
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/EnumerationComparator/lessThan"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/EnumerationComparator/greaterThan"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/EnumerationComparator/lessOrEqual"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/EnumerationComparator/greaterOrEqual"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/EnumerationComparator/equal"/>
+        <genEnumLiterals ecoreEnumLiteral="expression.ecore#//operator/EnumerationComparator/notEqual"/>
+      </genEnums>
     </nestedGenPackages>
     <nestedGenPackages prefix="Numeric" resource="XMI" disposableProviderFactory="true"
         dataTypeConverters="true" extensibleProviderFactory="true" childCreationExtenders="true"

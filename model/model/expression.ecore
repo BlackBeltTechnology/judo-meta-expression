@@ -620,6 +620,14 @@
       <eLiterals name="max" value="2"/>
       <eLiterals name="avg" value="3"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="EnumerationComparator">
+      <eLiterals name="lessThan" literal="&lt;"/>
+      <eLiterals name="greaterThan" value="1" literal=">"/>
+      <eLiterals name="lessOrEqual" value="2" literal="&lt;="/>
+      <eLiterals name="greaterOrEqual" value="3" literal=">="/>
+      <eLiterals name="equal" value="4" literal="=="/>
+      <eLiterals name="notEqual" value="5" literal="!="/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="numeric" nsURI="http://blackbelt.hu/judo/meta/expression/numeric"
       nsPrefix="n">
@@ -988,7 +996,7 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="right" lowerBound="1"
           eType="#//EnumerationExpression" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" lowerBound="1"
-          eType="#//operator/ObjectComparator"/>
+          eType="#//operator/EnumerationComparator"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NegationExpression" eSuperTypes="#//LogicalExpression">
       <eOperations name="getOperands" upperBound="-1" eType="#//Expression">
