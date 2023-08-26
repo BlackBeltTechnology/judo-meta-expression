@@ -45,7 +45,7 @@ Import-Package: hu.blackbelt.judo.meta.expression,
  org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.resource,
  org.eclipse.emf.ecore.util,
- org.slf4j;version="(1.6,3]"
+ org.slf4j;version="[1.6,3)"
 Export-Package: hu.blackbelt.judo.meta.expression.builder.jql,
  hu.blackbelt.judo.meta.expression.builder.jql.expression,
  hu.blackbelt.judo.meta.expression.builder.jql.function,
