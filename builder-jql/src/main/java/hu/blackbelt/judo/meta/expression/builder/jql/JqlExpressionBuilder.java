@@ -31,6 +31,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -59,29 +60,97 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
     private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
+
+    /*
     private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
     private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
     private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
     private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
     private final Map<String, TypeName> primitiveTypes = new ConcurrentHashMap<>();
     private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
+    */
+
+    private final EMap<C, Instance> entityInstances = ECollections.asEMap(new HashMap<>());
+    private final Map<String, MeasureName> measureNames = new HashMap<>();
+    private final Map<String, MeasureName> durationMeasures = new HashMap<>();
+    private final Map<String, TypeName> enumTypes = new HashMap<>();
+    private final Map<String, TypeName> primitiveTypes = new HashMap<>();
+    private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new HashMap<>());
+
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
     private JqlExpressionBuilderConfig config;
 
+    private JqlExpressionBuilderModelAdapterCache<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> cache;
     public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
         this.config = config;
+        this.cache = JqlExpressionBuilderModelAdapterCache.getCache(modelAdapter);
 
-        addMeasures();
-        addEntityTypes();
-        addEnums();
-        addSequences();
-        addTransferObjectTypes();
-        addActors();
-        addPrimitiveTypes();
+        if (cache.getTemplateExpressionModel().getContents().size() == 0) {
+            addMeasures(cache.getTemplateExpressionModel(), cache.getMeasureNames(), cache.getDurationMeasures());
+            addEntityTypes(cache.getTemplateExpressionModel(), (EMap<C, Instance>) cache.getEntityInstances());
+            addEnums(cache.getTemplateExpressionModel(), cache.getEnumTypes());
+            addSequences(cache.getTemplateExpressionModel());
+            addTransferObjectTypes(cache.getTemplateExpressionModel(), (EMap<TO, TypeName>) cache.getTransferObjectTypes());
+            addActors(cache.getTemplateExpressionModel());
+            addPrimitiveTypes(cache.getTemplateExpressionModel(), cache.getPrimitiveTypes());
+        }
+        this.expressionResource.getContents().addAll(EcoreUtil.copyAll(cache.getTemplateExpressionModel().getContents ()));
+
+        // Remap cache
+        for (String key : cache.getMeasureNames().keySet()) {
+            measureNames.put(key,
+                    all(this.expressionResource.getResourceSet(), MeasureName.class)
+                            .filter(m -> Objects.equals(m.getName(), cache.getMeasureNames().get(key).getName()) &&
+                                    Objects.equals(m.getNamespace(), cache.getMeasureNames().get(key).getNamespace()))
+                            .findFirst().get());
+        }
+
+        for (String key : cache.getDurationMeasures().keySet()) {
+            durationMeasures.put(key,
+                    all(this.expressionResource.getResourceSet(), MeasureName.class)
+                            .filter(m -> Objects.equals(m.getName(), cache.getDurationMeasures().get(key).getName()) &&
+                                    Objects.equals(m.getNamespace(), cache.getDurationMeasures().get(key).getNamespace()))
+                            .findFirst().get());
+        }
+
+        for (C key : ((EMap<C, Instance>) cache.getEntityInstances()).keySet()) {
+            entityInstances.put(key,
+                    all(this.expressionResource.getResourceSet(), Instance.class)
+                            .filter(m -> Objects.equals(m.getName(), cache.getEntityInstances().get(key).getName()) &&
+                                    Objects.equals(m.getElementName().getNamespace(), cache.getEntityInstances().get(key).getElementName().getNamespace()) &&
+                                    Objects.equals(m.getElementName().getName(), cache.getEntityInstances().get(key).getElementName().getName())
+                            )
+                            .findFirst().get());
+        }
+
+        for (String key : cache.getEnumTypes().keySet()) {
+            enumTypes.put(key,
+                    all(this.expressionResource.getResourceSet(), TypeName.class)
+                            .filter(m -> Objects.equals(m.getName(), cache.getEnumTypes().get(key).getName()) &&
+                                    Objects.equals(m.getNamespace(), cache.getEnumTypes().get(key).getNamespace()))
+                            .findFirst().get());
+        }
+
+        for (TO key : ((EMap<TO, TypeName>) cache.getTransferObjectTypes()).keySet()) {
+            transferObjectTypes.put(key,
+                    all(this.expressionResource.getResourceSet(), TypeName.class)
+                            .filter(m -> Objects.equals(m.getName(), cache.getTransferObjectTypes().get(key).getName()) &&
+                                    Objects.equals(m.getNamespace(), cache.getTransferObjectTypes().get(key).getNamespace()))
+                            .findFirst().get());
+        }
+
+        for (String key : cache.getPrimitiveTypes().keySet()) {
+            enumTypes.put(key,
+                    all(this.expressionResource.getResourceSet(), TypeName.class)
+                            .filter(m -> Objects.equals(m.getName(), cache.getPrimitiveTypes().get(key).getName()) &&
+                                    Objects.equals(m.getNamespace(), cache.getPrimitiveTypes().get(key).getNamespace()))
+                            .findFirst().get());
+        }
+
     }
 
     public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
@@ -110,49 +179,49 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return String.join(NAMESPACE_SEPARATOR, allElements);
     }
 
-    private void addSequences() {
+    private void addSequences(Resource expressionResource) {
         modelAdapter.getAllStaticSequences().forEach(e -> {
             TypeName typeName = modelAdapter.buildTypeName(e).get();
-            storeTypeName(e, typeName);
+            storeTypeName(expressionResource, e, typeName);
         });
     }
 
-    private void addTransferObjectTypes() {
+    private void addTransferObjectTypes(Resource expressionResource, EMap<TO, TypeName> transferObjectTypes) {
         modelAdapter.getAllTransferObjectTypes().forEach(t -> {
             TypeName typeName = modelAdapter.buildTypeName(t).get();
-            storeTypeName(t, typeName);
+            storeTypeName(expressionResource, t, typeName);
             transferObjectTypes.put(t, typeName);
         });
     }
 
-    private void addActors() {
+    private void addActors(Resource expressionResource) {
         modelAdapter.getAllActorTypes().forEach(t -> {
             TypeName typeName = modelAdapter.buildTypeName(t).get();
-            storeTypeName(t, typeName);
+            storeTypeName(expressionResource, t, typeName);
         });
     }
 
 
-    private void addEnums() {
+    private void addEnums(Resource expressionResource, Map<String, TypeName> enumTypes) {
         modelAdapter.getAllEnums().forEach(e -> {
             TypeName enumTypeName = modelAdapter.buildTypeName(e).get();
-            storeTypeName(e, enumTypeName);
+            storeTypeName(expressionResource, e, enumTypeName);
             enumTypes.put(enumTypeName.getNamespace() + NAMESPACE_SEPARATOR + enumTypeName.getName(), enumTypeName);
         });
     }
 
-    private void addPrimitiveTypes() {
+    private void addPrimitiveTypes(Resource expressionResource, Map<String, TypeName> primitiveTypes) {
         modelAdapter.getAllPrimitiveTypes().forEach(e -> {
             TypeName primitiveTypeName = modelAdapter.buildTypeName(e).get();
-            storeTypeName(e, primitiveTypeName);
+            storeTypeName(expressionResource, e, primitiveTypeName);
             primitiveTypes.put(primitiveTypeName.getNamespace() + NAMESPACE_SEPARATOR + primitiveTypeName.getName(), primitiveTypeName);
         });
     }
 
-    private void addEntityTypes() {
+    private void addEntityTypes(Resource expressionResource, EMap<C, Instance> entityInstances) {
         modelAdapter.getAllEntityTypes().forEach(clazz -> {
             final TypeName typeName = modelAdapter.buildTypeName(clazz).get();
-            storeTypeName(clazz, typeName);
+            storeTypeName(expressionResource, clazz, typeName);
 
             Optional<Instance> foundSelf = all(expressionResource.getResourceSet(), Instance.class)
                     .filter(i -> Objects.equals(i.getName(), SELF_NAME) && EcoreUtil.equals(i.getElementName(), typeName))
@@ -174,7 +243,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         });
     }
 
-    private void storeTypeName(NE namespaceElement, TypeName typeName) {
+    private void storeTypeName(Resource expressionResource, NE namespaceElement, TypeName typeName) {
         if (all(expressionResource.getResourceSet(), TypeName.class)
                 .noneMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
             expressionResource.getContents().add(typeName);
@@ -183,7 +252,7 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         }
     }
 
-    private void addMeasures() {
+    private void addMeasures(Resource expressionResource, Map<String, MeasureName> measureNames, Map<String, MeasureName> durationMeasures) {
         modelAdapter.getAllMeasures().forEach(measure -> {
             MeasureName measureName = modelAdapter.buildMeasureName(measure).get();
             String measureNameString = String.join(NAMESPACE_SEPARATOR, measureName.getNamespace(), measureName.getName());
