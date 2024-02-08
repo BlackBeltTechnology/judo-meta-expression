@@ -45,26 +45,30 @@ public class ExpressionEvaluator {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ExpressionEvaluator.class);
     private final Set<Expression> allExpressions = new HashSet<>();
 
-    private final EMap<Expression, ReferenceExpression> lambdaContainers = ECollections.asEMap(new ConcurrentHashMap<>());
-    private final EMap<ReferenceExpression, ReferenceExpression> referenceSources = ECollections.asEMap(new ConcurrentHashMap<>());
+    private final Map<Expression, ReferenceExpression> lambdaContainers = new ConcurrentHashMap<>();
+    private final Map<ReferenceExpression, ReferenceExpression> referenceSources = new ConcurrentHashMap<>();
     private final Set<Expression> leaves = new HashSet<>();
 
     public void init(final Collection<Expression> expressions) {
         expressions.forEach(expression -> addToAllExpressions(expression));
 
-        getAllInstances(Expression.class).forEach(expression -> {
-            final Optional<ReferenceExpression> lambdaContainer = getAllInstances(ReferenceExpression.class)
+        Set<Expression> allPlainExpression = getAllInstances(Expression.class).collect(Collectors.toSet());
+        Set<ReferenceExpression> allReferenceExpression = getAllInstances(ReferenceExpression.class).collect(Collectors.toSet());
+
+        allPlainExpression.parallelStream().forEach(expression -> {
+            final Optional<ReferenceExpression> lambdaContainer = allReferenceExpression.stream()
                     .filter(referenceExpression -> referenceExpression.getLambdaFunctions().contains(expression))
                     .findAny();
 
             if (lambdaContainer.isPresent()) {
                 lambdaContainers.put(expression, lambdaContainer.get());
             }
+
         });
 
-        getAllInstances(ReferenceExpression.class).forEach(referenceExpression -> {
+        allReferenceExpression.parallelStream().forEach(referenceExpression -> {
             // single sources are supported only (ie. filtering unions is unsupported)
-            final Optional<ReferenceExpression> referenceSource = getAllInstances(ReferenceExpression.class)
+            final Optional<ReferenceExpression> referenceSource = allReferenceExpression.stream()
                     .filter(referenceSourceExpression -> referenceExpression.getOperands().contains(referenceSourceExpression))
                     .findAny();
 
