@@ -31,6 +31,7 @@ import hu.blackbelt.judo.meta.jql.jqldsl.QualifiedName;
 import hu.blackbelt.judo.meta.jql.runtime.JqlParser;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -59,29 +60,66 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     public static final String NAMESPACE_SEPARATOR = "::";
     private final Resource expressionResource;
     private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
-    private final EMap<C, Instance> entityInstances = ECollections.asEMap(new ConcurrentHashMap<>());
-    private final Map<String, MeasureName> measureNames = new ConcurrentHashMap<>();
-    private final Map<String, MeasureName> durationMeasures = new ConcurrentHashMap<>();
-    private final Map<String, TypeName> enumTypes = new ConcurrentHashMap<>();
-    private final Map<String, TypeName> primitiveTypes = new ConcurrentHashMap<>();
-    private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new ConcurrentHashMap<>());
+
+    private final EMap<C, Instance> entityInstances = ECollections.asEMap(new HashMap<>());
+    private final Map<String, MeasureName> measureNames = new HashMap<>();
+    private final Map<String, MeasureName> durationMeasures = new HashMap<>();
+    private final Map<String, TypeName> enumTypes = new HashMap<>();
+    private final Map<String, TypeName> primitiveTypes = new HashMap<>();
+    private final EMap<TO, TypeName> transferObjectTypes = ECollections.asEMap(new HashMap<>());
+
     private final JqlParser jqlParser = new JqlParser();
     private final JqlTransformers jqlTransformers;
     private JqlExpressionBuilderConfig config;
 
+    private JqlExpressionBuilderModelAdapterCache<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> cache;
     public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource, JqlExpressionBuilderConfig config) {
         this.modelAdapter = modelAdapter;
         this.expressionResource = expressionResource;
         this.jqlTransformers = new JqlTransformers<>(this);
         this.config = config;
+        this.cache = JqlExpressionBuilderModelAdapterCache.getCache(modelAdapter);
 
-        addMeasures();
-        addEntityTypes();
-        addEnums();
-        addSequences();
-        addTransferObjectTypes();
-        addActors();
-        addPrimitiveTypes();
+        Map<EObject, EObject> map = cloneExpression();
+        remapCache(map);
+
+    }
+
+
+    private Map<EObject, EObject> cloneExpression() {
+        EcoreUtil.Copier copier = new EcoreUtil.Copier();
+        synchronized (cache.getTemplateExpressionModel()) {
+            Collection<EObject> toCopy = copier.copyAll(cache.getTemplateExpressionModel().getContents());
+            copier.copyReferences();
+            this.expressionResource.getContents().addAll(toCopy);
+        }
+        return copier;
+    }
+
+    private void remapCache(Map<EObject, EObject> map) {
+        for (String key : cache.getMeasureNames().keySet()) {
+            measureNames.put(key, (MeasureName) map.get(cache.getMeasureNames().get(key)));
+        }
+
+        for (String key : cache.getDurationMeasures().keySet()) {
+            durationMeasures.put(key, (MeasureName) map.get(cache.getDurationMeasures().get(key)));
+        }
+
+        for (C key : ((EMap<C, Instance>) cache.getEntityInstances()).keySet()) {
+            entityInstances.put(key, (Instance) map.get(cache.getEntityInstances().get(key)));
+        }
+
+        for (String key : cache.getEnumTypes().keySet()) {
+            enumTypes.put(key, (TypeName) map.get(cache.getEnumTypes().get(key)));
+        }
+
+        for (TO key : ((EMap<TO, TypeName>) cache.getTransferObjectTypes()).keySet()) {
+            transferObjectTypes.put(key, (TypeName) map.get(cache.getTransferObjectTypes().get(key)));
+        }
+
+        for (String key : cache.getPrimitiveTypes().keySet()) {
+            primitiveTypes.put(key, (TypeName) map.get(cache.getPrimitiveTypes().get(key)));
+        }
     }
 
     public JqlExpressionBuilder(ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, Resource expressionResource) {
@@ -110,92 +148,6 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         return String.join(NAMESPACE_SEPARATOR, allElements);
     }
 
-    private void addSequences() {
-        modelAdapter.getAllStaticSequences().forEach(e -> {
-            TypeName typeName = modelAdapter.buildTypeName(e).get();
-            storeTypeName(e, typeName);
-        });
-    }
-
-    private void addTransferObjectTypes() {
-        modelAdapter.getAllTransferObjectTypes().forEach(t -> {
-            TypeName typeName = modelAdapter.buildTypeName(t).get();
-            storeTypeName(t, typeName);
-            transferObjectTypes.put(t, typeName);
-        });
-    }
-
-    private void addActors() {
-        modelAdapter.getAllActorTypes().forEach(t -> {
-            TypeName typeName = modelAdapter.buildTypeName(t).get();
-            storeTypeName(t, typeName);
-        });
-    }
-
-
-    private void addEnums() {
-        modelAdapter.getAllEnums().forEach(e -> {
-            TypeName enumTypeName = modelAdapter.buildTypeName(e).get();
-            storeTypeName(e, enumTypeName);
-            enumTypes.put(enumTypeName.getNamespace() + NAMESPACE_SEPARATOR + enumTypeName.getName(), enumTypeName);
-        });
-    }
-
-    private void addPrimitiveTypes() {
-        modelAdapter.getAllPrimitiveTypes().forEach(e -> {
-            TypeName primitiveTypeName = modelAdapter.buildTypeName(e).get();
-            storeTypeName(e, primitiveTypeName);
-            primitiveTypes.put(primitiveTypeName.getNamespace() + NAMESPACE_SEPARATOR + primitiveTypeName.getName(), primitiveTypeName);
-        });
-    }
-
-    private void addEntityTypes() {
-        modelAdapter.getAllEntityTypes().forEach(clazz -> {
-            final TypeName typeName = modelAdapter.buildTypeName(clazz).get();
-            storeTypeName(clazz, typeName);
-
-            Optional<Instance> foundSelf = all(expressionResource.getResourceSet(), Instance.class)
-                    .filter(i -> Objects.equals(i.getName(), SELF_NAME) && EcoreUtil.equals(i.getElementName(), typeName))
-                    .findAny();
-
-            final Instance self;
-            if (!foundSelf.isPresent()) {
-                self = newInstanceBuilder()
-                        .withElementName(typeName.eResource() != null ? typeName : buildTypeName(typeName.getNamespace(), typeName.getName()))
-                        .withName(SELF_NAME)
-                        .build();
-                expressionResource.getContents().add(self);
-            } else {
-                LOGGER.trace("  - self instance is already added to resource set: {}", clazz);
-                self = foundSelf.get();
-            }
-
-            entityInstances.put(clazz, self);
-        });
-    }
-
-    private void storeTypeName(NE namespaceElement, TypeName typeName) {
-        if (all(expressionResource.getResourceSet(), TypeName.class)
-                .noneMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
-            expressionResource.getContents().add(typeName);
-        } else {
-            LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
-        }
-    }
-
-    private void addMeasures() {
-        modelAdapter.getAllMeasures().forEach(measure -> {
-            MeasureName measureName = modelAdapter.buildMeasureName(measure).get();
-            String measureNameString = String.join(NAMESPACE_SEPARATOR, measureName.getNamespace(), measureName.getName());
-            boolean alreadyAdded = measureNames.containsKey(measureNameString);
-            if (!alreadyAdded) {
-                expressionResource.getContents().add(measureName);
-                measureNames.put(measureNameString, measureName);
-                modelAdapter.getUnits(measure).stream().filter(modelAdapter::isDurationSupportingAddition).findAny().ifPresent(u -> durationMeasures.put(measureNameString, measureName));
-            }
-
-        });
-    }
 
     /**
      * Get type name of a given class (ASM/PSM/ESM model element).
