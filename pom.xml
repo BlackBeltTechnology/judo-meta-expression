@@ -67,8 +67,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-		<epsilon-runtime-version>1.5.1.20241128_093741_e2eaf095_develop</epsilon-runtime-version>
-		<epsilon-runtime-eclipse-version>1.5.4.20241128_095502_f9006cb0_develop</epsilon-runtime-eclipse-version>
+		<epsilon-runtime-version>1.5.1.20241201_231013_11914e21_feature_JNG_5995_ImproveSpeed</epsilon-runtime-version>
+		<epsilon-runtime-eclipse-version>1.5.4.20241201_232955_badd3b8b_feature_JNG_5995_ImproveSpeed</epsilon-runtime-eclipse-version>
         
         <src.dir>src/main</src.dir>
 
@@ -98,7 +98,7 @@
         <pax-exam-version>4.13.5</pax-exam-version>
 
         <judo-meta-jql-version>1.0.4.20241127_233906_fda2e24e_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.2.20241128_100612_170f81d9_develop</judo-meta-measure-version>
+        <judo-meta-measure-version>1.0.2.20241201_233437_3003ce9b_feature_JNG_5995_ImproveSpeed</judo-meta-measure-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
         <platformSystemProperties />
