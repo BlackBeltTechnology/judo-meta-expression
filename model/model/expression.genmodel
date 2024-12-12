@@ -924,10 +924,8 @@
         </genOperations>
       </genClasses>
       <genClasses ecoreClass="expression.ecore#//enumeration/EnumerationSwitchExpression">
-        <genFeatures notify="false" createChild="false" propertySortChoices="true"
-            ecoreFeature="ecore:EReference expression.ecore#//enumeration/EnumerationSwitchExpression/elementName"/>
         <genOperations ecoreOperation="expression.ecore#//enumeration/EnumerationSwitchExpression/getEnumeration"
-            body="return getElementName();">
+            body="return ((hu.blackbelt.judo.meta.expression.EnumerationExpression) getDefaultExpression()).getEnumeration(modelAdapter);">
           <genParameters ecoreParameter="expression.ecore#//enumeration/EnumerationSwitchExpression/getEnumeration/modelAdapter"/>
         </genOperations>
       </genClasses>

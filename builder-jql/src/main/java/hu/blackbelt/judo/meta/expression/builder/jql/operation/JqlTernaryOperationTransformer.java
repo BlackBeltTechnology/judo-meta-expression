@@ -20,21 +20,40 @@ package hu.blackbelt.judo.meta.expression.builder.jql.operation;
  * #L%
  */
 
-import hu.blackbelt.judo.meta.expression.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+
+import hu.blackbelt.judo.meta.expression.CollectionExpression;
+import hu.blackbelt.judo.meta.expression.CustomExpression;
+import hu.blackbelt.judo.meta.expression.DateExpression;
+import hu.blackbelt.judo.meta.expression.DecimalExpression;
+import hu.blackbelt.judo.meta.expression.EnumerationExpression;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.IntegerExpression;
+import hu.blackbelt.judo.meta.expression.LogicalExpression;
+import hu.blackbelt.judo.meta.expression.NumericExpression;
+import hu.blackbelt.judo.meta.expression.ObjectExpression;
+import hu.blackbelt.judo.meta.expression.ReferenceExpression;
+import hu.blackbelt.judo.meta.expression.StringExpression;
+import hu.blackbelt.judo.meta.expression.SwitchCase;
+import hu.blackbelt.judo.meta.expression.SwitchExpression;
+import hu.blackbelt.judo.meta.expression.TimeExpression;
+import hu.blackbelt.judo.meta.expression.TimestampExpression;
+import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.expression.AbstractJqlExpressionTransformer;
 import hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionSwitchExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.enumeration.util.builder.EnumerationSwitchExpressionBuilder;
-import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
 import hu.blackbelt.judo.meta.expression.object.util.builder.ObjectSwitchExpressionBuilder;
 import hu.blackbelt.judo.meta.expression.util.builder.SwitchCaseBuilder;
 import hu.blackbelt.judo.meta.jql.jqldsl.TernaryOperation;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import java.util.*;
-import java.util.function.BiFunction;
 
 import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.custom.util.builder.CustomBuilders.newCustomSwitchExpressionBuilder;
@@ -44,11 +63,13 @@ import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuil
 import static hu.blackbelt.judo.meta.expression.numeric.util.builder.NumericBuilders.newIntegerSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.object.util.builder.ObjectBuilders.newObjectSwitchExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.string.util.builder.StringBuilders.newStringSwitchExpressionBuilder;
-import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.*;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newDateSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimeSwitchExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.temporal.util.builder.TemporalBuilders.newTimestampSwitchExpressionBuilder;
 
 public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C extends NE, PTE, RTE, TO extends NE, TA, TR, S, M, U> extends AbstractJqlExpressionTransformer<TernaryOperation, NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> {
 
-    private final Map<Class<? extends Expression>, BiFunction<SwitchCase, Expression, SwitchExpression>> supportedTypes = new HashMap<Class<? extends Expression>, BiFunction<SwitchCase, Expression, SwitchExpression>>() {
+    private final Map<Class<? extends Expression>, BiFunction<SwitchCase, Expression, SwitchExpression>> supportedTypes = new HashMap<>() {
         {
             put(IntegerExpression.class, (thenCase, elseExpression) -> newIntegerSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(DecimalExpression.class, (thenCase, elseExpression) -> newDecimalSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
@@ -57,22 +78,21 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
                 Expression thenExpression = thenCase.getExpression();
                 C collectionType = getCommonAncestor((CollectionExpression) thenExpression, (CollectionExpression) elseExpression);
                 TypeName typeName = getModelAdapter().buildTypeName(collectionType).get();
+                // TODO: CollectionSwitchExpression is not supported in Runtime
+                //  element name should probably be removed and getEnumeration should return a calculated TypeName once it's supported
                 builder.withElementName(typeName);
                 return builder.build();
-
             });
             put(CustomExpression.class, (thenCase, elseExpression) -> newCustomSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
-            put(EnumerationExpression.class, (thenCase, elseExpression) -> {
-                EnumerationSwitchExpressionBuilder builder = newEnumerationSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression);
-                Object enumeration = ((EnumerationExpression) elseExpression).getEnumeration(getModelAdapter());
-                return builder.withElementName((TypeName) enumeration).build();
-            });
+            put(EnumerationExpression.class, (thenCase, elseExpression) -> newEnumerationSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(DateExpression.class, (thenCase, elseExpression) -> newDateSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression).build());
             put(ObjectExpression.class, (thenCase, elseExpression) -> {
                 ObjectSwitchExpressionBuilder builder = newObjectSwitchExpressionBuilder().withCases(thenCase).withDefaultExpression(elseExpression);
                 Expression thenExpression = thenCase.getExpression();
                 C collectionType = getCommonAncestor((ObjectExpression) thenExpression, (ObjectExpression) elseExpression);
                 TypeName typeName = getModelAdapter().buildTypeName(collectionType).get();
+                // TODO: ObjectSwitchExpression is not supported in Runtime
+                //  element name should probably be removed and getEnumeration should return a calculated TypeName once it's supported
                 builder.withElementName(typeName);
                 return builder.build();
             });
@@ -173,7 +193,7 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
         commonSupertypes.removeAll(alreadySupertypes);
         if (commonSupertypes.size() > 1) {
             throw new IllegalArgumentException("More than one common supertypes: " + commonSupertypes);
-        } else if (commonSupertypes.size() == 0) {
+        } else if (commonSupertypes.isEmpty()) {
             throw new IllegalArgumentException(String.format("No common supertype for %s, %s", thenExpression, elseExpression));
         } else {
             return commonSupertypes.stream().findAny().get();
@@ -181,9 +201,9 @@ public class JqlTernaryOperationTransformer<NE, P extends NE, E extends P, C ext
     }
 
     private void validateEnumTypes(EnumerationExpression thenExpression, EnumerationExpression elseExpression) {
-        Object thenEnum = thenExpression.getEnumeration(getModelAdapter());
-        Object elseEnum = elseExpression.getEnumeration(getModelAdapter());
-        if (!EcoreUtil.equals((EObject) thenEnum, (EObject) elseEnum)) {
+        TypeName thenEnum = thenExpression.getEnumeration(getModelAdapter());
+        TypeName elseEnum = elseExpression.getEnumeration(getModelAdapter());
+        if (!EcoreUtil.equals(thenEnum, elseEnum)) {
             throw new IllegalArgumentException(String.format("THEN and ELSE part different enumerations: %s vs %s", thenEnum, elseEnum));
         }
     }
