@@ -77,12 +77,6 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
             DataExpression sortingExpression = (DataExpression) expressionTransformer.transform(functionParameter.getExpression(), context);
             boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
             CollectionExpression filteringBase = EcoreUtil.copy(argument);
-            sortingExpression.eContents().stream().filter(e -> e instanceof VariableReference)
-                    .forEach(variableReference -> {
-                        copier.copy(variableReference);
-                        copier.copyReferences();
-                    });
-            copier.setUseOriginalReferences(false);
             DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
             copier.copyReferences();
             AggregatedExpression aggregationExpression;
