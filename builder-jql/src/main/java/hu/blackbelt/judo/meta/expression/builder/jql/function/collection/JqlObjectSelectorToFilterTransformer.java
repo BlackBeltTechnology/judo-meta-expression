@@ -20,12 +20,20 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
  * #L%
  */
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.AggregatedExpression;
+import hu.blackbelt.judo.meta.expression.CollectionExpression;
+import hu.blackbelt.judo.meta.expression.DataExpression;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.LogicalExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
-import hu.blackbelt.judo.meta.expression.collection.*;
+import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
+import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
 import hu.blackbelt.judo.meta.expression.logical.ObjectComparison;
 import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
@@ -39,8 +47,14 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.*;
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.ANY;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.HEAD;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.HEADS;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.TAIL;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.TAILS;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromCollectionExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newExistsBuilder;
 
 public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
@@ -206,10 +220,6 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
      * existing copy if needed.
      */
     private static class AugmentedCopier extends EcoreUtil.Copier {
-
-        public void setUseOriginalReferences(boolean v) {
-            this.useOriginalReferences = v;
-        }
 
         @Override
         protected EObject createCopy(EObject eObject) {
