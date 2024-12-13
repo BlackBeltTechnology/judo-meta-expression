@@ -20,12 +20,20 @@ package hu.blackbelt.judo.meta.expression.builder.jql.function.collection;
  * #L%
  */
 
-import hu.blackbelt.judo.meta.expression.*;
+import hu.blackbelt.judo.meta.expression.AggregatedExpression;
+import hu.blackbelt.judo.meta.expression.CollectionExpression;
+import hu.blackbelt.judo.meta.expression.DataExpression;
+import hu.blackbelt.judo.meta.expression.Expression;
+import hu.blackbelt.judo.meta.expression.LogicalExpression;
 import hu.blackbelt.judo.meta.expression.builder.jql.ExpressionBuildingVariableResolver;
 import hu.blackbelt.judo.meta.expression.builder.jql.JqlTransformers;
 import hu.blackbelt.judo.meta.expression.builder.jql.function.AbstractJqlFunctionTransformer;
 import hu.blackbelt.judo.meta.expression.builder.jql.operation.JqlBinaryOperationTransformer;
-import hu.blackbelt.judo.meta.expression.collection.*;
+import hu.blackbelt.judo.meta.expression.collection.CollectionFilterExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.CollectionNavigationFromObjectExpression;
+import hu.blackbelt.judo.meta.expression.collection.ObjectNavigationFromCollectionExpression;
+import hu.blackbelt.judo.meta.expression.collection.SortExpression;
 import hu.blackbelt.judo.meta.expression.logical.ContainsExpression;
 import hu.blackbelt.judo.meta.expression.logical.ObjectComparison;
 import hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders;
@@ -39,8 +47,14 @@ import hu.blackbelt.judo.meta.jql.jqldsl.JqlFunction;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.*;
-import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.*;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.ANY;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.HEAD;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.HEADS;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.TAIL;
+import static hu.blackbelt.judo.meta.expression.builder.jql.function.collection.JqlObjectSelectorToFilterTransformer.ObjectSelector.TAILS;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionFilterExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromCollectionExpressionBuilder;
+import static hu.blackbelt.judo.meta.expression.collection.util.builder.CollectionBuilders.newCollectionNavigationFromObjectExpressionBuilder;
 import static hu.blackbelt.judo.meta.expression.logical.util.builder.LogicalBuilders.newExistsBuilder;
 
 public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTransformer<CollectionExpression> {
@@ -61,9 +75,6 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
     @Override
     public Expression apply(CollectionExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         Expression result;
-        if (!(argument instanceof CollectionExpression)) {
-            throw new IllegalArgumentException("Expected iterable collection");
-        }
         LogicalExpression condition;
         AugmentedCopier copier = new AugmentedCopier();
 
@@ -77,21 +88,17 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
             DataExpression sortingExpression = (DataExpression) expressionTransformer.transform(functionParameter.getExpression(), context);
             boolean descending = JqlSortFunctionTransformer.isDescending(functionParameter.getParameterExtension());
             CollectionExpression filteringBase = EcoreUtil.copy(argument);
-            sortingExpression.eContents().stream().filter(e -> e instanceof VariableReference)
-                    .forEach(variableReference -> {
-                        copier.copy(variableReference);
-                        copier.copyReferences();
-                    });
-            copier.setUseOriginalReferences(false);
             DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
             copier.copyReferences();
-            AggregatedExpression aggregationExpression;
-            JqlAggregatedExpressionTransformer aggregatedExpressionTransformer = ((selector == HEAD || selector == HEADS) && descending
-                    || (selector == TAIL || selector == TAILS) && !descending) ? JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer)
-                            : JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
-            aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
-            condition = (LogicalExpression) new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer).createBinaryOperationExpression(sortingExpression,
-                    aggregationExpression, "==");
+            JqlAggregatedExpressionTransformer aggregatedExpressionTransformer;
+            if ((selector == HEAD || selector == HEADS) && descending || (selector == TAIL || selector == TAILS) && !descending) {
+                aggregatedExpressionTransformer = JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer);
+            } else {
+                aggregatedExpressionTransformer = JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
+            }
+            AggregatedExpression aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
+            JqlBinaryOperationTransformer jqlBinaryOperationTransformer = new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer);
+            condition = (LogicalExpression) jqlBinaryOperationTransformer.createBinaryOperationExpression(sortingExpression, aggregationExpression, "==");
             CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
                     .withCollectionExpression(argument)
                     .withCondition(condition)
@@ -213,10 +220,6 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
      * existing copy if needed.
      */
     private static class AugmentedCopier extends EcoreUtil.Copier {
-
-        public void setUseOriginalReferences(boolean v) {
-            this.useOriginalReferences = v;
-        }
 
         @Override
         protected EObject createCopy(EObject eObject) {
