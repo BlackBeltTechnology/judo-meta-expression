@@ -61,9 +61,6 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
     @Override
     public Expression apply(CollectionExpression argument, JqlFunction functionCall, ExpressionBuildingVariableResolver context) {
         Expression result;
-        if (!(argument instanceof CollectionExpression)) {
-            throw new IllegalArgumentException("Expected iterable collection");
-        }
         LogicalExpression condition;
         AugmentedCopier copier = new AugmentedCopier();
 
@@ -79,13 +76,15 @@ public class JqlObjectSelectorToFilterTransformer extends AbstractJqlFunctionTra
             CollectionExpression filteringBase = EcoreUtil.copy(argument);
             DataExpression sortingExpressionCopy = (DataExpression) copier.copy(sortingExpression);
             copier.copyReferences();
-            AggregatedExpression aggregationExpression;
-            JqlAggregatedExpressionTransformer aggregatedExpressionTransformer = ((selector == HEAD || selector == HEADS) && descending
-                    || (selector == TAIL || selector == TAILS) && !descending) ? JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer)
-                            : JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
-            aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
-            condition = (LogicalExpression) new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer).createBinaryOperationExpression(sortingExpression,
-                    aggregationExpression, "==");
+            JqlAggregatedExpressionTransformer aggregatedExpressionTransformer;
+            if ((selector == HEAD || selector == HEADS) && descending || (selector == TAIL || selector == TAILS) && !descending) {
+                aggregatedExpressionTransformer = JqlAggregatedExpressionTransformer.createMaxInstance(expressionTransformer);
+            } else {
+                aggregatedExpressionTransformer = JqlAggregatedExpressionTransformer.createMinInstance(expressionTransformer);
+            }
+            AggregatedExpression aggregationExpression = aggregatedExpressionTransformer.createAggregatedExpression(filteringBase, sortingExpressionCopy);
+            JqlBinaryOperationTransformer jqlBinaryOperationTransformer = new JqlBinaryOperationTransformer((JqlTransformers) expressionTransformer);
+            condition = (LogicalExpression) jqlBinaryOperationTransformer.createBinaryOperationExpression(sortingExpression, aggregationExpression, "==");
             CollectionFilterExpression collectionFilterExpression = newCollectionFilterExpressionBuilder()
                     .withCollectionExpression(argument)
                     .withCondition(condition)
