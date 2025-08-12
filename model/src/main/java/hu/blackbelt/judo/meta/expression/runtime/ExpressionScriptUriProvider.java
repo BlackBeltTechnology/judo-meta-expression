@@ -23,7 +23,7 @@ package hu.blackbelt.judo.meta.expression.runtime;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public abstract class ExpressionEpsilonValidator {
+public abstract class ExpressionScriptUriProvider {
 
     public static URI calculateExpressionValidationScriptURI() throws URISyntaxException {
         URI expressionRoot = ExpressionModel.class.getProtectionDomain().getCodeSource().getLocation().toURI();

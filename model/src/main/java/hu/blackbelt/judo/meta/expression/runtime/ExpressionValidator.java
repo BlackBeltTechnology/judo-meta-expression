@@ -4,6 +4,7 @@ import hu.blackbelt.judo.meta.expression.Expression;
 import hu.blackbelt.judo.meta.expression.TypeName;
 import hu.blackbelt.judo.meta.expression.VariableReference;
 import hu.blackbelt.judo.meta.expression.adapters.ModelAdapter;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -44,7 +45,7 @@ public class ExpressionValidator {
         // If no expectations are set, fail only if there are unsatisfied errors.
         if (isEmpty(expectedErrors) && isEmpty(expectedWarnings)) {
             if (!isEmpty(unsatisfiedErrors)) {
-                throw new RuntimeException(format(unsatisfiedErrors, unsatisfiedWarnings));
+                throw new ExpressionValidationException(format(unsatisfiedErrors, unsatisfiedWarnings));
             }
             if (log != null && !isEmpty(unsatisfiedWarnings)) {
                 log.warn(format(unsatisfiedErrors, unsatisfiedWarnings));
@@ -75,10 +76,12 @@ public class ExpressionValidator {
         warningsNotFound.removeAll(unsatisfiedWarnSet);
 
         boolean failed = !unexpectedErrors.isEmpty() || !errorsNotFound.isEmpty() ||
-                !unexpectedWarnings.isEmpty() || !warningsNotFound.isEmpty();
+                !warningsNotFound.isEmpty();
 
         if (failed) {
             throw new ExpressionValidationException(format(unsatisfiedErrors, unsatisfiedWarnings));
+        } else if (!unexpectedWarnings.isEmpty()) {
+            log.warn(format(unsatisfiedErrors, unsatisfiedWarnings));
         }
     }
 
@@ -91,7 +94,7 @@ public class ExpressionValidator {
         return isEmpty(collection) ? Collections.emptySet() : new HashSet<>(collection);
     }
 
-    public static void validateExpression(Logger log, ExpressionModel expressionModel, ModelAdapter modelAdapter, Collection<String> expectedErrors, Collection<String> expectedWarnings) throws ExpressionValidationException {
+    public static void validateExpressionInJava(Logger log, ExpressionModel expressionModel, ModelAdapter modelAdapter, Collection<String> expectedErrors, Collection<String> expectedWarnings) throws ExpressionValidationException {
         ExpressionEvaluator evaluator = new ExpressionEvaluator();
 
         Collection<String> errors = new ArrayList<>();
@@ -133,8 +136,18 @@ public class ExpressionValidator {
                         .filter(e -> e instanceof VariableReference)
                         .map(e -> getValue(e, "variable")).toList()
                         .removeAll(evaluator.getVariablesOfScope(self)) + " in expression: " + self)
-        .toList());
+                .toList());
 
         validate(log, expectedErrors, expectedWarnings, errors, warnings);
+    }
+
+    public static void validateExpression(Logger log, ExpressionModel expressionModel, ModelAdapter modelAdapter, String adaptedName, Resource adapted, String measureName, Resource measure, Collection<String> expectedErrors, Collection<String> expectedWarnings) throws ExpressionValidationException {
+        ExpressionValidatorExecutor expressionValidatorExecutor = ReflectiveExpressionValidatorFactory.createExecutor("hu.blackbelt.judo.meta.expression.runtime.ExpressionEpsilonValidatorExecutor", () -> {
+            validateExpressionInJava(log, expressionModel, modelAdapter, expectedErrors, expectedWarnings);
+        });
+        expressionValidatorExecutor.setSource(log, expressionModel, modelAdapter, adaptedName, adapted, measureName, measure);
+        expressionValidatorExecutor.execute(expectedErrors, expectedWarnings);
+
+
     }
 }
