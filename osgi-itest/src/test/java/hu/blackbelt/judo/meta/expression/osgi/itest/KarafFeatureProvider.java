@@ -2,7 +2,7 @@ package hu.blackbelt.judo.meta.expression.osgi.itest;
 
 /*-
  * #%L
- * JUDO :: Expression :: Model
+ * JUDO :: Expression :: ModelPSM
  * %%
  * Copyright (C) 2018 - 2022 BlackBelt Technology
  * %%
@@ -49,7 +49,7 @@ public class KarafFeatureProvider {
     public static final String HAMCREST = "org.apache.servicemix.bundles.hamcrest";
 
     public static final Integer SERVICE_TIMEOUT = 30000;
-    public static final String KARAF_VERSION = "4.3.3";
+    public static final String KARAF_VERSION = "4.4.7";
 
     public static MavenArtifactUrlReference  karafUrl() {
         return maven()
