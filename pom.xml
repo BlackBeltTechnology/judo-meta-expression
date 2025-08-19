@@ -67,8 +67,8 @@
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
-		<epsilon-runtime-version>2.8.0.20250806_043203_dd165e06_develop</epsilon-runtime-version>
-		<epsilon-runtime-eclipse-version>2.8.0.20250806_043652_4b0c33fe_develop</epsilon-runtime-eclipse-version>
+		<epsilon-runtime-version>2.8.0.20250818_020714_e9350189_feature_JNG_6322_Minimiize_Karaf_Size</epsilon-runtime-version>
+		<epsilon-runtime-eclipse-version>2.8.0.20250818_020949_2418d14d_feature_JNG_6322_Minimiize_Karaf_Size</epsilon-runtime-eclipse-version>
         
         <src.dir>src/main</src.dir>
 
@@ -93,12 +93,12 @@
         <karaf-version>4.4.7</karaf-version>
         <cxf-version>3.4.4</cxf-version>
 
-        <osgi-utils-version>1.1.1.20250806_043152_8f695d2d_develop</osgi-utils-version>
-        <karaf-features-version>2.0.2.20250806_004748_d0c312c1_develop</karaf-features-version>
+        <osgi-utils-version>1.1.1.20250818_013742_61ce62eb_feature_JNG_6322_Minimiize_Karaf_Size</osgi-utils-version>
+        <karaf-features-version>2.0.2.20250818_010007_6dbbe9be_feature_JNG_6322_Minimiize_Karaf_Size</karaf-features-version>
         <pax-exam-version>4.13.5</pax-exam-version>
 
-        <judo-meta-jql-version>1.0.4.20250806_043432_1336d9be_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.2.20250806_044838_67c9254b_develop</judo-meta-measure-version>
+        <judo-meta-jql-version>1.0.4.20250818_013958_8d9d8c51_feature_JNG_6322_Minimiize_Karaf_Size</judo-meta-jql-version>
+        <judo-meta-measure-version>1.0.2.20250818_021501_323ca3da_feature_JNG_6322_Minimiize_Karaf_Size</judo-meta-measure-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
 <!--        <platformSystemProperties />-->
@@ -113,6 +113,14 @@
         <sonar.language>java</sonar.language>
         <sonar.java.source>${java.version}</sonar.java.source>
         <jacoco.version>0.8.12</jacoco.version>
+        <p2-repositories>
+            mvn:hu.blackbelt.judo.eclipse.epp:hu.blackbelt.judo.eclipse.epp.package.common.site:${judo-epp-common-version}:zip,
+            mvn:hu.blackbelt.epsilon:hu.blackbelt.epsilon.runtime.site:${epsilon-runtime-eclipse-version}:zip:site,
+            mvn:hu.blackbelt.eclipse:hu.blackbelt.eclipse.emf.genmodel.generator.site:${emf-genmodel-generator-version}:zip,
+            mvn:hu.blackbelt.judo:hu.blackbelt.judo.eclipse.emf.genmodel.generator.site:${judo-genmodel-generator-version}:zip,
+            mvn:hu.blackbelt.judo.meta:hu.blackbelt.judo.meta.measure.site:${judo-meta-measure-version}:zip,
+            mvn:hu.blackbelt.judo.meta:hu.blackbelt.judo.meta.jql.site:${judo-meta-jql-version}:zip
+        </p2-repositories>
 
     </properties>
 
@@ -168,6 +176,31 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>target-platform-configuration</artifactId>
                 <version>${tycho-version}</version>
+                <configuration>
+                    <executionEnvironment>JavaSE-21</executionEnvironment>
+                    <pomDependencies>ignore</pomDependencies>
+                    <dependency-resolution>
+                        <extraRequirements>
+                            <requirement>
+                                <type>eclipse-feature</type>
+                                <id>hu.blackbelt.eclipse.emf.genmodel.generator.feature</id>
+                                <versionRange>0.0.0</versionRange>
+                            </requirement>
+                            <requirement>
+                                <type>eclipse-feature</type>
+                                <id>hu.blackbelt.judo.eclipse.emf.genmodel.generator.feature</id>
+                                <versionRange>0.0.0</versionRange>
+                            </requirement>
+                            <requirement>
+                                <type>eclipse-plugin</type>
+                                <id>org.eclipse.xtend.core</id>
+                                <versionRange>0.0.0</versionRange>
+                            </requirement>
+                        </extraRequirements>
+                    </dependency-resolution>
+
+                </configuration>
+
             </plugin>
 
             <plugin>
@@ -253,46 +286,47 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.1</version>
-                <configuration>
-                    <source>8</source>
-                    <detectJavaApiLink>false</detectJavaApiLink>
-                    <tags>
-                        <tag>
-                            <name>model</name>
-                            <placement>a</placement>
-                            <head>EMF Model</head>
-                        </tag>
-                        <tag>
-                            <name>generated</name>
-                            <placement>a</placement>
-                            <head>EMF Generated</head>
-                        </tag>
-                        <tag>
-                            <name>ordered</name>
-                            <placement>a</placement>
-                            <head>EMF Ordered</head>
-                        </tag>
-                        <tag>
-                            <name>param</name>
-                            <placement>a</placement>
-                            <head>EMF Param</head>
-                        </tag>
-
-                    </tags>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
+<!--                <version>3.11.2</version>-->
+<!--                <configuration>-->
+<!--                    <source>8</source>-->
+<!--                    <excludePackageNames>org.eclipse.jdt.*</excludePackageNames>-->
+<!--                    <detectJavaApiLink>false</detectJavaApiLink>-->
+<!--                    <additionalOptions>&#45;&#45;no-module-path</additionalOptions>-->
+<!--                    <tags>-->
+<!--                        <tag>-->
+<!--                            <name>model</name>-->
+<!--                            <placement>a</placement>-->
+<!--                            <head>EMF Model</head>-->
+<!--                        </tag>-->
+<!--                        <tag>-->
+<!--                            <name>generated</name>-->
+<!--                            <placement>a</placement>-->
+<!--                            <head>EMF Generated</head>-->
+<!--                        </tag>-->
+<!--                        <tag>-->
+<!--                            <name>ordered</name>-->
+<!--                            <placement>a</placement>-->
+<!--                            <head>EMF Ordered</head>-->
+<!--                        </tag>-->
+<!--                        <tag>-->
+<!--                            <name>param</name>-->
+<!--                            <placement>a</placement>-->
+<!--                            <head>EMF Param</head>-->
+<!--                        </tag>-->
+<!--                    </tags>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>attach-javadocs</id>-->
+<!--                        <goals>-->
+<!--                            <goal>jar</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
 
         <pluginManagement>
@@ -474,7 +508,11 @@
                     <artifactId>tycho-versions-plugin</artifactId>
                     <version>${tycho-version}</version>
                 </plugin>
-
+                <plugin>
+                    <groupId>org.eclipse.tycho.extras</groupId>
+                    <artifactId>tycho-document-bundle-plugin</artifactId>
+                    <version>${tycho-version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-source-plugin</artifactId>
@@ -1044,6 +1082,55 @@
                                 <phase>process-sources</phase>
                                 <configuration>
                                     <licenseName>epl_v2</licenseName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>listEclipseUnits</name>
+                    <value>true</value>
+                </property>
+
+            </activation>
+            <id>list-ius</id>
+
+            <properties>
+                <dlr>$</dlr>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-maven-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                        <extensions>true</extensions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.eclipse.tycho</groupId>
+                        <artifactId>tycho-p2-director-plugin</artifactId>
+                        <version>${tycho-version}</version>
+                        <executions>
+                            <execution>
+                                <id>list-ius</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>director</goal>
+                                </goals>
+                                <configuration>
+                                    <list>true</list>
+                                    <listFormat>ID: ${dlr}{id} | Version: ${dlr}{version} | Name: ${dlr}{org.eclipse.equinox.p2.name}</listFormat>
+                                    <metadatarepositories>${p2-repositories}</metadatarepositories>
+                                    <artifactrepositories>${p2-repositories}</artifactrepositories>
+                                    <includeProjectRepository>true</includeProjectRepository>
+                                    <destination>${basedir}/target/eclipse</destination>
                                 </configuration>
                             </execution>
                         </executions>
