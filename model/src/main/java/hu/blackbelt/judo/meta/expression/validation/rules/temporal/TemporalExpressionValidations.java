@@ -48,24 +48,65 @@ public class TemporalExpressionValidations {
     // =========================================================================
 
     /**
-     * Guard: Check if element is DateAttribute and resolved.
+     * Guard: Check if element is DateAttribute.
      */
-    public boolean isDateAttributeAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        if (!(element instanceof DateAttribute)) {
-            return false;
-        }
-        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+    public boolean isDateAttribute(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
+        return element instanceof DateAttribute;
+    }
+
+    /**
+     * Validates DateAttribute is resolved (has valid attribute type).
+     */
+    @Constraint(
+            name = "DateAttributeResolved",
+            message = "Attribute not found"
+    )
+    @Guard(method = "isDateAttribute")
+    public ValidationRule dateAttributeResolved() {
+        return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
+            DateAttribute self = (DateAttribute) element;
+            ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
+            ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+
+            if (self.getObjectExpression() != null) {
+                Object attributeTypeObj = self.getAttributeType(modelAdapter);
+                boolean hasAttributeType = false;
+                if (attributeTypeObj instanceof java.util.Optional) {
+                    java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
+                    hasAttributeType = optionalType.isPresent();
+                } else if (attributeTypeObj != null) {
+                    hasAttributeType = true;
+                }
+
+                if (hasAttributeType) {
+                    exprCtx.markSatisfied(element, ValidationConstants.RESOLVED);
+                    return ValidationResult.pass();
+                }
+
+                Object objectType = self.getObjectExpression().getObjectType(modelAdapter);
+                String typeName = objectType != null ? objectType.toString() : "unknown";
+                return ValidationResult.fail(
+                        "Attribute named " + self.getAttributeName() +
+                        " of object type " + typeName + " not found"
+                );
+            }
+            // If no object expression, mark as resolved anyway (similar to EVL behavior)
+            exprCtx.markSatisfied(element, ValidationConstants.RESOLVED);
+            return ValidationResult.pass();
+        };
     }
 
     /**
      * Validates that DateAttribute's attribute type is date.
+     * Note: In EVL, the guard "self.satisfiesAll('Resolved')" returns true when there's no
+     * "Resolved" constraint defined for the type. Since DateAttribute has no explicit Resolved
+     * constraint in EVL, we use a simple type check guard here.
      */
     @Constraint(
             name = ValidationConstants.ATTRIBUTE_TYPE_IS_DATE,
             message = "Attribute type is not date"
     )
-    @Guard(method = "isDateAttributeAndResolved")
+    @Guard(method = "isDateAttribute")
     public ValidationRule attributeTypeIsDate() {
         return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
             DateAttribute self = (DateAttribute) element;
@@ -75,21 +116,38 @@ public class TemporalExpressionValidations {
             // getAttributeType returns Optional<P> wrapped in Object
             Object attributeTypeObj = self.getAttributeType(modelAdapter);
             if (attributeTypeObj instanceof java.util.Optional) {
-                java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
-                if (optionalType.isPresent() && modelAdapter.isDate(optionalType.get())) {
+                @SuppressWarnings("unchecked")
+                java.util.Optional<Object> optionalType = (java.util.Optional<Object>) attributeTypeObj;
+                if (optionalType.isPresent()) {
+                    Object typeValue = optionalType.get();
+                    if (modelAdapter.isDate(typeValue)) {
+                        return ValidationResult.pass();
+                    }
+                    // Not a date type - return fail
+                    String objectTypeName = self.getObjectExpression() != null
+                            ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
+                            : "unknown";
+                    return ValidationResult.fail(
+                            "Attribute type of " + self.getAttributeName() +
+                            " of object type " + objectTypeName + " is not date"
+                    );
+                }
+            } else if (attributeTypeObj != null) {
+                if (modelAdapter.isDate(attributeTypeObj)) {
                     return ValidationResult.pass();
                 }
-            } else if (attributeTypeObj != null && modelAdapter.isDate(attributeTypeObj)) {
-                return ValidationResult.pass();
+                // Not a date type - return fail
+                String objectTypeName = self.getObjectExpression() != null
+                        ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
+                        : "unknown";
+                return ValidationResult.fail(
+                        "Attribute type of " + self.getAttributeName() +
+                        " of object type " + objectTypeName + " is not date"
+                );
             }
 
-            String objectTypeName = self.getObjectExpression() != null 
-                    ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
-                    : "unknown";
-            return ValidationResult.fail(
-                    "Attribute type of " + self.getAttributeName() + 
-                    " of object type " + objectTypeName + " is not date"
-            );
+            // No attribute type found - this is a different validation
+            return ValidationResult.pass();
         };
     }
 
@@ -98,24 +156,65 @@ public class TemporalExpressionValidations {
     // =========================================================================
 
     /**
-     * Guard: Check if element is TimestampAttribute and resolved.
+     * Guard: Check if element is TimestampAttribute.
      */
-    public boolean isTimestampAttributeAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        if (!(element instanceof TimestampAttribute)) {
-            return false;
-        }
-        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+    public boolean isTimestampAttribute(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
+        return element instanceof TimestampAttribute;
+    }
+
+    /**
+     * Validates TimestampAttribute is resolved (has valid attribute type).
+     */
+    @Constraint(
+            name = "TimestampAttributeResolved",
+            message = "Attribute not found"
+    )
+    @Guard(method = "isTimestampAttribute")
+    public ValidationRule timestampAttributeResolved() {
+        return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
+            TimestampAttribute self = (TimestampAttribute) element;
+            ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
+            ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+
+            if (self.getObjectExpression() != null) {
+                Object attributeTypeObj = self.getAttributeType(modelAdapter);
+                boolean hasAttributeType = false;
+                if (attributeTypeObj instanceof java.util.Optional) {
+                    java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
+                    hasAttributeType = optionalType.isPresent();
+                } else if (attributeTypeObj != null) {
+                    hasAttributeType = true;
+                }
+
+                if (hasAttributeType) {
+                    exprCtx.markSatisfied(element, ValidationConstants.RESOLVED);
+                    return ValidationResult.pass();
+                }
+
+                Object objectType = self.getObjectExpression().getObjectType(modelAdapter);
+                String typeName = objectType != null ? objectType.toString() : "unknown";
+                return ValidationResult.fail(
+                        "Attribute named " + self.getAttributeName() +
+                        " of object type " + typeName + " not found"
+                );
+            }
+            // If no object expression, mark as resolved anyway (similar to EVL behavior)
+            exprCtx.markSatisfied(element, ValidationConstants.RESOLVED);
+            return ValidationResult.pass();
+        };
     }
 
     /**
      * Validates that TimestampAttribute's attribute type is timestamp.
+     * Note: In EVL, the guard "self.satisfiesAll('Resolved')" returns true when there's no
+     * "Resolved" constraint defined for the type. Since TimestampAttribute has no explicit Resolved
+     * constraint in EVL, we use a simple type check guard here.
      */
     @Constraint(
             name = ValidationConstants.ATTRIBUTE_TYPE_IS_TIMESTAMP,
             message = "Attribute type is not timestamp"
     )
-    @Guard(method = "isTimestampAttributeAndResolved")
+    @Guard(method = "isTimestampAttribute")
     public ValidationRule attributeTypeIsTimestamp() {
         return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
             TimestampAttribute self = (TimestampAttribute) element;
@@ -125,21 +224,38 @@ public class TemporalExpressionValidations {
             // getAttributeType returns Optional<P> wrapped in Object
             Object attributeTypeObj = self.getAttributeType(modelAdapter);
             if (attributeTypeObj instanceof java.util.Optional) {
-                java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
-                if (optionalType.isPresent() && modelAdapter.isTimestamp(optionalType.get())) {
+                @SuppressWarnings("unchecked")
+                java.util.Optional<Object> optionalType = (java.util.Optional<Object>) attributeTypeObj;
+                if (optionalType.isPresent()) {
+                    Object typeValue = optionalType.get();
+                    if (modelAdapter.isTimestamp(typeValue)) {
+                        return ValidationResult.pass();
+                    }
+                    // Not a timestamp type - return fail
+                    String objectTypeName = self.getObjectExpression() != null
+                            ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
+                            : "unknown";
+                    return ValidationResult.fail(
+                            "Attribute type of " + self.getAttributeName() +
+                            " of object type " + objectTypeName + " is not timestamp"
+                    );
+                }
+            } else if (attributeTypeObj != null) {
+                if (modelAdapter.isTimestamp(attributeTypeObj)) {
                     return ValidationResult.pass();
                 }
-            } else if (attributeTypeObj != null && modelAdapter.isTimestamp(attributeTypeObj)) {
-                return ValidationResult.pass();
+                // Not a timestamp type - return fail
+                String objectTypeName = self.getObjectExpression() != null
+                        ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
+                        : "unknown";
+                return ValidationResult.fail(
+                        "Attribute type of " + self.getAttributeName() +
+                        " of object type " + objectTypeName + " is not timestamp"
+                );
             }
 
-            String objectTypeName = self.getObjectExpression() != null 
-                    ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
-                    : "unknown";
-            return ValidationResult.fail(
-                    "Attribute type of " + self.getAttributeName() + 
-                    " of object type " + objectTypeName + " is not timestamp"
-            );
+            // No attribute type found - this is a different validation
+            return ValidationResult.pass();
         };
     }
 
@@ -148,24 +264,65 @@ public class TemporalExpressionValidations {
     // =========================================================================
 
     /**
-     * Guard: Check if element is TimeAttribute and resolved.
+     * Guard: Check if element is TimeAttribute.
      */
-    public boolean isTimeAttributeAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        if (!(element instanceof TimeAttribute)) {
-            return false;
-        }
-        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+    public boolean isTimeAttribute(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
+        return element instanceof TimeAttribute;
+    }
+
+    /**
+     * Validates TimeAttribute is resolved (has valid attribute type).
+     */
+    @Constraint(
+            name = "TimeAttributeResolved",
+            message = "Attribute not found"
+    )
+    @Guard(method = "isTimeAttribute")
+    public ValidationRule timeAttributeResolved() {
+        return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
+            TimeAttribute self = (TimeAttribute) element;
+            ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
+            ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+
+            if (self.getObjectExpression() != null) {
+                Object attributeTypeObj = self.getAttributeType(modelAdapter);
+                boolean hasAttributeType = false;
+                if (attributeTypeObj instanceof java.util.Optional) {
+                    java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
+                    hasAttributeType = optionalType.isPresent();
+                } else if (attributeTypeObj != null) {
+                    hasAttributeType = true;
+                }
+
+                if (hasAttributeType) {
+                    exprCtx.markSatisfied(element, ValidationConstants.RESOLVED);
+                    return ValidationResult.pass();
+                }
+
+                Object objectType = self.getObjectExpression().getObjectType(modelAdapter);
+                String typeName = objectType != null ? objectType.toString() : "unknown";
+                return ValidationResult.fail(
+                        "Attribute named " + self.getAttributeName() +
+                        " of object type " + typeName + " not found"
+                );
+            }
+            // If no object expression, mark as resolved anyway (similar to EVL behavior)
+            exprCtx.markSatisfied(element, ValidationConstants.RESOLVED);
+            return ValidationResult.pass();
+        };
     }
 
     /**
      * Validates that TimeAttribute's attribute type is time.
+     * Note: In EVL, the guard "self.satisfiesAll('Resolved')" returns true when there's no
+     * "Resolved" constraint defined for the type. Since TimeAttribute has no explicit Resolved
+     * constraint in EVL, we use a simple type check guard here.
      */
     @Constraint(
             name = ValidationConstants.ATTRIBUTE_TYPE_IS_TIME,
             message = "Attribute type is not time"
     )
-    @Guard(method = "isTimeAttributeAndResolved")
+    @Guard(method = "isTimeAttribute")
     public ValidationRule attributeTypeIsTime() {
         return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
             TimeAttribute self = (TimeAttribute) element;
@@ -175,21 +332,38 @@ public class TemporalExpressionValidations {
             // getAttributeType returns Optional<P> wrapped in Object
             Object attributeTypeObj = self.getAttributeType(modelAdapter);
             if (attributeTypeObj instanceof java.util.Optional) {
-                java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
-                if (optionalType.isPresent() && modelAdapter.isTime(optionalType.get())) {
+                @SuppressWarnings("unchecked")
+                java.util.Optional<Object> optionalType = (java.util.Optional<Object>) attributeTypeObj;
+                if (optionalType.isPresent()) {
+                    Object typeValue = optionalType.get();
+                    if (modelAdapter.isTime(typeValue)) {
+                        return ValidationResult.pass();
+                    }
+                    // Not a time type - return fail
+                    String objectTypeName = self.getObjectExpression() != null
+                            ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
+                            : "unknown";
+                    return ValidationResult.fail(
+                            "Attribute type of " + self.getAttributeName() +
+                            " of object type " + objectTypeName + " is not time"
+                    );
+                }
+            } else if (attributeTypeObj != null) {
+                if (modelAdapter.isTime(attributeTypeObj)) {
                     return ValidationResult.pass();
                 }
-            } else if (attributeTypeObj != null && modelAdapter.isTime(attributeTypeObj)) {
-                return ValidationResult.pass();
+                // Not a time type - return fail
+                String objectTypeName = self.getObjectExpression() != null
+                        ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
+                        : "unknown";
+                return ValidationResult.fail(
+                        "Attribute type of " + self.getAttributeName() +
+                        " of object type " + objectTypeName + " is not time"
+                );
             }
 
-            String objectTypeName = self.getObjectExpression() != null 
-                    ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
-                    : "unknown";
-            return ValidationResult.fail(
-                    "Attribute type of " + self.getAttributeName() + 
-                    " of object type " + objectTypeName + " is not time"
-            );
+            // No attribute type found - this is a different validation
+            return ValidationResult.pass();
         };
     }
 
