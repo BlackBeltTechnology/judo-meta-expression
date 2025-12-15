@@ -734,6 +734,11 @@
                 <artifactId>hu.blackbelt.judo.zeta.annotations</artifactId>
                 <version>${judo-zeta-version}</version>
             </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.common</artifactId>
+                <version>${judo-zeta-version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <dependencies>
