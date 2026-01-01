@@ -71,10 +71,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isNumeric(attributeType.get())) {
@@ -117,10 +118,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isBoolean(attributeType.get())) {
@@ -163,10 +165,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isString(attributeType.get())) {
@@ -209,10 +212,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isEnumeration(attributeType.get())) {
@@ -255,10 +259,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isDate(attributeType.get())) {
@@ -301,10 +306,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isTimestamp(attributeType.get())) {
@@ -347,10 +353,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isTime(attributeType.get())) {
@@ -393,10 +400,11 @@ public class AttributeBindingValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object type = modelAdapter.get(self.getTypeName());
-            if (type == null) {
+            Optional<?> typeOpt = modelAdapter.get(self.getTypeName());
+            if (!typeOpt.isPresent()) {
                 return ValidationResult.pass(); // Skip if type not resolved
             }
+            Object type = typeOpt.get();
 
             Optional<?> attributeType = modelAdapter.getAttributeType(type, self.getAttributeName());
             if (attributeType.isPresent() && modelAdapter.isCustom(attributeType.get())) {
