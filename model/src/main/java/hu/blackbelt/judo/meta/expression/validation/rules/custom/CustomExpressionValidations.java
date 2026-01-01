@@ -84,16 +84,20 @@ public class CustomExpressionValidations {
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
 
-            Object attributeType = self.getAttributeType(modelAdapter);
-            if (attributeType != null && modelAdapter.isCustom(attributeType)) {
-                return ValidationResult.pass();
+            // getAttributeType returns Optional<P> wrapped in Object
+            Object attributeTypeObj = self.getAttributeType(modelAdapter);
+            if (attributeTypeObj instanceof java.util.Optional) {
+                java.util.Optional<?> optionalType = (java.util.Optional<?>) attributeTypeObj;
+                if (optionalType.isPresent() && modelAdapter.isCustom(optionalType.get())) {
+                    return ValidationResult.pass();
+                }
             }
 
-            String objectTypeName = self.getObjectExpression() != null 
+            String objectTypeName = self.getObjectExpression() != null
                     ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
                     : "unknown";
             return ValidationResult.fail(
-                    "Attribute type of " + self.getAttributeName() + 
+                    "Attribute type of " + self.getAttributeName() +
                     " of object type " + objectTypeName + " is not custom (expression type)"
             );
         };
