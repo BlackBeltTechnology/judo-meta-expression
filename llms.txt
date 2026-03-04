@@ -1,0 +1,43 @@
+# JUDO Expression Metamodel
+
+> Defines the EMF metamodel for type-safe expressions in the JUDO framework — covering numeric, string, logical, temporal, collection, enumeration, and custom expression types — with runtime utilities for evaluation, validation, and model manipulation.
+
+Key facts:
+- Java 21, Maven 3.9.9+ with Eclipse Tycho 4.0.13
+- Multi-module Maven project, 11 modules (3 core, 2 test, 3 Eclipse features, 1 OSGi bundle, 1 P2 site)
+- Core technologies: Eclipse EMF, Epsilon EVL, Xtext, MWE2, OSGi
+- Dual-packaged as Eclipse plugins and standalone OSGi bundle
+- External metamodel dependencies: judo-meta-measure, judo-meta-jql
+- License: Eclipse Public License 2.0 (EPL-2.0)
+
+## Docs
+
+- [README.md](README.md): Project overview, module diagram, expression type hierarchy, and quick start
+- [AGENTS.md](AGENTS.md): Developer guide with directory structure, build commands, technology stack, and coding conventions
+- [CONTRIBUTING.md](CONTRIBUTING.md): Contribution guidelines, code style, dependency rules, and build verification
+- [.github/CIFLOW.md](.github/CIFLOW.md): CI/CD pipeline and branching strategy
+
+## Modules — Core
+
+- [model/META-INF/MANIFEST.MF](model/META-INF/MANIFEST.MF): Core EMF metamodel (expression.ecore), generated Java classes, runtime utilities (ExpressionUtils, ExpressionEvaluator, ExpressionValidator), and Epsilon EVL validations
+- [adapter-measure/META-INF/MANIFEST.MF](adapter-measure/META-INF/MANIFEST.MF): Measure/unit adapter — resolves measures and units for numeric expressions, calculates dimensions, handles unit conversion and temporal duration measures
+- [builder-jql/META-INF/MANIFEST.MF](builder-jql/META-INF/MANIFEST.MF): JQL (JUDO Query Language) to Expression transformer — 55+ function transformers converting JQL ASTs into Expression metamodel instances
+
+## Modules — Testing
+
+- [model-test/pom.xml](model-test/pom.xml): JUnit 5 unit tests for the core model, measure adapter, and measure change handling
+- [osgi-itest/pom.xml](osgi-itest/pom.xml): OSGi integration tests using PAX Exam on Apache Karaf — verifies bundle activation and service registration
+
+## Modules — OSGi & Packaging
+
+- [osgi/pom.xml](osgi/pom.xml): Standalone OSGi bundle with bundle tracker for dynamic expression model loading
+- [feature-model/feature.xml](feature-model/feature.xml): Eclipse feature for the core model plugin
+- [feature-adapter-measure/feature.xml](feature-adapter-measure/feature.xml): Eclipse feature for the measure adapter plugin
+- [feature-builder-jql/feature.xml](feature-builder-jql/feature.xml): Eclipse feature for the JQL builder plugin
+- [site/pom.xml](site/pom.xml): P2 update site aggregating all Eclipse features
+
+## Optional
+
+- [.github/workflows/build.yml](.github/workflows/build.yml): CI/CD build pipeline
+- [model/model/expression.ecore](model/model/expression.ecore): Core EMF metamodel definition (12 subpackages, 31+ EClasses)
+- [model/model/expression.genmodel](model/model/expression.genmodel): EMF code generation model
