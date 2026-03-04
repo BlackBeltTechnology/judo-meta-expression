@@ -36,6 +36,31 @@ Key facts:
 - [feature-builder-jql/feature.xml](feature-builder-jql/feature.xml): Eclipse feature for the JQL builder plugin
 - [site/pom.xml](site/pom.xml): P2 update site aggregating all Eclipse features
 
+## Depends on
+
+- [judo-meta-expression-asm](../judo-meta-expression-asm): models/judo-meta-expression-asm
+- [judo-meta-expression-psm](../judo-meta-expression-psm): models/judo-meta-expression-psm
+- [judo-meta-jql](../judo-meta-jql): models/judo-meta-jql
+- [judo-meta-measure](../judo-meta-measure): models/judo-meta-measure
+- [osgi-utils](../../runtime/osgi-utils): runtime/osgi-utils
+- [epsilon-runtime](../../tools/epsilon-runtime): tools/epsilon-runtime
+
+## Used by
+
+- [judo-jql-ide-eclipse](../../eclipse/judo-jql-ide-eclipse): eclipse/judo-jql-ide-eclipse
+- [judo-meta-expression-asm](../judo-meta-expression-asm): models/judo-meta-expression-asm
+- [judo-meta-expression-esm](../judo-meta-expression-esm): models/judo-meta-expression-esm
+- [judo-meta-expression-psm](../judo-meta-expression-psm): models/judo-meta-expression-psm
+- [judo-meta-script](../judo-meta-script): models/judo-meta-script
+- [judo-platform](../../runtime/judo-platform): runtime/judo-platform
+- [judo-runtime-core](../../runtime/judo-runtime-core): runtime/judo-runtime-core
+- [judo-runtime-core-esm-itest](../../runtime/judo-runtime-core-esm-itest): runtime/judo-runtime-core-esm-itest
+- [judo-script-codegen](../../runtime/judo-script-codegen): runtime/judo-script-codegen
+- [judo-services](../../runtime/judo-services): runtime/judo-services
+- [judo-tatami](../../runtime/judo-tatami): runtime/judo-tatami
+- [judo-tatami-base](../../runtime/judo-tatami-base): runtime/judo-tatami-base
+- [judo-tatami-jsl](../../runtime/judo-tatami-jsl): runtime/judo-tatami-jsl
+
 ## Optional
 
 - [.github/workflows/build.yml](.github/workflows/build.yml): CI/CD build pipeline
