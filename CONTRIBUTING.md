@@ -1,188 +1,187 @@
-# Contributing to [Project Name] (LLM-Assisted)
+# Contributing to JUDO Expression Metamodel
 
-## Objective
+This guide covers everything you need to contribute to the judo-meta-expression project — whether you're a human developer or an LLM assistant.
 
-This document provides explicit, machine-readable instructions for contributing to
-[Project Name]. It is intended to be parsed and followed by Large Language Models
-(LLMs) acting as development assistants and by human contributors.
+## Environment Setup
 
-## 1. Project overview
+### Prerequisites
 
-### 1.1 Goal
+| Tool | Minimum Version | Check Command |
+|------|----------------|---------------|
+| JDK | 21 | `java -version` |
+| Maven | 3.9.9 | `mvn -v` |
 
-The primary goal of [Project Name] is to [State the main purpose of the project,
-e.g., "provide a set of tools for analyzing financial data"]. All contributions must
-align with this goal.
+> **Tip:** This project uses [SdkMan](https://sdkman.io/) for Java version management. Run `PAGER=cat sdk list java` to see available versions, then `sdk use java 21.x.y-zulu` to switch.
 
-## 2. Environment setup and build verification
-
-### 2.1 Prerequisites
-
-Ensure the following tools are installed and available in PATH:
-
-- Java Development Kit (JDK): Version 21 or higher. Verify with:
-
-  ```bash
-  java -version
-  ```
-
-- Apache Maven: Version 3.9.9 or higher. Verify with:
-
-  ```bash
-  mvn -v
-  ```
-
-Generally in this project development using SdkMan to manage java version. The `sdk` command can be used to use specific java versions. With `PAGER=cat sdk list java` can de installed and installable versions. 
-
-### 2.2 Full project build
-
-To build the entire project from the project root, run:
+### Build Verification
 
 ```bash
 mvn clean install
 ```
 
-Success condition: The build is considered successful only if the command completes
-with:
+The build is successful when:
+- The log ends with `[INFO] BUILD SUCCESS`
+- There are no `[ERROR]` lines in the output
+- All artifacts are present in their respective `target/` directories
 
-- log line: `[INFO] BUILD SUCCESS`
-- and there are no `[ERROR]` lines in the build log.
+## Project Structure
 
-All expected artifacts must be present in their respective `target/` directories.
+This is a hybrid Maven/Tycho project. Modules fall into three categories:
 
-## 3. Project structure and key files
+### Eclipse Plugin Modules (Tycho)
 
-A representative layout:
+These use `eclipse-plugin` or `eclipse-feature` packaging and are managed by Tycho:
 
-```text
-├── eclipse/                # Parent for all Tycho modules
-│   ├── plugins/            # Individual Eclipse plugins
-│   ├── features/           # Eclipse features
-│   └── sites/              # Eclipse update sites
-├── maven/                  # Parent for standard Maven modules
-│   └── [module-name]/      # A standard Java library or application
-└── pom.xml                 # The root Maven Project Object Model
+| Module | Purpose |
+|--------|---------|
+| `model/` | Core EMF metamodel — contains `expression.ecore`, generated Java classes, runtime utilities, and EVL validations |
+| `adapter-measure/` | Measure/unit resolution adapter for numeric and temporal expressions |
+| `builder-jql/` | JQL-to-Expression transformer with 55+ function transformers |
+| `feature-model/` | Eclipse feature for the core model |
+| `feature-adapter-measure/` | Eclipse feature for the measure adapter |
+| `feature-builder-jql/` | Eclipse feature for the JQL builder |
+| `site/` | P2 update site aggregating all features |
+
+### Standard Maven Modules
+
+| Module | Purpose |
+|--------|---------|
+| `model-test/` | JUnit 5 unit tests for the model and adapters |
+| `osgi/` | Standalone OSGi bundle with dynamic model loading via `ExpressionModelBundleTracker` |
+| `osgi-itest/` | OSGi integration tests running on Apache Karaf via PAX Exam |
+
+### Dependency Rules
+
+Because this project mixes Tycho and plain Maven modules, dependency management follows specific rules:
+
+```mermaid
+flowchart LR
+    subgraph "Maven → Maven"
+        M1["Module A<br/>(jar)"] -->|pom.xml dependency| M2["Module B<br/>(jar)"]
+    end
+    subgraph "Tycho → Tycho"
+        T1["Plugin A"] -->|MANIFEST.MF<br/>Require-Bundle| T2["Plugin B"]
+    end
+    subgraph "Maven → Tycho"
+        M3["Module<br/>(jar)"] -->|pom.xml dependency| T3["Plugin"]
+    end
+    subgraph "Tycho → Maven"
+        T4["Plugin"] -->|pom.xml dependency<br/>Tycho wraps JAR| M4["Module<br/>(jar)"]
+    end
 ```
 
-Key files referenced in this document:
+| Scenario | Where to Declare |
+|----------|-----------------|
+| Maven module depends on Maven module | `<dependency>` in consumer's `pom.xml` |
+| Tycho plugin depends on Tycho plugin | `Require-Bundle` in consumer's `META-INF/MANIFEST.MF` — **not** in `pom.xml` |
+| Maven module depends on Tycho plugin | `<dependency>` in consumer's `pom.xml` |
+| Tycho plugin depends on Maven JAR | `<dependency>` in plugin's `pom.xml` (Tycho wraps it as OSGi bundle) |
 
-- Root Maven POM: [`pom.xml`](pom.xml:1)
-- Plugin MANIFEST: [`MANIFEST.MF`](adapter-psm/META-INF/MANIFEST.MF:1)
-- This file: [`CONTRIBUTING.md`](CONTRIBUTING.md:1)
+## Code Generation
 
-## 4. Dependency management rules
+The EMF model classes are generated from `model/model/expression.ecore` via an MWE2 workflow located at `model/src/workflow/`. Generated code goes into `model/src-gen/`.
 
-Dependencies are handled differently depending on module types. Follow these rules
-exactly:
+> **Warning:** Never edit files in `src-gen/` directories — they are regenerated on every build and your changes will be lost.
 
-1. Rule 1 — Plain Maven -> Plain Maven  
-   Action: Add a standard dependency block to the consuming module's [`pom.xml`](pom.xml:1).
+### Running Code Generation in Eclipse
 
-   Example:
+Run the MWE2 Workflow: `hu.blackbelt.judo.meta.asm.model project src/workflow/generateModel.mwe2`
 
-   ```xml
-   <dependency>
-     <groupId>com.example</groupId>
-     <artifactId>example-lib</artifactId>
-     <version>1.2.3</version>
-   </dependency>
-   ```
+Required Eclipse plugins: XTend, XText, MWE, MWE2, Epsilon, Modeling Tools, m2e.
 
-2. Rule 2 — Tycho -> Tycho (plugin -> plugin)  
-   Action: Modify the consuming plugin's [`MANIFEST.MF`](adapter-psm/META-INF/MANIFEST.MF:1).
-   Add the required bundle ID to the `Require-Bundle` section. Do NOT add a
-   `<dependency>` to the plugin's `pom.xml`.
+## Version Policy
 
-3. Rule 3 — Plain Maven -> Tycho  
-   Action: To make a standard Java library available to an Eclipse plugin, add a
-   standard `<dependency>` block to the Tycho plugin module's `pom.xml`. Tycho will
-   wrap the JAR as an OSGi bundle automatically.
+Maven and Eclipse handle versions differently:
 
-4. Rule 4 — Tycho -> Plain Maven  
-   Action: To use a Tycho plugin artifact in a plain Maven module, add a standard
-   `<dependency>` to the plain Maven module's `pom.xml` with the plugin's
-   coordinates.
+| System | Snapshot Notation | Example |
+|--------|------------------|---------|
+| Maven | `-SNAPSHOT` suffix | `1.0.0-SNAPSHOT` |
+| Eclipse/OSGi | `.qualifier` suffix | `1.0.0.qualifier` |
 
-## 5. LLM contribution workflow
+The Tycho Versions Plugin reconciles these by replacing qualifiers and Maven versions with a technical version number during each build.
 
-As an LLM assistant, follow this workflow for every contribution:
+To update site category versions:
 
-1. Declare intent  
-   - State your intended change in one clear sentence.  
-     Example:
+```bash
+mvn clean install -P update-category-versions -f site/pom.xml
+```
 
-     ```text
-     I will add the method calculateAverage(List<Double> numbers) to MathUtils.java.
-     ```
+## Coding Guidelines
 
-2. Implement changes  
-   - Make code changes following the Coding Guidelines in section 6.
+### Style
 
-3. Verify build  
-   - Run the full build from project root:
+- **Indentation**: 4 spaces (no tabs)
+- **Naming**: PascalCase for classes/enums/interfaces, camelCase for methods/variables, UPPER_SNAKE_CASE for constants
+- **Braces**: Opening `{` on the same line as the statement
+- **JavaDoc**: Required on all public classes and methods — include `@param`, `@return` as applicable
 
-     ```bash
-     mvn clean install
-     ```
+### Testing
 
-   - Proceed only if the Success Condition in section 2.2 is met. If the build fails,
-     analyze and fix the errors before continuing.
+- All new public methods must have JUnit 5 tests
+- Bug fixes must include a regression test (fails before fix, passes after)
+- Test classes go in `src/test/java/` and are named `[ClassName]Test.java`
 
-4. Commit changes  
-   - Use Conventional Commits. Template:
+## Commands
 
-     ```text
-     feat: A brief summary of the feature
+```bash
+# Full build
+mvn clean install
 
-     A more detailed optional description of the changes, explaining the what and
-     why.
+# Run tests only
+mvn clean test
 
-     Refs: #<issue_number>
-     ```
+# Run a single test class
+mvn test -pl model-test -Dtest=ExpressionValidatorTest
 
-   - Use `fix:` for bug fixes, `docs:` for documentation, `style:` for formatting-only
-     changes, `refactor:` for refactors, `test:` for adding tests, etc.
+# Full verification (includes OSGi integration tests)
+mvn verify
+```
 
-## 6. Coding guidelines (mandatory)
+## Submission Guidelines
 
-### 6.1 Code style
+### Issues
 
-- Indentation: 4 spaces (no tabs).
-- Naming conventions:
-  - Classes, enums, interfaces: PascalCase
-  - Methods & variables: camelCase
-  - Constants: UPPER_SNAKE_CASE
-- Braces: Opening brace `{` must be on the same line as the statement.
+Before submitting an issue, search the [issue tracker](https://github.com/BlackBeltTechnology/judo-meta-expression/issues) first. When filing, include:
+- Output of `java -version` and `mvn -version`
+- Relevant `pom.xml` or `.flattened-pom.xml`
+- A minimal reproduction case
 
-### 6.2 Documentation (JavaDoc)
+### Pull Requests
 
-- All public classes and methods must have JavaDoc.
-- JavaDoc must include a description, `@param` for each parameter, and `@return`
-  when applicable.
+This project follows [GitHub's standard forking model](https://guides.github.com/activities/forking/). Fork the project and submit pull requests.
 
-### 6.3 Testing
+Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages:
 
-- All new public methods must have JUnit 5 tests.
-- Bug fixes must include a regression test that fails before the fix and passes
-  after.
-- Test placement convention:
-  - Implementation: `src/main/java/...` — example: [`src/main/java/...`](src/main/java/:1)
-  - Test: `src/test/java/...` — example: [`src/test/java/...`](src/test/java/:1)
-  - Test class name: `[ClassName]Test.java`
+```
+feat: add temporal expression duration support
 
-## 7. LLM scope of work
+Adds duration calculation for timestamp difference expressions,
+including measure-aware unit resolution.
 
-Allowed actions:
+Refs: #JNG-1234
+```
 
-- Refactor code, add methods, fix documented bugs, write tests, and update JavaDoc.
+Prefixes: `feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`
 
-Forbidden actions (require explicit human instruction):
+## Troubleshooting
 
-- Do NOT change build configurations or top-level artifact wiring without explicit
-  human approval. Examples:
-  - [`pom.xml`](pom.xml:1)
-  - `feature.xml`
-  - `site.xml`
-  - [`MANIFEST.MF`](adapter-psm/META-INF/MANIFEST.MF:1)
+### JUnit Tests in Eclipse
 
-- Do NOT change files in `src-gen` directory, because it is generated.
+Eclipse + Tycho has a classpath issue where JUnit is not included. The workaround is a `Required-Bundle` entry in the OSGi Manifest. See [Eclipse Bug 534587](https://bugs.eclipse.org/bugs/show_bug.cgi?id=534587).
+
+### Lombok
+
+Tycho does not support Lombok generation directly ([lombok#285](https://github.com/rzwitserloot/lombok/issues/285)). No Lombok is used in Eclipse plugin modules — all source code there is generated.
+
+### Tycho Repository References
+
+All referenced plugin sites must be added manually to site definitions. See [Eclipse Bug 453708](https://bugs.eclipse.org/bugs/show_bug.cgi?id=453708).
+
+## LLM Contribution Scope
+
+**Allowed**: Refactor code, add methods, fix documented bugs, write tests, update JavaDoc.
+
+**Requires explicit human approval**:
+- Changes to build configuration (`pom.xml`, `feature.xml`, `site.xml`, `MANIFEST.MF`)
+- Changes to files in `src-gen/` directories
+- Changes to CI/CD workflows (`.github/workflows/`)
