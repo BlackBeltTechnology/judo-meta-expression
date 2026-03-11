@@ -108,6 +108,7 @@
 
         <judo-meta-jql-version>1.0.4.20260202_145048_84ff3d22_develop</judo-meta-jql-version>
         <judo-meta-measure-version>1.0.2.20260202_144241_021a98f8_develop</judo-meta-measure-version>
+        <judo-zeta-version>1.0.0.20251215_001216_39824811_feature_JNG_6349_AddZetaValidatiob</judo-zeta-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
 <!--        <platformSystemProperties />-->
@@ -720,6 +721,23 @@
                 <artifactId>hu.blackbelt.judo.meta.expression.model.test</artifactId>
                 <version>${project.version}</version>
                 <scope>test</scope>
+            </dependency>
+
+            <!-- Zeta Validation Framework -->
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.validation-core</artifactId>
+                <version>${judo-zeta-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.annotations</artifactId>
+                <version>${judo-zeta-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>hu.blackbelt.judo.zeta</groupId>
+                <artifactId>hu.blackbelt.judo.zeta.common</artifactId>
+                <version>${judo-zeta-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
