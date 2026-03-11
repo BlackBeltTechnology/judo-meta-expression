@@ -69,8 +69,16 @@ public class LogicalExpressionValidations {
         if (!(element instanceof LogicalAttribute)) {
             return false;
         }
+        // Check resolution inline rather than depending on resolved() having run first,
+        // since Zeta validation does not guarantee rule execution order
+        LogicalAttribute self = (LogicalAttribute) element;
         ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+        ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+        Object attributeTypeObj = self.getAttributeType(modelAdapter);
+        if (attributeTypeObj instanceof java.util.Optional) {
+            return ((java.util.Optional<?>) attributeTypeObj).isPresent();
+        }
+        return attributeTypeObj != null;
     }
 
     /**
@@ -329,11 +337,8 @@ public class LogicalExpressionValidations {
      * Guard: Check if element is DecimalComparison and resolved.
      */
     public boolean isDecimalComparisonAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        if (!(element instanceof DecimalComparison)) {
-            return false;
-        }
-        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+        // No need to check satisfies(RESOLVED) since resolved() always passes for LogicalExpression
+        return element instanceof DecimalComparison;
     }
 
     /**

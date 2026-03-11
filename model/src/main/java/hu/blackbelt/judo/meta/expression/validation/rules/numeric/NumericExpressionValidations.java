@@ -64,8 +64,20 @@ public class NumericExpressionValidations {
     /**
      * Guard: Check if element is IntegerAttribute.
      */
-    public boolean isIntegerAttribute(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        return element instanceof IntegerAttribute;
+    public boolean isIntegerAttributeAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
+        if (!(element instanceof IntegerAttribute)) {
+            return false;
+        }
+        // Check resolution inline rather than depending on resolved() having run first,
+        // since Zeta validation does not guarantee rule execution order
+        IntegerAttribute self = (IntegerAttribute) element;
+        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
+        ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+        Object attributeTypeObj = self.getAttributeType(modelAdapter);
+        if (attributeTypeObj instanceof java.util.Optional) {
+            return ((java.util.Optional<?>) attributeTypeObj).isPresent();
+        }
+        return attributeTypeObj != null;
     }
 
     /**
@@ -75,16 +87,12 @@ public class NumericExpressionValidations {
             name = ValidationConstants.ATTRIBUTE_TYPE_IS_INTEGER,
             message = "Attribute type is not numeric"
     )
-    @Guard(method = "isIntegerAttribute")
+    @Guard(method = "isIntegerAttributeAndResolved")
     public ValidationRule attributeTypeIsInteger() {
         return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
             IntegerAttribute self = (IntegerAttribute) element;
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
-
-            if (!exprCtx.satisfies(element, ValidationConstants.RESOLVED)) {
-                return ValidationResult.pass(); // Skip if not resolved
-            }
 
             // getAttributeType returns Optional<P> wrapped in Object
             Object attributeTypeObj = self.getAttributeType(modelAdapter);
@@ -97,11 +105,11 @@ public class NumericExpressionValidations {
                 return ValidationResult.pass();
             }
 
-            String objectTypeName = self.getObjectExpression() != null 
+            String objectTypeName = self.getObjectExpression() != null
                     ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
                     : "unknown";
             return ValidationResult.fail(
-                    "Attribute type of " + self.getAttributeName() + 
+                    "Attribute type of " + self.getAttributeName() +
                     " of object type " + objectTypeName + " is not numeric"
             );
         };
@@ -114,8 +122,20 @@ public class NumericExpressionValidations {
     /**
      * Guard: Check if element is DecimalAttribute.
      */
-    public boolean isDecimalAttribute(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        return element instanceof DecimalAttribute;
+    public boolean isDecimalAttributeAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
+        if (!(element instanceof DecimalAttribute)) {
+            return false;
+        }
+        // Check resolution inline rather than depending on resolved() having run first,
+        // since Zeta validation does not guarantee rule execution order
+        DecimalAttribute self = (DecimalAttribute) element;
+        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
+        ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+        Object attributeTypeObj = self.getAttributeType(modelAdapter);
+        if (attributeTypeObj instanceof java.util.Optional) {
+            return ((java.util.Optional<?>) attributeTypeObj).isPresent();
+        }
+        return attributeTypeObj != null;
     }
 
     /**
@@ -125,16 +145,12 @@ public class NumericExpressionValidations {
             name = ValidationConstants.ATTRIBUTE_TYPE_IS_DECIMAL,
             message = "Attribute type is not numeric"
     )
-    @Guard(method = "isDecimalAttribute")
+    @Guard(method = "isDecimalAttributeAndResolved")
     public ValidationRule attributeTypeIsDecimal() {
         return (EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) -> {
             DecimalAttribute self = (DecimalAttribute) element;
             ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
             ModelAdapter modelAdapter = exprCtx.getModelAdapter();
-
-            if (!exprCtx.satisfies(element, ValidationConstants.RESOLVED)) {
-                return ValidationResult.pass(); // Skip if not resolved
-            }
 
             // getAttributeType returns Optional<P> wrapped in Object
             Object attributeTypeObj = self.getAttributeType(modelAdapter);
@@ -147,11 +163,11 @@ public class NumericExpressionValidations {
                 return ValidationResult.pass();
             }
 
-            String objectTypeName = self.getObjectExpression() != null 
+            String objectTypeName = self.getObjectExpression() != null
                     ? String.valueOf(self.getObjectExpression().getObjectType(modelAdapter))
                     : "unknown";
             return ValidationResult.fail(
-                    "Attribute type of " + self.getAttributeName() + 
+                    "Attribute type of " + self.getAttributeName() +
                     " of object type " + objectTypeName + " is not numeric"
             );
         };
@@ -165,11 +181,8 @@ public class NumericExpressionValidations {
      * Guard: Check if element is DecimalArithmeticExpression and resolved.
      */
     public boolean isDecimalArithmeticExpressionAndResolved(EObject element, hu.blackbelt.judo.zeta.validation.core.ValidationContext ctx) {
-        if (!(element instanceof DecimalArithmeticExpression)) {
-            return false;
-        }
-        ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+        // No need to check satisfies(RESOLVED) since resolved() always passes for NumericExpression
+        return element instanceof DecimalArithmeticExpression;
     }
 
     /**

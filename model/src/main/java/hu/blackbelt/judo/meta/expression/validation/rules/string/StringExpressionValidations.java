@@ -66,8 +66,16 @@ public class StringExpressionValidations {
         if (!(element instanceof StringAttribute)) {
             return false;
         }
+        // Check resolution inline rather than depending on resolved() having run first,
+        // since Zeta validation does not guarantee rule execution order
+        StringAttribute self = (StringAttribute) element;
         ExpressionValidationContext exprCtx = (ExpressionValidationContext) ctx;
-        return exprCtx.satisfies(element, ValidationConstants.RESOLVED);
+        ModelAdapter modelAdapter = exprCtx.getModelAdapter();
+        Object attributeTypeObj = self.getAttributeType(modelAdapter);
+        if (attributeTypeObj instanceof java.util.Optional) {
+            return ((java.util.Optional<?>) attributeTypeObj).isPresent();
+        }
+        return attributeTypeObj != null;
     }
 
     /**
