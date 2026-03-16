@@ -107,8 +107,8 @@
         <pax-exam-version>4.13.5</pax-exam-version>
 
         <judo-meta-jql-version>1.0.4.20260202_145048_84ff3d22_develop</judo-meta-jql-version>
-        <judo-meta-measure-version>1.0.2.20260202_144241_021a98f8_develop</judo-meta-measure-version>
-        <judo-zeta-version>1.0.0.20251215_001216_39824811_feature_JNG_6349_AddZetaValidatiob</judo-zeta-version>
+        <judo-meta-measure-version>1.0.2-SNAPSHOT</judo-meta-measure-version>
+        <judo-zeta-version>1.0.0-SNAPSHOT</judo-zeta-version>
 
         <!-- Define overridable properties for tycho-surefire-plugin -->
 <!--        <platformSystemProperties />-->
