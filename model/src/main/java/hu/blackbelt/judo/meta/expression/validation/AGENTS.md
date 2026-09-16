@@ -2,5 +2,5 @@
 
 | File | Purpose |
 |---|---|
-| `ExpressionValidationContext.java` | Carries adapter, evaluator and inter-constraint state to every Zeta rule. Extends `ValidationContext` with `getExpressionModel`, `getModelAdapter`, `getEvaluator`, `satisfies(element, constraintName)`, `satisfiesAll`, `markSatisfied`, `clearSatisfiesCache`. The `satisfiedConstraints` `ConcurrentHashMap` is empty until a rule calls `markSatisfied`, so a guard on an unrecorded constraint reads false. |
-| `ExpressionZetaValidator.java` | Java alternative to the EVL run: registers the 16 rule classes listed in `VALIDATOR_CLASSES`, builds `ExpressionValidationContext`, and runs `ValidationExecutor` over every `EObject` of the model resource. Exports static `validateExpression` in 3-, 5- and 6-arg (with `parallel`) forms. Results are compared by constraint name; a null `expectedWarnings` means warnings are ignored, mismatch throws `ExpressionValidationException`. |
+| `ExpressionValidationContext.java` | `ValidationContext` subclass carrying adapter, evaluator and inter-constraint `satisfiedConstraints` state to Zeta rules → see `ExpressionValidationContext.java.AGENTS.md` |
+| `ExpressionZetaValidator.java` | Java EVL alternative — runs the 16 `VALIDATOR_CLASSES` rules, exports static `validateExpression` 3/5/6-arg forms → see `ExpressionZetaValidator.java.AGENTS.md` |

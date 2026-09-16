@@ -7,4 +7,4 @@ that recorded fact or on a non-null default case.
 
 | File | Purpose |
 |---|---|
-| `CustomExpressionValidations.java` | `@ValidationContext(CustomExpression.class)`. Three rules: `resolved()` publishes `RESOLVED`; `attributeTypeIsCustom()` (guard `isCustomAttributeAndResolved` = `instanceof CustomAttribute` plus `satisfies(RESOLVED)`) requires `modelAdapter.isCustom` on the unwrapped `getAttributeType` `Optional`; `typeOfDefaultCaseIsCustom()` fires only when `CustomSwitchExpression.getDefaultExpression()` is non-null. |
+| `CustomExpressionValidations.java` | Three Zeta rules for `CustomExpression` — `resolved()`, `attributeTypeIsCustom()`, `typeOfDefaultCaseIsCustom()` → see `CustomExpressionValidations.java.AGENTS.md` |
