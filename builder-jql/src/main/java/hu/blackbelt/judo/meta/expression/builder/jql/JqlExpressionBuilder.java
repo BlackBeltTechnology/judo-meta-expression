@@ -460,6 +460,14 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
         jqlTransformers.addFunctionTransformer(functionName, transformer);
     }
 
+    /**
+     * Restart iterator variable numbering ({@code _iterator_1}, ...) for the next independent expression. Must not be
+     * called while an expression is being built: iterators inside one expression must stay unique.
+     */
+    public void resetIteratorCounter() {
+        jqlTransformers.resetIteratorCounter();
+    }
+
     public void setResolveDerived(boolean resolveDerived) {
         jqlTransformers.setResolveDerived(resolveDerived);
     }

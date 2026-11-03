@@ -19,6 +19,10 @@ Central JQL→expression facade, generic over the twelve metamodel type paramete
 - Type comparison: `isKindOf(C, C)`, `getMappedTransferObjectTypeCompatibility(TO, TO)`.
 - Nested types: `enum BindingRole`, `enum BindingType`, `class BindingContext`
   (`getFeatureName`, `getType`, `getRole`), `enum MappedTransferObjectCompatibility`.
+- `resetIteratorCounter()` — public, delegates to `jqlTransformers.resetIteratorCounter()`. Restarts generated
+  `_iterator_<n>` names at 1. Callers: `AdaptableJqlExtractor`, `judo-meta-script` `JclScriptBuilder`
+  (referenced it since commit 6092e61 while it was missing; broke Zeta-branch judo-meta-script build).
+  See change: split-etl-artifacts (iterator determinism).
 - Constants: `SELF_NAME = "self"`, `NAMESPACE_SEPARATOR = "::"`.
 
 ## Contracts a caller can violate
@@ -34,4 +38,6 @@ Central JQL→expression facade, generic over the twelve metamodel type paramete
   given, and `IllegalStateException` for an unsupported binding role or feature.
 - `getTypeNameOf` throws `IllegalArgumentException` on a null `QualifiedName` or a short-form symbol
   that is not in scope, and `NoSuchElementException` when the type or symbol is unknown.
+- `resetIteratorCounter()` only between independent expressions, never during one `createExpression`;
+  mid-build reset duplicates iterator names within one expression.
 - `storeExpression(null)` is not an error — it logs a warning and stores nothing.

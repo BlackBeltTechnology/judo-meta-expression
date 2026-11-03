@@ -28,7 +28,7 @@ The constructor fills two `LinkedHashMap`s by calling, in order, `literals()`, `
   existing entry for the same key, which is how metamodel-specific builders specialise the core.
 - `getModelAdapter`, `getExpressionBuilder`, `getEnumType`, `getTypeNameFromResource`, `buildTypeName`.
 - `getMeasureName`, `getDurationMeasureName`, `getDurationMeasures`, `getDefaultDurationMeasure`.
-- `setResolveDerived(boolean)` / `isResolveDerived()`, `newGeneratedIteratorName()`.
+- `setResolveDerived(boolean)` / `isResolveDerived()`, `newGeneratedIteratorName()`, `resetIteratorCounter()`.
 - Message templates `CAST_FUNCTION_INVALID_TYPES`, `INVALID_CONTAINER_TYPE`.
 
 ## Contracts a caller can violate
@@ -43,8 +43,11 @@ The constructor fills two `LinkedHashMap`s by calling, in order, `literals()`, `
   unwound — a transformer that pops the scope itself corrupts the stack.
 - `getDefaultDurationMeasure()` returns a value only when the model declares exactly one duration
   measure; otherwise `Optional.empty()`.
-- `newGeneratedIteratorName()` returns `_iterator_<n>` from a per-instance `AtomicInteger` starting at 1,
-  so generated names are unique per `JqlTransformers`, not globally.
+- `newGeneratedIteratorName()` returns `_iterator_<n>` from per-instance `atomicCounter` (`AtomicInteger`)
+  starting at 1, so names are unique per `JqlTransformers` until reset, not globally.
+- `resetIteratorCounter()` runs `atomicCounter.set(1)`. Call only between independent expressions, never
+  mid-build: iterators inside one expression must stay unique (e.g. derived expansion).
+  See change: split-etl-artifacts (iterator determinism).
 - `kindof`/`typeof`/`astype` throw `IllegalArgumentException` formatted with
   `CAST_FUNCTION_INVALID_TYPES` when the two fully qualified types are not cast-compatible;
   `container` throws with `INVALID_CONTAINER_TYPE`.

@@ -683,4 +683,12 @@ public class JqlTransformers<NE, P extends NE, E extends P, C extends NE, PTE, R
         return generatedIteratorPrefix + atomicCounter.getAndIncrement();
     }
 
+    /**
+     * Restart iterator variable numbering at {@code _iterator_1}. Call before building each independent expression so
+     * generated names do not depend on the order in which expressions are built (spec expression-iterator-determinism).
+     */
+    public void resetIteratorCounter() {
+        atomicCounter.set(1);
+    }
+
 }

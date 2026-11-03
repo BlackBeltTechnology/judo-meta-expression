@@ -132,6 +132,7 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
 
             if (!hasBinding(typeName, FilterBinding.class)) {
                 JqlExpressionBuilder.BindingContext filterBindingContext = new JqlExpressionBuilder.BindingContext(null, JqlExpressionBuilder.BindingType.FILTER, JqlExpressionBuilder.BindingRole.GETTER);
+                builder.resetIteratorCounter(); // independent expression: iterator names must not depend on extraction order
                 Expression expression =
                         builder.createExpression(CreateExpressionArguments.<C, TO, NE>builder()
                                                                           .withClazz(modelAdapter.getMappedEntityType(mappedTransferObjectType).orElseThrow())
@@ -251,6 +252,7 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     }
 
     private void buildAndBind(C entityType, TO transferObjectType, TO inputParameterType, JqlExpressionBuilder.BindingContext bindingContext, String jql) {
+        builder.resetIteratorCounter(); // independent expression: iterator names must not depend on extraction order
         Expression expression =
                 builder.createExpression(CreateExpressionArguments.<C, TO, NE>builder()
                                                                   .withClazz(entityType)
