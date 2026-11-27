@@ -39,13 +39,13 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     private static final Logger log = LoggerFactory.getLogger(AdaptableJqlExtractor.class.getName());
 
     private final ResourceSet expressionResourceSet;
-    private final BindingIndex bindingIndex;
+    private final ExpressionResourceIndex bindingIndex;
     private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> builder;
 
     public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, JqlExpressionBuilderConfig builderConfig) {
         this.expressionResourceSet = expressionResourceSet;
-        this.bindingIndex = new BindingIndex(expressionResourceSet);
+        this.bindingIndex = ExpressionResourceIndex.of(expressionResourceSet);
         this.modelAdapter = modelAdapter;
         this.builder = new JqlExpressionBuilder(modelAdapter, expressionResourceSet.getResources().get(0), builderConfig);
     }

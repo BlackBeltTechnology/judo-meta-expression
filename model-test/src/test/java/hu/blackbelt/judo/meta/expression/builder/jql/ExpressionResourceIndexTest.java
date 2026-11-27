@@ -38,21 +38,23 @@ import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuil
 import static hu.blackbelt.judo.meta.expression.binding.util.builder.BindingBuilders.newReferenceBindingBuilder;
 import static hu.blackbelt.judo.meta.expression.util.builder.ExpressionBuilders.newTypeNameBuilder;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** {@link BindingIndex}: initial scan, incremental adds, rebuild after other changes, new resources. */
-class BindingIndexTest {
+/** {@link ExpressionResourceIndex}: bindings and type names; initial scan, incremental adds, rebuild after other changes, new resources, sharing. */
+class ExpressionResourceIndexTest {
 
     private ResourceSet resourceSet;
     private Resource resource;
-    private BindingIndex index;
+    private ExpressionResourceIndex index;
 
     @BeforeEach
     void setUp() {
         resourceSet = new ResourceSetImpl();
         resource = new XMIResourceImpl(URI.createURI("urn:expressions"));
         resourceSet.getResources().add(resource);
-        index = new BindingIndex(resourceSet);
+        index = ExpressionResourceIndex.of(resourceSet);
     }
 
     private static TypeName type(String name) {
@@ -107,5 +109,36 @@ class BindingIndexTest {
         other.getContents().add(attribute("Order", "total", AttributeBindingRole.GETTER));
         resourceSet.getResources().add(other);
         assertTrue(index.hasAttributeBinding(type("Order"), "total", AttributeBindingRole.GETTER));
+    }
+
+    @Test
+    void sharedPerResourceSet() {
+        assertSame(index, ExpressionResourceIndex.of(resourceSet));
+    }
+
+    @Test
+    void typeNamesFirstInResourceOrderAndIncremental() {
+        TypeName first = type("Order");
+        TypeName second = type("Order");
+        resource.getContents().add(first);
+        resource.getContents().add(second);
+        assertSame(first, index.typeName("Order", "demo::entities"), "first in resource order");
+        assertNull(index.typeName("Order", "other::ns"), "namespace differs");
+
+        // Binding.typeName is not containment: a type name only referenced by a binding is not in the contents, so
+        // (like the former getAllContents scan) it is not found
+        resource.getContents().add(attributeWith(type("Customer")));
+        assertNull(index.typeName("Customer", "demo::entities"), "referenced, not contained");
+
+        TypeName added = type("Customer");
+        resource.getContents().add(added);
+        assertSame(added, index.typeName("Customer", "demo::entities"), "added after first use");
+
+        resource.getContents().remove(first);
+        assertSame(second, index.typeName("Order", "demo::entities"), "rebuilt after removal");
+    }
+
+    private static AttributeBinding attributeWith(TypeName typeName) {
+        return newAttributeBindingBuilder().withTypeName(typeName).withAttributeName("a").withRole(AttributeBindingRole.GETTER).build();
     }
 }

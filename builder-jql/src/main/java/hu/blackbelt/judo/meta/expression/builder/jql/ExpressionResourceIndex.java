@@ -34,26 +34,33 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * Index of the attribute and reference bindings of an expression resource set, answering "is there already a binding
- * for (type, feature, role)" in constant time. It replaces a walk over the whole resource set per question, which made
- * JQL extraction O(features x model size).
+ * Index of an expression resource set answering, in constant time, the lookups JQL extraction does per feature and
+ * per type: "is there a binding for (type, feature, role)" and "which {@link TypeName} has (name, namespace)". It
+ * replaces a walk over the whole resource set per question, which made extraction O(features x model size).
  * <p>
- * The index is built by one full scan on first use. Bindings appended as top-level contents of a resource (how
- * {@code JqlExpressionBuilder.createBinding} stores them) are added incrementally through an adapter on each resource;
- * any other change of the top-level contents (remove, move, set, a new resource in the set) marks the index dirty and
- * the next query rebuilds it. Bindings are expected not to change their type name, feature name or role after they
+ * One index per resource set, shared by the extractor, the expression builder and the model adapter cache:
+ * {@link #of(ResourceSet)} finds it among the resource set's adapters or attaches a new one.
+ * <p>
+ * The index is built by one full scan on first use (resource order, so {@link #typeName} returns the first match in
+ * {@code getAllContents()} order). Objects appended as top-level contents of a resource (how bindings, expressions and
+ * type names are stored) are added incrementally, with their contents, through an adapter on each resource; any other
+ * change of the top-level contents (remove, move, set) or a resource not seen yet makes the next query rebuild the
+ * index. Indexed objects are expected not to change their type name, feature name, role, name or namespace after they
  * were added.
  */
-final class BindingIndex {
+final class ExpressionResourceIndex extends AdapterImpl {
 
     private final ResourceSet resourceSet;
     private final Set<List<Object>> attributeBindings = new HashSet<>();
     private final Set<List<Object>> referenceBindings = new HashSet<>();
+    private final Map<List<Object>, TypeName> typeNames = new HashMap<>();
     private final Set<Resource> watched = new HashSet<>();
     private boolean dirty = true;
 
@@ -63,7 +70,7 @@ final class BindingIndex {
             if (notification.isTouch() || notification.getFeatureID(Resource.class) != Resource.RESOURCE__CONTENTS) {
                 return;
             }
-            synchronized (BindingIndex.this) {
+            synchronized (ExpressionResourceIndex.this) {
                 switch (notification.getEventType()) {
                     case Notification.ADD:
                         indexTree((EObject) notification.getNewValue());
@@ -80,8 +87,27 @@ final class BindingIndex {
         }
     };
 
-    BindingIndex(ResourceSet resourceSet) {
+    private ExpressionResourceIndex(ResourceSet resourceSet) {
         this.resourceSet = resourceSet;
+    }
+
+    /** @return the index of {@code resourceSet}, attached to it on first use */
+    static ExpressionResourceIndex of(ResourceSet resourceSet) {
+        synchronized (resourceSet) {
+            for (Object adapter : resourceSet.eAdapters()) {
+                if (adapter instanceof ExpressionResourceIndex) {
+                    return (ExpressionResourceIndex) adapter;
+                }
+            }
+            ExpressionResourceIndex index = new ExpressionResourceIndex(resourceSet);
+            resourceSet.eAdapters().add(index);
+            return index;
+        }
+    }
+
+    @Override
+    public boolean isAdapterForType(Object type) {
+        return type == ExpressionResourceIndex.class;
     }
 
     synchronized boolean hasAttributeBinding(TypeName typeName, String attributeName, AttributeBindingRole role) {
@@ -94,6 +120,15 @@ final class BindingIndex {
         return referenceBindings.contains(key(typeName.getName(), typeName.getNamespace(), role, referenceName));
     }
 
+    /**
+     * @return the first {@link TypeName} (resource order) with exactly this name and namespace ({@code null} matches
+     * {@code null}); {@code null} when there is none
+     */
+    synchronized TypeName typeName(String name, String namespace) {
+        refresh();
+        return typeNames.get(Arrays.asList(name, namespace));
+    }
+
     /** Rebuilds the index when dirty or when the resource set has a resource that is not watched yet. */
     private void refresh() {
         if (!dirty && watched.containsAll(resourceSet.getResources())) {
@@ -101,6 +136,7 @@ final class BindingIndex {
         }
         attributeBindings.clear();
         referenceBindings.clear();
+        typeNames.clear();
         for (Resource resource : new ArrayList<>(resourceSet.getResources())) {
             if (watched.add(resource)) {
                 resource.eAdapters().add(contentsListener);
@@ -129,6 +165,9 @@ final class BindingIndex {
             if (b.getTypeName() != null) {
                 referenceBindings.add(key(b.getTypeName().getName(), b.getTypeName().getNamespace(), b.getRole(), b.getReferenceName()));
             }
+        } else if (object instanceof TypeName) {
+            TypeName t = (TypeName) object;
+            typeNames.putIfAbsent(Arrays.asList(t.getName(), t.getNamespace()), t);
         }
     }
 

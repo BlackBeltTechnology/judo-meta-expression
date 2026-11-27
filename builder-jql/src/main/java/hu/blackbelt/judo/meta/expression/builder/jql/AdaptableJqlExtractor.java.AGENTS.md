@@ -12,4 +12,4 @@ See change: split-etl-artifacts (iterator determinism).
 
 ## Binding lookup (JNG-6454)
 
-- `hasAttributeBinding` / `hasReferenceBinding` delegate to `BindingIndex` (field `bindingIndex`, built over `expressionResourceSet` in the ctor). Former code streamed `all(expressionResourceSet, *Binding.class)` per feature: O(features x model size), ~55 % of `asm2expression` on rackinspect. Extracted expression model identical. See change: JNG-6454.
+- `hasAttributeBinding` / `hasReferenceBinding` delegate to `ExpressionResourceIndex` (field `bindingIndex`, built over `expressionResourceSet` in the ctor). Former code streamed `all(expressionResourceSet, *Binding.class)` per feature: O(features x model size), ~55 % of `asm2expression` on rackinspect. Extracted expression model identical. See change: JNG-6454.
