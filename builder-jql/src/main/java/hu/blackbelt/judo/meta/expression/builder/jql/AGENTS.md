@@ -2,7 +2,8 @@
 
 | File | Purpose |
 |---|---|
-| `AdaptableJqlExtractor.java` | Generic `JqlExtractor` driver over any `ModelAdapter`, idempotent via binding-existence skip, resets iterator counter per top-level expression → see `AdaptableJqlExtractor.java.AGENTS.md` See change: split-etl-artifacts (iterator determinism). |
+| `AdaptableJqlExtractor.java` | Generic `JqlExtractor` driver over any `ModelAdapter`, idempotent via binding-existence skip, resets iterator counter per top-level expression → see `AdaptableJqlExtractor.java.AGENTS.md` See change: split-etl-artifacts (iterator determinism). `hasAttributeBinding` / `hasReferenceBinding` query `BindingIndex` (was a full resource-set walk per feature). See change: JNG-6454. |
+| `BindingIndex.java` | Package-private. O(1) `hasAttributeBinding` / `hasReferenceBinding` over an expression `ResourceSet`, key (type name, namespace, role, feature). Full scan on first use; top-level ADD/ADD_MANY indexed incrementally via adapter on each resource; other contents changes or unwatched resource -> dirty -> rebuild on next query. Thread safe (synchronized). See change: JNG-6454. |
 | `CircularReferenceException.java` | Signals a derived accessor re-entered while its own resolution is still on the stack; message is `"Already resolved accessor: " + accessorName`. Exports `getAccessorName()`. Unchecked — the guard is `JqlExpressionBuildingContext.containsAccessor`, so callers that never push the accessor never get this protection. |
 | `CreateExpressionArguments.java` | Immutable argument bag for `JqlExpressionBuilder.createExpression`, built only via `CreateExpressionArgumentsBuilder.withX(...)` → see `CreateExpressionArguments.java.AGENTS.md` |
 | `ExpressionBuildingVariableResolver.java` | Mutable stack-state contract for one JQL build (`pushAccessor`/`popVariableScope`…), every push matched by a pop → see `ExpressionBuildingVariableResolver.java.AGENTS.md` |
