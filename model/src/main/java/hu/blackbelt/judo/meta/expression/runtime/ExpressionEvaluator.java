@@ -52,25 +52,22 @@ public class ExpressionEvaluator {
     public void init(final Collection<Expression> expressions) {
         expressions.forEach(expression -> addToAllExpressions(expression));
 
-        Set<Expression> allPlainExpression = getAllInstances(Expression.class).collect(Collectors.toSet());
         Set<ReferenceExpression> allReferenceExpression = getAllInstances(ReferenceExpression.class).collect(Collectors.toSet());
 
-        allPlainExpression.parallelStream().forEach(expression -> {
-            final Optional<ReferenceExpression> lambdaContainer = allReferenceExpression.stream()
-                    .filter(referenceExpression -> referenceExpression.getLambdaFunctions().contains(expression))
-                    .findAny();
-
-            if (lambdaContainer.isPresent()) {
-                lambdaContainers.put(expression, lambdaContainer.get());
-            }
-
-        });
+        // One pass over the containers instead of scanning every reference expression for every expression (was
+        // O(n^2), the main cost of asm2query on large models). Every lambda function is in allExpressions
+        // (addToAllExpressions follows getLambdaFunctions), so the key set is the same as before.
+        allReferenceExpression.forEach(referenceExpression ->
+                referenceExpression.getLambdaFunctions().forEach(lambda ->
+                        lambdaContainers.putIfAbsent(lambda, referenceExpression)));
 
         allReferenceExpression.parallelStream().forEach(referenceExpression -> {
             // single sources are supported only (ie. filtering unions is unsupported)
-            final Optional<ReferenceExpression> referenceSource = allReferenceExpression.stream()
-                    .filter(referenceSourceExpression -> referenceExpression.getOperands().contains(referenceSourceExpression))
-                    .findAny();
+            // the operands of this expression that are reference expressions (every operand is in allExpressions)
+            final Optional<ReferenceExpression> referenceSource = referenceExpression.getOperands().stream()
+                    .filter(ReferenceExpression.class::isInstance)
+                    .map(ReferenceExpression.class::cast)
+                    .findFirst();
 
             if (referenceSource.isPresent()) {
                 ReferenceExpression referenceSourceExpression = referenceSource.get();
@@ -97,10 +94,16 @@ public class ExpressionEvaluator {
             }
         });
 
-        leaves.addAll(getAllInstances(Expression.class)
-                .filter(expression -> !getAllInstances(Expression.class)
-                        .anyMatch(e -> (e.getOperands().contains(expression) || e.getLambdaFunctions().contains(expression))))
-                .collect(Collectors.toSet()));
+        // a leaf is an expression that is neither an operand nor a lambda function of any expression; the children are
+        // collected once instead of scanning all expressions for every expression (was O(n^2))
+        final Set<Expression> children = Collections.newSetFromMap(new IdentityHashMap<>());
+        allExpressions.forEach(e -> {
+            children.addAll(e.getOperands());
+            children.addAll(e.getLambdaFunctions());
+        });
+        allExpressions.stream()
+                .filter(expression -> !children.contains(expression))
+                .forEach(leaves::add);
     }
 
     private void addToAllExpressions(final Expression expression) {

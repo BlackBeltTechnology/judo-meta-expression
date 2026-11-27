@@ -34,6 +34,12 @@
 
 		<dependency>
 			<groupId>hu.blackbelt.judo.meta</groupId>
+			<artifactId>hu.blackbelt.judo.meta.expression.builder.jql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>hu.blackbelt.judo.meta</groupId>
 			<artifactId>hu.blackbelt.judo.meta.measure.model</artifactId>
 			<scope>test</scope>
 		</dependency>

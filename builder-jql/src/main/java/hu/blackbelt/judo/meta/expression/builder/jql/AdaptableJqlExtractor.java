@@ -39,11 +39,13 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     private static final Logger log = LoggerFactory.getLogger(AdaptableJqlExtractor.class.getName());
 
     private final ResourceSet expressionResourceSet;
+    private final BindingIndex bindingIndex;
     private final ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter;
     private final JqlExpressionBuilder<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> builder;
 
     public AdaptableJqlExtractor(ResourceSet asmResourceSet, ResourceSet measureResourceSet, ResourceSet expressionResourceSet, ModelAdapter<NE, P, E, C, PTE, RTE, TO, TA, TR, S, M, U> modelAdapter, JqlExpressionBuilderConfig builderConfig) {
         this.expressionResourceSet = expressionResourceSet;
+        this.bindingIndex = new BindingIndex(expressionResourceSet);
         this.modelAdapter = modelAdapter;
         this.builder = new JqlExpressionBuilder(modelAdapter, expressionResourceSet.getResources().get(0), builderConfig);
     }
@@ -106,21 +108,12 @@ public class AdaptableJqlExtractor<NE, P extends NE, E extends P, C extends NE, 
     }
 
     private boolean hasReferenceBinding(TypeName typeName, String featureName, ReferenceBindingRole bindingRole) {
-        return all(expressionResourceSet, ReferenceBinding.class)
-                .anyMatch(b -> b.getTypeName() != null &&
-                        Objects.equals(b.getTypeName().getName(), typeName.getName()) &&
-                        Objects.equals(b.getTypeName().getNamespace(), typeName.getNamespace()) &&
-                        b.getRole() == bindingRole &&
-                        Objects.equals(b.getReferenceName(), featureName));
+        // indexed: a full walk of the expression resource set per feature made extraction O(features x model size)
+        return bindingIndex.hasReferenceBinding(typeName, featureName, bindingRole);
     }
 
     private boolean hasAttributeBinding(TypeName typeName, String featureName, AttributeBindingRole bindingRole) {
-        return all(expressionResourceSet, AttributeBinding.class)
-                .anyMatch(b -> b.getTypeName() != null &&
-                        Objects.equals(b.getTypeName().getName(), typeName.getName()) &&
-                        Objects.equals(b.getTypeName().getNamespace(), typeName.getNamespace()) &&
-                        b.getRole() == bindingRole &&
-                        Objects.equals(b.getAttributeName(), featureName));
+        return bindingIndex.hasAttributeBinding(typeName, featureName, bindingRole);
     }
 
     private void extractFromMappedTransferObjectType(TO mappedTransferObjectType) {
