@@ -9,3 +9,7 @@ Iterator names (`_iterator_<n>`) so do not depend on ASM extraction order (ETL v
 Implements spec `runtime/judo-tatami-base/openspec/specs/expression-iterator-determinism` (archived change `expression-iterator-counter-reset`).
 Test: `AsmJqlExtractorTest.testIteratorNamesDoNotDependOnExtractionOrder` (`judo-meta-expression-asm/builder-jql-asm-test`) — extracts, reverses every EPackage classifier list in a copy in fresh `ResourceSet` (`AsmUtilsCache` caches order per `ResourceSet`), asserts binding(type, feature, role) → iterator names equal.
 See change: split-etl-artifacts (iterator determinism).
+
+## Binding lookup (JNG-6454)
+
+- `hasAttributeBinding` / `hasReferenceBinding` delegate to `ExpressionResourceIndex` (field `bindingIndex`, built over `expressionResourceSet` in the ctor). Former code streamed `all(expressionResourceSet, *Binding.class)` per feature: O(features x model size), ~55 % of `asm2expression` on rackinspect. Extracted expression model identical. See change: JNG-6454.

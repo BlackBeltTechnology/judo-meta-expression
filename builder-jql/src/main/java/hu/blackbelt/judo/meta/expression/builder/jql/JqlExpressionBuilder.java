@@ -341,12 +341,11 @@ public class JqlExpressionBuilder<NE, P extends NE, E extends P, C extends NE, P
     }
 
     public TypeName getTypeNameFromResource(String namespace, String name) {
+        // indexed (was a walk over the whole resource set per call); a null name or namespace never matched
         return Optional.ofNullable(buildTypeName(namespace, name))
-                .flatMap(resolvedTypeName ->
-                                 all(expressionResource.getResourceSet(), TypeName.class)
-                                         .filter(tn -> tn.getName() != null && tn.getName().equals(resolvedTypeName.getName()) &&
-                                                       tn.getNamespace() != null && tn.getNamespace().equals(resolvedTypeName.getNamespace()))
-                                         .findAny())
+                .filter(resolvedTypeName -> resolvedTypeName.getName() != null && resolvedTypeName.getNamespace() != null)
+                .map(resolvedTypeName -> ExpressionResourceIndex.of(expressionResource.getResourceSet())
+                        .typeName(resolvedTypeName.getName(), resolvedTypeName.getNamespace()))
                 .orElse(null);
     }
 

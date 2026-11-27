@@ -230,8 +230,8 @@ public class JqlExpressionBuilderModelAdapterCache<NE, P extends NE, E extends P
     }
 
     private void storeTypeName(Resource expressionResource, NE namespaceElement, TypeName typeName) {
-        if (all(expressionResource.getResourceSet(), TypeName.class)
-                .noneMatch(tn -> Objects.equals(tn.getName(), typeName.getName()) && Objects.equals(tn.getNamespace(), typeName.getNamespace()))) {
+        // indexed (was a walk over the whole resource set per stored type name)
+        if (ExpressionResourceIndex.of(expressionResource.getResourceSet()).typeName(typeName.getName(), typeName.getNamespace()) == null) {
             expressionResource.getContents().add(typeName);
         } else {
             LOGGER.trace("  - type name is already added to resource set: {}", namespaceElement);
