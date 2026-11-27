@@ -41,3 +41,7 @@ Central JQL→expression facade, generic over the twelve metamodel type paramete
 - `resetIteratorCounter()` only between independent expressions, never during one `createExpression`;
   mid-build reset duplicates iterator names within one expression.
 - `storeExpression(null)` is not an error — it logs a warning and stores nothing.
+
+## Type name lookup (JNG-6454)
+
+- `getTypeNameFromResource(namespace, name)` resolves via `buildTypeName`, then `ExpressionResourceIndex.of(expressionResource.getResourceSet()).typeName(name, namespace)`; resolved null name or namespace -> null (never matched before either). Former code streamed `all(resourceSet, TypeName.class)` per call (~20 % of `asm2expression`). See change: JNG-6454.
